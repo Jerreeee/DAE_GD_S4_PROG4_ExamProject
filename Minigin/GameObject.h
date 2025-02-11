@@ -1,32 +1,49 @@
 #pragma once
 #include <memory>
-#include "Transform.h"
+#include "TransformComponent.h"
+#include "ComponentBase.h"
+#include <vector>
 
 namespace dae
 {
 	class Texture2D;
-
-	// todo: this should become final.
-	class GameObject
+	class GameObject final
 	{
 	public:
-		virtual void FixedUpdate();
-		virtual void Update();
-		virtual void Render() const;
-
-		void SetTexture(const std::string& filename);
-		void SetPosition(float x, float y);
-
 		GameObject() = default;
-		virtual ~GameObject();
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 
+		virtual void FixedUpdate();
+		virtual void Update();
+		virtual void Render() const;
+
+		template<typename ComponentType, typename... Args>
+		void AddComponent(Args&&... args)
+		{
+			m_Components.emplace_back(std::make_unique<ComponentType>(*this, std::forward<Args>(args)...));
+		}
+
+		template<typename ComponentType>
+		std::shared_ptr<ComponentType> GetComponent()
+		{
+			for (const auto& component : m_Components)
+			{
+				if (auto castedComponent = dynamic_cast<ComponentType*>(component.get()))
+				{
+					return std::shared_ptr<ComponentType>(m_Components[0], castedComponent);
+				}
+			}
+			return nullptr;
+		}
+
+		void SetPosition(float x, float y);
+
+		TransformComponent& GetTransform();
 	private:
-		Transform m_transform{};
-		// todo: mmm, every gameobject has a texture? Is that correct?
-		std::shared_ptr<Texture2D> m_texture{};
+		TransformComponent m_Transform{};
+		std::vector<std::shared_ptr<ComponentBase>> m_Components{};
 	};
 }
