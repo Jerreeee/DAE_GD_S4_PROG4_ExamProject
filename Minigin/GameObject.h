@@ -7,9 +7,10 @@ namespace dae
 	class Texture2D;
 
 	// todo: this should become final.
-	class GameObject 
+	class GameObject
 	{
 	public:
+		virtual void FixedUpdate();
 		virtual void Update();
 		virtual void Render() const;
 
