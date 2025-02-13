@@ -23,10 +23,10 @@ namespace dae
 		void SetText(const std::string& text);
 		void SetPosition(float x, float y);
 	private:
-		bool m_NeedsUpdate;
-		std::string m_Text;
+		bool m_NeedsUpdate{};
+		std::string m_Text{};
 		TransformComponent m_Transform{};
-		std::shared_ptr<Font> m_Font;
-		std::shared_ptr<Texture2D> m_TextTexture;
+		std::shared_ptr<Font> m_Font{};
+		std::shared_ptr<Texture2D> m_TextTexture{};
 	};
 }

@@ -10,6 +10,7 @@
 #include "Renderer.h"
 #include "ResourceManager.h"
 #include <chrono>
+#include "Time.h"
 
 SDL_Window* g_window{};
 
@@ -85,6 +86,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	auto& input = InputManager::GetInstance();
 	
 	const float fixedTimeStep = 1.0f / 60.0f;
+	Time::GetInstance().SetFixedTimeStep(fixedTimeStep);
 	bool doContinue = true;
 	auto lastTime = std::chrono::high_resolution_clock::now();
 	float lag = 0.0f;
@@ -92,6 +94,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	{
 		const auto currentTime = std::chrono::high_resolution_clock::now();
 		const float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
+		Time::GetInstance().SetDelaTime(deltaTime);
 		lastTime = currentTime;
 		lag += deltaTime;
 

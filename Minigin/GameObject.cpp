@@ -5,6 +5,11 @@
 
 namespace dae
 {
+	GameObject::GameObject(const std::string& name)
+		: m_Name(name)
+	{
+	}
+
 	void GameObject::FixedUpdate()
 	{
 		for (const auto& component : m_Components)

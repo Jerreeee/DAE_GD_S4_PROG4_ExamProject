@@ -3,6 +3,8 @@
 #include "TransformComponent.h"
 #include "ComponentBase.h"
 #include <vector>
+#include <string>
+#include <stdexcept>
 
 namespace dae
 {
@@ -11,6 +13,8 @@ namespace dae
 	{
 	public:
 		GameObject() = default;
+		GameObject(const std::string& name);
+
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;
@@ -27,22 +31,44 @@ namespace dae
 		}
 
 		template<typename ComponentType>
-		ComponentType* GetComponent()
+		bool HasComponent()
 		{
 			for (const auto& component : m_Components)
-			{
 				if (auto castedComponent = dynamic_cast<ComponentType*>(component.get()))
+					return true;
+			return false;
+		}
+
+		template<typename ComponentType>
+		ComponentType& GetComponent()
+		{
+			for (const auto& component : m_Components)
+				if (auto castedComponent = dynamic_cast<ComponentType*>(component.get()))
+					return *castedComponent;
+			throw std::runtime_error("Component not found");
+		}
+
+		template<typename ComponentType>
+		void RemoveComponent()
+		{
+			auto it = std::remove_if(m_Components.begin(), m_Components.end(),
+				[](const std::unique_ptr<ComponentBase>& component)
 				{
-					return castedComponent;
+					return dynamic_cast<ComponentType*>(component.get()) != nullptr;
 				}
+			);
+
+			if (it != m_Components.end())
+			{
+				m_Components.erase(it);
 			}
-			return nullptr;
 		}
 
 		void SetPosition(float x, float y);
 
 		TransformComponent& GetTransform();
 	private:
+		std::string m_Name{};
 		TransformComponent m_Transform{};
 		std::vector<std::unique_ptr<ComponentBase>> m_Components{};
 	};
