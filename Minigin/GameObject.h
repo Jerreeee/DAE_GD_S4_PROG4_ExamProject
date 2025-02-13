@@ -27,13 +27,13 @@ namespace dae
 		}
 
 		template<typename ComponentType>
-		std::shared_ptr<ComponentType> GetComponent()
+		ComponentType* GetComponent()
 		{
 			for (const auto& component : m_Components)
 			{
 				if (auto castedComponent = dynamic_cast<ComponentType*>(component.get()))
 				{
-					return std::shared_ptr<ComponentType>(m_Components[0], castedComponent);
+					return castedComponent;
 				}
 			}
 			return nullptr;
@@ -44,6 +44,6 @@ namespace dae
 		TransformComponent& GetTransform();
 	private:
 		TransformComponent m_Transform{};
-		std::vector<std::shared_ptr<ComponentBase>> m_Components{};
+		std::vector<std::unique_ptr<ComponentBase>> m_Components{};
 	};
 }
