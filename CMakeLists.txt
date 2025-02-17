@@ -38,6 +38,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/Texture2D.h
   Minigin/Transform.cpp
   Minigin/Transform.h
+  Minigin/Timer.cpp
+  Minigin/Timer.h
 )
 
 # enable c++20 features

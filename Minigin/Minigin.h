@@ -2,12 +2,15 @@
 #include <string>
 #include <functional>
 #include <filesystem>
+#include <chrono>
 
 namespace dae
 {
 	class Minigin final
 	{
-		bool m_quit{};
+		bool m_Quit{};
+		float m_FixedTimeStep{ 1.f / 60.f };
+		std::chrono::steady_clock::time_point m_LastTime;
 	public:
 		explicit Minigin(const std::filesystem::path& dataPath);
 		~Minigin();

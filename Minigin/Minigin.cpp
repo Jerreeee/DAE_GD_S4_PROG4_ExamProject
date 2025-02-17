@@ -15,6 +15,7 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "Timer.h"
 
 SDL_Window* g_window{};
 
@@ -87,6 +88,7 @@ dae::Minigin::Minigin(const std::filesystem::path &dataPath)
 
 	Renderer::GetInstance().Init(g_window);
 	ResourceManager::GetInstance().Init(dataPath);
+	Timer::GetInstance().SetFixedTimeStep(m_FixedTimeStep);
 }
 
 dae::Minigin::~Minigin()
@@ -100,8 +102,11 @@ dae::Minigin::~Minigin()
 void dae::Minigin::Run(const std::function<void()>& load)
 {
 	load();
+
+	m_LastTime = std::chrono::high_resolution_clock::now();
+
 #ifndef __EMSCRIPTEN__
-	while (!m_quit)
+	while (!m_Quit)
 		RunOneFrame();
 #else
 	emscripten_set_main_loop_arg(&LoopCallback, this, 0, true);
@@ -110,7 +115,12 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 void dae::Minigin::RunOneFrame()
 {
-	m_quit = !InputManager::GetInstance().ProcessInput();
+	const auto currentTime = std::chrono::high_resolution_clock::now();
+	const float deltaTime = std::chrono::duration<float>(currentTime - m_LastTime).count();
+	Timer::GetInstance().SetDelaTime(deltaTime);
+	m_LastTime = currentTime;
+
+	m_Quit = InputManager::GetInstance().ProcessInput();
 	SceneManager::GetInstance().Update();
 	Renderer::GetInstance().Render();
 }
