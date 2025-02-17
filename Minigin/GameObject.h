@@ -1,27 +1,75 @@
 #pragma once
 #include <string>
 #include <memory>
-#include "Transform.h"
+#include "TransformComponent.h"
+#include "ComponentBase.h"
+#include <vector>
+#include <stdexcept>
 
 namespace dae
 {
 	class Texture2D;
-	class GameObject 
+	class GameObject final
 	{
-		Transform m_transform{};
-		std::shared_ptr<Texture2D> m_texture{};
 	public:
-		virtual void Update();
-		virtual void Render() const;
-
-		void SetTexture(const std::string& filename);
-		void SetPosition(float x, float y);
-
 		GameObject() = default;
-		virtual ~GameObject();
+		GameObject(const std::string& name);
+
+		~GameObject() = default;
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
+
+		void Update();
+		void Render() const;
+
+		template<typename ComponentType, typename... Args>
+		void AddComponent(Args&&... args)
+		{
+			m_Components.emplace_back(std::make_unique<ComponentType>(*this, std::forward<Args>(args)...));
+		}
+
+		template<typename ComponentType>
+		bool HasComponent()
+		{
+			for (const auto& component : m_Components)
+				if (auto castedComponent = dynamic_cast<ComponentType*>(component.get()))
+					return true;
+			return false;
+		}
+
+		template<typename ComponentType>
+		ComponentType& GetComponent()
+		{
+			for (const auto& component : m_Components)
+				if (auto castedComponent = dynamic_cast<ComponentType*>(component.get()))
+					return *castedComponent;
+			throw std::runtime_error("Component not found");
+		}
+
+		template<typename ComponentType>
+		void RemoveComponent()
+		{
+			auto it = std::remove_if(m_Components.begin(), m_Components.end(),
+				[](const std::unique_ptr<ComponentBase>& component)
+				{
+					return dynamic_cast<ComponentType*>(component.get()) != nullptr;
+				}
+			);
+
+			if (it != m_Components.end())
+			{
+				m_Components.erase(it);
+			}
+		}
+
+		void SetPosition(float x, float y);
+
+		TransformComponent& GetTransform();
+	private:
+		std::string m_Name{};
+		TransformComponent m_Transform{};
+		std::vector<std::unique_ptr<ComponentBase>> m_Components{};
 	};
 }

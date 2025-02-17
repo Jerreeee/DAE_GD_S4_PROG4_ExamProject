@@ -103,8 +103,8 @@ void dae::Minigin::Run(const std::function<void()>& load)
 {
 	load();
 
+	m_Quit = false;
 	m_LastTime = std::chrono::high_resolution_clock::now();
-
 #ifndef __EMSCRIPTEN__
 	while (!m_Quit)
 		RunOneFrame();
@@ -120,7 +120,7 @@ void dae::Minigin::RunOneFrame()
 	Timer::GetInstance().SetDelaTime(deltaTime);
 	m_LastTime = currentTime;
 
-	m_Quit = InputManager::GetInstance().ProcessInput();
+	m_Quit = !InputManager::GetInstance().ProcessInput();
 	SceneManager::GetInstance().Update();
 	Renderer::GetInstance().Render();
 }
