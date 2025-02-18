@@ -26,13 +26,25 @@ namespace dae
 		}
 	}
 
+	void GameObject::Cleanup()
+	{
+		m_Components.erase(std::remove_if(m_Components.begin(), m_Components.end(),
+			[&](const std::unique_ptr<ComponentBase>& component)
+			{
+				return std::find(m_ComponentsToRemove.begin(), m_ComponentsToRemove.end(), component.get()) != m_ComponentsToRemove.end();
+			}),
+			m_Components.end()
+		);
+		m_ComponentsToRemove.clear();
+	}
+
 	void GameObject::SetPosition(float x, float y)
 	{
 		m_Transform.SetPosition(x, y, 0.0f);
 	}
 
-	TransformComponent& GameObject::GetTransform()
+	TransformComponent* GameObject::GetTransform()
 	{
-		return m_Transform;
+		return &m_Transform;
 	}
 }

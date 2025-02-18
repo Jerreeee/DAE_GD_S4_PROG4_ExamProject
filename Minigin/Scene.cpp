@@ -42,3 +42,11 @@ void Scene::Render() const
 	}
 }
 
+void dae::Scene::Cleanup()
+{
+	for (const auto& object : m_objects)
+	{
+		object->Cleanup();
+	}
+}
+

@@ -24,18 +24,16 @@ void load()
 	auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
 
 	auto go = std::make_shared<dae::GameObject>("Background Image");
-	go->AddComponent<dae::SpriteRendererComponent>();
-	if (go->HasComponent<dae::SpriteRendererComponent>())
+	if (auto pComponent = go->AddComponent<dae::SpriteRendererComponent>(); pComponent)
 	{
-		go->GetComponent<dae::SpriteRendererComponent>().SetTexture("background.tga");
+		pComponent->SetTexture("background.tga");
 	}
 	scene.Add(go);
 
 	go = std::make_shared<dae::GameObject>("DAE Logo");
-	go->AddComponent<dae::SpriteRendererComponent>();
-	if (go->HasComponent<dae::SpriteRendererComponent>())
+	if (auto* pComponent = go->AddComponent<dae::SpriteRendererComponent>(); pComponent)
 	{
-		go->GetComponent<dae::SpriteRendererComponent>().SetTexture("logo.tga");
+		pComponent->SetTexture("logo.tga");
 	}
 	go->SetPosition(216, 180);
 	scene.Add(go);
@@ -43,16 +41,12 @@ void load()
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	go = std::make_shared<dae::GameObject>("Prog4 Text");
 	go->AddComponent<dae::TextRendererComponent>("Programming 4 Assignment", font);
-	if (go->HasComponent<dae::TextRendererComponent>())
-	{
-		go->GetComponent<dae::TextRendererComponent>().SetPosition(80, 20);
-	}
+	go->SetPosition(80, 20);
 	scene.Add(go);
 
 	font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
 	go = std::make_shared<dae::GameObject>("FPSCounter");
-	go->AddComponent<dae::TextRendererComponent>("", font);
-	go->AddComponent<dae::FPSComponent>();
+	go->AddComponent<dae::FPSComponent>(font);
 	scene.Add(go);
 }
 

@@ -1,17 +1,18 @@
 #include "FPSComponent.h"
 #include "Timer.h"
 #include "GameObject.h"
-#include "TextRendererComponent.h"
 #include <format>
 #include <sstream>
+#include "Font.h"
 
 namespace dae
 {
-	FPSComponent::FPSComponent(GameObject& gameObject, float updateRate)
+	FPSComponent::FPSComponent(GameObject& gameObject, std::shared_ptr<Font> font, float updateRate)
 		: ComponentBase(gameObject)
 		,m_UpdateRate{ updateRate }
 		,m_AccTime{ m_UpdateRate }
 	{
+		m_pTextRendererComponent = m_GameObject.AddComponent<dae::TextRendererComponent>("", font);
 	}
 
 	void FPSComponent::Update()
@@ -23,11 +24,19 @@ namespace dae
 
 		m_AccTime -= m_UpdateRate;
 		m_FPS = 1.0f / dt;
-		if (m_GameObject.HasComponent<dae::TextRendererComponent>())
-		{
-			std::stringstream ss{};
-			ss << std::format("{:.2f}", m_FPS) << " FPS";
-			m_GameObject.GetComponent<dae::TextRendererComponent>().SetText(ss.str());
-		}
+
+		std::stringstream ss{};
+		ss << std::format("{:.2f}", m_FPS) << " FPS";
+		m_pTextRendererComponent->SetText(ss.str());
+	}
+
+	float FPSComponent::GetFPS()
+	{
+		return m_FPS;
+	}
+
+	void FPSComponent::SetUpdateRate(float updateRate)
+	{
+		m_UpdateRate = updateRate;
 	}
 }
