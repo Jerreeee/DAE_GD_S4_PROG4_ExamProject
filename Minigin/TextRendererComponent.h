@@ -2,7 +2,6 @@
 #include <string>
 #include <memory>
 #include "ComponentBase.h"
-#include "TransformComponent.h"
 
 namespace dae
 {
@@ -12,6 +11,7 @@ namespace dae
 	{
 	public:
 		TextRendererComponent(GameObject& gameObject, const std::string& text, std::shared_ptr<Font> font);
+
 		TextRendererComponent(const TextRendererComponent& other) = delete;
 		TextRendererComponent(TextRendererComponent&& other) = delete;
 		TextRendererComponent& operator=(const TextRendererComponent& other) = delete;

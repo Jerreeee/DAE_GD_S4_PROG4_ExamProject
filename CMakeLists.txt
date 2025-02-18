@@ -46,8 +46,6 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/SpriteRendererComponent.h
   Minigin/TextRendererComponent.cpp
   Minigin/TextRendererComponent.h
-  Minigin/TransformComponent.cpp
-  Minigin/TransformComponent.H
 )
 
 # enable c++20 features

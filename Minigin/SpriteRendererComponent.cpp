@@ -1,6 +1,6 @@
 #include "SpriteRendererComponent.h"
 #include "ResourceManager.h"
-#include "TransformComponent.h"
+#include "Transform.h"
 #include "Renderer.h"
 
 namespace dae

@@ -4,24 +4,24 @@
 namespace dae
 {
 	class GameObject;
-	class TransformComponent;
+	class Transform;
 	class ComponentBase
 	{
 	public:
-		ComponentBase(GameObject& gameObject);
-
 		virtual ~ComponentBase() = default;
 		ComponentBase(const ComponentBase& other) = delete;
-		ComponentBase& operator=(const ComponentBase& other) = delete;
 		ComponentBase(ComponentBase&& other) = delete;
+		ComponentBase& operator=(const ComponentBase& other) = delete;
 		ComponentBase& operator=(ComponentBase&& other) = delete;
 
 		virtual void FixedUpdate() {};
 		virtual void Update() {};
 		virtual void Render() const {};
 	protected:
+		ComponentBase(GameObject& gameObject);
+
 		GameObject& m_GameObject;
-		TransformComponent& m_Transform;
+		Transform& m_Transform;
 	};
 }
 

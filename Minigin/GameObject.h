@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
-#include "TransformComponent.h"
+#include "Transform.h"
 #include "ComponentBase.h"
 #include <vector>
 #include <stdexcept>
@@ -24,7 +24,6 @@ namespace dae
 
 		void Update();
 		void Render() const;
-
 		void Cleanup();
 
 		template<typename ComponentType, typename... Args>
@@ -59,13 +58,25 @@ namespace dae
 
 		void SetPosition(float x, float y);
 
-		TransformComponent* GetTransform();
+		Transform& GetTransform();
+		GameObject* GetParent() const;
+		void SetParent(GameObject* pParent, bool keepWorldPosition);
+		size_t GetChildCount() const;
+		GameObject* GetChildAtIndex(size_t idx) const;
+		bool IsChild(GameObject* pChild, bool recursive = true) const;
+		void SetLocalPosition(const glm::vec3& position);
+		const glm::vec3& GetWorldPosition();
 	private:
 		//Variables
 		std::string m_Name{};
-		TransformComponent m_Transform{};
+		Transform m_LocalTransform{};
+		Transform m_WorldTransform{};
+		bool m_PositionIsDirty{};
 		std::vector<std::unique_ptr<ComponentBase>> m_Components{};
 		std::vector<ComponentBase*> m_ComponentsToRemove{};
+		GameObject* m_pParent{};
+		std::vector<std::unique_ptr<GameObject>> m_Children{};
+		std::vector<GameObject*> m_ChildrenToRemove{};
 
 		//Functions
 		template<typename ComponentType>
@@ -76,5 +87,10 @@ namespace dae
 				{ return dynamic_cast<ComponentType*>(component.get()) != nullptr; }
 			);
 		}
+
+		void SetPositionDirty();
+		void UpdateWorldPosition();
+		void AddChild(GameObject* pChild);
+		void RemoveChild(GameObject* pChild);
 	};
 }
