@@ -36,9 +36,9 @@ namespace dae
 		), m_Components.end());
 
 		m_Children.erase(std::remove_if(m_Children.begin(), m_Children.end(),
-			[](const std::unique_ptr<GameObject>& child)
+			[](const GameObject* pChild)
 			{
-				return child->IsDestroyed();
+				return pChild->IsDestroyed();
 			}
 		), m_Children.end());
 	}
@@ -46,6 +46,8 @@ namespace dae
 	void GameObject::Destroy()
 	{
 		m_IsDestroyed = true;
+		for (const auto& child : m_Children)
+			child->Destroy();
 	}
 
 	bool GameObject::IsDestroyed() const
@@ -97,14 +99,14 @@ namespace dae
 	}
 	GameObject* GameObject::GetChildAtIndex(size_t idx) const
 	{
-		return idx >= 0 && idx < m_Children.size() ? m_Children.at(idx).get() : nullptr;
+		return idx >= 0 && idx < m_Children.size() ? m_Children.at(idx) : nullptr;
 	}
 	bool GameObject::IsChild(GameObject* pChild, bool recursive) const
 	{
 		auto childIt = std::find_if(m_Children.begin(), m_Children.end(),
-			[&](const std::unique_ptr<GameObject>& pGameObject) -> bool
+			[&](const GameObject* pGameObject) -> bool
 			{
-				return pGameObject.get() == pChild || (recursive && pGameObject->IsChild(pChild));
+				return pGameObject == pChild || (recursive && pGameObject->IsChild(pChild));
 			}
 		);
 		return childIt != m_Children.end();
@@ -143,17 +145,17 @@ namespace dae
 	}
 	void GameObject::AddChild(GameObject* pChild)
 	{
-		m_Children.emplace_back(std::unique_ptr<GameObject>(pChild));
+		m_Children.emplace_back(pChild);
 	}
 	void GameObject::RemoveChild(GameObject* pChild)
 	{
 		auto it = std::find_if(m_Children.begin(), m_Children.end(),
-			[&](const std::unique_ptr<GameObject>& child) -> bool
+			[&](const GameObject* pCurrentChild) -> bool
 			{
-				return child.get() == pChild;
+				return pCurrentChild == pChild;
 			}
 		);
 		if (it != m_Children.end())
-			it->get()->Destroy();
+			(*it)->Destroy();
 	}
 }

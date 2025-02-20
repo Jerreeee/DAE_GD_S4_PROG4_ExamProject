@@ -81,7 +81,7 @@ namespace dae
 		bool m_PositionIsDirty{ true };
 		std::vector<std::unique_ptr<ComponentBase>> m_Components{};
 		GameObject* m_pParent{};
-		std::vector<std::unique_ptr<GameObject>> m_Children{};
+		std::vector<GameObject*> m_Children{};
 
 		//Functions
 		template<typename ComponentType>
