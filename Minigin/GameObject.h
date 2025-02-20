@@ -6,9 +6,14 @@
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
+#include <type_traits>
+#include <concepts>
 
 namespace dae
 {
+	template<typename T>
+	concept DerivedFromComponentBase = std::is_base_of_v<ComponentBase, T>;
+
 	class Texture2D;
 	class GameObject final
 	{
@@ -28,7 +33,7 @@ namespace dae
 		void Destroy();
 		bool IsDestroyed() const;
 
-		template<typename ComponentType, typename... Args>
+		template<DerivedFromComponentBase ComponentType, typename... Args>
 		ComponentType* AddComponent(Args&&... args)
 		{
 			auto pComponent = std::make_unique<ComponentType>(*this, std::forward<Args>(args)...);
@@ -37,20 +42,20 @@ namespace dae
 			return rawPtr;
 		}
 
-		template<typename ComponentType>
+		template<DerivedFromComponentBase ComponentType>
 		bool HasComponent()
 		{
 			return FindComponent<ComponentType>() != m_Components.end();
 		}
 
-		template<typename ComponentType>
+		template<DerivedFromComponentBase ComponentType>
 		ComponentType* GetComponent()
 		{
 			auto componentIt = FindComponent<ComponentType>();
 			return componentIt != m_Components.end() ? static_cast<ComponentType*>((*componentIt).get()) : nullptr;
 		}
 
-		template<typename ComponentType>
+		template<DerivedFromComponentBase ComponentType>
 		void RemoveComponent()
 		{
 			auto it = FindComponent<ComponentType>();
@@ -84,7 +89,7 @@ namespace dae
 		std::vector<GameObject*> m_Children{};
 
 		//Functions
-		template<typename ComponentType>
+		template<DerivedFromComponentBase ComponentType>
 		auto FindComponent() const
 		{
 			return std::find_if(m_Components.begin(), m_Components.end(), 
