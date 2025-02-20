@@ -7,7 +7,7 @@ namespace dae
 		m_FixedTimeStep = fixedTimeStep;
 	}
 
-	void Timer::SetDelaTime(float deltaTime)
+	void Timer::SetDeltaTime(float deltaTime)
 	{
 		m_DeltaTime = deltaTime;
 	}

@@ -44,6 +44,13 @@ void Scene::Render() const
 
 void dae::Scene::Cleanup()
 {
+	m_objects.erase(std::remove_if(m_objects.begin(), m_objects.end(),
+		[](const std::shared_ptr<GameObject>& object)
+		{
+			return object->IsDestroyed();
+		}
+	), m_objects.end());
+
 	for (const auto& object : m_objects)
 	{
 		object->Cleanup();

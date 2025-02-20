@@ -1,5 +1,4 @@
 #include "FPSComponent.h"
-#include "Timer.h"
 #include "GameObject.h"
 #include <format>
 #include <sstream>
@@ -12,7 +11,7 @@ namespace dae
 		,m_UpdateRate{ updateRate }
 		,m_AccTime{ m_UpdateRate }
 	{
-		m_pTextRendererComponent = m_GameObject.AddComponent<dae::TextRendererComponent>("", font);
+		m_pTextRendererComponent = GetGameObject().AddComponent<dae::TextRendererComponent>("", font);
 	}
 
 	void FPSComponent::Update()

@@ -29,32 +29,43 @@ namespace dae
 	void GameObject::Cleanup()
 	{
 		m_Components.erase(std::remove_if(m_Components.begin(), m_Components.end(),
-			[&](const std::unique_ptr<ComponentBase>& component)
+			[](const std::unique_ptr<ComponentBase>& component)
 			{
-				return std::find(m_ComponentsToRemove.begin(), m_ComponentsToRemove.end(), component.get()) != m_ComponentsToRemove.end();
-			}),
-			m_Components.end()
-		);
+				return component->IsDestroyed();
+			}
+		), m_Components.end());
 
 		m_Children.erase(std::remove_if(m_Children.begin(), m_Children.end(),
-			[&](const std::unique_ptr<GameObject>& child)
+			[](const std::unique_ptr<GameObject>& child)
 			{
-				return std::find(m_ChildrenToRemove.begin(), m_ChildrenToRemove.end(), child.get()) != m_ChildrenToRemove.end();
-			}),
-			m_Children.end()
-		);
-
-		m_ComponentsToRemove.clear();
-		m_ChildrenToRemove.clear();
+				return child->IsDestroyed();
+			}
+		), m_Children.end());
 	}
 
+	void GameObject::Destroy()
+	{
+		m_IsDestroyed = true;
+	}
 
-	void GameObject::SetPosition(float x, float y)
+	bool GameObject::IsDestroyed() const
+	{
+		return m_IsDestroyed;
+	}
+
+	void GameObject::SetLocalPosition(float x, float y)
 	{
 		m_LocalTransform.SetPosition(x, y, 0.0f);
 	}
 
-	Transform& GameObject::GetTransform()
+	Transform& GameObject::GetWorldTransform()
+	{
+		if (m_PositionIsDirty)
+			UpdateWorldPosition();
+		return m_WorldTransform;
+	}
+
+	Transform& GameObject::GetLocalTransform()
 	{
 		return m_LocalTransform;
 	}
@@ -105,9 +116,13 @@ namespace dae
 	}
 	const glm::vec3& GameObject::GetWorldPosition()
 	{
-			if (m_PositionIsDirty)
-				UpdateWorldPosition();
-			return m_WorldTransform.GetPosition();
+		if (m_PositionIsDirty)
+			UpdateWorldPosition();
+		return m_WorldTransform.GetPosition();
+	}
+	const glm::vec3& GameObject::GetLocalPosition()
+	{
+		return m_LocalTransform.GetPosition();
 	}
 	void GameObject::UpdateWorldPosition()
 	{
@@ -139,6 +154,6 @@ namespace dae
 			}
 		);
 		if (it != m_Children.end())
-			m_ChildrenToRemove.push_back(it->get());
+			it->get()->Destroy();
 	}
 }

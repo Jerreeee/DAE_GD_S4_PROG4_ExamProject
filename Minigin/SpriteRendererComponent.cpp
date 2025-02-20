@@ -1,6 +1,5 @@
 #include "SpriteRendererComponent.h"
 #include "ResourceManager.h"
-#include "Transform.h"
 #include "Renderer.h"
 
 namespace dae
@@ -11,7 +10,7 @@ namespace dae
 	}
 	void SpriteRendererComponent::Render() const
 	{
-		const auto& pos = m_Transform.GetPosition();
+		const auto& pos = GetWorldTransform().GetPosition();
 		Renderer::GetInstance().RenderTexture(*m_Texture, pos.x, pos.y);
 	}
 	void SpriteRendererComponent::SetTexture(const std::string& filename)

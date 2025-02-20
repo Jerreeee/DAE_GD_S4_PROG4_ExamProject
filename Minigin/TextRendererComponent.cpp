@@ -4,7 +4,6 @@
 #include "Renderer.h"
 #include "Font.h"
 #include "Texture2D.h"
-#include "Transform.h"
 
 dae::TextRendererComponent::TextRendererComponent(GameObject& gameObject, const std::string& text, std::shared_ptr<Font> font) :
 	ComponentBase(gameObject),
@@ -40,7 +39,7 @@ void dae::TextRendererComponent::Render() const
 {
 	if (m_TextTexture)
 	{
-		const auto& pos = m_Transform.GetPosition();
+		const auto& pos = GetWorldTransform().GetPosition();
 		Renderer::GetInstance().RenderTexture(*m_TextTexture, pos.x, pos.y);
 	}
 }
@@ -51,10 +50,3 @@ void dae::TextRendererComponent::SetText(const std::string& text)
 	m_Text = text;
 	m_NeedsUpdate = true;
 }
-
-void dae::TextRendererComponent::SetPosition(const float x, const float y)
-{
-	m_Transform.SetPosition(x, y, 0.0f);
-}
-
-

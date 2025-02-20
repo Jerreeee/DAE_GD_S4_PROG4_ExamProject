@@ -9,7 +9,7 @@ namespace dae
 		float GetFixedTimeStep() { return GetInstance().m_FixedTimeStep; }
 		float GetDeltaTime() { return GetInstance().m_DeltaTime; }
 		void SetFixedTimeStep(float fixedTimeStep);
-		void SetDelaTime(float deltaTime);
+		void SetDeltaTime(float deltaTime);
 	private:
 		friend class Singleton<Timer>;
 		Timer() = default;

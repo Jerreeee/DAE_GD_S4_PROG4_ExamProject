@@ -17,11 +17,11 @@ namespace dae
 		TextRendererComponent& operator=(const TextRendererComponent& other) = delete;
 		TextRendererComponent& operator=(TextRendererComponent&& other) = delete;
 
-		void Update() override;
-		void Render() const override;
+		virtual void FixedUpdate() override {};
+		virtual void Update() override;
+		virtual void Render() const override;
 
 		void SetText(const std::string& text);
-		void SetPosition(float x, float y);
 	private:
 		bool m_NeedsUpdate{};
 		std::string m_Text{};

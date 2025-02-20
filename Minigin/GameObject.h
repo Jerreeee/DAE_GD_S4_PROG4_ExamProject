@@ -25,6 +25,8 @@ namespace dae
 		void Update();
 		void Render() const;
 		void Cleanup();
+		void Destroy();
+		bool IsDestroyed() const;
 
 		template<typename ComponentType, typename... Args>
 		ComponentType* AddComponent(Args&&... args)
@@ -53,30 +55,33 @@ namespace dae
 		{
 			auto it = FindComponent<ComponentType>();
 			if (it != m_Components.end())
-				m_ComponentsToRemove.push_back(it->get());
+				it->get()->Destroy();
 		}
 
-		void SetPosition(float x, float y);
 
-		Transform& GetTransform();
 		GameObject* GetParent() const;
-		void SetParent(GameObject* pParent, bool keepWorldPosition);
+		void SetParent(GameObject* pParent, bool keepWorldPosition = false);
 		size_t GetChildCount() const;
 		GameObject* GetChildAtIndex(size_t idx) const;
 		bool IsChild(GameObject* pChild, bool recursive = true) const;
-		void SetLocalPosition(const glm::vec3& position);
+
+		Transform& GetWorldTransform();
+		Transform& GetLocalTransform();
 		const glm::vec3& GetWorldPosition();
+		const glm::vec3& GetLocalPosition();
+		void SetLocalPosition(float x, float y);
+		void SetLocalPosition(const glm::vec3& position);
+
 	private:
 		//Variables
+		bool m_IsDestroyed{ false };	
 		std::string m_Name{};
 		Transform m_LocalTransform{};
 		Transform m_WorldTransform{};
-		bool m_PositionIsDirty{};
+		bool m_PositionIsDirty{ true };
 		std::vector<std::unique_ptr<ComponentBase>> m_Components{};
-		std::vector<ComponentBase*> m_ComponentsToRemove{};
 		GameObject* m_pParent{};
 		std::vector<std::unique_ptr<GameObject>> m_Children{};
-		std::vector<GameObject*> m_ChildrenToRemove{};
 
 		//Functions
 		template<typename ComponentType>

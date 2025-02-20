@@ -10,7 +10,14 @@ namespace dae
 	public:
 		FPSComponent(GameObject& gameObject, std::shared_ptr<Font> font, float updateRate = 1.f);
 
+		FPSComponent(const FPSComponent& other) = delete;
+		FPSComponent(FPSComponent&& other) = delete;
+		FPSComponent& operator=(const FPSComponent& other) = delete;
+		FPSComponent& operator=(FPSComponent&& other) = delete;
+
+		virtual void FixedUpdate() override {};
 		virtual void Update() override;
+		virtual void Render() const override {};
 
 		float GetFPS();
 		void SetUpdateRate(float updateRate);
