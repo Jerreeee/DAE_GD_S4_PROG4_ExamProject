@@ -17,7 +17,6 @@ namespace dae
 		TextRendererComponent& operator=(const TextRendererComponent& other) = delete;
 		TextRendererComponent& operator=(TextRendererComponent&& other) = delete;
 
-		virtual void FixedUpdate() override {};
 		virtual void Update() override;
 		virtual void Render() const override;
 

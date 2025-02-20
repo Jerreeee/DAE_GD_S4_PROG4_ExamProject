@@ -13,7 +13,6 @@ namespace dae
 		RotateParentComponent& operator=(const RotateParentComponent& other) = delete;
 		RotateParentComponent& operator=(RotateParentComponent&& other) = delete;
 
-		virtual void FixedUpdate() override {};
 		virtual void Update() override;
 		virtual void Render() const override {};
 	private:

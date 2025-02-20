@@ -15,7 +15,6 @@ namespace dae
 		FPSComponent& operator=(const FPSComponent& other) = delete;
 		FPSComponent& operator=(FPSComponent&& other) = delete;
 
-		virtual void FixedUpdate() override {};
 		virtual void Update() override;
 		virtual void Render() const override {};
 

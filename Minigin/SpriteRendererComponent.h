@@ -15,7 +15,6 @@ namespace dae
 		SpriteRendererComponent& operator=(const SpriteRendererComponent& other) = delete;
 		SpriteRendererComponent& operator=(SpriteRendererComponent&& other) = delete;
 
-		virtual void FixedUpdate() override {};
 		virtual void Update() override {};
 		virtual void Render() const override;
 
