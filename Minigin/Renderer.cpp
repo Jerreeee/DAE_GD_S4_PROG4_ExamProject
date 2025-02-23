@@ -36,9 +36,8 @@ void dae::Renderer::Render() const
 	SDL_RenderClear(m_renderer);
 
 	for (const auto pRendererComponent : m_RendererComponents)
-	{
-		pRendererComponent->Render();
-	}
+		if (pRendererComponent->IsActive())
+			pRendererComponent->Render();
 	
 	SDL_RenderPresent(m_renderer);
 }
@@ -50,17 +49,6 @@ void dae::Renderer::Destroy()
 		SDL_DestroyRenderer(m_renderer);
 		m_renderer = nullptr;
 	}
-}
-
-/// <summary> Removes all inactive Renderer Components </summary>
-void dae::Renderer::Cleanup()
-{
-	m_RendererComponents.erase(std::remove_if(m_RendererComponents.begin(), m_RendererComponents.end(),
-		[](const RendererComponentBase* pRendererComponent) -> bool
-		{
-			return pRendererComponent->IsActive();
-		}
-	), m_RendererComponents.end());
 }
 
 void dae::Renderer::RenderTexture(const Texture2D& texture, const float x, const float y) const
@@ -91,5 +79,5 @@ void dae::Renderer::RegisterRendererComponent(RendererComponentBase* pRendererCo
 
 void dae::Renderer::UnRegisterRendererComponent(RendererComponentBase* pRendererComponent)
 {
-	pRendererComponent->SetActive(false);
+	m_RendererComponents.erase(std::find(m_RendererComponents.begin(), m_RendererComponents.end(), pRendererComponent));
 }

@@ -7,6 +7,7 @@ namespace dae
 	{
 	public:
 		RendererComponentBase(GameObject& gameObject);
+		virtual ~RendererComponentBase();
 
 		virtual void Update() override {};
 		virtual void Render() const {};

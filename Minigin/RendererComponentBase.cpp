@@ -7,11 +7,14 @@ dae::RendererComponentBase::RendererComponentBase(GameObject& gameObject)
 	Renderer::GetInstance().RegisterRendererComponent(this);
 }
 
+dae::RendererComponentBase::~RendererComponentBase()
+{
+	Renderer::GetInstance().UnRegisterRendererComponent(this);
+}
+
 void dae::RendererComponentBase::SetActive(bool active)
 {
 	m_Active = active;
-	if (m_Active)
-		Renderer::GetInstance().RegisterRendererComponent(this);
 }
 
 bool dae::RendererComponentBase::IsActive() const
