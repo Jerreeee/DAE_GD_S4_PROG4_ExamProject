@@ -5,7 +5,7 @@
 namespace dae
 {
 	SpriteRendererComponent::SpriteRendererComponent(GameObject& gameObject)
-		: ComponentBase(gameObject)
+		: RendererComponentBase(gameObject)
 	{
 	}
 	void SpriteRendererComponent::Render() const

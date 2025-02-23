@@ -28,7 +28,6 @@ namespace dae
 		GameObject& operator=(GameObject&& other) = delete;
 
 		void Update();
-		void Render() const;
 		void Cleanup();
 		void Destroy();
 		bool IsDestroyed() const;
@@ -63,7 +62,6 @@ namespace dae
 				it->get()->Destroy();
 		}
 
-
 		GameObject* GetParent() const;
 		void SetParent(GameObject* pParent, bool keepWorldPosition = false);
 		size_t GetChildCount() const;
@@ -78,7 +76,10 @@ namespace dae
 		void SetLocalPosition(const glm::vec3& position);
 
 	private:
+		//-----------------------
 		//Variables
+		//-----------------------
+
 		bool m_IsDestroyed{ false };	
 		std::string m_Name{};
 		Transform m_LocalTransform{};
@@ -87,14 +88,20 @@ namespace dae
 		std::vector<std::unique_ptr<ComponentBase>> m_Components{};
 		GameObject* m_pParent{};
 		std::vector<GameObject*> m_Children{};
-
+		 
+		//-----------------------
 		//Functions
+		//-----------------------
+
+
 		template<DerivedFromComponentBase ComponentType>
 		auto FindComponent() const
 		{
 			return std::find_if(m_Components.begin(), m_Components.end(), 
 				[](const std::unique_ptr<ComponentBase>& component)
-				{ return dynamic_cast<ComponentType*>(component.get()) != nullptr; }
+				{
+					return dynamic_cast<ComponentType*>(component.get()) != nullptr;
+				}
 			);
 		}
 

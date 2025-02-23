@@ -1,11 +1,11 @@
 #pragma once
-#include "ComponentBase.h"
+#include "RendererComponentBase.h"
 #include <string>
 
 namespace dae
 {
 	class Texture2D;
-	class SpriteRendererComponent final: public ComponentBase
+	class SpriteRendererComponent final: public RendererComponentBase
 	{
 	public:
 		SpriteRendererComponent(GameObject& gameObject);
@@ -15,7 +15,6 @@ namespace dae
 		SpriteRendererComponent& operator=(const SpriteRendererComponent& other) = delete;
 		SpriteRendererComponent& operator=(SpriteRendererComponent&& other) = delete;
 
-		virtual void Update() override {};
 		virtual void Render() const override;
 
 		void SetTexture(const std::string& filename);

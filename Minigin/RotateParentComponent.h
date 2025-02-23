@@ -14,7 +14,6 @@ namespace dae
 		RotateParentComponent& operator=(RotateParentComponent&& other) = delete;
 
 		virtual void Update() override;
-		virtual void Render() const override {};
 	private:
 		float m_Angle{}; //radians
 		float m_Radius{};

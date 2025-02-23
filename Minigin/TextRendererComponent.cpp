@@ -6,7 +6,7 @@
 #include "Texture2D.h"
 
 dae::TextRendererComponent::TextRendererComponent(GameObject& gameObject, const std::string& text, std::shared_ptr<Font> font) :
-	ComponentBase(gameObject),
+	RendererComponentBase(gameObject),
 	m_Text(text),
 	m_Font(std::move(font)),
 	m_TextTexture(nullptr)

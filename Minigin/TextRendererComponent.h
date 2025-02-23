@@ -1,13 +1,13 @@
 #pragma once
 #include <string>
 #include <memory>
-#include "ComponentBase.h"
+#include "RendererComponentBase.h"
 
 namespace dae
 {
 	class Font;
 	class Texture2D;
-	class TextRendererComponent final : public ComponentBase
+	class TextRendererComponent final : public RendererComponentBase
 	{
 	public:
 		TextRendererComponent(GameObject& gameObject, const std::string& text, std::shared_ptr<Font> font);

@@ -16,7 +16,6 @@ namespace dae
 		FPSComponent& operator=(FPSComponent&& other) = delete;
 
 		virtual void Update() override;
-		virtual void Render() const override {};
 
 		float GetFPS();
 		void SetUpdateRate(float updateRate);

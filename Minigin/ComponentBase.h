@@ -17,7 +17,6 @@ namespace dae
 		ComponentBase& operator=(ComponentBase&& other) = delete;
 
 		virtual void Update() = 0;
-		virtual void Render() const = 0;
 
 		void Destroy();
 		bool IsDestroyed() const;

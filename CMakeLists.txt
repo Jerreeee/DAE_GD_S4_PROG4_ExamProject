@@ -47,7 +47,9 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/TextRendererComponent.cpp
   Minigin/TextRendererComponent.h
   Minigin/RotateParentComponent.cpp
-  Minigin/RotateParentComponent.h)
+  Minigin/RotateParentComponent.h
+  Minigin/RendererComponentBase.h
+  Minigin/RendererComponentBase.cpp)
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)

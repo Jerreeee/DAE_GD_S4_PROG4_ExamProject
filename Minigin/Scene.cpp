@@ -34,16 +34,9 @@ void Scene::Update()
 	}
 }
 
-void Scene::Render() const
-{
-	for (const auto& object : m_objects)
-	{
-		object->Render();
-	}
-}
-
 void dae::Scene::Cleanup()
 {
+	//Scene is responsible for removing ALL gameobjects, also child gameobjects
 	m_objects.erase(std::remove_if(m_objects.begin(), m_objects.end(),
 		[](const std::shared_ptr<GameObject>& object)
 		{
@@ -51,6 +44,7 @@ void dae::Scene::Cleanup()
 		}
 	), m_objects.end());
 
+	//Extra Cleanup loop over the leftover gameobjects as they might need to remove components marked for destroying
 	for (const auto& object : m_objects)
 	{
 		object->Cleanup();
