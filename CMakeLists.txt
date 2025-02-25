@@ -71,6 +71,13 @@ if(NOT glm_POPULATED)
     FetchContent_Populate(glm)
 endif()
 
+FetchContent_Declare(
+    ImGui
+    GIT_REPOSITORY https://github.com/ocornut/imgui.git
+    GIT_TAG v1.91.8-docking
+    GIT_SHALLOW TRUE)
+FetchContent_MakeAvailable(ImGui)
+
 # add SDL2
 if (WIN32)
     FetchContent_Declare(
@@ -90,6 +97,21 @@ if (WIN32)
             set(SDL2_LIBRARIES "${sdl2_SOURCE_DIR}/lib/x86/SDL2.lib;${sdl2_SOURCE_DIR}/lib/x86/SDL2main.lib")
             set(SDL2_LIBRARY_DLL "${sdl2_SOURCE_DIR}/lib/x86/SDL2.dll")
         endif()
+    endif()
+
+    if(NOT TARGET SDL2::SDL2)
+        add_library(SDL2::SDL2 INTERFACE IMPORTED)
+        set_target_properties(SDL2::SDL2 PROPERTIES
+            INTERFACE_INCLUDE_DIRECTORIES "${SDL2_INCLUDE_DIR}"
+            INTERFACE_LINK_LIBRARIES "${sdl2_SOURCE_DIR}/lib/x64/SDL2.lib"
+        )
+    endif()
+
+    if(NOT TARGET SDL2::SDL2main)
+        add_library(SDL2::SDL2main INTERFACE IMPORTED)
+        set_target_properties(SDL2::SDL2main PROPERTIES
+            INTERFACE_LINK_LIBRARIES "${sdl2_SOURCE_DIR}/lib/x64/SDL2main.lib"
+        )
     endif()
 
     # add SDL2_image
@@ -112,7 +134,7 @@ if (WIN32)
         endif()
     endif()
 
-  # add SDL2_ttf
+    # add SDL2_ttf
     FetchContent_Declare(
         SDL2_ttf
         URL https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.22.0-VC.zip
@@ -134,12 +156,36 @@ if (WIN32)
 
     find_package(VLD CONFIG)
 
+    set(IMGUI_FILES
+        ${imgui_SOURCE_DIR}/imconfig.h
+        ${imgui_SOURCE_DIR}/imgui_demo.cpp
+        ${imgui_SOURCE_DIR}/imgui_draw.cpp
+        ${imgui_SOURCE_DIR}/imgui_internal.h
+        ${imgui_SOURCE_DIR}/imstb_rectpack.h
+        ${imgui_SOURCE_DIR}/imstb_textedit.h
+        ${imgui_SOURCE_DIR}/imstb_truetype.h
+        ${imgui_SOURCE_DIR}/imgui_tables.cpp
+        ${imgui_SOURCE_DIR}/imgui.cpp
+        ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+        ${imgui_SOURCE_DIR}/imgui.h
+
+        # backends
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.h
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer2.cpp
+    )
+
+    add_library(ImGui STATIC ${IMGUI_FILES})
+    target_include_directories(ImGui PUBLIC ${imgui_SOURCE_DIR})
+    target_link_libraries(ImGui PRIVATE SDL2::SDL2 SDL2::SDL2main)
+
     # set all include directories
     target_include_directories(${TARGET_NAME} PRIVATE
         ${VLD_INCLUDE_DIR}
         ${SDL2_INCLUDE_DIR} 
         ${SDL2_IMAGE_INCLUDE_DIR} 
         ${SDL2_TTF_INCLUDE_DIR}
+        ImGui
     )
   
     # set libraries to link with
@@ -148,6 +194,7 @@ if (WIN32)
         ${SDL2_IMAGE_LIBRARIES} 
         ${SDL2_TTF_LIBRARIES} 
         ${VLD_LIBRARY}
+        ImGui
     )
 
 elseif(NOT EMSCRIPTEN)

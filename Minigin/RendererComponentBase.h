@@ -15,6 +15,6 @@ namespace dae
 		void SetActive(bool active);
 		bool IsActive() const;
 	private:
-		bool m_Active{};
+		bool m_Active{ true };
 	};
 }

@@ -10,6 +10,11 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+
+#include "imgui.h"
+#include "backends/imgui_impl_sdl2.h"
+#include "backends/imgui_impl_sdlrenderer2.h"
+
 #include "Minigin.h"
 #include "InputManager.h"
 #include "SceneManager.h"
@@ -119,6 +124,17 @@ void dae::Minigin::RunOneFrame()
 	const float deltaTime = std::chrono::duration<float>(currentTime - m_LastTime).count();
 	Timer::GetInstance().SetDeltaTime(deltaTime);
 	m_LastTime = currentTime;
+
+	SDL_Event event;
+	while (SDL_PollEvent(&event))
+	{
+		ImGui_ImplSDL2_ProcessEvent(&event);
+		if (event.type == SDL_QUIT)
+		{
+			m_Quit = true;
+			return;
+		}
+	}
 
 	m_Quit = !InputManager::GetInstance().ProcessInput();
 	SceneManager::GetInstance().Update();

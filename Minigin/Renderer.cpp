@@ -5,6 +5,10 @@
 #include "Texture2D.h"
 #include "RendererComponentBase.h"
 
+#include "imgui.h"
+#include "backends/imgui_impl_sdl2.h"
+#include "backends/imgui_impl_sdlrenderer2.h"
+
 int GetOpenGLDriverIndex()
 {
 	auto openglIndex = -1;
@@ -27,6 +31,14 @@ void dae::Renderer::Init(SDL_Window* window)
 	{
 		throw std::runtime_error(std::string("SDL_CreateRenderer Error: ") + SDL_GetError());
 	}
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui::StyleColorsDark();
+
+	// Initialize SDL2 ImGui backend
+	ImGui_ImplSDL2_InitForSDLRenderer(window, m_renderer);
+	ImGui_ImplSDLRenderer2_Init(m_renderer);
 }
 
 void dae::Renderer::Render() const
@@ -35,10 +47,20 @@ void dae::Renderer::Render() const
 	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
 	SDL_RenderClear(m_renderer);
 
+	ImGui_ImplSDLRenderer2_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
+	ImGui::NewFrame();
+
+	static bool showDemoWindow = true;
+	ImGui::ShowDemoWindow(&showDemoWindow);
+
 	for (const auto pRendererComponent : m_RendererComponents)
 		if (pRendererComponent->IsActive())
 			pRendererComponent->Render();
 	
+	ImGui::Render();
+	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), m_renderer);
+
 	SDL_RenderPresent(m_renderer);
 }
 
@@ -46,6 +68,10 @@ void dae::Renderer::Destroy()
 {
 	if (m_renderer != nullptr)
 	{
+		ImGui_ImplSDLRenderer2_Shutdown();
+		ImGui_ImplSDL2_Shutdown();
+		ImGui::DestroyContext();
+
 		SDL_DestroyRenderer(m_renderer);
 		m_renderer = nullptr;
 	}
