@@ -51,8 +51,8 @@ void dae::Renderer::Render() const
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-	static bool showDemoWindow = true;
-	ImGui::ShowDemoWindow(&showDemoWindow);
+	//static bool showDemoWindow = true;
+	//ImGui::ShowDemoWindow(&showDemoWindow);
 
 	for (const auto pRendererComponent : m_RendererComponents)
 		if (pRendererComponent->IsActive())

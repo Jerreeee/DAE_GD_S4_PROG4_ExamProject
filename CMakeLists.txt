@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.26)
 project(Minigin)
 
+set(VENDOR_DIR ${CMAKE_SOURCE_DIR}/vendor)
+
 if(EMSCRIPTEN)
     message("Using Emscripten!")
 endif()
@@ -15,42 +17,43 @@ endif()
 
 # list source files here
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
-    Minigin/Font.cpp
-    Minigin/Font.h
-    Minigin/GameObject.cpp
-    Minigin/GameObject.h
-    Minigin/InputManager.cpp
-    Minigin/InputManager.h
-    Minigin/Main.cpp
-    Minigin/Minigin.cpp
-    Minigin/Minigin.h
-    Minigin/Renderer.cpp
-    Minigin/Renderer.h
-    Minigin/ResourceManager.cpp
-    Minigin/ResourceManager.h
-    Minigin/Scene.cpp
-    Minigin/Scene.h
-    Minigin/SceneManager.cpp
-    Minigin/SceneManager.h
-    Minigin/Texture2D.cpp
-    Minigin/Texture2D.h
-    Minigin/Transform.cpp
-    Minigin/Transform.h
-    Minigin/Timer.cpp
-    Minigin/Timer.h
-    Minigin/ComponentBase.cpp
-    Minigin/ComponentBase.h
-    Minigin/FPSComponent.cpp
-    Minigin/FPSComponent.h
-    Minigin/SpriteRendererComponent.cpp
-    Minigin/SpriteRendererComponent.h
-    Minigin/TextRendererComponent.cpp
-    Minigin/TextRendererComponent.h
-    Minigin/RotateParentComponent.cpp
-    Minigin/RotateParentComponent.h
-    Minigin/RendererComponentBase.h
-    Minigin/RendererComponentBase.cpp
-)
+    "Minigin/Font.cpp"
+    "Minigin/Font.h"
+    "Minigin/GameObject.cpp"
+    "Minigin/GameObject.h"
+    "Minigin/InputManager.cpp"
+    "Minigin/InputManager.h"
+    "Minigin/Main.cpp"
+    "Minigin/Minigin.cpp"
+    "Minigin/Minigin.h"
+    "Minigin/Renderer.cpp"
+    "Minigin/Renderer.h"
+    "Minigin/ResourceManager.cpp"
+    "Minigin/ResourceManager.h"
+    "Minigin/Scene.cpp"
+    "Minigin/Scene.h"
+    "Minigin/SceneManager.cpp"
+    "Minigin/SceneManager.h"
+    "Minigin/Texture2D.cpp"
+    "Minigin/Texture2D.h"
+    "Minigin/Transform.cpp"
+    "Minigin/Transform.h"
+    "Minigin/Timer.cpp"
+    "Minigin/Timer.h"
+    "Minigin/ComponentBase.cpp"
+    "Minigin/ComponentBase.h"
+    "Minigin/FPSComponent.cpp"
+    "Minigin/FPSComponent.h"
+    "Minigin/SpriteRendererComponent.cpp"
+    "Minigin/SpriteRendererComponent.h"
+    "Minigin/TextRendererComponent.cpp"
+    "Minigin/TextRendererComponent.h"
+    "Minigin/RotateParentComponent.cpp"
+    "Minigin/RotateParentComponent.h"
+    "Minigin/RendererComponentBase.h"
+    "Minigin/RendererComponentBase.cpp"
+    "Minigin/TestTrashTheCashComponent.h"
+    "Minigin/TestTrashTheCashComponent.cpp")
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
@@ -179,6 +182,19 @@ if (WIN32)
     target_include_directories(ImGui PUBLIC ${imgui_SOURCE_DIR})
     target_link_libraries(ImGui PRIVATE SDL2::SDL2 SDL2::SDL2main)
 
+    # Add imgui-plot library
+    add_library(ImGuiPlot STATIC
+        ${VENDOR_DIR}/imgui-plot/src/imgui_plot.cpp
+    )
+
+    # Set include directories for imgui-plot
+    target_include_directories(ImGuiPlot PUBLIC
+        ${VENDOR_DIR}/imgui-plot/include
+    )
+
+    # Link imgui-plot with ImGui
+    target_link_libraries(ImGuiPlot PUBLIC ImGui)
+
     # set all include directories
     target_include_directories(${TARGET_NAME} PRIVATE
         ${VLD_INCLUDE_DIR}
@@ -189,12 +205,13 @@ if (WIN32)
     )
   
     # set libraries to link with
-    target_link_libraries(${TARGET_NAME} PUBLIC
+    target_link_libraries(${TARGET_NAME} PRIVATE
         ${SDL2_LIBRARIES} 
         ${SDL2_IMAGE_LIBRARIES} 
         ${SDL2_TTF_LIBRARIES} 
         ${VLD_LIBRARY}
         ImGui
+        ImGuiPlot
     )
 
 elseif(NOT EMSCRIPTEN)

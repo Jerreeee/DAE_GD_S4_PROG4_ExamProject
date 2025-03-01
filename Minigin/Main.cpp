@@ -16,6 +16,7 @@
 #include "SpriteRendererComponent.h"
 #include "FPSComponent.h"
 #include "RotateParentComponent.h"
+#include "TestTrashTheCashComponent.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -65,6 +66,10 @@ void load()
 	go2->AddComponent<dae::RotateParentComponent>(50.f, 180.f);
 	go2->SetParent(go1.get());
 	scene.Add(go2);
+
+	go = std::make_shared<dae::GameObject>("TrashTheCash");
+	go->AddComponent<dae::TestTrashTheCashComponent>();
+	scene.Add(go);
 }
 
 int main(int, char*[]) {
