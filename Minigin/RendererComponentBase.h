@@ -10,7 +10,7 @@ namespace dae
 		virtual ~RendererComponentBase();
 
 		virtual void Update() override {};
-		virtual void Render() const {};
+		virtual void Render() const = 0;
 
 		void SetActive(bool active);
 		bool IsActive() const;

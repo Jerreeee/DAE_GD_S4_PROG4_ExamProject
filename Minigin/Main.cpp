@@ -51,22 +51,6 @@ void load()
 	go->AddComponent<dae::FPSComponent>(font);
 	scene.Add(go);
 
-	go = std::make_shared<dae::GameObject>("RotatingObjectParent");
-	go->SetLocalPosition(216, 180);
-	scene.Add(go);
-
-	auto go1 = std::make_shared<dae::GameObject>("RotatingObject1");
-	go1->AddComponent<dae::SpriteRendererComponent>()->SetTexture("logo.tga");
-	go1->AddComponent<dae::RotateParentComponent>(100.f, 90.f);
-	go1->SetParent(go.get());
-	scene.Add(go1);
-
-	auto go2 = std::make_shared<dae::GameObject>("RotatingObject2");
-	go2->AddComponent<dae::SpriteRendererComponent>()->SetTexture("logo.tga");
-	go2->AddComponent<dae::RotateParentComponent>(50.f, 180.f);
-	go2->SetParent(go1.get());
-	scene.Add(go2);
-
 	go = std::make_shared<dae::GameObject>("TrashTheCash");
 	go->AddComponent<dae::TestTrashTheCashComponent>();
 	scene.Add(go);

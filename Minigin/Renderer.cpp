@@ -4,6 +4,7 @@
 #include "SceneManager.h"
 #include "Texture2D.h"
 #include "RendererComponentBase.h"
+#include "UIComponentBase.h"
 
 #include "imgui.h"
 #include "backends/imgui_impl_sdl2.h"
@@ -41,12 +42,24 @@ void dae::Renderer::Init(SDL_Window* window)
 	ImGui_ImplSDLRenderer2_Init(m_renderer);
 }
 
-void dae::Renderer::Render() const
+void dae::Renderer::Present()
+{
+	SDL_RenderPresent(m_renderer);
+}
+
+void dae::Renderer::RenderScene() const
 {
 	const auto& color = GetBackgroundColor();
 	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
 	SDL_RenderClear(m_renderer);
 
+	for (const auto pRendererComponent : m_RendererComponents)
+		if (pRendererComponent->IsActive())
+			pRendererComponent->Render();
+}
+
+void dae::Renderer::UpdateAndRenderUI()
+{
 	ImGui_ImplSDLRenderer2_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
@@ -54,14 +67,11 @@ void dae::Renderer::Render() const
 	//static bool showDemoWindow = true;
 	//ImGui::ShowDemoWindow(&showDemoWindow);
 
-	for (const auto pRendererComponent : m_RendererComponents)
-		if (pRendererComponent->IsActive())
-			pRendererComponent->Render();
-	
+	for (auto pUIComponent : m_UIComponents)
+		pUIComponent->UpdateAndRenderUI();
+
 	ImGui::Render();
 	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), m_renderer);
-
-	SDL_RenderPresent(m_renderer);
 }
 
 void dae::Renderer::Destroy()
@@ -106,4 +116,14 @@ void dae::Renderer::RegisterRendererComponent(RendererComponentBase* pRendererCo
 void dae::Renderer::UnRegisterRendererComponent(RendererComponentBase* pRendererComponent)
 {
 	m_RendererComponents.erase(std::find(m_RendererComponents.begin(), m_RendererComponents.end(), pRendererComponent));
+}
+
+void dae::Renderer::RegisterUIComponent(UIComponentBase* pUIComponent)
+{
+	m_UIComponents.emplace_back(pUIComponent);
+}
+
+void dae::Renderer::UnRegisterUIComponent(UIComponentBase* pUIComponent)
+{
+	m_UIComponents.erase(std::find(m_UIComponents.begin(), m_UIComponents.end(), pUIComponent));
 }
