@@ -16,7 +16,6 @@
 #include "SpriteRendererComponent.h"
 #include "FPSComponent.h"
 #include "RotateParentComponent.h"
-#include "TestTrashTheCashComponent.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -49,10 +48,6 @@ void load()
 	font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
 	go = std::make_shared<dae::GameObject>("FPSCounter");
 	go->AddComponent<dae::FPSComponent>(font);
-	scene.Add(go);
-
-	go = std::make_shared<dae::GameObject>("TrashTheCash");
-	go->AddComponent<dae::TestTrashTheCashComponent>();
 	scene.Add(go);
 }
 

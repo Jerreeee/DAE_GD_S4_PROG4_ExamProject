@@ -15,9 +15,7 @@ namespace dae
 	{
 	public:
 		void Init(SDL_Window* window);
-		void Present();
-		void RenderScene() const;
-		void UpdateAndRenderUI();
+		void Render();
 		void Destroy();
 
 		void RenderTexture(const Texture2D& texture, float x, float y) const;
@@ -30,15 +28,12 @@ namespace dae
 
 		void RegisterRendererComponent(RendererComponentBase* pRendererComponent);
 		void UnRegisterRendererComponent(RendererComponentBase* pRendererComponent);
-		void RegisterUIComponent(UIComponentBase* pUIComponent);
-		void UnRegisterUIComponent(UIComponentBase* pUIComponent);
 	private:
 		SDL_Renderer* m_renderer{};
 		SDL_Window* m_window{};
 		SDL_Color m_clearColor{};
 
 		std::vector<RendererComponentBase*> m_RendererComponents{};
-		std::vector< UIComponentBase*> m_UIComponents{};
 	};
 }
 

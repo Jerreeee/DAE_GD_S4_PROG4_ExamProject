@@ -50,10 +50,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
     "Minigin/RotateParentComponent.h"
     "Minigin/RendererComponentBase.h"
     "Minigin/RendererComponentBase.cpp"
-    "Minigin/TestTrashTheCashComponent.h"
-    "Minigin/TestTrashTheCashComponent.cpp"
-    "Minigin/UIComponentBase.h"
-    "Minigin/UIComponentBase.cpp")
+)
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)

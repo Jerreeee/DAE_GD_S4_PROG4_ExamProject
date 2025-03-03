@@ -11,6 +11,7 @@ namespace dae
 
 		virtual void Update() override {};
 		virtual void Render() const = 0;
+		virtual void UpdateAndRenderUI() {};
 
 		void SetActive(bool active);
 		bool IsActive() const;
