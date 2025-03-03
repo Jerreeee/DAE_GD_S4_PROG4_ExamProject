@@ -17,9 +17,13 @@ void dae::SceneManager::Cleanup()
 	}
 }
 
+dae::SceneManager::SceneManager() : m_scenes() {}
+dae::SceneManager::~SceneManager() {}
+
 dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
 {
-	const auto& scene = std::shared_ptr<Scene>(new Scene(name));
-	m_scenes.push_back(scene);
-	return *scene;
+	auto scene = std::unique_ptr<Scene>(new Scene(name));
+	auto pScene = scene.get();
+	m_scenes.emplace_back(std::move(scene));
+	return *pScene;
 }

@@ -16,7 +16,9 @@ namespace dae
 		void Cleanup();
 	private:
 		friend class Singleton<SceneManager>;
-		SceneManager() = default;
-		std::vector<std::shared_ptr<Scene>> m_scenes;
+		SceneManager();
+		~SceneManager(); //suppress error: use of undefined type 'dae::Scene'
+
+		std::vector<std::unique_ptr<Scene>> m_scenes;
 	};
 }
