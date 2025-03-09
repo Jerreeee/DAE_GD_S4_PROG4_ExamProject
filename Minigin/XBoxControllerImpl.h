@@ -12,11 +12,11 @@ namespace dae::Input
 	{
 	public:
 		virtual void PollState(int controllerIdx = 0) override;
-		virtual bool HasKeyState(unsigned int gamepadButton, KeyState keyState) const override;
-		virtual bool IsDownThisFrame(unsigned int gamepadButton) const override;
-		virtual bool IsUpThisFrame(unsigned int gamepadButton) const override;
-		virtual bool IsPressed(unsigned int gamepadButton) const override;
-		virtual unsigned int MapButton(unsigned int gamepadButton) const override;
+		virtual bool HasKeyState(uint32_t button, KeyState keyState) const override;
+		virtual bool IsDownThisFrame(uint32_t button) const override;
+		virtual bool IsUpThisFrame(uint32_t button) const override;
+		virtual bool IsPressed(uint32_t button) const override;
+		virtual uint32_t MapButton(uint32_t button) const override;
 	private:
 		XINPUT_STATE m_PreviousState{};
 		XINPUT_STATE m_CurrentState{};

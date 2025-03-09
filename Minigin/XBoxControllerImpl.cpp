@@ -18,16 +18,16 @@ namespace dae::Input
 		}
 	}
 
-	bool XBoxControllerImpl::HasKeyState(unsigned int gamepadButton, KeyState keyState) const
+	bool XBoxControllerImpl::HasKeyState(uint32_t button, KeyState keyState) const
 	{
 		switch (keyState)
 		{
 		case KeyState::Pressed:
-			return IsPressed(gamepadButton);
+			return IsPressed(button);
 		case KeyState::DownThisFrame:
-			return IsDownThisFrame(gamepadButton);
+			return IsDownThisFrame(button);
 		case KeyState::UpThisFrame:
-			return IsUpThisFrame(gamepadButton);
+			return IsUpThisFrame(button);
 		case KeyState::Up:
 			return true;
 		default:
@@ -35,23 +35,23 @@ namespace dae::Input
 		}
 	}
 
-	bool XBoxControllerImpl::IsDownThisFrame(unsigned int gamepadButton) const
+	bool XBoxControllerImpl::IsDownThisFrame(uint32_t button) const
 	{
-		return m_ButtonsPressedThisFrame & gamepadButton;
+		return m_ButtonsPressedThisFrame & button;
 	}
 
-	bool XBoxControllerImpl::IsUpThisFrame(unsigned int gamepadButton) const
+	bool XBoxControllerImpl::IsUpThisFrame(uint32_t button) const
 	{
-		return m_ButtonsReleasedThisFrame & gamepadButton;
+		return m_ButtonsReleasedThisFrame & button;
 	}
 
-	bool XBoxControllerImpl::IsPressed(unsigned int gamepadButton) const
+	bool XBoxControllerImpl::IsPressed(uint32_t button) const
 	{
-		return m_CurrentState.Gamepad.wButtons & gamepadButton;
+		return m_CurrentState.Gamepad.wButtons & button;
 	}
-	unsigned int XBoxControllerImpl::MapButton(unsigned int gamepadButton) const
+	uint32_t XBoxControllerImpl::MapButton(uint32_t button) const
 	{
-		return 1 << gamepadButton;
+		return 1 << button;
 	}
 }
 

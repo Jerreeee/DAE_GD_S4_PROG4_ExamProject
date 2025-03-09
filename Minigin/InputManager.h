@@ -5,6 +5,7 @@
 #include <map>
 #include <memory>
 #include "Controller.h"
+#include "Keyboard.h"
 #include "Command.h"
 
 namespace dae::Input
@@ -18,6 +19,7 @@ namespace dae::Input
 
 		void BindCommand(Button button, std::unique_ptr<Command> command, KeyState keyState);
 	private:
+		std::unique_ptr<Keyboard> m_pKeyboard{};
 		std::unique_ptr<Controller> m_pController{};
 		std::map<Button, Command::Binding> m_ButtonCommandMap{};
 	};

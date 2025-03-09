@@ -49,16 +49,15 @@ void load()
 	dae::Input::InputManager::GetInstance().BindCommand(dae::Input::Button::DPAD_RIGHT, std::move(moveRightCommand), dae::Input::KeyState::Pressed);
 	scene.Add(std::move(go));
 
-	//auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	//go = std::make_shared<dae::GameObject>("Prog4 Text");
-	//go->SetLocalPosition(80, 20);
-	//go->AddComponent<dae::TextRendererComponent>("Programming 4 Assignment", font);
-	//scene.Add(go);
-
-	//font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
-	//go = std::make_shared<dae::GameObject>("FPSCounter");
-	//go->AddComponent<dae::FPSComponent>(font);
-	//scene.Add(go);
+	//go = std::make_unique<dae::GameObject>("DAE Logo 2");
+	//go->SetLocalPosition(416, 280);
+	//if (auto* pComponent = go->AddComponent<dae::SpriteRendererComponent>(); pComponent)
+	//{
+	//	pComponent->SetTexture("logo.tga");
+	//}
+	//auto moveUpCommand2 = std::make_unique<dae::MoveCommand>(*go.get(), 200.f, dae::Input::Direction::Up);
+	//dae::Input::InputManager::GetInstance().BindCommand(dae::Input::Button::W, std::move(moveUpCommand2), dae::Input::KeyState::Pressed);
+	//scene.Add(std::move(go));
 }
 
 int main(int, char*[]) {

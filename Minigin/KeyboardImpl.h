@@ -7,11 +7,12 @@ namespace dae::Input
 	{
 	public:
 		virtual ~KeyboardImpl() = default;
-		virtual void PollState(int controllerIdx = 0) = 0;
-		virtual bool HasKeyState(unsigned int gamepadBUtton, KeyState keyState) const = 0;
-		virtual bool IsDownThisFrame(unsigned int gamepadButton) const = 0;
-		virtual bool IsUpThisFrame(unsigned int gamepadButton) const = 0;
-		virtual bool IsPressed(unsigned int gamepadButton) const = 0;
-		virtual unsigned int MapButton(unsigned int gamepadButton) const = 0;
+		virtual void AddKeysToTrack(const std::vector<Button>& keysToTrack) = 0;
+		virtual void PollState() = 0;
+		virtual bool HasKeyState(uint32_t button, KeyState keyState) const = 0;
+		virtual bool IsDownThisFrame(uint32_t button) const = 0;
+		virtual bool IsUpThisFrame(uint32_t button) const = 0;
+		virtual bool IsPressed(uint32_t button) const = 0;
+		virtual uint32_t MapButton(uint32_t button) const = 0;
 	};
 }

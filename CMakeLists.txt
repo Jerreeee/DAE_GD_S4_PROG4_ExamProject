@@ -61,6 +61,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
     "Minigin/KeyboardImpl.h"
     "Minigin/Keyboard.h"
     "Minigin/Keyboard.cpp"
+    "Minigin/SDLKeyboardImpl.cpp"
 )
 
 # enable c++20 features

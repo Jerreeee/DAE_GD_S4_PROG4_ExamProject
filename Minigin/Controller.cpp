@@ -16,23 +16,23 @@ namespace dae::Input
 		m_pImpl->PollState(controllerIdx);
 	}
 
-	bool Controller::HasKeyState(unsigned int gamepadButton, KeyState keyState) const
+	bool Controller::HasKeyState(uint32_t button, KeyState keyState) const
 	{
-		return m_pImpl->HasKeyState(m_pImpl->MapButton(gamepadButton), keyState);
+		return m_pImpl->HasKeyState(m_pImpl->MapButton(button), keyState);
 	}
 
-	bool Controller::IsDownThisFrame(unsigned int gamepadButton) const
+	bool Controller::IsDownThisFrame(uint32_t button) const
 	{
-		return m_pImpl->IsDownThisFrame(m_pImpl->MapButton(gamepadButton));
+		return m_pImpl->IsDownThisFrame(m_pImpl->MapButton(button));
 	}
 
-	bool Controller::IsUpThisFrame(unsigned int gamepadButton) const
+	bool Controller::IsUpThisFrame(uint32_t button) const
 	{
-		return m_pImpl->IsUpThisFrame(m_pImpl->MapButton(gamepadButton));
+		return m_pImpl->IsUpThisFrame(m_pImpl->MapButton(button));
 	}
 
-	bool Controller::IsPressed(unsigned int gamepadButton) const
+	bool Controller::IsPressed(uint32_t button) const
 	{
-		return m_pImpl->IsPressed(m_pImpl->MapButton(gamepadButton));
+		return m_pImpl->IsPressed(m_pImpl->MapButton(button));
 	}
 }
