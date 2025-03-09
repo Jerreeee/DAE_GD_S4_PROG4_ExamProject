@@ -50,6 +50,17 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
     "Minigin/RotateParentComponent.h"
     "Minigin/RendererComponentBase.h"
     "Minigin/RendererComponentBase.cpp"
+    "Minigin/Command.h"
+    "Minigin/Command.cpp"
+    "Minigin/Controller.h"
+    "Minigin/Controller.cpp"
+    "Minigin/ControllerImpl.h"
+    "Minigin/XBoxControllerImpl.h"
+    "Minigin/XBoxControllerImpl.cpp"
+    "Minigin/InputUtils.h"
+    "Minigin/KeyboardImpl.h"
+    "Minigin/Keyboard.h"
+    "Minigin/Keyboard.cpp"
 )
 
 # enable c++20 features
@@ -196,6 +207,13 @@ if (WIN32)
     )
     target_link_libraries(ImGui PRIVATE SDL2::SDL2 SDL2::SDL2main)
 
+    find_library(XINPUT_LIBRARY XInput)
+    if(XINPUT_LIBRARY)
+        message(STATUS "XInput library found: ${XINPUT_LIBRARY}")
+    else()
+        message(FATAL_ERROR "XInput library not found")
+    endif()
+
     # set all include directories
     target_include_directories(${TARGET_NAME} PRIVATE
         ${VLD_INCLUDE_DIR}
@@ -213,6 +231,7 @@ if (WIN32)
         ${SDL2_TTF_LIBRARIES} 
         ${VLD_LIBRARY}
         ImGui
+        ${XINPUT_LIBRARY}
     )
 
 elseif(NOT EMSCRIPTEN)

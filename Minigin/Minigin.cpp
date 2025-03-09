@@ -121,7 +121,7 @@ void dae::Minigin::RunOneFrame()
 	Timer::GetInstance().SetDeltaTime(deltaTime);
 	m_LastTime = currentTime;
 
-	m_Quit = !InputManager::GetInstance().ProcessInput();
+	m_Quit = !Input::InputManager::GetInstance().ProcessInput();
 	SceneManager::GetInstance().Update();
 	SceneManager::GetInstance().Cleanup();
 	Renderer::GetInstance().Render();

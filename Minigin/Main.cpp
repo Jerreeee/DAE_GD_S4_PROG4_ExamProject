@@ -9,6 +9,7 @@
 
 #include "Minigin.h"
 #include "SceneManager.h"
+#include "InputManager.h"
 #include "ResourceManager.h"
 #include "GameObject.h"
 #include "Scene.h"
@@ -16,6 +17,7 @@
 #include "SpriteRendererComponent.h"
 #include "FPSComponent.h"
 #include "RotateParentComponent.h"
+#include "Command.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -31,13 +33,21 @@ void load()
 	}
 	scene.Add(std::move(go));
 
-	//go = std::make_unique<dae::GameObject>("DAE Logo");
-	//go->SetLocalPosition(216, 180);
-	//if (auto* pComponent = go->AddComponent<dae::SpriteRendererComponent>(); pComponent)
-	//{
-	//	pComponent->SetTexture("logo.tga");
-	//}
-	//scene.Add(go);
+	go = std::make_unique<dae::GameObject>("DAE Logo");
+	go->SetLocalPosition(216, 180);
+	if (auto* pComponent = go->AddComponent<dae::SpriteRendererComponent>(); pComponent)
+	{
+		pComponent->SetTexture("logo.tga");
+	}
+	auto moveUpCommand = std::make_unique<dae::MoveCommand>(*go.get(), 100.f, dae::Input::Direction::Up);
+	auto moveDownCommand = std::make_unique<dae::MoveCommand>(*go.get(), 100.f, dae::Input::Direction::Down);
+	auto moveLeftCommand = std::make_unique<dae::MoveCommand>(*go.get(), 100.f, dae::Input::Direction::Left);
+	auto moveRightCommand = std::make_unique<dae::MoveCommand>(*go.get(), 100.f, dae::Input::Direction::Right);
+	dae::Input::InputManager::GetInstance().BindCommand(dae::Input::Button::DPAD_UP, std::move(moveUpCommand), dae::Input::KeyState::Pressed);
+	dae::Input::InputManager::GetInstance().BindCommand(dae::Input::Button::DPAD_DOWN, std::move(moveDownCommand), dae::Input::KeyState::Pressed);
+	dae::Input::InputManager::GetInstance().BindCommand(dae::Input::Button::DPAD_LEFT, std::move(moveLeftCommand), dae::Input::KeyState::Pressed);
+	dae::Input::InputManager::GetInstance().BindCommand(dae::Input::Button::DPAD_RIGHT, std::move(moveRightCommand), dae::Input::KeyState::Pressed);
+	scene.Add(std::move(go));
 
 	//auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	//go = std::make_shared<dae::GameObject>("Prog4 Text");
