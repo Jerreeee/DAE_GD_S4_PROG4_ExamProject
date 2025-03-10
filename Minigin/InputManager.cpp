@@ -4,14 +4,18 @@
 #include "backends/imgui_impl_sdl2.h"
 #include "backends/imgui_impl_sdlrenderer2.h"
 #include <iostream>
+#include "XBoxController.h"
+
 namespace dae::Input
 {
 	InputManager::InputManager()
 	{
-		m_pController = std::make_unique<Controller>();
-		m_pKeyboard = std::make_unique<Keyboard>();
-		m_pKeyboard->AddKeysToTrack({Button::W, Button::A, Button::S, Button::D});
+		m_pController = std::make_unique<XBoxController>();
+		//m_pKeyboard = std::make_unique<Keyboard>();
+		//m_pKeyboard->AddKeysToTrack({Button::W, Button::A, Button::S, Button::D});
 	}
+
+	InputManager::~InputManager() {}
 
 	bool InputManager::ProcessInput()
 	{
