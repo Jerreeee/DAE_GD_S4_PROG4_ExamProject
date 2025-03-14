@@ -1,16 +1,48 @@
 #pragma once
 #include <vector>
+#include <map>
 #include "Singleton.h"
 #include "InputUtils.h"
-#include <map>
 #include <memory>
-//#include "Controller.h"
-//#include "Keyboard.h"
 #include "Command.h"
 
-namespace dae::Input
+namespace dae
+{
+	class Command;
+namespace Input
 {
 	class Controller;
+	class Keyboard;
+
+	struct KeyboardBindingInfo
+	{
+		KeyboardKey key;
+		KeyState keyState;
+	};
+
+	struct ControllerBindingInfo
+	{
+		ControllerButton button;
+		ButtonState buttonState;
+	};
+
+	struct PlayerInputBindingsInfo final
+	{
+		PlayerInputBindingsInfo();
+		~PlayerInputBindingsInfo();
+		PlayerInputBindingsInfo(const PlayerInputBindingsInfo&) = delete;
+		PlayerInputBindingsInfo& operator=(const PlayerInputBindingsInfo&) = delete;
+		PlayerInputBindingsInfo(PlayerInputBindingsInfo&&) noexcept = default;
+		PlayerInputBindingsInfo& operator=(PlayerInputBindingsInfo&&) noexcept = default;
+
+		std::vector<std::unique_ptr<Command>> commands{};
+		std::map<Command*, KeyboardBindingInfo> keyboardBindings{};
+		std::map<Command*, ControllerBindingInfo> controllerBindings{};
+
+		//std::unique_ptr<Keyboard> pKeyboard{};
+		std::unique_ptr<Controller> pController{};
+	};
+
 	class InputManager final : public Singleton<InputManager>
 	{
 	public:
@@ -19,10 +51,13 @@ namespace dae::Input
 
 		bool ProcessInput();
 
-		void BindCommand(Button button, std::unique_ptr<Command> command, KeyState keyState);
+		size_t AddPlayer();
+		InputManager& BindCommand(size_t playerIdx, std::unique_ptr<Command> command, KeyboardBindingInfo bindInfo);
+		InputManager& BindCommand(size_t playerIdx, std::unique_ptr<Command> command, ControllerBindingInfo bindInfo);
+		//InputManager& UnBindCommand(size_t playerIdx, Command* pCommand);
 	private:
-		//std::unique_ptr<Keyboard> m_pKeyboard{};
-		std::unique_ptr<Controller> m_pController{};
-		std::map<Button, Command::Binding> m_ButtonCommandMap{};
+		bool IsValidPlayerIdx(size_t playerIdx);
+
+		std::vector<PlayerInputBindingsInfo> m_PlayerInputBindings{};
 	};
-}
+}}

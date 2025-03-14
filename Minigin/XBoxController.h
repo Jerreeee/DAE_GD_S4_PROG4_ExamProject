@@ -11,10 +11,10 @@ namespace dae::Input
 		~XBoxController();
 
 		virtual void PollState(int controllerIdx = 0) override;
-		virtual bool HasKeyState(uint32_t button, KeyState keyState) const override;
-		virtual bool IsDownThisFrame(uint32_t button) const override;
-		virtual bool IsUpThisFrame(uint32_t button) const override;
-		virtual bool IsPressed(uint32_t button) const override;
+		virtual bool HasButtonState(ControllerButton button, ButtonState buttonState) const override;
+		virtual bool IsDownThisFrame(ControllerButton button) const override;
+		virtual bool IsUpThisFrame(ControllerButton button) const override;
+		virtual bool IsPressed(ControllerButton button) const override;
 	private:
 		class Impl;
 		std::unique_ptr<Impl> m_pImpl{};

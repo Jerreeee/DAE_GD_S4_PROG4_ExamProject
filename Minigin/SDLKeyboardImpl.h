@@ -8,7 +8,7 @@ namespace dae::Input
 	class SDLKeyboardImpl final: public KeyboardImpl
 	{
 	public:
-		virtual void AddKeysToTrack(const std::vector<Button>& keysToTrack) override;
+		virtual void AddKeysToTrack(const std::vector<KeyboardKey>& keysToTrack) override;
 		virtual void PollState() override;
 		virtual bool HasKeyState(uint32_t button, KeyState keyState) const override;
 		virtual bool IsDownThisFrame(uint32_t button) const override;

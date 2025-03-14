@@ -7,7 +7,7 @@ namespace dae::Input
 	{
 	public:
 		virtual ~KeyboardImpl() = default;
-		virtual void AddKeysToTrack(const std::vector<Button>& keysToTrack) = 0;
+		virtual void AddKeysToTrack(const std::vector<KeyboardKey>& keysToTrack) = 0;
 		virtual void PollState() = 0;
 		virtual bool HasKeyState(uint32_t button, KeyState keyState) const = 0;
 		virtual bool IsDownThisFrame(uint32_t button) const = 0;

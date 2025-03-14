@@ -8,14 +8,9 @@
 
 namespace dae::Input
 {
-	InputManager::InputManager()
-	{
-		m_pController = std::make_unique<XBoxController>();
-		//m_pKeyboard = std::make_unique<Keyboard>();
-		//m_pKeyboard->AddKeysToTrack({Button::W, Button::A, Button::S, Button::D});
-	}
+	InputManager::InputManager() = default;
 
-	InputManager::~InputManager() {}
+	InputManager::~InputManager() = default;
 
 	bool InputManager::ProcessInput()
 	{
@@ -33,26 +28,52 @@ namespace dae::Input
 			ImGui_ImplSDL2_ProcessEvent(&e);
 		}
 
-		m_pController->PollState(0);
 		//m_pKeyboard->PollState();
-		for (const auto& [button, commandBinding] : m_ButtonCommandMap)
+		for (size_t playerIdx{}; playerIdx < m_PlayerInputBindings.size(); ++playerIdx)
 		{
-			if (BUTTON_GAMEPAD_MASK.test(static_cast<size_t>(button)) &&
-				m_pController->HasKeyState(static_cast<uint32_t>(button), commandBinding.keyState))
-			{
-				commandBinding.command->Execute();
-			}
-			//else if (BUTTON_KEYBOARD_MASK.test(static_cast<size_t>(button)) &&
-			//	m_pKeyboard->HasKeyState(static_cast<uint32_t>(button), commandBinding.keyState))
-			//{
-			//	commandBinding.command->Execute();
-			//}
+			const auto& playerInputBinding = m_PlayerInputBindings[playerIdx];
+			playerInputBinding.pController->PollState(static_cast<int>(playerIdx));
+			for (const auto& [pCommand, bindInfo] : playerInputBinding.controllerBindings)
+				if (playerInputBinding.pController->HasButtonState(bindInfo.button, bindInfo.buttonState))
+					pCommand->Execute();
+			//for (const auto& [pCommand, bindInfo] : playerInputBinding.keyboardBindings)
+			//	if (playerInputBinding.pKeyboard->HasKeyState(bindInfo.key, bindInfo.keyState))
+			//		pCommand->Execute();
 		}
 
 		return true;
 	}
-	void InputManager::BindCommand(Button button, std::unique_ptr<Command> command, KeyState keyState)
+	size_t InputManager::AddPlayer()
 	{
-		m_ButtonCommandMap.insert({ button, Command::Binding{std::move(command), keyState}});
+		m_PlayerInputBindings.emplace_back(PlayerInputBindingsInfo{});
+		size_t playerIdx = m_PlayerInputBindings.size() - 1;
+		m_PlayerInputBindings[playerIdx].pController = std::make_unique<XBoxController>();
+		return playerIdx;
 	}
+	InputManager& InputManager::BindCommand(size_t playerIdx, std::unique_ptr<Command> command, KeyboardBindingInfo bindInfo)
+	{
+		if (!IsValidPlayerIdx(playerIdx))
+			return *this;
+		PlayerInputBindingsInfo& info = m_PlayerInputBindings[playerIdx];
+		info.commands.emplace_back(std::move(command));
+		Command* pCommand = info.commands[info.commands.size() - 1].get();
+		info.keyboardBindings.insert({ pCommand, bindInfo });
+		return *this;
+	}
+	InputManager& InputManager::BindCommand(size_t playerIdx, std::unique_ptr<Command> command, ControllerBindingInfo bindInfo)
+	{
+		if (!IsValidPlayerIdx(playerIdx))
+			return *this;
+		PlayerInputBindingsInfo& info = m_PlayerInputBindings[playerIdx];
+		info.commands.emplace_back(std::move(command));
+		Command* pCommand = info.commands[info.commands.size() - 1].get();
+		info.controllerBindings.insert({ pCommand, bindInfo });
+		return *this;
+	}
+	bool InputManager::IsValidPlayerIdx(size_t playerIdx)
+	{
+		return playerIdx >= 0 && playerIdx < m_PlayerInputBindings.size();
+	}
+	PlayerInputBindingsInfo::PlayerInputBindingsInfo() = default;
+	PlayerInputBindingsInfo::~PlayerInputBindingsInfo() = default;
 }

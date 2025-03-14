@@ -9,11 +9,11 @@ namespace dae::Input
 	{
 	public:
 		void PollState(int controllerIdx);
-		bool HasKeyState(uint32_t button, KeyState keyState) const;
-		bool IsDownThisFrame(uint32_t button) const;
-		bool IsUpThisFrame(uint32_t button) const;
-		bool IsPressed(uint32_t button) const;
-		uint32_t MapToInternalButton(uint32_t button) const;
+		bool HasButtonState(ControllerButton button, ButtonState buttonState) const;
+		bool IsDownThisFrame(ControllerButton button) const;
+		bool IsUpThisFrame(ControllerButton button) const;
+		bool IsPressed(ControllerButton button) const;
+		uint32_t MapToInternalButton(ControllerButton button) const;
 	private:
 		XINPUT_STATE m_PreviousState{};
 		XINPUT_STATE m_CurrentState{};
@@ -35,9 +35,9 @@ namespace dae::Input
 			m_ButtonsReleasedThisFrame = m_ButtonChanges & (~m_CurrentState.Gamepad.wButtons);
 		}
 	}
-	bool XBoxController::Impl::HasKeyState(uint32_t button, KeyState keyState) const
+	bool XBoxController::Impl::HasButtonState(ControllerButton button, ButtonState buttonState) const
 	{
-		switch (keyState)
+		switch (buttonState)
 		{
 		case KeyState::Pressed:
 			return IsPressed(button);
@@ -51,21 +51,21 @@ namespace dae::Input
 			return false;
 		}
 	}
-	bool XBoxController::Impl::IsDownThisFrame(uint32_t button) const
+	bool XBoxController::Impl::IsDownThisFrame(ControllerButton button) const
 	{
 		return m_ButtonsPressedThisFrame & MapToInternalButton(button);
 	}
-	bool XBoxController::Impl::IsUpThisFrame(uint32_t button) const
+	bool XBoxController::Impl::IsUpThisFrame(ControllerButton button) const
 	{
 		return m_ButtonsReleasedThisFrame & MapToInternalButton(button);
 	}
-	bool XBoxController::Impl::IsPressed(uint32_t button) const
+	bool XBoxController::Impl::IsPressed(ControllerButton button) const
 	{
 		return m_CurrentState.Gamepad.wButtons & MapToInternalButton(button);
 	}
-	uint32_t XBoxController::Impl::MapToInternalButton(uint32_t button) const
+	uint32_t XBoxController::Impl::MapToInternalButton(ControllerButton button) const
 	{
-		return 1 << button;
+		return 1 << static_cast<uint32_t>(button);
 	}
 	XBoxController::XBoxController() : m_pImpl{ std::make_unique<Impl>() } {}
 	XBoxController::~XBoxController() {}
@@ -73,19 +73,19 @@ namespace dae::Input
 	{
 		m_pImpl->PollState(controllerIdx);
 	}
-	bool XBoxController::HasKeyState(uint32_t button, KeyState keyState) const
+	bool XBoxController::HasButtonState(ControllerButton button, ButtonState buttonState) const
 	{
-		return m_pImpl->HasKeyState(button, keyState);
+		return m_pImpl->HasButtonState(button, buttonState);
 	}
-	bool XBoxController::IsDownThisFrame(uint32_t button) const
+	bool XBoxController::IsDownThisFrame(ControllerButton button) const
 	{
 		return m_pImpl->IsDownThisFrame(button);
 	}
-	bool XBoxController::IsUpThisFrame(uint32_t button) const
+	bool XBoxController::IsUpThisFrame(ControllerButton button) const
 	{
 		return m_pImpl->IsUpThisFrame(button);
 	}
-	bool XBoxController::IsPressed(uint32_t button) const
+	bool XBoxController::IsPressed(ControllerButton button) const
 	{
 		return m_pImpl->IsPressed(button);
 	}

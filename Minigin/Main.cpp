@@ -17,7 +17,7 @@
 #include "SpriteRendererComponent.h"
 #include "FPSComponent.h"
 #include "RotateParentComponent.h"
-#include "Command.h"
+#include "GameCommands.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -39,14 +39,18 @@ void load()
 	{
 		pComponent->SetTexture("logo.tga");
 	}
-	auto moveUpCommand = std::make_unique<dae::MoveCommand>(*go.get(), 100.f, dae::Input::Direction::Up);
-	auto moveDownCommand = std::make_unique<dae::MoveCommand>(*go.get(), 100.f, dae::Input::Direction::Down);
-	auto moveLeftCommand = std::make_unique<dae::MoveCommand>(*go.get(), 100.f, dae::Input::Direction::Left);
-	auto moveRightCommand = std::make_unique<dae::MoveCommand>(*go.get(), 100.f, dae::Input::Direction::Right);
-	dae::Input::InputManager::GetInstance().BindCommand(dae::Input::Button::DPAD_UP, std::move(moveUpCommand), dae::Input::KeyState::Pressed);
-	dae::Input::InputManager::GetInstance().BindCommand(dae::Input::Button::DPAD_DOWN, std::move(moveDownCommand), dae::Input::KeyState::Pressed);
-	dae::Input::InputManager::GetInstance().BindCommand(dae::Input::Button::DPAD_LEFT, std::move(moveLeftCommand), dae::Input::KeyState::Pressed);
-	dae::Input::InputManager::GetInstance().BindCommand(dae::Input::Button::DPAD_RIGHT, std::move(moveRightCommand), dae::Input::KeyState::Pressed);
+
+	using namespace dae::Input;
+	auto moveUpCommand = std::make_unique<dae::MoveCommand>(*go.get(), 100.f, glm::vec2{0.f, -1.f});
+	auto moveDownCommand = std::make_unique<dae::MoveCommand>(*go.get(), 100.f, glm::vec2{ 0.f, 1.f });
+	auto moveLeftCommand = std::make_unique<dae::MoveCommand>(*go.get(), 100.f, glm::vec2{ -1.f, 0.f });
+	auto moveRightCommand = std::make_unique<dae::MoveCommand>(*go.get(), 100.f, glm::vec2{ 1.f, 0.f });
+	InputManager& inputManager = InputManager::GetInstance();
+	size_t player0Idx = inputManager.AddPlayer();
+	inputManager.BindCommand(player0Idx, std::move(moveUpCommand), ControllerBindingInfo{ControllerButton::DPAD_UP, ButtonState::Pressed})
+				.BindCommand(player0Idx, std::move(moveDownCommand), ControllerBindingInfo{ ControllerButton::DPAD_DOWN, ButtonState::Pressed })
+				.BindCommand(player0Idx, std::move(moveLeftCommand), ControllerBindingInfo{ ControllerButton::DPAD_LEFT, ButtonState::Pressed })
+				.BindCommand(player0Idx, std::move(moveRightCommand), ControllerBindingInfo{ ControllerButton::DPAD_RIGHT, ButtonState::Pressed });
 	scene.Add(std::move(go));
 
 	//go = std::make_unique<dae::GameObject>("DAE Logo 2");

@@ -8,7 +8,7 @@ dae::Input::Keyboard::Keyboard()
 
 dae::Input::Keyboard::~Keyboard() {}
 
-void dae::Input::Keyboard::AddKeysToTrack(const std::vector<Button>& keysToTrack)
+void dae::Input::Keyboard::AddKeysToTrack(const std::vector<KeyboardKey>& keysToTrack)
 {
 	m_pImpl->AddKeysToTrack(keysToTrack);
 }

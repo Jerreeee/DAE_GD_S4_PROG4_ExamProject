@@ -51,16 +51,16 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
     "Minigin/RendererComponentBase.h"
     "Minigin/RendererComponentBase.cpp"
     "Minigin/Command.h"
-    "Minigin/Command.cpp"
     "Minigin/Controller.h"
     "Minigin/XBoxController.h"
     "Minigin/XBoxController.cpp"
     "Minigin/InputUtils.h"
-    "Minigin/KeyboardImpl.h"
-    "Minigin/Keyboard.h"
-    "Minigin/Keyboard.cpp"
-    "Minigin/SDLKeyboardImpl.cpp"
-)
+    #"Minigin/KeyboardImpl.h"
+    #"Minigin/Keyboard.h"
+    #"Minigin/Keyboard.cpp"
+    #"Minigin/SDLKeyboardImpl.cpp"
+    "Minigin/GameCommands.h"
+    "Minigin/GameCommands.cpp")
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)

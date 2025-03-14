@@ -12,7 +12,7 @@ namespace dae::Input
 		Keyboard();
 		~Keyboard();
 
-		void AddKeysToTrack(const std::vector<Button>& keysToTrack);
+		void AddKeysToTrack(const std::vector<KeyboardKey>& keysToTrack);
 		void PollState();
 
 		bool HasKeyState(uint32_t button, KeyState keyState) const;
