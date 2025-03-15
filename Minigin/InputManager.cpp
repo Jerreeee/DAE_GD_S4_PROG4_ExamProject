@@ -28,15 +28,17 @@ namespace dae::Input
 			ImGui_ImplSDL2_ProcessEvent(&e);
 		}
 
+		int controllerIdx{};
 		for (size_t playerIdx{}; playerIdx < m_PlayerInputBindings.size(); ++playerIdx)
 		{
 			const auto& playerInputBinding = m_PlayerInputBindings[playerIdx];
 			if (playerInputBinding.pController.get())
 			{
-				playerInputBinding.pController->PollState(static_cast<int>(playerIdx));
+				playerInputBinding.pController->PollState(static_cast<int>(controllerIdx));
 				for (const auto& [pCommand, bindInfo] : playerInputBinding.controllerBindings)
 					if (playerInputBinding.pController->HasButtonState(bindInfo.button, bindInfo.buttonState))
 						pCommand->Execute();
+				++controllerIdx;
 			}
 			if (playerInputBinding.pKeyboard.get())
 			{
@@ -53,8 +55,6 @@ namespace dae::Input
 	{
 		m_PlayerInputBindings.emplace_back(PlayerInputBindingsInfo{});
 		size_t playerIdx = m_PlayerInputBindings.size() - 1;
-		m_PlayerInputBindings[playerIdx].pController = std::make_unique<XBoxController>();
-		m_PlayerInputBindings[playerIdx].pKeyboard = std::make_unique<SDLKeyboard>();
 		return playerIdx;
 	}
 	InputManager& InputManager::BindCommand(size_t playerIdx, std::unique_ptr<Command> command, KeyboardBindingInfo bindInfo)
@@ -65,6 +65,8 @@ namespace dae::Input
 		info.commands.emplace_back(std::move(command));
 		Command* pCommand = info.commands[info.commands.size() - 1].get();
 		info.keyboardBindings.insert({ pCommand, bindInfo });
+		if (!m_PlayerInputBindings[playerIdx].pKeyboard.get())
+			m_PlayerInputBindings[playerIdx].pKeyboard = std::make_unique<SDLKeyboard>();
 		m_PlayerInputBindings[playerIdx].pKeyboard->AddKeysToTrack({ bindInfo.key });
 		return *this;
 	}
@@ -76,6 +78,8 @@ namespace dae::Input
 		info.commands.emplace_back(std::move(command));
 		Command* pCommand = info.commands[info.commands.size() - 1].get();
 		info.controllerBindings.insert({ pCommand, bindInfo });
+		if (!m_PlayerInputBindings[playerIdx].pController.get())
+			m_PlayerInputBindings[playerIdx].pController = std::make_unique<XBoxController>();
 		return *this;
 	}
 	bool InputManager::IsValidPlayerIdx(size_t playerIdx)
