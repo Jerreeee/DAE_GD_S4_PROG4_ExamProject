@@ -65,7 +65,7 @@ void PrintSDLVersion()
 	LogSDLVersion("We linked against SDL_ttf version ", version);
 }
 
-dae::Minigin::Minigin(const std::filesystem::path &dataPath)
+Engine::Minigin::Minigin(const std::filesystem::path &dataPath)
 {
 	PrintSDLVersion();
 	
@@ -92,7 +92,7 @@ dae::Minigin::Minigin(const std::filesystem::path &dataPath)
 	Timer::GetInstance().SetFixedTimeStep(m_FixedTimeStep);
 }
 
-dae::Minigin::~Minigin()
+Engine::Minigin::~Minigin()
 {
 	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(g_window);
@@ -100,7 +100,7 @@ dae::Minigin::~Minigin()
 	SDL_Quit();
 }
 
-void dae::Minigin::Run(const std::function<void()>& load)
+void Engine::Minigin::Run(const std::function<void()>& load)
 {
 	load();
 
@@ -114,7 +114,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 #endif
 }
 
-void dae::Minigin::RunOneFrame()
+void Engine::Minigin::RunOneFrame()
 {
 	const auto currentTime = std::chrono::high_resolution_clock::now();
 	const float deltaTime = std::chrono::duration<float>(currentTime - m_LastTime).count();

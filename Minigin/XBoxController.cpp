@@ -2,9 +2,11 @@
 #include <windows.h>
 #include <XInput.h>
 #include "XBoxController.h"
+#include <vector>
 
-namespace dae::Input
+namespace Engine::Input
 {
+
 	class XBoxController::Impl final
 	{
 	public:
@@ -15,11 +17,29 @@ namespace dae::Input
 		bool IsPressed(ControllerButton button) const;
 		uint32_t MapToInternalButton(ControllerButton button) const;
 	private:
+		static const std::vector<uint32_t> m_MapToInternalButtons;
 		XINPUT_STATE m_PreviousState{};
 		XINPUT_STATE m_CurrentState{};
 		WORD m_ButtonChanges{};
 		WORD m_ButtonsPressedThisFrame{};
 		WORD m_ButtonsReleasedThisFrame{};
+	};
+
+	const std::vector<uint32_t> XBoxController::Impl::m_MapToInternalButtons = {
+		XINPUT_GAMEPAD_DPAD_UP,
+		XINPUT_GAMEPAD_DPAD_DOWN,
+		XINPUT_GAMEPAD_DPAD_LEFT,
+		XINPUT_GAMEPAD_DPAD_RIGHT,
+		XINPUT_GAMEPAD_START,
+		XINPUT_GAMEPAD_BACK,
+		XINPUT_GAMEPAD_LEFT_THUMB,
+		XINPUT_GAMEPAD_RIGHT_THUMB,
+		XINPUT_GAMEPAD_LEFT_SHOULDER,
+		XINPUT_GAMEPAD_RIGHT_SHOULDER,
+		XINPUT_GAMEPAD_A,
+		XINPUT_GAMEPAD_B,
+		XINPUT_GAMEPAD_X,
+		XINPUT_GAMEPAD_Y
 	};
 
 	void XBoxController::Impl::PollState(int controllerIdx)
@@ -65,7 +85,7 @@ namespace dae::Input
 	}
 	uint32_t XBoxController::Impl::MapToInternalButton(ControllerButton button) const
 	{
-		return 1 << static_cast<uint32_t>(button);
+		return m_MapToInternalButtons[static_cast<uint32_t>(button)];
 	}
 
 	XBoxController::XBoxController() : m_pImpl{ std::make_unique<Impl>() } {}

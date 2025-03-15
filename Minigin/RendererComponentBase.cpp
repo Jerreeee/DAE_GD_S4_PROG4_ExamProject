@@ -1,23 +1,23 @@
 #include "RendererComponentBase.h"
 #include "Renderer.h"
 
-dae::RendererComponentBase::RendererComponentBase(GameObject& gameObject)
+Engine::RendererComponentBase::RendererComponentBase(GameObject& gameObject)
 	: ComponentBase(gameObject)
 {
 	Renderer::GetInstance().RegisterRendererComponent(this);
 }
 
-dae::RendererComponentBase::~RendererComponentBase()
+Engine::RendererComponentBase::~RendererComponentBase()
 {
 	Renderer::GetInstance().UnRegisterRendererComponent(this);
 }
 
-void dae::RendererComponentBase::SetActive(bool active)
+void Engine::RendererComponentBase::SetActive(bool active)
 {
 	m_Active = active;
 }
 
-bool dae::RendererComponentBase::IsActive() const
+bool Engine::RendererComponentBase::IsActive() const
 {
 	return m_Active;
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "ComponentBase.h"
 
-namespace dae
+namespace Engine
 {
 	class RendererComponentBase : public ComponentBase
 	{

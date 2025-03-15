@@ -2,7 +2,7 @@
 #include "RendererComponentBase.h"
 #include <string>
 
-namespace dae
+namespace Engine
 {
 	class Texture2D;
 	class SpriteRendererComponent final: public RendererComponentBase

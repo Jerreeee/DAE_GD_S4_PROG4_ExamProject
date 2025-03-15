@@ -5,7 +5,7 @@
 #include "Font.h"
 #include "Texture2D.h"
 
-dae::TextRendererComponent::TextRendererComponent(GameObject& gameObject, const std::string& text, std::shared_ptr<Font> font) :
+Engine::TextRendererComponent::TextRendererComponent(GameObject& gameObject, const std::string& text, std::shared_ptr<Font> font) :
 	RendererComponentBase(gameObject),
 	m_Text(text),
 	m_Font(std::move(font)),
@@ -14,7 +14,7 @@ dae::TextRendererComponent::TextRendererComponent(GameObject& gameObject, const 
 	m_NeedsUpdate = text != "";
 }
 
-void dae::TextRendererComponent::Update()
+void Engine::TextRendererComponent::Update()
 {
 	if (m_NeedsUpdate)
 	{
@@ -35,7 +35,7 @@ void dae::TextRendererComponent::Update()
 	}
 }
 
-void dae::TextRendererComponent::Render() const
+void Engine::TextRendererComponent::Render() const
 {
 	if (m_TextTexture)
 	{
@@ -45,7 +45,7 @@ void dae::TextRendererComponent::Render() const
 }
 
 // This implementation uses the "dirty flag" pattern
-void dae::TextRendererComponent::SetText(const std::string& text)
+void Engine::TextRendererComponent::SetText(const std::string& text)
 {
 	m_Text = text;
 	m_NeedsUpdate = true;

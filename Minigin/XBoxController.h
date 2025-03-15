@@ -2,7 +2,7 @@
 #include <memory>
 #include "Controller.h"
 
-namespace dae::Input
+namespace Engine::Input
 {
 	class XBoxController final : public Controller
 	{

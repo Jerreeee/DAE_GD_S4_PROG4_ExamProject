@@ -17,6 +17,8 @@
 #include "SpriteRendererComponent.h"
 #include "FPSComponent.h"
 #include "RotateParentComponent.h"
+
+
 #include "GameCommands.h"
 
 #include <filesystem>
@@ -24,29 +26,29 @@ namespace fs = std::filesystem;
 
 void load()
 {
-	auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
+	auto& scene = Engine::SceneManager::GetInstance().CreateScene("Demo");
 
-	auto go = std::make_unique<dae::GameObject>("Background Image");
-	if (auto pComponent = go->AddComponent<dae::SpriteRendererComponent>(); pComponent)
+	auto go = std::make_unique<Engine::GameObject>("Background Image");
+	if (auto pComponent = go->AddComponent<Engine::SpriteRendererComponent>(); pComponent)
 	{
 		pComponent->SetTexture("background.tga");
 	}
 	scene.Add(std::move(go));
 
 
-	using namespace dae::Input;
+	using namespace Engine::Input;
 	InputManager& inputManager = InputManager::GetInstance();
 
-	go = std::make_unique<dae::GameObject>("DAE Logo");
+	go = std::make_unique<Engine::GameObject>("DAE Logo");
 	go->SetLocalPosition(216, 180);
-	if (auto* pComponent = go->AddComponent<dae::SpriteRendererComponent>(); pComponent)
+	if (auto* pComponent = go->AddComponent<Engine::SpriteRendererComponent>(); pComponent)
 	{
 		pComponent->SetTexture("logo.tga");
 	}
-	auto moveUpCommand = std::make_unique<dae::MoveCommand>(*go.get(), 100.f, glm::vec2{0.f, -1.f});
-	auto moveDownCommand = std::make_unique<dae::MoveCommand>(*go.get(), 100.f, glm::vec2{ 0.f, 1.f });
-	auto moveLeftCommand = std::make_unique<dae::MoveCommand>(*go.get(), 100.f, glm::vec2{ -1.f, 0.f });
-	auto moveRightCommand = std::make_unique<dae::MoveCommand>(*go.get(), 100.f, glm::vec2{ 1.f, 0.f });
+	auto moveUpCommand = std::make_unique<Engine::MoveCommand>(*go.get(), 100.f, glm::vec2{0.f, -1.f});
+	auto moveDownCommand = std::make_unique<Engine::MoveCommand>(*go.get(), 100.f, glm::vec2{ 0.f, 1.f });
+	auto moveLeftCommand = std::make_unique<Engine::MoveCommand>(*go.get(), 100.f, glm::vec2{ -1.f, 0.f });
+	auto moveRightCommand = std::make_unique<Engine::MoveCommand>(*go.get(), 100.f, glm::vec2{ 1.f, 0.f });
 	size_t player0Idx = inputManager.AddPlayer();
 	inputManager.BindCommand(player0Idx, std::move(moveUpCommand), ControllerBindingInfo{ControllerButton::DPAD_UP, ButtonState::Pressed})
 				.BindCommand(player0Idx, std::move(moveDownCommand), ControllerBindingInfo{ ControllerButton::DPAD_DOWN, ButtonState::Pressed })
@@ -54,16 +56,16 @@ void load()
 				.BindCommand(player0Idx, std::move(moveRightCommand), ControllerBindingInfo{ ControllerButton::DPAD_RIGHT, ButtonState::Pressed });
 	scene.Add(std::move(go));
 
-	go = std::make_unique<dae::GameObject>("DAE Logo");
-	go->SetLocalPosition(216, 180);
-	if (auto* pComponent = go->AddComponent<dae::SpriteRendererComponent>(); pComponent)
+	go = std::make_unique<Engine::GameObject>("DAE Logo");
+	go->SetLocalPosition(416, 180);
+	if (auto* pComponent = go->AddComponent<Engine::SpriteRendererComponent>(); pComponent)
 	{
 		pComponent->SetTexture("logo.tga");
 	}
-	auto moveUpCommand2 = std::make_unique<dae::MoveCommand>(*go.get(), 200.f, glm::vec2{ 0.f, -1.f });
-	auto moveDownCommand2 = std::make_unique<dae::MoveCommand>(*go.get(), 200.f, glm::vec2{ 0.f, 1.f });
-	auto moveLeftCommand2 = std::make_unique<dae::MoveCommand>(*go.get(), 200.f, glm::vec2{ -1.f, 0.f });
-	auto moveRightCommand2 = std::make_unique<dae::MoveCommand>(*go.get(), 200.f, glm::vec2{ 1.f, 0.f });
+	auto moveUpCommand2 = std::make_unique<Engine::MoveCommand>(*go.get(), 200.f, glm::vec2{ 0.f, -1.f });
+	auto moveDownCommand2 = std::make_unique<Engine::MoveCommand>(*go.get(), 200.f, glm::vec2{ 0.f, 1.f });
+	auto moveLeftCommand2 = std::make_unique<Engine::MoveCommand>(*go.get(), 200.f, glm::vec2{ -1.f, 0.f });
+	auto moveRightCommand2 = std::make_unique<Engine::MoveCommand>(*go.get(), 200.f, glm::vec2{ 1.f, 0.f });
 	size_t player1Idx = inputManager.AddPlayer();
 	inputManager.BindCommand(player1Idx, std::move(moveUpCommand2), KeyboardBindingInfo{ KeyboardKey::W, KeyState::Pressed })
 				.BindCommand(player1Idx, std::move(moveDownCommand2), KeyboardBindingInfo{ KeyboardKey::S, KeyState::Pressed })
@@ -90,7 +92,7 @@ int main(int, char*[]) {
 	if(!fs::exists(data_location))
 		data_location = "../Data/";
 #endif
-	dae::Minigin engine(data_location);
+	Engine::Minigin engine(data_location);
 	engine.Run(load);
     return 0;
 }

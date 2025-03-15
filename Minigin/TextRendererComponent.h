@@ -3,7 +3,7 @@
 #include <memory>
 #include "RendererComponentBase.h"
 
-namespace dae
+namespace Engine
 {
 	class Font;
 	class Texture2D;

@@ -1,7 +1,7 @@
 #pragma once
 #include "Singleton.h"
 
-namespace dae
+namespace Engine
 {
 	class Timer : public Singleton<Timer>
 	{

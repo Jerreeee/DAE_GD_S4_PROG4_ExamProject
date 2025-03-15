@@ -2,7 +2,7 @@
 #include <bitset>
 #include <type_traits>
 
-namespace dae::Input
+namespace Engine::Input
 {
 	class Keyboard;
 	class Controller;
@@ -56,5 +56,15 @@ namespace dae::Input
 		DPAD_DOWN,
 		DPAD_LEFT,
 		DPAD_RIGHT,
+		START,
+		BACK,
+		LEFT_THUMB,
+		RIGHT_THUMB,
+		LEFT_SHOULDER,
+		RIGHT_SHOULDER,
+		FACE_DOWN,
+		FACE_RIGHT,
+		FACE_LEFT,
+		FACE_UP,
 	};
 }

@@ -2,7 +2,7 @@
 #include "ComponentBase.h"
 #include "TextRendererComponent.h"
 
-namespace dae
+namespace Engine
 {
 	class Font;
 	class FPSComponent final : public ComponentBase

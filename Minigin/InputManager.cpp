@@ -7,7 +7,7 @@
 #include "XBoxController.h"
 #include "SDLKeyboard.h"
 
-namespace dae::Input
+namespace Engine::Input
 {
 	InputManager::InputManager() = default;
 	InputManager::~InputManager() = default;

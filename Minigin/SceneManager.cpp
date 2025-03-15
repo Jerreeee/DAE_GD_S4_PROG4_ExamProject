@@ -1,7 +1,7 @@
 #include "SceneManager.h"
 #include "Scene.h"
 
-void dae::SceneManager::Update()
+void Engine::SceneManager::Update()
 {
 	for(auto& scene : m_scenes)
 	{
@@ -9,7 +9,7 @@ void dae::SceneManager::Update()
 	}
 }
 
-void dae::SceneManager::Cleanup()
+void Engine::SceneManager::Cleanup()
 {
 	for (const auto& scene : m_scenes)
 	{
@@ -17,10 +17,10 @@ void dae::SceneManager::Cleanup()
 	}
 }
 
-dae::SceneManager::SceneManager() : m_scenes() {}
-dae::SceneManager::~SceneManager() {}
+Engine::SceneManager::SceneManager() : m_scenes() {}
+Engine::SceneManager::~SceneManager() {}
 
-dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
+Engine::Scene& Engine::SceneManager::CreateScene(const std::string& name)
 {
 	auto scene = std::unique_ptr<Scene>(new Scene(name));
 	auto pScene = scene.get();

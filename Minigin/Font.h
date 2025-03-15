@@ -2,7 +2,7 @@
 #include <string>
 
 struct _TTF_Font;
-namespace dae
+namespace Engine
 {
 	/**
 	 * Simple RAII wrapper for a _TTF_Font

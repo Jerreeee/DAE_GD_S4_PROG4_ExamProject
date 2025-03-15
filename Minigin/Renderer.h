@@ -3,7 +3,7 @@
 #include "Singleton.h"
 #include <vector>
 
-namespace dae
+namespace Engine
 {
 	class RendererComponentBase;
 	class UIComponentBase;

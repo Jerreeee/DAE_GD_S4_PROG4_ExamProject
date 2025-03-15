@@ -1,7 +1,7 @@
 #pragma once
 #include "InputUtils.h"
 
-namespace dae::Input
+namespace Engine::Input
 {
 	class Controller
 	{

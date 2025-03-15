@@ -2,7 +2,7 @@
 #include <glm.hpp>
 #include "GameObject.h"
 
-namespace dae
+namespace Engine
 {
 	RotateParentComponent::RotateParentComponent(GameObject& gameObject, float radius, float rotSpeedDeg)
 		: ComponentBase(gameObject)

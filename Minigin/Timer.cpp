@@ -1,6 +1,6 @@
 #include "Timer.h"
 
-namespace dae
+namespace Engine
 {
 	void Timer::SetFixedTimeStep(float fixedTimeStep)
 	{

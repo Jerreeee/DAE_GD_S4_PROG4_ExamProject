@@ -9,7 +9,7 @@
 #include <type_traits>
 #include <concepts>
 
-namespace dae
+namespace Engine
 {
 	template<typename T>
 	concept DerivedFromComponentBase = std::is_base_of_v<ComponentBase, T>;
@@ -92,7 +92,6 @@ namespace dae
 		//-----------------------
 		//Functions
 		//-----------------------
-
 
 		template<DerivedFromComponentBase ComponentType>
 		auto FindComponent() const

@@ -2,7 +2,7 @@
 #include "ResourceManager.h"
 #include "Renderer.h"
 
-namespace dae
+namespace Engine
 {
 	SpriteRendererComponent::SpriteRendererComponent(GameObject& gameObject)
 		: RendererComponentBase(gameObject)

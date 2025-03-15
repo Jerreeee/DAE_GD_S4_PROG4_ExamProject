@@ -4,14 +4,14 @@
 #include <sstream>
 #include "Font.h"
 
-namespace dae
+namespace Engine
 {
 	FPSComponent::FPSComponent(GameObject& gameObject, std::shared_ptr<Font> font, float updateRate)
 		: ComponentBase(gameObject)
 		,m_UpdateRate{ updateRate }
 		,m_AccTime{ m_UpdateRate }
 	{
-		m_pTextRendererComponent = GetGameObject().AddComponent<dae::TextRendererComponent>("", font);
+		m_pTextRendererComponent = GetGameObject().AddComponent<Engine::TextRendererComponent>("", font);
 	}
 
 	void FPSComponent::Update()

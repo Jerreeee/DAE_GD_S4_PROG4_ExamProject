@@ -2,7 +2,7 @@
 #include <vector>
 #include "InputUtils.h"
 
-namespace dae::Input
+namespace Engine::Input
 {
 	class Keyboard
 	{

@@ -2,7 +2,7 @@
 #include <algorithm>
 #include "GameObject.h"
 
-using namespace dae;
+using namespace Engine;
 
 unsigned int Scene::m_idCounter = 0;
 
@@ -41,7 +41,7 @@ void Scene::Update()
 	}
 }
 
-void dae::Scene::Cleanup()
+void Engine::Scene::Cleanup()
 {
 	//Scene is responsible for removing ALL gameobjects, also child gameobjects
 	m_objects.erase(std::remove_if(m_objects.begin(), m_objects.end(),

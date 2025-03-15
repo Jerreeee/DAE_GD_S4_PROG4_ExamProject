@@ -2,7 +2,7 @@
 #include <algorithm>
 #include "SDLKeyboard.h"
 
-namespace dae::Input
+namespace Engine::Input
 {
 	class SDLKeyboard::Impl final
 	{
@@ -92,8 +92,8 @@ namespace dae::Input
 		return static_cast<uint32_t>(key) + static_cast<uint32_t>(SDL_SCANCODE_A); //map Button::A-Z -> SDL_SCANCODE_A-Z
 	}
 
-	dae::Input::SDLKeyboard::SDLKeyboard() : m_pImpl{ std::make_unique<Impl>() } {};
-	dae::Input::SDLKeyboard::~SDLKeyboard() = default;
+	Engine::Input::SDLKeyboard::SDLKeyboard() : m_pImpl{ std::make_unique<Impl>() } {};
+	Engine::Input::SDLKeyboard::~SDLKeyboard() = default;
 	void SDLKeyboard::AddKeysToTrack(const std::vector<KeyboardKey>& keysToTrack)
 	{
 		m_pImpl->AddKeysToTrack(keysToTrack);
