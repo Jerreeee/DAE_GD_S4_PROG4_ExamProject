@@ -67,6 +67,7 @@ namespace dae::Input
 	{
 		return 1 << static_cast<uint32_t>(button);
 	}
+
 	XBoxController::XBoxController() : m_pImpl{ std::make_unique<Impl>() } {}
 	XBoxController::~XBoxController() {}
 	void XBoxController::PollState(int controllerIdx)

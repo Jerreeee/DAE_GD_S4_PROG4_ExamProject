@@ -39,7 +39,7 @@ namespace Input
 		std::map<Command*, KeyboardBindingInfo> keyboardBindings{};
 		std::map<Command*, ControllerBindingInfo> controllerBindings{};
 
-		//std::unique_ptr<Keyboard> pKeyboard{};
+		std::unique_ptr<Keyboard> pKeyboard{};
 		std::unique_ptr<Controller> pController{};
 	};
 
@@ -51,10 +51,10 @@ namespace Input
 
 		bool ProcessInput();
 
+		//returns the next valid playerIdx
 		size_t AddPlayer();
 		InputManager& BindCommand(size_t playerIdx, std::unique_ptr<Command> command, KeyboardBindingInfo bindInfo);
 		InputManager& BindCommand(size_t playerIdx, std::unique_ptr<Command> command, ControllerBindingInfo bindInfo);
-		//InputManager& UnBindCommand(size_t playerIdx, Command* pCommand);
 	private:
 		bool IsValidPlayerIdx(size_t playerIdx);
 

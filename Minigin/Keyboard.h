@@ -1,25 +1,18 @@
 #pragma once
-#include <memory>
 #include <vector>
-#include "KeyboardImpl.h"
+#include "InputUtils.h"
 
 namespace dae::Input
 {
-	class KeyboardImpl;
-	class Keyboard final
+	class Keyboard
 	{
 	public:
-		Keyboard();
-		~Keyboard();
-
-		void AddKeysToTrack(const std::vector<KeyboardKey>& keysToTrack);
-		void PollState();
-
-		bool HasKeyState(uint32_t button, KeyState keyState) const;
-		bool IsDownThisFrame(uint32_t button) const;
-		bool IsUpThisFrame(uint32_t button) const;
-		bool IsPressed(uint32_t button) const;
-	private:
-		std::unique_ptr<KeyboardImpl> m_pImpl{};
+		virtual ~Keyboard() = default;
+		virtual void AddKeysToTrack(const std::vector<KeyboardKey>& keys) = 0;
+		virtual void PollState() = 0;
+		virtual bool HasKeyState(KeyboardKey button, KeyState keyState) const = 0;
+		virtual bool IsDownThisFrame(KeyboardKey key) const = 0;
+		virtual bool IsUpThisFrame(KeyboardKey key) const = 0;
+		virtual bool IsPressed(KeyboardKey key) const = 0;
 	};
 }

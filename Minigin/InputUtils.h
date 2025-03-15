@@ -1,6 +1,6 @@
 #pragma once
 #include <bitset>
-#include <iostream>
+#include <type_traits>
 
 namespace dae::Input
 {
@@ -18,7 +18,7 @@ namespace dae::Input
 	};
 	using ButtonState = KeyState;
 
-	enum class KeyboardKey : uint32_t
+	enum class KeyboardKey : uint8_t
 	{
 		A,
 		B,
@@ -47,8 +47,10 @@ namespace dae::Input
 		Y,
 		Z
 	};
+
+	const auto MAX_NR_KEYBOARD_KEYS = 1 + static_cast<std::underlying_type_t<KeyboardKey>>(KeyboardKey::Z);
 	
-	enum class ControllerButton
+	enum class ControllerButton : uint8_t
 	{
 		DPAD_UP,
 		DPAD_DOWN,

@@ -5,11 +5,11 @@
 #include "backends/imgui_impl_sdlrenderer2.h"
 #include <iostream>
 #include "XBoxController.h"
+#include "SDLKeyboard.h"
 
 namespace dae::Input
 {
 	InputManager::InputManager() = default;
-
 	InputManager::~InputManager() = default;
 
 	bool InputManager::ProcessInput()
@@ -28,17 +28,23 @@ namespace dae::Input
 			ImGui_ImplSDL2_ProcessEvent(&e);
 		}
 
-		//m_pKeyboard->PollState();
 		for (size_t playerIdx{}; playerIdx < m_PlayerInputBindings.size(); ++playerIdx)
 		{
 			const auto& playerInputBinding = m_PlayerInputBindings[playerIdx];
-			playerInputBinding.pController->PollState(static_cast<int>(playerIdx));
-			for (const auto& [pCommand, bindInfo] : playerInputBinding.controllerBindings)
-				if (playerInputBinding.pController->HasButtonState(bindInfo.button, bindInfo.buttonState))
-					pCommand->Execute();
-			//for (const auto& [pCommand, bindInfo] : playerInputBinding.keyboardBindings)
-			//	if (playerInputBinding.pKeyboard->HasKeyState(bindInfo.key, bindInfo.keyState))
-			//		pCommand->Execute();
+			if (playerInputBinding.pController.get())
+			{
+				playerInputBinding.pController->PollState(static_cast<int>(playerIdx));
+				for (const auto& [pCommand, bindInfo] : playerInputBinding.controllerBindings)
+					if (playerInputBinding.pController->HasButtonState(bindInfo.button, bindInfo.buttonState))
+						pCommand->Execute();
+			}
+			if (playerInputBinding.pKeyboard.get())
+			{
+				playerInputBinding.pKeyboard->PollState();
+				for (const auto& [pCommand, bindInfo] : playerInputBinding.keyboardBindings)
+					if (playerInputBinding.pKeyboard->HasKeyState(bindInfo.key, bindInfo.keyState))
+						pCommand->Execute();
+			}
 		}
 
 		return true;
@@ -48,6 +54,7 @@ namespace dae::Input
 		m_PlayerInputBindings.emplace_back(PlayerInputBindingsInfo{});
 		size_t playerIdx = m_PlayerInputBindings.size() - 1;
 		m_PlayerInputBindings[playerIdx].pController = std::make_unique<XBoxController>();
+		m_PlayerInputBindings[playerIdx].pKeyboard = std::make_unique<SDLKeyboard>();
 		return playerIdx;
 	}
 	InputManager& InputManager::BindCommand(size_t playerIdx, std::unique_ptr<Command> command, KeyboardBindingInfo bindInfo)
@@ -58,6 +65,7 @@ namespace dae::Input
 		info.commands.emplace_back(std::move(command));
 		Command* pCommand = info.commands[info.commands.size() - 1].get();
 		info.keyboardBindings.insert({ pCommand, bindInfo });
+		m_PlayerInputBindings[playerIdx].pKeyboard->AddKeysToTrack({ bindInfo.key });
 		return *this;
 	}
 	InputManager& InputManager::BindCommand(size_t playerIdx, std::unique_ptr<Command> command, ControllerBindingInfo bindInfo)

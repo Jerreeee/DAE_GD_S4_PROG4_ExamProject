@@ -55,10 +55,9 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
     "Minigin/XBoxController.h"
     "Minigin/XBoxController.cpp"
     "Minigin/InputUtils.h"
-    #"Minigin/KeyboardImpl.h"
-    #"Minigin/Keyboard.h"
-    #"Minigin/Keyboard.cpp"
-    #"Minigin/SDLKeyboardImpl.cpp"
+    "Minigin/Keyboard.h"
+    "Minigin/SDLKeyboard.h"
+    "Minigin/SDLKeyboard.cpp"
     "Minigin/GameCommands.h"
     "Minigin/GameCommands.cpp")
 
