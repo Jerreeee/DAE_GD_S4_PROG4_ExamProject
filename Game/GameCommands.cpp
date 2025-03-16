@@ -29,4 +29,13 @@ namespace Game
 	{
 		m_pHealthComponent->TakeDamage(m_Amount);
 	}
+	IncreaseScoreCommand::IncreaseScoreCommand(ScoreComponent* pScoreComponent, int amount) :
+		m_pScoreComponent{ pScoreComponent },
+		m_Amount{ amount }
+	{
+	}
+	void IncreaseScoreCommand::Execute()
+	{
+		m_pScoreComponent->IncreaseScore(m_Amount);
+	}
 }

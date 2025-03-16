@@ -33,14 +33,32 @@ namespace Game
 		std::unique_ptr<Engine::Observable> m_DamageEvent{};
 	};
 
-	class LivesComponentUI final : public Engine::ComponentBase, public Engine::Observer
+	class ScoreComponent final : public Engine::ComponentBase
 	{
 	public:
-		LivesComponentUI(Engine::GameObject& gameObject, HealthComponent* pHealthComponent, std::shared_ptr<Engine::Font> pFont);
+		ScoreComponent(Engine::GameObject& gameObject);
+		void IncreaseScore(int points);
+		int GetScore() const { return m_Score; };
+
+		virtual void Update() override {};
+		Engine::Observable& IncreasedScoreEvent() { return *(m_IncreasedScoreEvent.get()); };
+	private:
+		int m_Score{};
+		std::unique_ptr<Engine::Observable> m_IncreasedScoreEvent{};
+	};
+
+	class PlayerUIComponent final : public Engine::ComponentBase, public Engine::Observer
+	{
+	public:
+		PlayerUIComponent(Engine::GameObject& UIGameObject, Engine::GameObject& player, std::shared_ptr<Engine::Font> pFont);
 		virtual void Update() override {};
 		virtual void Notify(const Engine::Event& event) override;
 	private:
+		void SetTextComponentText(Engine::TextRendererComponent* pTextComp, const std::string& prefix, const std::string& text);
+
 		HealthComponent* m_pHealthComponent{};
-		Engine::TextRendererComponent* m_pTextRendererComponent{};
+		ScoreComponent* m_pScoreComponent{};
+		Engine::TextRendererComponent* m_pLivesText{}; 
+		Engine::TextRendererComponent* m_pScoreText{};
 	};
 }

@@ -49,19 +49,21 @@ namespace Game
 		{
 			pComponent->SetTexture("logo.tga");
 		}
-		auto pPlayer1HealthComponentplayer1 = player1->AddComponent<HealthComponent>(3);
-		auto takeDamageCommand = std::make_unique<TakeDamageCommand>(pPlayer1HealthComponentplayer1);
+		auto pPlayer1HealthComponent = player1->AddComponent<HealthComponent>(3);
+		auto takeDamageCommand = std::make_unique<TakeDamageCommand>(pPlayer1HealthComponent);
+		auto pPlayer1ScoreComponent = player1->AddComponent<ScoreComponent>();
+		auto increaseScoreCommand = std::make_unique<IncreaseScoreCommand>(pPlayer1ScoreComponent, 2);
 		auto moveUpCommand = std::make_unique<MoveCommand>(*player1.get(), 100.f, glm::vec2{ 0.f, -1.f });
 		auto moveDownCommand = std::make_unique<MoveCommand>(*player1.get(), 100.f, glm::vec2{ 0.f, 1.f });
 		auto moveLeftCommand = std::make_unique<MoveCommand>(*player1.get(), 100.f, glm::vec2{ -1.f, 0.f });
 		auto moveRightCommand = std::make_unique<MoveCommand>(*player1.get(), 100.f, glm::vec2{ 1.f, 0.f });
 		size_t player0Idx = inputManager.AddPlayer();
 		inputManager.BindCommand(player0Idx, std::move(moveUpCommand), ControllerBindingInfo{ ControllerButton::DPAD_UP, ButtonState::Pressed })
-			.BindCommand(player0Idx, std::move(moveDownCommand), ControllerBindingInfo{ ControllerButton::DPAD_DOWN, ButtonState::Pressed })
-			.BindCommand(player0Idx, std::move(moveLeftCommand), ControllerBindingInfo{ ControllerButton::DPAD_LEFT, ButtonState::Pressed })
-			.BindCommand(player0Idx, std::move(moveRightCommand), ControllerBindingInfo{ ControllerButton::DPAD_RIGHT, ButtonState::Pressed })
-			.BindCommand(player0Idx, std::move(takeDamageCommand), ControllerBindingInfo{ ControllerButton::FACE_DOWN, ButtonState::DownThisFrame });
-		scene.Add(std::move(player1));
+					.BindCommand(player0Idx, std::move(moveDownCommand), ControllerBindingInfo{ ControllerButton::DPAD_DOWN, ButtonState::Pressed })
+					.BindCommand(player0Idx, std::move(moveLeftCommand), ControllerBindingInfo{ ControllerButton::DPAD_LEFT, ButtonState::Pressed })
+					.BindCommand(player0Idx, std::move(moveRightCommand), ControllerBindingInfo{ ControllerButton::DPAD_RIGHT, ButtonState::Pressed })
+					.BindCommand(player0Idx, std::move(takeDamageCommand), ControllerBindingInfo{ ControllerButton::FACE_DOWN, ButtonState::DownThisFrame })
+					.BindCommand(player0Idx, std::move(increaseScoreCommand), ControllerBindingInfo{ ControllerButton::FACE_UP, ButtonState::DownThisFrame });
 
 		auto player2 = std::make_unique<Engine::GameObject>("Player 2");
 		player2->SetLocalPosition(416, 180);
@@ -78,11 +80,13 @@ namespace Game
 			.BindCommand(player1Idx, std::move(moveDownCommand2), KeyboardBindingInfo{ KeyboardKey::S, KeyState::Pressed })
 			.BindCommand(player1Idx, std::move(moveLeftCommand2), KeyboardBindingInfo{ KeyboardKey::A, KeyState::Pressed })
 			.BindCommand(player1Idx, std::move(moveRightCommand2), KeyboardBindingInfo{ KeyboardKey::D, KeyState::Pressed });
-		scene.Add(std::move(player2));
 
 		auto UI = std::make_unique<Engine::GameObject>("UI");
-		UI->AddComponent<LivesComponentUI>(pPlayer1HealthComponentplayer1, pFont);
+		UI->AddComponent<PlayerUIComponent>(*(player1.get()), pFont);
 		scene.Add(std::move(UI));
+
+		scene.Add(std::move(player1));
+		scene.Add(std::move(player2));
 	}
 
 }

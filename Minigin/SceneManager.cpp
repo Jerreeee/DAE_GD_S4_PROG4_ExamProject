@@ -25,5 +25,6 @@ Engine::Scene& Engine::SceneManager::CreateScene(const std::string& name)
 	auto scene = std::unique_ptr<Scene>(new Scene(name));
 	auto pScene = scene.get();
 	m_scenes.emplace_back(std::move(scene));
+	m_CurrentSceneIdx = m_scenes.size() - 1;
 	return *pScene;
 }

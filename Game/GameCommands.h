@@ -31,4 +31,15 @@ namespace Game
 		HealthComponent* m_pHealthComponent;
 		int m_Amount;
 	};
+
+	class ScoreComponent;
+	class IncreaseScoreCommand : public Engine::Command
+	{
+	public:
+		IncreaseScoreCommand(ScoreComponent* pScoreComponent, int amount = 1);
+		virtual void Execute() override;
+	private:
+		ScoreComponent* m_pScoreComponent{};
+		int m_Amount{};
+	};
 }

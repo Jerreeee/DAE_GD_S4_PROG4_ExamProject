@@ -3,12 +3,18 @@
 
 namespace Game
 {
-	struct PlayerDamagedEventArgs : public Engine::EventArgs
+	struct DamagedEventArgs : public Engine::EventArgs
 	{
-		explicit PlayerDamagedEventArgs(int _damage, int _newHealth) :
-			damage{ _damage }, newhealth{ _newHealth }
-		{};
+		DamagedEventArgs(int _damage, int _newHealth)
+			: damage{ _damage }, newhealth{ _newHealth }
+		{}
 		int damage;
 		int newhealth;
+	};
+
+	struct IncreasedScoreEventArgs : public Engine::EventArgs
+	{
+		IncreasedScoreEventArgs(int _newScore) :newScore{ _newScore } {};
+		int newScore;
 	};
 }

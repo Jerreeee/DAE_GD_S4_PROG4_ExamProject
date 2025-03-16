@@ -54,8 +54,7 @@ namespace Engine::Input
 	size_t InputManager::AddPlayer()
 	{
 		m_PlayerInputBindings.emplace_back(PlayerInputBindingsInfo{});
-		size_t playerIdx = m_PlayerInputBindings.size() - 1;
-		return playerIdx;
+		return m_PlayerInputBindings.size() - 1;
 	}
 	InputManager& InputManager::BindCommand(size_t playerIdx, std::unique_ptr<Command> command, KeyboardBindingInfo bindInfo)
 	{
