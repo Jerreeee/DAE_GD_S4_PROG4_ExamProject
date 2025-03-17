@@ -37,7 +37,7 @@ namespace Engine
 		template<typename EventName>
 		inline typename EventName::Args& GetArgs()
 		{
-			return static_cast<typename EventName::Args>(*m_Args);
+			return *static_cast<typename EventName::Args*>(m_Args.get());
 		}
 	private:
 		explicit EventInfo(EventID id);
