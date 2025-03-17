@@ -35,9 +35,9 @@ namespace Engine
 		EventID GetID() const { return m_ID; };
 
 		template<typename EventName>
-		inline typename EventName::Args* GetArgs()
+		inline typename EventName::Args& GetArgs()
 		{
-			return static_cast<typename EventName::Args*>(m_Args.get());
+			return static_cast<typename EventName::Args>(*m_Args);
 		}
 	private:
 		explicit EventInfo(EventID id);
