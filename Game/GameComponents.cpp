@@ -30,9 +30,7 @@ namespace Game
 	void HealthComponent::TakeDamage(int amount)
 	{
 		m_Health -= amount;
-		Engine::EventInfo e{ Engine::CreateEvent<Event::PlayerDamaged>() };
-		e.GetArgs<Event::PlayerDamaged>()->damage = amount;
-		e.GetArgs<Event::PlayerDamaged>()->newhealth = m_Health;
+		Engine::EventInfo e{ Engine::CreateEvent<Event::PlayerDamaged>(amount, m_Health) };
 		m_DamageEvent->NotifyObservers(e);
 	}
 	PlayerUIComponent::PlayerUIComponent(Engine::GameObject& UIGameObject, Engine::GameObject& player, std::shared_ptr<Engine::Font> pFont) :
@@ -97,8 +95,7 @@ namespace Game
 	void ScoreComponent::IncreaseScore(int points)
 	{
 		m_Score += points;
-		Engine::EventInfo e{ Engine::CreateEvent<Event::IncreasedScore>() };
-		e.GetArgs<Event::IncreasedScore>()->newScore = m_Score;
+		Engine::EventInfo e{ Engine::CreateEvent<Event::IncreasedScore>(m_Score) };
 		m_IncreasedScoreEvent->NotifyObservers(e);
 	}
 }

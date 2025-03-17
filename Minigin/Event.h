@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <memory>
+#include <concepts>
 
 namespace Engine
 {
@@ -44,23 +45,25 @@ namespace Engine
 		EventID m_ID{};
 		std::unique_ptr<EventArgs> m_Args{};
 
-		template<typename EventName>
-		friend EventInfo CreateEvent();
+		template<typename EventName, typename... ConstructorArgs>
+		//requires std::constructible_from<typename EventName::Args, ConstructorArgs...>
+		friend EventInfo CreateEvent(ConstructorArgs&&... args);
 	};
 
-	//template<typename EventName, typename... Args>
+	template<typename EventName, typename... ConstructorArgs>
+	//requires std::constructible_from<typename EventName::Args, ConstructorArgs...>
+	EventInfo CreateEvent(ConstructorArgs&&... args)
+	{
+		EventInfo e(EventName::ID);
+		e.m_Args = std::make_unique<typename EventName::Args>(std::forward<ConstructorArgs>(args)...);
+		return e;
+	}
+
+	//template<typename EventName>
 	//EventInfo CreateEvent()
 	//{
 	//	EventInfo e(EventName::ID);
-	//	e.args = std::make_unique<EventName::Args>(std::forward<Args>(args)...);
+	//	e.m_Args = std::make_unique<typename EventName::Args>();
 	//	return e;
 	//}
-
-	template<typename EventName>
-	EventInfo CreateEvent()
-	{
-		EventInfo e(EventName::ID);
-		e.m_Args = std::make_unique<typename EventName::Args>();
-		return e;
-	}
 }
