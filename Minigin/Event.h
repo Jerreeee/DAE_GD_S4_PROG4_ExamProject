@@ -46,12 +46,12 @@ namespace Engine
 		std::unique_ptr<EventArgs> m_Args{};
 
 		template<typename EventName, typename... ConstructorArgs>
-		//requires std::constructible_from<typename EventName::Args, ConstructorArgs...>
+		requires std::constructible_from<typename EventName::Args, ConstructorArgs...>
 		friend EventInfo CreateEvent(ConstructorArgs&&... args);
 	};
 
 	template<typename EventName, typename... ConstructorArgs>
-	//requires std::constructible_from<typename EventName::Args, ConstructorArgs...>
+	requires std::constructible_from<typename EventName::Args, ConstructorArgs...>
 	EventInfo CreateEvent(ConstructorArgs&&... args)
 	{
 		EventInfo e(EventName::ID);
