@@ -26,11 +26,11 @@ namespace Game
 		void TakeDamage(int amount);
 		int GetHealth() const { return m_Health; };
 
-		Engine::Observable& DamageEvent() { return *(m_DamageEvent.get()); };
+		Engine::Observable& OnDamageEvent() { return *(m_DamageEvent.get()); };
 	private:
 		int m_Health{};
 		int m_MaxHealth{};
-		std::unique_ptr<Engine::Observable> m_DamageEvent{};
+		Engine::Event_t m_DamageEvent{};
 	};
 
 	class ScoreComponent final : public Engine::ComponentBase
@@ -41,18 +41,19 @@ namespace Game
 		int GetScore() const { return m_Score; };
 
 		virtual void Update() override {};
-		Engine::Observable& IncreasedScoreEvent() { return *(m_IncreasedScoreEvent.get()); };
+		Engine::Observable& OnIncreasedScoreEvent() { return *(m_IncreasedScoreEvent.get()); };
 	private:
 		int m_Score{};
-		std::unique_ptr<Engine::Observable> m_IncreasedScoreEvent{};
+		Engine::Event_t m_IncreasedScoreEvent{};
 	};
 
-	class PlayerUIComponent final : public Engine::ComponentBase, public Engine::Observer
+	class PlayerUIComponent final : public Engine::ComponentBase, public Engine::IObserver
 	{
 	public:
 		PlayerUIComponent(Engine::GameObject& UIGameObject, Engine::GameObject& player, std::shared_ptr<Engine::Font> pFont);
+		~PlayerUIComponent();
 		virtual void Update() override {};
-		virtual void Notify(const Engine::Event& event) override;
+		virtual void OnNotify(Engine::EventInfo& event) override;
 	private:
 		void SetTextComponentText(Engine::TextRendererComponent* pTextComp, const std::string& prefix, const std::string& text);
 

@@ -7,25 +7,22 @@ namespace Engine
 {
 	class GameObject;
 	class Observable;
-	class Observer
+	class IObserver
 	{
 	public:
-		virtual ~Observer();
-		virtual void Notify(const Event& event) = 0;
-		void AddObservable(Observable* pObservable);
-		void RemoveObservable(Observable* pObservable);
-	private:
-		std::vector<Observable*> m_Observables{};
+		virtual ~IObserver() = default;
+		virtual void OnNotify(EventInfo& event) = 0;
 	};
 
-	class Observable
+	class Observable final
 	{
 	public:
-		virtual ~Observable();
-		void AddObserver(Observer* pObserver);
-		void RemoveObserver(Observer* pObserver);
-		void NotifyObservers(const Event& event);
+		void AddObserver(IObserver* pObserver);
+		void RemoveObserver(IObserver* pObserver);
+		void NotifyObservers(EventInfo& event);
 	private:
-		std::vector<Observer*> m_Observers{};
+		std::vector<IObserver*> m_Observers{};
 	};
+
+	using Event_t = std::unique_ptr<Observable>;
 }

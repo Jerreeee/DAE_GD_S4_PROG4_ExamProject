@@ -16,16 +16,51 @@ namespace Engine
 		return hash;
 	};
 
+
 	struct EventArgs
 	{
 		virtual ~EventArgs() = default;
 	};
 
-	struct Event
+	class EventInfo final
 	{
-		explicit Event(EventID _id);
-		virtual ~Event();
-		const EventID id;
-		std::unique_ptr<EventArgs> args{};
+	public:
+		~EventInfo();
+		EventInfo(const EventInfo& eventInfo) = delete;
+		EventInfo& operator=(const EventInfo& eventInfo) = delete;
+		EventInfo(EventInfo&& eventInfo) noexcept;
+		EventInfo& operator=(EventInfo&& eventInfo) noexcept;
+
+		EventID GetID() const { return m_ID; };
+
+		template<typename EventName>
+		inline typename EventName::Args* GetArgs()
+		{
+			return static_cast<typename EventName::Args*>(m_Args.get());
+		}
+	private:
+		explicit EventInfo(EventID id);
+
+		EventID m_ID{};
+		std::unique_ptr<EventArgs> m_Args{};
+
+		template<typename EventName>
+		friend EventInfo CreateEvent();
 	};
+
+	//template<typename EventName, typename... Args>
+	//EventInfo CreateEvent()
+	//{
+	//	EventInfo e(EventName::ID);
+	//	e.args = std::make_unique<EventName::Args>(std::forward<Args>(args)...);
+	//	return e;
+	//}
+
+	template<typename EventName>
+	EventInfo CreateEvent()
+	{
+		EventInfo e(EventName::ID);
+		e.m_Args = std::make_unique<typename EventName::Args>();
+		return e;
+	}
 }

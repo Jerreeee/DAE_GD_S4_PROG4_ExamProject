@@ -1,20 +1,33 @@
 #pragma once
 #include "../Minigin/Event.h"
+#include <string_view>
 
 namespace Game
 {
-	struct DamagedEventArgs : public Engine::EventArgs
+	struct Event
 	{
-		DamagedEventArgs(int _damage, int _newHealth)
-			: damage{ _damage }, newhealth{ _newHealth }
-		{}
-		int damage;
-		int newhealth;
-	};
+		struct PlayerDamaged
+		{
+			static const Engine::EventID ID{ Engine::HashEventID("PlayerDamaged") };
+			struct Args : public Engine::EventArgs
+			{
+				//Args(int _damage, int _newHealth)
+				//	: damage{ _damage }, newhealth{ _newHealth }
+				//{
+				//}
+				int damage;
+				int newhealth;
+			};
+		};
 
-	struct IncreasedScoreEventArgs : public Engine::EventArgs
-	{
-		IncreasedScoreEventArgs(int _newScore) :newScore{ _newScore } {};
-		int newScore;
+		struct IncreasedScore
+		{
+			static const Engine::EventID ID{ Engine::HashEventID("IncreasedScore") };
+			struct Args : public Engine::EventArgs
+			{
+				//Args(int _newScore) : newScore{ _newScore } {};
+				int newScore;
+			};
+		};
 	};
 }

@@ -5,6 +5,7 @@
 #include "../Minigin/TextRendererComponent.h"
 #include "../Minigin/SceneManager.h"
 #include "../Minigin/Scene.h"
+#include "GameEvents.h"
 
 namespace Game
 {
@@ -29,8 +30,9 @@ namespace Game
 	void HealthComponent::TakeDamage(int amount)
 	{
 		m_Health -= amount;
-		Engine::Event e(Engine::HashEventID("Damaged"));
-		e.args = std::move(std::make_unique<DamagedEventArgs>(amount, m_Health));
+		Engine::EventInfo e{ Engine::CreateEvent<Event::PlayerDamaged>() };
+		e.GetArgs<Event::PlayerDamaged>()->damage = amount;
+		e.GetArgs<Event::PlayerDamaged>()->newhealth = m_Health;
 		m_DamageEvent->NotifyObservers(e);
 	}
 	PlayerUIComponent::PlayerUIComponent(Engine::GameObject& UIGameObject, Engine::GameObject& player, std::shared_ptr<Engine::Font> pFont) :
@@ -38,12 +40,14 @@ namespace Game
 		m_pHealthComponent{ player.GetComponent<HealthComponent>() },
 		m_pScoreComponent{ player.GetComponent<ScoreComponent>() }
 	{
-		m_pHealthComponent->DamageEvent().AddObserver(this);
+		m_pHealthComponent->OnDamageEvent().AddObserver(this);
 		auto livesObject = std::make_unique<Engine::GameObject>();
 		m_pLivesText = livesObject->AddComponent<Engine::TextRendererComponent>("", pFont);
-		m_pScoreComponent->IncreasedScoreEvent().AddObserver(this);
+
+		m_pScoreComponent->OnIncreasedScoreEvent().AddObserver(this);
 		auto scoreObject = std::make_unique<Engine::GameObject>();
 		m_pScoreText = scoreObject->AddComponent<Engine::TextRendererComponent>("", pFont);
+
 		scoreObject->SetLocalPosition(0.f, 25.f);
 		livesObject->SetParent(&UIGameObject);
 		scoreObject->SetParent(&UIGameObject);
@@ -56,19 +60,25 @@ namespace Game
 		SetTextComponentText(m_pScoreText, "Score: ", std::to_string(0));
 	}
 
-	void PlayerUIComponent::Notify(const Engine::Event& event)
+	PlayerUIComponent::~PlayerUIComponent()
 	{
-		switch (event.id)
+		m_pHealthComponent->OnDamageEvent().RemoveObserver(this);
+		m_pScoreComponent->OnIncreasedScoreEvent().RemoveObserver(this);
+	}
+
+	void PlayerUIComponent::OnNotify(Engine::EventInfo& event)
+	{
+		switch (event.GetID())
 		{
-		case Engine::HashEventID("Damaged"):
+		case Event::PlayerDamaged::ID:
 		{
-			auto args = static_cast<DamagedEventArgs*>(event.args.get());
+			auto args = event.GetArgs<Event::PlayerDamaged>();
 			SetTextComponentText(m_pLivesText, "Lives: ", std::to_string(args->newhealth));
 			break;
 		}
-		case Engine::HashEventID("IncreasedScore"):
+		case Event::IncreasedScore::ID:
 		{
-			auto args = static_cast<IncreasedScoreEventArgs*>(event.args.get());
+			auto args = event.GetArgs<Event::IncreasedScore>();
 			SetTextComponentText(m_pScoreText, "Score: ", std::to_string(args->newScore));
 		}
 		}
@@ -87,8 +97,8 @@ namespace Game
 	void ScoreComponent::IncreaseScore(int points)
 	{
 		m_Score += points;
-		Engine::Event e(Engine::HashEventID("IncreasedScore"));
-		e.args = std::move(std::make_unique<IncreasedScoreEventArgs>(m_Score));
+		Engine::EventInfo e{ Engine::CreateEvent<Event::IncreasedScore>() };
+		e.GetArgs<Event::IncreasedScore>()->newScore = m_Score;
 		m_IncreasedScoreEvent->NotifyObservers(e);
 	}
 }
