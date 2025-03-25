@@ -82,13 +82,13 @@ target_include_directories(${TARGET_NAME} PUBLIC
     ${glm_SOURCE_DIR}
 )
 
-set_target_properties(${TARGET_NAME} PROPERTIES
-    RUNTIME_DLLS "${DLL_DEPENDENCIES}"
-)
-
 # Set DLL var so others linking against this library can use it to copy the DLL's next to their exe
 set(DLL_DEPENDENCIES
     ${SDL2_LIBRARY_DLL}
     ${SDL2_IMAGE_LIBRARY_DLL}
     ${SDL2_TTF_LIBRARY_DLL}
 )
+set_target_properties(${TARGET_NAME} PROPERTIES
+    RUNTIME_DLLS "${DLL_DEPENDENCIES}"
+)
+
