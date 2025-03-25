@@ -60,7 +60,7 @@ include(ImGui)
 include(XInput)
 
 # Create static library
-add_library(${TARGET_NAME} ${SOURCE_FILES} ${INCLUDE_FILES})
+add_library(${TARGET_NAME} STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 target_link_libraries(${TARGET_NAME} PRIVATE
     ${SDL2_LIBRARIES} 
     ${SDL2_IMAGE_LIBRARIES} 
@@ -82,21 +82,13 @@ target_include_directories(${TARGET_NAME} PUBLIC
     ${glm_SOURCE_DIR}
 )
 
-# Enable c++20 features
-target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
+set_target_properties(${TARGET_NAME} PROPERTIES
+    RUNTIME_DLLS "${DLL_DEPENDENCIES}"
+)
 
 # Set DLL var so others linking against this library can use it to copy the DLL's next to their exe
 set(DLL_DEPENDENCIES
     ${SDL2_LIBRARY_DLL}
     ${SDL2_IMAGE_LIBRARY_DLL}
     ${SDL2_TTF_LIBRARY_DLL}
-)
-set_target_properties(${TARGET_NAME} PROPERTIES
-    RUNTIME_DLLS "${DLL_DEPENDENCIES}"
-)
-
-# compile at max warning level + treat warnings as errors
-target_compile_options(${TARGET_NAME} PRIVATE
-    $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
-    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
 )
