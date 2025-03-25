@@ -2,6 +2,7 @@
 #include <array>
 #include <memory>
 #include <concepts>
+#include <cassert>
 
 namespace Engine
 {
@@ -37,6 +38,8 @@ namespace Engine
 		template<typename EventName>
 		inline typename EventName::Args& GetArgs()
 		{
+			assert(m_Args && "m_Args is null!");
+			assert(dynamic_cast<typename EventName::Args*>(m_Args.get()) && "EventInfo type mismatch!");
 			return *static_cast<typename EventName::Args*>(m_Args.get());
 		}
 	private:
@@ -52,7 +55,7 @@ namespace Engine
 
 	template<typename EventName, typename... ConstructorArgs>
 	requires std::constructible_from<typename EventName::Args, ConstructorArgs...>
-	EventInfo CreateEvent(ConstructorArgs&&... args)
+	inline EventInfo CreateEvent(ConstructorArgs&&... args)
 	{
 		EventInfo e(EventName::ID);
 		e.m_Args = std::make_unique<typename EventName::Args>(std::forward<ConstructorArgs>(args)...);
