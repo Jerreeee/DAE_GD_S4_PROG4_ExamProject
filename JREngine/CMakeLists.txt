@@ -82,6 +82,15 @@ target_include_directories(${TARGET_NAME} PUBLIC
     ${glm_SOURCE_DIR}
 )
 
+# Enable C++20
+target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
+
+# Compile warnings as errors
+target_compile_options(${TARGET_NAME} PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
+)
+
 # Set DLL var so others linking against this library can use it to copy the DLL's next to their exe
 set(DLL_DEPENDENCIES
     ${SDL2_LIBRARY_DLL}

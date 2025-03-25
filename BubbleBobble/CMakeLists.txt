@@ -26,10 +26,12 @@ target_link_libraries(${TARGET_NAME} PRIVATE
 target_include_directories(${TARGET_NAME} PRIVATE
     ${VLD_INCLUDE_DIR}
 )
-# Enable C++20
-target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
+
 
 set_target_properties(${TARGET_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>")
+
+# Enable C++20
+target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 
 # Compile warnings as errors
 target_compile_options(${TARGET_NAME} PRIVATE
