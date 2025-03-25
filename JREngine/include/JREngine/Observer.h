@@ -3,7 +3,7 @@
 #include <algorithm>
 #include "Event.h"
 
-namespace Engine
+namespace JREngine
 {
 	class GameObject;
 	class Observable;

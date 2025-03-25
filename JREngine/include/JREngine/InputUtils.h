@@ -2,7 +2,7 @@
 #include <bitset>
 #include <type_traits>
 
-namespace Engine::Input
+namespace JREngine::Input
 {
 	class Keyboard;
 	class Controller;

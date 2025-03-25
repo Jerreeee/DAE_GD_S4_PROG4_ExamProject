@@ -1,17 +1,15 @@
 #include <stdexcept>
 #include <sstream>
 #include <iostream>
-
 #if WIN32
 #define WIN32_LEAN_AND_MEAN 
 #include <windows.h>
 #endif
-
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
-#include "Minigin.h"
+#include "JREngine.h"
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "Renderer.h"
@@ -65,7 +63,7 @@ void PrintSDLVersion()
 	LogSDLVersion("We linked against SDL_ttf version ", version);
 }
 
-Engine::Minigin::Minigin(const std::filesystem::path &dataPath)
+JREngine::JREngine::JREngine(const std::filesystem::path &dataPath)
 {
 	PrintSDLVersion();
 	
@@ -92,7 +90,7 @@ Engine::Minigin::Minigin(const std::filesystem::path &dataPath)
 	Timer::GetInstance().SetFixedTimeStep(m_FixedTimeStep);
 }
 
-Engine::Minigin::~Minigin()
+JREngine::JREngine::~JREngine()
 {
 	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(g_window);
@@ -100,7 +98,7 @@ Engine::Minigin::~Minigin()
 	SDL_Quit();
 }
 
-void Engine::Minigin::Run(const std::function<void()>& load)
+void JREngine::JREngine::Run(const std::function<void()>& load)
 {
 	load();
 
@@ -114,7 +112,7 @@ void Engine::Minigin::Run(const std::function<void()>& load)
 #endif
 }
 
-void Engine::Minigin::RunOneFrame()
+void JREngine::JREngine::RunOneFrame()
 {
 	const auto currentTime = std::chrono::high_resolution_clock::now();
 	const float deltaTime = std::chrono::duration<float>(currentTime - m_LastTime).count();

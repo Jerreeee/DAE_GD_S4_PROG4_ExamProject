@@ -1,7 +1,7 @@
 #include "SceneManager.h"
 #include "Scene.h"
 
-void Engine::SceneManager::Update()
+void JREngine::SceneManager::Update()
 {
 	for(auto& scene : m_scenes)
 	{
@@ -9,7 +9,7 @@ void Engine::SceneManager::Update()
 	}
 }
 
-void Engine::SceneManager::Cleanup()
+void JREngine::SceneManager::Cleanup()
 {
 	for (const auto& scene : m_scenes)
 	{
@@ -17,10 +17,10 @@ void Engine::SceneManager::Cleanup()
 	}
 }
 
-Engine::SceneManager::SceneManager() : m_scenes() {}
-Engine::SceneManager::~SceneManager() {}
+JREngine::SceneManager::SceneManager() : m_scenes() {}
+JREngine::SceneManager::~SceneManager() {}
 
-Engine::Scene& Engine::SceneManager::CreateScene(const std::string& name)
+JREngine::Scene& JREngine::SceneManager::CreateScene(const std::string& name)
 {
 	auto scene = std::unique_ptr<Scene>(new Scene(name));
 	auto pScene = scene.get();

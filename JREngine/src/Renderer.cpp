@@ -23,7 +23,7 @@ int GetOpenGLDriverIndex()
 	return openglIndex;
 }
 
-void Engine::Renderer::Init(SDL_Window* window)
+void JREngine::Renderer::Init(SDL_Window* window)
 {
 	m_window = window;
 	m_renderer = SDL_CreateRenderer(window, GetOpenGLDriverIndex(), SDL_RENDERER_ACCELERATED);
@@ -41,7 +41,7 @@ void Engine::Renderer::Init(SDL_Window* window)
 	ImGui_ImplSDLRenderer2_Init(m_renderer);
 }
 
-void Engine::Renderer::Render()
+void JREngine::Renderer::Render()
 {
 	const auto& color = GetBackgroundColor();
 	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
@@ -61,7 +61,7 @@ void Engine::Renderer::Render()
 	SDL_RenderPresent(m_renderer);
 }
 
-void Engine::Renderer::Destroy()
+void JREngine::Renderer::Destroy()
 {
 	if (m_renderer != nullptr)
 	{
@@ -74,7 +74,7 @@ void Engine::Renderer::Destroy()
 	}
 }
 
-void Engine::Renderer::RenderTexture(const Texture2D& texture, const float x, const float y) const
+void JREngine::Renderer::RenderTexture(const Texture2D& texture, const float x, const float y) const
 {
 	SDL_Rect dst{};
 	dst.x = static_cast<int>(x);
@@ -83,7 +83,7 @@ void Engine::Renderer::RenderTexture(const Texture2D& texture, const float x, co
 	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
 }
 
-void Engine::Renderer::RenderTexture(const Texture2D& texture, const float x, const float y, const float width, const float height) const
+void JREngine::Renderer::RenderTexture(const Texture2D& texture, const float x, const float y, const float width, const float height) const
 {
 	SDL_Rect dst{};
 	dst.x = static_cast<int>(x);
@@ -93,14 +93,14 @@ void Engine::Renderer::RenderTexture(const Texture2D& texture, const float x, co
 	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
 }
 
-SDL_Renderer* Engine::Renderer::GetSDLRenderer() const { return m_renderer; }
+SDL_Renderer* JREngine::Renderer::GetSDLRenderer() const { return m_renderer; }
 
-void Engine::Renderer::RegisterRendererComponent(RendererComponentBase* pRendererComponent)
+void JREngine::Renderer::RegisterRendererComponent(RendererComponentBase* pRendererComponent)
 {
 	m_RendererComponents.emplace_back(pRendererComponent);
 }
 
-void Engine::Renderer::UnRegisterRendererComponent(RendererComponentBase* pRendererComponent)
+void JREngine::Renderer::UnRegisterRendererComponent(RendererComponentBase* pRendererComponent)
 {
 	m_RendererComponents.erase(std::find(m_RendererComponents.begin(), m_RendererComponents.end(), pRendererComponent));
 }

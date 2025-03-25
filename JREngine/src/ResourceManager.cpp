@@ -8,7 +8,7 @@
 
 namespace fs = std::filesystem;
 
-void Engine::ResourceManager::Init(const std::filesystem::path& dataPath)
+void JREngine::ResourceManager::Init(const std::filesystem::path& dataPath)
 {
 	m_dataPath = dataPath;
 
@@ -18,7 +18,7 @@ void Engine::ResourceManager::Init(const std::filesystem::path& dataPath)
 	}
 }
 
-std::shared_ptr<Engine::Texture2D> Engine::ResourceManager::LoadTexture(const std::string& file)
+std::shared_ptr<JREngine::Texture2D> JREngine::ResourceManager::LoadTexture(const std::string& file)
 {
 	const auto fullPath = m_dataPath/file;
 	const auto filename = fs::path(fullPath).filename().string();
@@ -27,7 +27,7 @@ std::shared_ptr<Engine::Texture2D> Engine::ResourceManager::LoadTexture(const st
 	return m_loadedTextures.at(filename);
 }
 
-std::shared_ptr<Engine::Font> Engine::ResourceManager::LoadFont(const std::string& file, uint8_t size)
+std::shared_ptr<JREngine::Font> JREngine::ResourceManager::LoadFont(const std::string& file, uint8_t size)
 	{
 	const auto fullPath = m_dataPath/file;
 	const auto filename = fs::path(fullPath).filename().string();
@@ -37,7 +37,7 @@ std::shared_ptr<Engine::Font> Engine::ResourceManager::LoadFont(const std::strin
 	return m_loadedFonts.at(key);
 	}
 
-void Engine::ResourceManager::UnloadUnusedResources()
+void JREngine::ResourceManager::UnloadUnusedResources()
 {
 	for (auto it = m_loadedTextures.begin(); it != m_loadedTextures.end();)
 	{

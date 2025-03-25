@@ -1,6 +1,6 @@
 #include "Timer.h"
 
-namespace Engine
+namespace JREngine
 {
 	void Timer::SetFixedTimeStep(float fixedTimeStep)
 	{

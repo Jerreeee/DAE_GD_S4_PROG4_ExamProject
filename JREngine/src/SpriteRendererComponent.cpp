@@ -2,7 +2,7 @@
 #include "ResourceManager.h"
 #include "Renderer.h"
 
-namespace Engine
+namespace JREngine
 {
 	SpriteRendererComponent::SpriteRendererComponent(GameObject& gameObject)
 		: RendererComponentBase(gameObject)

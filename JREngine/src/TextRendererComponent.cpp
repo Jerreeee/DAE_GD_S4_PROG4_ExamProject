@@ -5,7 +5,7 @@
 #include "Font.h"
 #include "Texture2D.h"
 
-Engine::TextRendererComponent::TextRendererComponent(GameObject& gameObject, const std::string& text, std::shared_ptr<Font> font) :
+JREngine::TextRendererComponent::TextRendererComponent(GameObject& gameObject, const std::string& text, std::shared_ptr<Font> font) :
 	RendererComponentBase(gameObject),
 	m_Text(text),
 	m_Font(std::move(font)),
@@ -14,7 +14,7 @@ Engine::TextRendererComponent::TextRendererComponent(GameObject& gameObject, con
 	m_NeedsUpdate = text != "";
 }
 
-void Engine::TextRendererComponent::Update()
+void JREngine::TextRendererComponent::Update()
 {
 	if (m_NeedsUpdate)
 	{
@@ -35,7 +35,7 @@ void Engine::TextRendererComponent::Update()
 	}
 }
 
-void Engine::TextRendererComponent::Render() const
+void JREngine::TextRendererComponent::Render() const
 {
 	if (m_TextTexture)
 	{
@@ -45,7 +45,7 @@ void Engine::TextRendererComponent::Render() const
 }
 
 // This implementation uses the "dirty flag" pattern
-void Engine::TextRendererComponent::SetText(const std::string& text)
+void JREngine::TextRendererComponent::SetText(const std::string& text)
 {
 	m_Text = text;
 	m_NeedsUpdate = true;

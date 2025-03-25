@@ -4,8 +4,10 @@
 #include <vld.h>
 #endif
 #endif
+#include <filesystem>
+namespace fs = std::filesystem;
 
-#include "JREngine/Minigin.h"
+#include "JREngine/JREngine.h"
 #include "JREngine/SceneManager.h"
 #include "JREngine/InputManager.h"
 #include "JREngine/ResourceManager.h"
@@ -13,39 +15,52 @@
 #include "JREngine/Scene.h"
 #include "JREngine/TextRendererComponent.h"
 #include "JREngine/SpriteRendererComponent.h"
-#include "JREngine/FPSComponent.h"
-#include "JREngine/RotateParentComponent.h"
-#include <filesystem>
-namespace fs = std::filesystem;
 
-#include "GameCommands.h"
-#include "GameComponents.h"
+#include "FPSComponent.h"
+#include "Commands.h"
+#include "Components.h"
 
-namespace Game
+namespace BubbleBobble
+{
+	void load();
+}
+
+int main(int, char* [])
+{
+	fs::path data_location = "./Data/";
+	if (!fs::exists(data_location))
+		data_location = "../Data/";
+
+	JREngine::JREngine engine(data_location);
+	engine.Run(BubbleBobble::load);
+	return 0;
+}
+
+namespace BubbleBobble
 {
 	void load()
 	{
-		auto pFont = Engine::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
+		auto pFont = JREngine::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
 
-		auto& scene = Engine::SceneManager::GetInstance().CreateScene("Demo");
+		auto& scene = JREngine::SceneManager::GetInstance().CreateScene("Demo");
 
-		auto go = std::make_unique<Engine::GameObject>("Background Image");
-		if (auto pComponent = go->AddComponent<Engine::SpriteRendererComponent>(); pComponent)
+		auto go = std::make_unique<JREngine::GameObject>("Background Image");
+		if (auto pComponent = go->AddComponent<JREngine::SpriteRendererComponent>(); pComponent)
 		{
 			pComponent->SetTexture("background.tga");
 		}
 		scene.Add(std::move(go));
 
 
-		using namespace Engine::Input;
+		using namespace JREngine::Input;
 		InputManager& inputManager = InputManager::GetInstance();
 
 		//##################
 		//Player 1
 		//##################
-		auto player1 = std::make_unique<Engine::GameObject>("Player1");
+		auto player1 = std::make_unique<JREngine::GameObject>("Player1");
 		player1->SetLocalPosition(216, 180);
-		if (auto* pComponent = player1->AddComponent<Engine::SpriteRendererComponent>(); pComponent)
+		if (auto* pComponent = player1->AddComponent<JREngine::SpriteRendererComponent>(); pComponent)
 		{
 			pComponent->SetTexture("logo.tga");
 		}
@@ -68,9 +83,9 @@ namespace Game
 		//##################
 		//Player 2
 		//##################
-		auto player2 = std::make_unique<Engine::GameObject>("Player 2");
+		auto player2 = std::make_unique<JREngine::GameObject>("Player 2");
 		player2->SetLocalPosition(416, 180);
-		if (auto* pComponent = player2->AddComponent<Engine::SpriteRendererComponent>(); pComponent)
+		if (auto* pComponent = player2->AddComponent<JREngine::SpriteRendererComponent>(); pComponent)
 		{
 			pComponent->SetTexture("logo.tga");
 		}
@@ -95,16 +110,16 @@ namespace Game
 		//##################
 
 		//Keybind info
-		auto p1UIInfo = std::make_unique<Engine::GameObject>();
-		p1UIInfo->AddComponent<Engine::TextRendererComponent>("Player1 | Move: DPAD | Damage: FACE_DOWN | Score: FACE_UP", pFont);
-		auto p2UIInfo = std::make_unique<Engine::GameObject>();
-		p2UIInfo->AddComponent<Engine::TextRendererComponent>("Player2 | Move: W,A,S,D | Damage: F | Score: G", pFont);
+		auto p1UIInfo = std::make_unique<JREngine::GameObject>();
+		p1UIInfo->AddComponent<JREngine::TextRendererComponent>("Player1 | Move: DPAD | Damage: FACE_DOWN | Score: FACE_UP", pFont);
+		auto p2UIInfo = std::make_unique<JREngine::GameObject>();
+		p2UIInfo->AddComponent<JREngine::TextRendererComponent>("Player2 | Move: W,A,S,D | Damage: F | Score: G", pFont);
 
 		//Player UI
-		auto UI = std::make_unique<Engine::GameObject>("UI");
-		auto player1UI = std::make_unique<Engine::GameObject>("player1UI");
+		auto UI = std::make_unique<JREngine::GameObject>("UI");
+		auto player1UI = std::make_unique<JREngine::GameObject>("player1UI");
 		player1UI->AddComponent<PlayerUIComponent>(*(player1.get()), pFont);
-		auto player2UI = std::make_unique<Engine::GameObject>("player2UI");
+		auto player2UI = std::make_unique<JREngine::GameObject>("player2UI");
 		player2UI->AddComponent<PlayerUIComponent>(*(player2.get()), pFont);
 
 		p1UIInfo->SetParent(UI.get());
@@ -127,14 +142,4 @@ namespace Game
 		scene.Add(std::move(player2));
 	}
 
-}
-int main(int, char*[])
-{
-	fs::path data_location = "./Data/";
-	if(!fs::exists(data_location))
-		data_location = "../Data/";
-
-	Engine::Minigin engine(data_location);
-	engine.Run(Game::load);
-    return 0;
 }

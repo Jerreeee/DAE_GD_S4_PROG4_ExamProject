@@ -1,14 +1,19 @@
 #pragma once
-#include "ComponentBase.h"
-#include "TextRendererComponent.h"
+#include "JREngine/ComponentBase.h"
+#include "JREngine/TextRendererComponent.h"
 
-namespace Engine
+namespace JREngine
+{
+	class GameObject;
+}
+
+namespace BubbleBobble
 {
 	class Font;
-	class FPSComponent final : public ComponentBase
+	class FPSComponent final : public JREngine::ComponentBase
 	{
 	public:
-		FPSComponent(GameObject& gameObject, std::shared_ptr<Font> font, float updateRate = 1.f);
+		FPSComponent(JREngine::GameObject& gameObject, std::shared_ptr<JREngine::Font> font, float updateRate = 1.f);
 
 		FPSComponent(const FPSComponent& other) = delete;
 		FPSComponent(FPSComponent&& other) = delete;
@@ -23,7 +28,7 @@ namespace Engine
 		float m_UpdateRate{};
 		float m_AccTime{};
 		float m_FPS{};
-		TextRendererComponent* m_pTextRendererComponent{};
+		JREngine::TextRendererComponent* m_pTextRendererComponent{};
 	};
 }
 

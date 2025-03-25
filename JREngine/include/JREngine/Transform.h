@@ -1,7 +1,7 @@
 #pragma once
 #include <glm.hpp>
 
-namespace Engine
+namespace JREngine
 {
 	class Transform final
 	{

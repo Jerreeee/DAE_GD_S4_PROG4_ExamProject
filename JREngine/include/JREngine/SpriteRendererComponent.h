@@ -2,7 +2,7 @@
 #include "RendererComponentBase.h"
 #include <string>
 
-namespace Engine
+namespace JREngine
 {
 	class Texture2D;
 	class SpriteRendererComponent final: public RendererComponentBase

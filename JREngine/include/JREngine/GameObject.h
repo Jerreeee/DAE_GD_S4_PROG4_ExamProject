@@ -9,7 +9,7 @@
 #include <type_traits>
 #include <concepts>
 
-namespace Engine
+namespace JREngine
 {
 	template<typename T>
 	concept DerivedFromComponentBase = std::is_base_of_v<ComponentBase, T>;

@@ -2,27 +2,27 @@
 #include "glm.hpp"
 #include "JREngine/Command.h"
 
-namespace Engine
+namespace JREngine
 {
 	class GameObject;
 }
 
-namespace Game
+namespace BubbleBobble
 {
-	class MoveCommand final : public Engine::Command
+	class MoveCommand final : public JREngine::Command
 	{
 	public:
-		MoveCommand(Engine::GameObject& gameObject, float speed, glm::vec2 direction);
+		MoveCommand(JREngine::GameObject& gameObject, float speed, glm::vec2 direction);
 
 		virtual void Execute() override;
 	private:
-		Engine::GameObject& m_GameObject;
+		JREngine::GameObject& m_GameObject;
 		float m_Speed{};
 		glm::vec2 m_Direction{};
 	};
 
 	class HealthComponent;
-	class TakeDamageCommand final : public Engine::Command
+	class TakeDamageCommand final : public JREngine::Command
 	{
 	public:
 		TakeDamageCommand(HealthComponent* pHealthComponent, int amount = 1);
@@ -33,7 +33,7 @@ namespace Game
 	};
 
 	class ScoreComponent;
-	class IncreaseScoreCommand : public Engine::Command
+	class IncreaseScoreCommand : public JREngine::Command
 	{
 	public:
 		IncreaseScoreCommand(ScoreComponent* pScoreComponent, int amount = 1);

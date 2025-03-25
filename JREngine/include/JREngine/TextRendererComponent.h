@@ -3,7 +3,7 @@
 #include <memory>
 #include "RendererComponentBase.h"
 
-namespace Engine
+namespace JREngine
 {
 	class Font;
 	class Texture2D;

@@ -1,12 +1,12 @@
 #include "JREngine/GameObject.h"
 #include "JREngine/Timer.h"
 
-#include "GameCommands.h"
-#include "GameComponents.h"
+#include "Commands.h"
+#include "Components.h"
 
-namespace Game
+namespace BubbleBobble
 {
-	MoveCommand::MoveCommand(Engine::GameObject& gameObject, float speed, glm::vec2 direction) :
+	MoveCommand::MoveCommand(JREngine::GameObject& gameObject, float speed, glm::vec2 direction) :
 		m_GameObject{ gameObject },
 		m_Speed{ speed },
 		m_Direction{ direction }
@@ -16,7 +16,7 @@ namespace Game
 	void MoveCommand::Execute()
 	{
 		glm::vec3 pos = m_GameObject.GetLocalPosition();
-		float offset = m_Speed * Engine::Timer::GetInstance().GetDeltaTime();
+		float offset = m_Speed * JREngine::Timer::GetInstance().GetDeltaTime();
 		pos.x += offset * m_Direction.x;
 		pos.y += offset * m_Direction.y;
 		m_GameObject.SetLocalPosition(pos);

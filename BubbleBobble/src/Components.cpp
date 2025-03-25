@@ -4,16 +4,16 @@
 #include "JREngine/SceneManager.h"
 #include "JREngine/Scene.h"
 
-#include "GameComponents.h"
-#include "GameEvents.h"
+#include "Components.h"
+#include "Events.h"
 
-namespace Game
+namespace BubbleBobble
 {
-	HealthComponent::HealthComponent(Engine::GameObject& gameObject, int maxHealth) :
-		Engine::ComponentBase(gameObject),
+	HealthComponent::HealthComponent(JREngine::GameObject& gameObject, int maxHealth) :
+		JREngine::ComponentBase(gameObject),
 		m_Health{ maxHealth },
 		m_MaxHealth{ maxHealth },
-		m_DamageEvent{ std::make_unique<Engine::Observable>() }
+		m_DamageEvent{ std::make_unique<JREngine::Observable>() }
 	{
 	}
 	HealthComponent::~HealthComponent() = default;
@@ -30,27 +30,27 @@ namespace Game
 	void HealthComponent::TakeDamage(int amount)
 	{
 		m_Health -= amount;
-		Engine::EventInfo e{ Engine::CreateEvent<Event::PlayerDamaged>(amount, m_Health) };
+		JREngine::EventInfo e{ JREngine::CreateEvent<Event::PlayerDamaged>(amount, m_Health) };
 		m_DamageEvent->NotifyObservers(e);
 	}
-	PlayerUIComponent::PlayerUIComponent(Engine::GameObject& UIGameObject, Engine::GameObject& player, std::shared_ptr<Engine::Font> pFont) :
+	PlayerUIComponent::PlayerUIComponent(JREngine::GameObject& UIGameObject, JREngine::GameObject& player, std::shared_ptr<JREngine::Font> pFont) :
 		ComponentBase(UIGameObject),
 		m_pHealthComponent{ player.GetComponent<HealthComponent>() },
 		m_pScoreComponent{ player.GetComponent<ScoreComponent>() }
 	{
 		m_pHealthComponent->OnDamageEvent().AddObserver(this);
-		auto livesObject = std::make_unique<Engine::GameObject>();
-		m_pLivesText = livesObject->AddComponent<Engine::TextRendererComponent>("", pFont);
+		auto livesObject = std::make_unique<JREngine::GameObject>();
+		m_pLivesText = livesObject->AddComponent<JREngine::TextRendererComponent>("", pFont);
 
 		m_pScoreComponent->OnIncreasedScoreEvent().AddObserver(this);
-		auto scoreObject = std::make_unique<Engine::GameObject>();
-		m_pScoreText = scoreObject->AddComponent<Engine::TextRendererComponent>("", pFont);
+		auto scoreObject = std::make_unique<JREngine::GameObject>();
+		m_pScoreText = scoreObject->AddComponent<JREngine::TextRendererComponent>("", pFont);
 
 		scoreObject->SetLocalPosition(0.f, 25.f);
 		livesObject->SetParent(&UIGameObject);
 		scoreObject->SetParent(&UIGameObject);
 
-		auto& scene = Engine::SceneManager::GetInstance().GetCurrentScene();
+		auto& scene = JREngine::SceneManager::GetInstance().GetCurrentScene();
 		scene.Add(std::move(livesObject));
 		scene.Add(std::move(scoreObject));
 
@@ -64,7 +64,7 @@ namespace Game
 		m_pScoreComponent->OnIncreasedScoreEvent().RemoveObserver(this);
 	}
 
-	void PlayerUIComponent::OnNotify(Engine::EventInfo& event)
+	void PlayerUIComponent::OnNotify(JREngine::EventInfo& event)
 	{
 		switch (event.GetID())
 		{
@@ -81,21 +81,21 @@ namespace Game
 		}
 		}
 	}
-	void PlayerUIComponent::SetTextComponentText(Engine::TextRendererComponent* pTextComp, const std::string& prefix, const std::string& text)
+	void PlayerUIComponent::SetTextComponentText(JREngine::TextRendererComponent* pTextComp, const std::string& prefix, const std::string& text)
 	{
 		std::stringstream ss{};
 		ss << prefix << text;
 		pTextComp->SetText(ss.str());
 	}
-	ScoreComponent::ScoreComponent(Engine::GameObject& gameObject) :
+	ScoreComponent::ScoreComponent(JREngine::GameObject& gameObject) :
 		ComponentBase(gameObject),
-		m_IncreasedScoreEvent{ std::make_unique<Engine::Observable>() }
+		m_IncreasedScoreEvent{ std::make_unique<JREngine::Observable>() }
 	{
 	}
 	void ScoreComponent::IncreaseScore(int points)
 	{
 		m_Score += points;
-		Engine::EventInfo e{ Engine::CreateEvent<Event::IncreasedScore>(m_Score) };
+		JREngine::EventInfo e{ JREngine::CreateEvent<Event::IncreasedScore>(m_Score) };
 		m_IncreasedScoreEvent->NotifyObservers(e);
 	}
 }

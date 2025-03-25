@@ -2,7 +2,7 @@
 #include <memory>
 #include "Keyboard.h"
 
-namespace Engine::Input
+namespace JREngine::Input
 {
 	class SDLKeyboard final: public Keyboard
 	{

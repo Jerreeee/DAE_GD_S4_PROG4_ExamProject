@@ -6,7 +6,7 @@
 #include <memory>
 #include "Command.h"
 
-namespace Engine
+namespace JREngine
 {
 	class Command;
 namespace Input

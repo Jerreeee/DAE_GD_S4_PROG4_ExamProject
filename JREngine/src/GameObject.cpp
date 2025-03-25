@@ -3,7 +3,7 @@
 #include "ResourceManager.h"
 #include "Renderer.h"
 
-namespace Engine
+namespace JREngine
 {
 	GameObject::GameObject(const std::string& name)
 		: m_Name(name)

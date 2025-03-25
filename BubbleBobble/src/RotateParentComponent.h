@@ -1,12 +1,17 @@
 #pragma once
-#include "ComponentBase.h"
+#include "JREngine/ComponentBase.h"
 
-namespace Engine
+namespace JREngine
 {
-	class RotateParentComponent final: public ComponentBase
+	class GameObject;
+}
+
+namespace BubbleBobble
+{
+	class RotateParentComponent final: public JREngine::ComponentBase
 	{
 	public:
-		RotateParentComponent(GameObject& gameObject, float radius, float rotSpeedDeg);
+		RotateParentComponent(JREngine::GameObject& gameObject, float radius, float rotSpeedDeg);
 		
 		RotateParentComponent(const RotateParentComponent& other) = delete;
 		RotateParentComponent(RotateParentComponent&& other) = delete;

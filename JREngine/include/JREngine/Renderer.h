@@ -3,7 +3,7 @@
 #include "Singleton.h"
 #include <vector>
 
-namespace Engine
+namespace JREngine
 {
 	class RendererComponentBase;
 	class UIComponentBase;

@@ -1,22 +1,22 @@
-#include "FPSComponent.h"
-#include "GameObject.h"
 #include <format>
 #include <sstream>
-#include "Font.h"
+#include "JREngine/GameObject.h"
+#include "JREngine/Font.h"
+#include "FPSComponent.h"
 
-namespace Engine
+namespace BubbleBobble
 {
-	FPSComponent::FPSComponent(GameObject& gameObject, std::shared_ptr<Font> font, float updateRate)
+	FPSComponent::FPSComponent(JREngine::GameObject& gameObject, std::shared_ptr<JREngine::Font> font, float updateRate)
 		: ComponentBase(gameObject)
 		,m_UpdateRate{ updateRate }
 		,m_AccTime{ m_UpdateRate }
 	{
-		m_pTextRendererComponent = GetGameObject().AddComponent<Engine::TextRendererComponent>("", font);
+		m_pTextRendererComponent = GetGameObject().AddComponent<JREngine::TextRendererComponent>("", font);
 	}
 
 	void FPSComponent::Update()
 	{
-		float dt = Timer::GetInstance().GetDeltaTime();
+		float dt = JREngine::Timer::GetInstance().GetDeltaTime();
 		m_AccTime += dt;
 		if (m_AccTime < m_UpdateRate)
 			return;

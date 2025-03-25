@@ -1,7 +1,7 @@
 #pragma once
 #include "InputUtils.h"
 
-namespace Engine::Input
+namespace JREngine::Input
 {
 	class Controller
 	{

@@ -4,7 +4,7 @@
 #include "XBoxController.h"
 #include <vector>
 
-namespace Engine::Input
+namespace JREngine::Input
 {
 
 	class XBoxController::Impl final

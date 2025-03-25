@@ -2,7 +2,7 @@
 #include <string>
 
 struct _TTF_Font;
-namespace Engine
+namespace JREngine
 {
 	/**
 	 * Simple RAII wrapper for a _TTF_Font

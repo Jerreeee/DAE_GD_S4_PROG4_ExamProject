@@ -4,7 +4,7 @@
 #include <concepts>
 #include <cassert>
 
-namespace Engine
+namespace JREngine
 {
 	using EventID = uint32_t;
 

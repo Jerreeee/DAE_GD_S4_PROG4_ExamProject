@@ -1,6 +1,6 @@
 #include "Observer.h"
 #include <iostream>
-namespace Engine
+namespace JREngine
 {
 	void Observable::AddObserver(IObserver* pObserver)
 	{

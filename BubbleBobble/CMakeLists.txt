@@ -4,11 +4,15 @@ set(SOURCE_DIR src)
 
 set(SOURCE_FILES
     "${SOURCE_DIR}/Main.cpp"
-    "${SOURCE_DIR}/GameCommands.h"
-    "${SOURCE_DIR}/GameCommands.cpp"
-    "${SOURCE_DIR}/GameComponents.h"
-    "${SOURCE_DIR}/GameComponents.cpp"
-    "${SOURCE_DIR}/GameEvents.h"
+    "${SOURCE_DIR}/Commands.h"
+    "${SOURCE_DIR}/Commands.cpp"
+    "${SOURCE_DIR}/Components.h"
+    "${SOURCE_DIR}/Components.cpp"
+    "${SOURCE_DIR}/Events.h"
+    "${SOURCE_DIR}/FPSComponent.h"
+    "${SOURCE_DIR}/RotateParentComponent.h"
+    "${SOURCE_DIR}/FPSComponent.cpp"
+    "${SOURCE_DIR}/RotateParentComponent.cpp"
 )
 
 find_package(VLD CONFIG)
@@ -31,6 +35,10 @@ set_target_properties(${TARGET_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$
 target_compile_options(${TARGET_NAME} PRIVATE
     $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
     $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
+)
+
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${TARGET_NAME}>/Data"
 )
 
 # Get DLLs from the JREngine target

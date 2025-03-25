@@ -1,14 +1,14 @@
 set(TARGET_NAME JREngine)
 
-set(SOURCE_DIR src)
-set(INTERNAL_INCLUDE_DIR include/JREngine)
-set(EXTERNAL_INCLUDE_DIR include)
+set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(INTERNAL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/JREngine)
+set(EXTERNAL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(SOURCE_FILES
     "${SOURCE_DIR}/Font.cpp"
     "${SOURCE_DIR}/GameObject.cpp"
     "${SOURCE_DIR}/InputManager.cpp"
-    "${SOURCE_DIR}/Minigin.cpp"
+    "${SOURCE_DIR}/JREngine.cpp"
     "${SOURCE_DIR}/Renderer.cpp"
     "${SOURCE_DIR}/ResourceManager.cpp"
     "${SOURCE_DIR}/Scene.cpp"
@@ -17,23 +17,26 @@ set(SOURCE_FILES
     "${SOURCE_DIR}/Transform.cpp"
     "${SOURCE_DIR}/Timer.cpp"
     "${SOURCE_DIR}/ComponentBase.cpp"
-    "${SOURCE_DIR}/FPSComponent.cpp"
     "${SOURCE_DIR}/SpriteRendererComponent.cpp"
     "${SOURCE_DIR}/TextRendererComponent.cpp"
-    "${SOURCE_DIR}/RotateParentComponent.cpp"
     "${SOURCE_DIR}/RendererComponentBase.cpp"
+    "${SOURCE_DIR}/Controller.h"
+    "${SOURCE_DIR}/XBoxController.h"
     "${SOURCE_DIR}/XBoxController.cpp"
+    "${SOURCE_DIR}/Keyboard.h"
+    "${SOURCE_DIR}/SDLKeyboard.h"
     "${SOURCE_DIR}/SDLKeyboard.cpp"
     "${SOURCE_DIR}/Observer.cpp"
     "${SOURCE_DIR}/Event.cpp"
 )
 
 set(INCLUDE_FILES
+    "${INTERNAL_INCLUDE_DIR}/Singleton.h"
     "${INTERNAL_INCLUDE_DIR}/Font.h"
     "${INTERNAL_INCLUDE_DIR}/GameObject.h"
     "${INTERNAL_INCLUDE_DIR}/InputUtils.h"
     "${INTERNAL_INCLUDE_DIR}/InputManager.h"
-    "${INTERNAL_INCLUDE_DIR}/Minigin.h"
+    "${INTERNAL_INCLUDE_DIR}/JREngine.h"
     "${INTERNAL_INCLUDE_DIR}/Renderer.h"
     "${INTERNAL_INCLUDE_DIR}/ResourceManager.h"
     "${INTERNAL_INCLUDE_DIR}/Scene.h"
@@ -42,16 +45,10 @@ set(INCLUDE_FILES
     "${INTERNAL_INCLUDE_DIR}/Transform.h"
     "${INTERNAL_INCLUDE_DIR}/Timer.h"
     "${INTERNAL_INCLUDE_DIR}/ComponentBase.h"
-    "${INTERNAL_INCLUDE_DIR}/FPSComponent.h"
     "${INTERNAL_INCLUDE_DIR}/SpriteRendererComponent.h"
     "${INTERNAL_INCLUDE_DIR}/TextRendererComponent.h"
-    "${INTERNAL_INCLUDE_DIR}/RotateParentComponent.h"
     "${INTERNAL_INCLUDE_DIR}/RendererComponentBase.h"
     "${INTERNAL_INCLUDE_DIR}/Command.h"
-    "${INTERNAL_INCLUDE_DIR}/Controller.h"
-    "${INTERNAL_INCLUDE_DIR}/XBoxController.h"
-    "${INTERNAL_INCLUDE_DIR}/Keyboard.h"
-    "${INTERNAL_INCLUDE_DIR}/SDLKeyboard.h"
     "${INTERNAL_INCLUDE_DIR}/Observer.h"
     "${INTERNAL_INCLUDE_DIR}/Event.h"
 )
@@ -189,8 +186,6 @@ endif()
 add_library(${TARGET_NAME} ${SOURCE_FILES} ${INCLUDE_FILES})
 # Enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
-# Mark include files as public so ohters who link against this library also see them
-  
 # set libraries to link with
 target_link_libraries(${TARGET_NAME} PRIVATE
     ${SDL2_LIBRARIES} 
@@ -202,6 +197,7 @@ target_link_libraries(${TARGET_NAME} PRIVATE
 
 # set all include directories
 target_include_directories(${TARGET_NAME} PRIVATE
+    ${SOURCE_DIR} #for headers not exposed in include dir
     ${INTERNAL_INCLUDE_DIR}
     ${SDL2_INCLUDE_DIR} 
     ${SDL2_IMAGE_INCLUDE_DIR} 
@@ -213,6 +209,10 @@ target_include_directories(${TARGET_NAME} PUBLIC
     ${EXTERNAL_INCLUDE_DIR}
     ${glm_SOURCE_DIR}
 )
+
+message(STATUS "SOURCE_DIR resolved to: ${SOURCE_DIR}")
+get_target_property(JRE_INCLUDE_DIRS ${TARGET_NAME} INCLUDE_DIRECTORIES)
+message(STATUS "JREngine include dirs: ${JRE_INCLUDE_DIRS}")
 
 set(DLL_DEPENDENCIES
     ${SDL2_LIBRARY_DLL}

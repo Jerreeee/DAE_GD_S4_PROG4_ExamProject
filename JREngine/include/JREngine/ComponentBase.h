@@ -3,7 +3,7 @@
 #include "Transform.h"
 #include "Timer.h"
 
-namespace Engine
+namespace JREngine
 {
 	class GameObject;
 	class Transform;
