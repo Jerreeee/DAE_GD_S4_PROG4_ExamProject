@@ -3,7 +3,7 @@ set(TARGET_NAME BubbleBobble)
 set(SOURCE_DIR src)
 
 set(SOURCE_FILES
-    "${SOURCE_DIR}/Main.cpp"
+    "${SOURCE_DIR}/main.cpp"
     "${SOURCE_DIR}/Commands.h"
     "${SOURCE_DIR}/Commands.cpp"
     "${SOURCE_DIR}/Components.h"
@@ -19,12 +19,12 @@ find_package(VLD CONFIG)
 
 # Create executable
 add_executable(${TARGET_NAME} ${SOURCE_FILES})
-target_include_directories(${TARGET_NAME} PRIVATE
-    ${VLD_INCLUDE_DIR}
-)
 target_link_libraries(${TARGET_NAME} PRIVATE
     ${VLD_LIBRARY}
     JREngine
+)
+target_include_directories(${TARGET_NAME} PRIVATE
+    ${VLD_INCLUDE_DIR}
 )
 # Enable C++20
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
@@ -37,6 +37,7 @@ target_compile_options(${TARGET_NAME} PRIVATE
     $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
 )
 
+# Copy the Data/Resource dir next to the exe
 add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${TARGET_NAME}>/Data"
 )

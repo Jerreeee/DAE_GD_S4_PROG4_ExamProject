@@ -1,0 +1,6 @@
+find_library(XINPUT_LIBRARY XInput)
+if(XINPUT_LIBRARY)
+    message(STATUS "XInput library found: ${XINPUT_LIBRARY}")
+else()
+    message(FATAL_ERROR "XInput library not found")
+endif()
