@@ -1,5 +1,3 @@
-#include <SDL.h>
-
 #if _DEBUG
 // ReSharper disable once CppUnusedIncludeDirective
 #if __has_include(<vld.h>)
@@ -7,22 +5,21 @@
 #endif
 #endif
 
-#include "Minigin.h"
-#include "SceneManager.h"
-#include "InputManager.h"
-#include "ResourceManager.h"
-#include "GameObject.h"
-#include "Scene.h"
-#include "TextRendererComponent.h"
-#include "SpriteRendererComponent.h"
-#include "FPSComponent.h"
-#include "RotateParentComponent.h"
+#include "JREngine/Minigin.h"
+#include "JREngine/SceneManager.h"
+#include "JREngine/InputManager.h"
+#include "JREngine/ResourceManager.h"
+#include "JREngine/GameObject.h"
+#include "JREngine/Scene.h"
+#include "JREngine/TextRendererComponent.h"
+#include "JREngine/SpriteRendererComponent.h"
+#include "JREngine/FPSComponent.h"
+#include "JREngine/RotateParentComponent.h"
 #include <filesystem>
 namespace fs = std::filesystem;
 
 #include "GameCommands.h"
 #include "GameComponents.h"
-
 
 namespace Game
 {
@@ -131,14 +128,12 @@ namespace Game
 	}
 
 }
-int main(int, char*[]) {
-#if __EMSCRIPTEN__
-	fs::path data_location = "";
-#else
+int main(int, char*[])
+{
 	fs::path data_location = "./Data/";
 	if(!fs::exists(data_location))
 		data_location = "../Data/";
-#endif
+
 	Engine::Minigin engine(data_location);
 	engine.Run(Game::load);
     return 0;

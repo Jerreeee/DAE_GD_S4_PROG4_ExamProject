@@ -1,259 +1,31 @@
 cmake_minimum_required(VERSION 3.26)
-project(Minigin)
+project(Prog4)
 
-set(TARGET_NAME JREngine)
-set(TARGET_PARAM WIN32)
+# Set the output directory
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# list source files here
-add_executable(${TARGET_NAME} WIN32 ${TARGET_PARAM}
-    "JREngine/Font.cpp"
-    "JREngine/Font.h"
-    "JREngine/GameObject.cpp"
-    "JREngine/GameObject.h"
-    "JREngine/InputManager.cpp"
-    "JREngine/InputManager.h"
-    "JREngine/Minigin.cpp"
-    "JREngine/Minigin.h"
-    "JREngine/Renderer.cpp"
-    "JREngine/Renderer.h"
-    "JREngine/ResourceManager.cpp"
-    "JREngine/ResourceManager.h"
-    "JREngine/Scene.cpp"
-    "JREngine/Scene.h"
-    "JREngine/SceneManager.cpp"
-    "JREngine/SceneManager.h"
-    "JREngine/Texture2D.cpp"
-    "JREngine/Texture2D.h"
-    "JREngine/Transform.cpp"
-    "JREngine/Transform.h"
-    "JREngine/Timer.cpp"
-    "JREngine/Timer.h"
-    "JREngine/ComponentBase.cpp"
-    "JREngine/ComponentBase.h"
-    "JREngine/FPSComponent.cpp"
-    "JREngine/FPSComponent.h"
-    "JREngine/SpriteRendererComponent.cpp"
-    "JREngine/SpriteRendererComponent.h"
-    "JREngine/TextRendererComponent.cpp"
-    "JREngine/TextRendererComponent.h"
-    "JREngine/RotateParentComponent.cpp"
-    "JREngine/RotateParentComponent.h"
-    "JREngine/RendererComponentBase.h"
-    "JREngine/RendererComponentBase.cpp"
-    "JREngine/Command.h"
-    "JREngine/Controller.h"
-    "JREngine/XBoxController.h"
-    "JREngine/XBoxController.cpp"
-    "JREngine/InputUtils.h"
-    "JREngine/Keyboard.h"
-    "JREngine/SDLKeyboard.h"
-    "JREngine/SDLKeyboard.cpp"
-    "JREngine/Observer.h"
-    "JREngine/Observer.cpp"
-    "JREngine/Event.h"
-    "JREngine/Event.cpp"
+# Enable C++20
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-    "BubbleBobble/Main.cpp"
-    "BubbleBobble/GameCommands.h"
-    "BubbleBobble/GameCommands.cpp"
-    "BubbleBobble/GameComponents.h"
-    "BubbleBobble/GameComponents.cpp"
-    "BubbleBobble/GameEvents.h"
-)
+#set(VENDOR_DIR ${CMAKE_SOURCE_DIR}/vendor)
+## Ensure vendor directory exists
+#if (NOT EXISTS "${VENDOR_DIR}")
+#    file(MAKE_DIRECTORY ${VENDOR_DIR})
+#endif()
 
-# enable c++20 features
-target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
-# set minigin as the default startup project
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${TARGET_NAME})
-
-include(FetchContent)
-# add glm
-FetchContent_Declare(
-    glm
-    URL https://github.com/g-truc/glm/releases/download/1.0.1/glm-1.0.1-light.zip
-    DOWNLOAD_NO_PROGRESS ON
-    DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/downloads
-)
-
-FetchContent_GetProperties(glm)
-if(NOT glm_POPULATED)
-    FetchContent_Populate(glm)
-endif()
-
-FetchContent_Declare(
-    ImGui
-    GIT_REPOSITORY https://github.com/ocornut/imgui.git
-    GIT_TAG v1.91.8-docking
-    GIT_SHALLOW TRUE)
-FetchContent_MakeAvailable(ImGui)
-
-# add SDL2
-FetchContent_Declare(
-    SDL2
-    URL https://www.libsdl.org/release/SDL2-devel-2.30.10-VC.zip 
-    DOWNLOAD_NO_PROGRESS ON
-    DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/downloads 
-)
-FetchContent_GetProperties(SDL2)
-if(NOT SDL2_POPULATED)
-    FetchContent_Populate(SDL2)
-    set(SDL2_INCLUDE_DIR ${sdl2_SOURCE_DIR}/include)
-    if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
-        set(SDL2_LIBRARIES "${sdl2_SOURCE_DIR}/lib/x64/SDL2.lib;${sdl2_SOURCE_DIR}/lib/x64/SDL2main.lib")
-        set(SDL2_LIBRARY_DLL "${sdl2_SOURCE_DIR}/lib/x64/SDL2.dll")
-    else()
-        set(SDL2_LIBRARIES "${sdl2_SOURCE_DIR}/lib/x86/SDL2.lib;${sdl2_SOURCE_DIR}/lib/x86/SDL2main.lib")
-        set(SDL2_LIBRARY_DLL "${sdl2_SOURCE_DIR}/lib/x86/SDL2.dll")
-    endif()
-endif()
-
-if(NOT TARGET SDL2::SDL2)
-    add_library(SDL2::SDL2 INTERFACE IMPORTED)
-    set_target_properties(SDL2::SDL2 PROPERTIES
-        INTERFACE_INCLUDE_DIRECTORIES "${SDL2_INCLUDE_DIR}"
-        INTERFACE_LINK_LIBRARIES "${sdl2_SOURCE_DIR}/lib/x64/SDL2.lib"
-    )
-endif()
-
-if(NOT TARGET SDL2::SDL2main)
-    add_library(SDL2::SDL2main INTERFACE IMPORTED)
-    set_target_properties(SDL2::SDL2main PROPERTIES
-        INTERFACE_LINK_LIBRARIES "${sdl2_SOURCE_DIR}/lib/x64/SDL2main.lib"
-    )
-endif()
-
-# add SDL2_image
-FetchContent_Declare(
-    SDL2_image
-    URL https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.8.3-VC.zip 
-    DOWNLOAD_NO_PROGRESS ON
-    DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/downloads
-)
-FetchContent_GetProperties(SDL2_image)
-if(NOT SDL2_image_POPULATED)
-    FetchContent_Populate(SDL2_image)
-    set(SDL2_IMAGE_INCLUDE_DIR ${sdl2_image_SOURCE_DIR}/include)
-    if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
-        set(SDL2_IMAGE_LIBRARIES "${sdl2_image_SOURCE_DIR}/lib/x64/SDL2_image.lib")
-        set(SDL2_IMAGE_LIBRARY_DLL "${sdl2_image_SOURCE_DIR}/lib/x64/SDL2_image.dll")
-    else()
-        set(SDL2_IMAGE_LIBRARIES "${sdl2_image_SOURCE_DIR}/lib/x86/SDL2_image.lib")
-        set(SDL2_IMAGE_LIBRARY_DLL "${sdl2_image_SOURCE_DIR}/lib/x86/SDL2_image.dll")
-    endif()
-endif()
-
-# add SDL2_ttf
-FetchContent_Declare(
-    SDL2_ttf
-    URL https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.22.0-VC.zip
-    DOWNLOAD_NO_PROGRESS ON
-    DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/downloads
-)
-FetchContent_GetProperties(SDL2_ttf)
-if(NOT sdl2_ttf_POPULATED)
-FetchContent_Populate(SDL2_ttf)
-    set(SDL2_TTF_INCLUDE_DIR ${sdl2_ttf_SOURCE_DIR}/include)
-    if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
-        set(SDL2_TTF_LIBRARIES ${sdl2_ttf_SOURCE_DIR}/lib/x64/SDL2_ttf.lib)
-        set(SDL2_TTF_LIBRARY_DLL "${sdl2_ttf_SOURCE_DIR}/lib/x64/SDL2_ttf.dll")
-    else()
-        set(SDL2_TTF_LIBRARIES ${sdl2_ttf_SOURCE_DIR}/lib/x86/SDL2_ttf.lib)
-        set(SDL2_TTF_LIBRARY_DLL "${sdl2_ttf_SOURCE_DIR}/lib/x86/SDL2_ttf.dll")
-    endif()
-endif()
-
-find_package(VLD CONFIG)
-
-# Fetch ImGui-Plot
-FetchContent_Declare(
-    ImGuiPlot
-    GIT_REPOSITORY https://github.com/soulthreads/imgui-plot.git
-    GIT_TAG master  # Use master branch, v0.1.0 contains outdated ImGui code
-    GIT_SHALLOW TRUE
-    GIT_PROGRESS TRUE
-)
-FetchContent_Populate(ImGuiPlot)
-
-set(IMGUI_FILES
-    ${imgui_SOURCE_DIR}/imconfig.h
-    ${imgui_SOURCE_DIR}/imgui_demo.cpp
-    ${imgui_SOURCE_DIR}/imgui_draw.cpp
-    ${imgui_SOURCE_DIR}/imgui_internal.h
-    ${imgui_SOURCE_DIR}/imstb_rectpack.h
-    ${imgui_SOURCE_DIR}/imstb_textedit.h
-    ${imgui_SOURCE_DIR}/imstb_truetype.h
-    ${imgui_SOURCE_DIR}/imgui_tables.cpp
-    ${imgui_SOURCE_DIR}/imgui.cpp
-    ${imgui_SOURCE_DIR}/imgui_widgets.cpp
-    ${imgui_SOURCE_DIR}/imgui.h
-
-    # backends
-    ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.h
-    ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp
-    ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer2.cpp
-
-    #imgui plot files
-    ${imguiplot_SOURCE_DIR}/include/imgui_plot.h
-    ${imguiplot_SOURCE_DIR}/src/imgui_plot.cpp
-)
-
-add_library(ImGui STATIC ${IMGUI_FILES})
-target_include_directories(ImGui PUBLIC
-    ${imgui_SOURCE_DIR}
-    ${imguiplot_SOURCE_DIR}/include
-)
-target_link_libraries(ImGui PRIVATE SDL2::SDL2 SDL2::SDL2main)
-
-find_library(XINPUT_LIBRARY XInput)
-if(XINPUT_LIBRARY)
-    message(STATUS "XInput library found: ${XINPUT_LIBRARY}")
+# Detect architecture (x86 or x64)
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(ARCH "x64")
 else()
-    message(FATAL_ERROR "XInput library not found")
+    set(ARCH "x86")
 endif()
 
-# set all include directories
-target_include_directories(${TARGET_NAME} PRIVATE
-    ${VLD_INCLUDE_DIR}
-    ${SDL2_INCLUDE_DIR} 
-    ${SDL2_IMAGE_INCLUDE_DIR} 
-    ${SDL2_TTF_INCLUDE_DIR}
-    ${imgui_SOURCE_DIR}
-    ${imguiplot_SOURCE_DIR}/include
-)
-  
-# set libraries to link with
-target_link_libraries(${TARGET_NAME} PRIVATE
-    ${SDL2_LIBRARIES} 
-    ${SDL2_IMAGE_LIBRARIES} 
-    ${SDL2_TTF_LIBRARIES} 
-    ${VLD_LIBRARY}
-    ImGui
-    ${XINPUT_LIBRARY}
-)
+# Add targets
+add_subdirectory(JREngine)
+add_subdirectory(BubbleBobble)
 
-target_include_directories(${TARGET_NAME} PRIVATE
-    ${CMAKE_SOURCE_DIR}/Minigin/
-    ${glm_SOURCE_DIR}
-)
-
-# compile at max warning level + treat warnings as errors
-target_compile_options(${TARGET_NAME} PRIVATE
-    $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
-    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
-)
-
-set_target_properties(${TARGET_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>")
-
-# add post build commands
-add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E copy "${SDL2_LIBRARY_DLL}" "$<TARGET_FILE_DIR:${TARGET_NAME}>"
-)
-add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E copy "${SDL2_IMAGE_LIBRARY_DLL}" "$<TARGET_FILE_DIR:${TARGET_NAME}>"
-)
-add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E copy "${SDL2_TTF_LIBRARY_DLL}" "$<TARGET_FILE_DIR:${TARGET_NAME}>"
-)
-add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${TARGET_NAME}>/Data"
-)
+# set default project
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT BubbleBobble)

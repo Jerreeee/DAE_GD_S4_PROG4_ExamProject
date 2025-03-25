@@ -1,10 +1,10 @@
 #include <sstream>
+#include "JREngine/GameObject.h"
+#include "JREngine/TextRendererComponent.h"
+#include "JREngine/SceneManager.h"
+#include "JREngine/Scene.h"
+
 #include "GameComponents.h"
-#include "GameEvents.h"
-#include "../Minigin/GameObject.h"
-#include "../Minigin/TextRendererComponent.h"
-#include "../Minigin/SceneManager.h"
-#include "../Minigin/Scene.h"
 #include "GameEvents.h"
 
 namespace Game

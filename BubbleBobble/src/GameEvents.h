@@ -1,6 +1,6 @@
 #pragma once
-#include "../Minigin/Event.h"
 #include <string_view>
+#include "JREngine/Event.h"
 
 namespace Game
 {

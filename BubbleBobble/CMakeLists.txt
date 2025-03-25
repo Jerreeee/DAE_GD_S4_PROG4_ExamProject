@@ -1,0 +1,43 @@
+set(TARGET_NAME BubbleBobble)
+
+set(SOURCE_DIR src)
+
+set(SOURCE_FILES
+    "${SOURCE_DIR}/Main.cpp"
+    "${SOURCE_DIR}/GameCommands.h"
+    "${SOURCE_DIR}/GameCommands.cpp"
+    "${SOURCE_DIR}/GameComponents.h"
+    "${SOURCE_DIR}/GameComponents.cpp"
+    "${SOURCE_DIR}/GameEvents.h"
+)
+
+find_package(VLD CONFIG)
+
+# Create executable
+add_executable(${TARGET_NAME} ${SOURCE_FILES})
+target_include_directories(${TARGET_NAME} PRIVATE
+    ${VLD_INCLUDE_DIR}
+)
+target_link_libraries(${TARGET_NAME} PRIVATE
+    ${VLD_LIBRARY}
+    JREngine
+)
+# Enable C++20
+target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
+
+set_target_properties(${TARGET_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>")
+
+# Compile warnings as errors
+target_compile_options(${TARGET_NAME} PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
+)
+
+# Get DLLs from the JREngine target
+# Copy them to the executable's folder
+get_target_property(JRENGINE_DLLS JREngine RUNTIME_DLLS)
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+        ${JRENGINE_DLLS}
+        "$<TARGET_FILE_DIR:${TARGET_NAME}>"
+)

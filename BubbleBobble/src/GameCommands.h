@@ -1,6 +1,6 @@
 #pragma once
-#include "../Minigin/Command.h"
 #include "glm.hpp"
+#include "JREngine/Command.h"
 
 namespace Engine
 {

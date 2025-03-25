@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
-#include "../Minigin/ComponentBase.h"
-#include "../Minigin/Observer.h"
+#include "JREngine/ComponentBase.h"
+#include "JREngine/Observer.h"
 #include "GameEvents.h"
 
 namespace Engine

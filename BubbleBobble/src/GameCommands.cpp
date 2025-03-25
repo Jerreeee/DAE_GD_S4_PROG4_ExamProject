@@ -1,7 +1,8 @@
+#include "JREngine/GameObject.h"
+#include "JREngine/Timer.h"
+
 #include "GameCommands.h"
-#include "../Minigin/GameObject.h"
 #include "GameComponents.h"
-#include "../Minigin/Timer.h"
 
 namespace Game
 {
