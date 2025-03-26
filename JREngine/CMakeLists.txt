@@ -5,53 +5,55 @@ set(INTERNAL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/JREngine)
 set(EXTERNAL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(SOURCE_FILES
-    "${SOURCE_DIR}/Font.cpp"
-    "${SOURCE_DIR}/GameObject.cpp"
-    "${SOURCE_DIR}/InputManager.cpp"
-    "${SOURCE_DIR}/JREngine.cpp"
-    "${SOURCE_DIR}/Renderer.cpp"
-    "${SOURCE_DIR}/ResourceManager.cpp"
-    "${SOURCE_DIR}/Scene.cpp"
-    "${SOURCE_DIR}/SceneManager.cpp"
-    "${SOURCE_DIR}/Texture2D.cpp"
-    "${SOURCE_DIR}/Transform.cpp"
-    "${SOURCE_DIR}/Timer.cpp"
-    "${SOURCE_DIR}/ComponentBase.cpp"
-    "${SOURCE_DIR}/SpriteRendererComponent.cpp"
-    "${SOURCE_DIR}/TextRendererComponent.cpp"
-    "${SOURCE_DIR}/RendererComponentBase.cpp"
-    "${SOURCE_DIR}/Controller.h"
-    "${SOURCE_DIR}/XBoxController.h"
-    "${SOURCE_DIR}/XBoxController.cpp"
-    "${SOURCE_DIR}/Keyboard.h"
-    "${SOURCE_DIR}/SDLKeyboard.h"
-    "${SOURCE_DIR}/SDLKeyboard.cpp"
-    "${SOURCE_DIR}/Observer.cpp"
-    "${SOURCE_DIR}/Event.cpp"
+    "Font.cpp"
+    "GameObject.cpp"
+    "InputManager.cpp"
+    "JREngine.cpp"
+    "Renderer.cpp"
+    "ResourceManager.cpp"
+    "Scene.cpp"
+    "SceneManager.cpp"
+    "Texture2D.cpp"
+    "Transform.cpp"
+    "Timer.cpp"
+    "ComponentBase.cpp"
+    "SpriteRendererComponent.cpp"
+    "TextRendererComponent.cpp"
+    "RendererComponentBase.cpp"
+    "Controller.h"
+    "XBoxController.h"
+    "XBoxController.cpp"
+    "Keyboard.h"
+    "SDLKeyboard.h"
+    "SDLKeyboard.cpp"
+    "Observer.cpp"
+    "Event.cpp"
 )
+AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
 
 set(INCLUDE_FILES
-    "${INTERNAL_INCLUDE_DIR}/Singleton.h"
-    "${INTERNAL_INCLUDE_DIR}/Font.h"
-    "${INTERNAL_INCLUDE_DIR}/GameObject.h"
-    "${INTERNAL_INCLUDE_DIR}/InputUtils.h"
-    "${INTERNAL_INCLUDE_DIR}/InputManager.h"
-    "${INTERNAL_INCLUDE_DIR}/JREngine.h"
-    "${INTERNAL_INCLUDE_DIR}/Renderer.h"
-    "${INTERNAL_INCLUDE_DIR}/ResourceManager.h"
-    "${INTERNAL_INCLUDE_DIR}/Scene.h"
-    "${INTERNAL_INCLUDE_DIR}/SceneManager.h"
-    "${INTERNAL_INCLUDE_DIR}/Texture2D.h"
-    "${INTERNAL_INCLUDE_DIR}/Transform.h"
-    "${INTERNAL_INCLUDE_DIR}/Timer.h"
-    "${INTERNAL_INCLUDE_DIR}/ComponentBase.h"
-    "${INTERNAL_INCLUDE_DIR}/SpriteRendererComponent.h"
-    "${INTERNAL_INCLUDE_DIR}/TextRendererComponent.h"
-    "${INTERNAL_INCLUDE_DIR}/RendererComponentBase.h"
-    "${INTERNAL_INCLUDE_DIR}/Command.h"
-    "${INTERNAL_INCLUDE_DIR}/Observer.h"
-    "${INTERNAL_INCLUDE_DIR}/Event.h"
+    "Singleton.h"
+    "Font.h"
+    "GameObject.h"
+    "InputUtils.h"
+    "InputManager.h"
+    "JREngine.h"
+    "Renderer.h"
+    "ResourceManager.h"
+    "Scene.h"
+    "SceneManager.h"
+    "Texture2D.h"
+    "Transform.h"
+    "Timer.h"
+    "ComponentBase.h"
+    "SpriteRendererComponent.h"
+    "TextRendererComponent.h"
+    "RendererComponentBase.h"
+    "Command.h"
+    "Observer.h"
+    "Event.h"
 )
+AddPrefix(INCLUDE_FILES "${INTERNAL_INCLUDE_DIR}/")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(glm)
@@ -61,25 +63,19 @@ include(XInput)
 
 # Create static library
 add_library(${TARGET_NAME} STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
-target_link_libraries(${TARGET_NAME} PRIVATE
-    SDL2::SDL2
-    SDL2::Image
-    SDL2::TTF
-    #${SDL2_LIBRARIES}
-    #${SDL2_LIBRARIES} 
-    ${SDL2_IMAGE_LIBRARIES} 
-    ${SDL2_TTF_LIBRARIES} 
-    ImGui
-    XInput::XInput
+target_link_libraries(${TARGET_NAME}
+    PRIVATE
+        SDL2::SDL2
+        SDL2::Image
+        SDL2::TTF
+        ImGui
+        XInput::XInput
     PUBLIC
         glm::glm
 )
 target_include_directories(${TARGET_NAME} PRIVATE
     ${SOURCE_DIR} #for headers not exposed in include dir
     ${INTERNAL_INCLUDE_DIR}
-    #${SDL2_INCLUDE_DIR} 
-    #${SDL2_IMAGE_INCLUDE_DIR} 
-    #${SDL2_TTF_INCLUDE_DIR}
     ${imgui_SOURCE_DIR}
     ${imguiplot_SOURCE_DIR}/include
 )

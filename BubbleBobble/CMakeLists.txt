@@ -3,17 +3,18 @@ set(TARGET_NAME BubbleBobble)
 set(SOURCE_DIR src)
 
 set(SOURCE_FILES
-    "${SOURCE_DIR}/main.cpp"
-    "${SOURCE_DIR}/Commands.h"
-    "${SOURCE_DIR}/Commands.cpp"
-    "${SOURCE_DIR}/Components.h"
-    "${SOURCE_DIR}/Components.cpp"
-    "${SOURCE_DIR}/Events.h"
-    "${SOURCE_DIR}/FPSComponent.h"
-    "${SOURCE_DIR}/RotateParentComponent.h"
-    "${SOURCE_DIR}/FPSComponent.cpp"
-    "${SOURCE_DIR}/RotateParentComponent.cpp"
+    "main.cpp"
+    "Commands.h"
+    "Commands.cpp"
+    "Components.h"
+    "Components.cpp"
+    "Events.h"
+    "FPSComponent.h"
+    "RotateParentComponent.h"
+    "FPSComponent.cpp"
+    "RotateParentComponent.cpp"
 )
+AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
 
 find_package(VLD CONFIG)
 
@@ -26,7 +27,6 @@ target_link_libraries(${TARGET_NAME} PRIVATE
 target_include_directories(${TARGET_NAME} PRIVATE
     ${VLD_INCLUDE_DIR}
 )
-
 
 set_target_properties(${TARGET_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>")
 

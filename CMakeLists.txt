@@ -23,7 +23,10 @@ else()
     set(ARCH "x86")
 endif()
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 include(FetchContent)
+include(Utils)
 
 # Add targets
 add_subdirectory(JREngine)
