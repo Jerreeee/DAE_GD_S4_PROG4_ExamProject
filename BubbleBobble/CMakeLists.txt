@@ -47,6 +47,7 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
 # Get DLLs from the JREngine target
 # Copy them to the executable's folder
 get_target_property(JRENGINE_DLLS JREngine RUNTIME_DLLS)
+message(STATUS "JRENGINE_DLLS: ${JRENGINE_DLLS}")
 add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E copy_if_different
         ${JRENGINE_DLLS}

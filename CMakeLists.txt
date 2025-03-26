@@ -23,6 +23,8 @@ else()
     set(ARCH "x86")
 endif()
 
+include(FetchContent)
+
 # Add targets
 add_subdirectory(JREngine)
 add_subdirectory(BubbleBobble)

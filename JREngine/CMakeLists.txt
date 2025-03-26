@@ -62,24 +62,29 @@ include(XInput)
 # Create static library
 add_library(${TARGET_NAME} STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 target_link_libraries(${TARGET_NAME} PRIVATE
-    ${SDL2_LIBRARIES} 
+    SDL2::SDL2
+    SDL2::Image
+    SDL2::TTF
+    #${SDL2_LIBRARIES}
+    #${SDL2_LIBRARIES} 
     ${SDL2_IMAGE_LIBRARIES} 
     ${SDL2_TTF_LIBRARIES} 
     ImGui
-    ${XINPUT_LIBRARY}
+    XInput::XInput
+    PUBLIC
+        glm::glm
 )
 target_include_directories(${TARGET_NAME} PRIVATE
     ${SOURCE_DIR} #for headers not exposed in include dir
     ${INTERNAL_INCLUDE_DIR}
-    ${SDL2_INCLUDE_DIR} 
-    ${SDL2_IMAGE_INCLUDE_DIR} 
-    ${SDL2_TTF_INCLUDE_DIR}
+    #${SDL2_INCLUDE_DIR} 
+    #${SDL2_IMAGE_INCLUDE_DIR} 
+    #${SDL2_TTF_INCLUDE_DIR}
     ${imgui_SOURCE_DIR}
     ${imguiplot_SOURCE_DIR}/include
 )
 target_include_directories(${TARGET_NAME} PUBLIC
     ${EXTERNAL_INCLUDE_DIR}
-    ${glm_SOURCE_DIR}
 )
 
 # Enable C++20
@@ -91,11 +96,10 @@ target_compile_options(${TARGET_NAME} PRIVATE
     $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
 )
 
-# Set DLL var so others linking against this library can use it to copy the DLL's next to their exe
 set(DLL_DEPENDENCIES
-    ${SDL2_LIBRARY_DLL}
-    ${SDL2_IMAGE_LIBRARY_DLL}
-    ${SDL2_TTF_LIBRARY_DLL}
+    ${SDL2_DLL}
+    ${SDL2_IMAGE_DLL}
+    ${SDL2_TTF_DLL}
 )
 set_target_properties(${TARGET_NAME} PROPERTIES
     RUNTIME_DLLS "${DLL_DEPENDENCIES}"
