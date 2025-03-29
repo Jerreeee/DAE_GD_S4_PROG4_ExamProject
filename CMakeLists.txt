@@ -32,5 +32,15 @@ include(Utils)
 add_subdirectory(JREngine)
 add_subdirectory(BubbleBobble)
 
+#temporarily define settings here until subcheck is fixed for multiple cmakelists files
+# Enable C++20
+target_compile_features(BubbleBobble PUBLIC cxx_std_20)
+
+# Compile warnings as errors
+target_compile_options(BubbleBobble PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
+)
+
 # set default project
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT BubbleBobble)
