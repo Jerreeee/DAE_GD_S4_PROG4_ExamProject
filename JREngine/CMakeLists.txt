@@ -74,10 +74,8 @@ target_link_libraries(${TARGET_NAME}
         glm::glm
 )
 target_include_directories(${TARGET_NAME} PRIVATE
-    ${SOURCE_DIR} #for headers not exposed in include dir
     ${INTERNAL_INCLUDE_DIR}
-    ${imgui_SOURCE_DIR}
-    ${imguiplot_SOURCE_DIR}/include
+    ${SOURCE_DIR} #for headers not exposed in include dir
 )
 target_include_directories(${TARGET_NAME} PUBLIC
     ${EXTERNAL_INCLUDE_DIR}
