@@ -82,20 +82,10 @@ target_include_directories(${TARGET_NAME} PUBLIC
 )
 
 # Enable C++20
-target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
+target_compile_features(${TARGET_NAME} PRIVATE cxx_std_20)
 
 # Compile warnings as errors
 target_compile_options(${TARGET_NAME} PRIVATE
     $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
     $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
 )
-
-set(DLL_DEPENDENCIES
-    ${SDL2_DLL}
-    ${SDL2_IMAGE_DLL}
-    ${SDL2_TTF_DLL}
-)
-set_target_properties(${TARGET_NAME} PROPERTIES
-    RUNTIME_DLLS "${DLL_DEPENDENCIES}"
-)
-

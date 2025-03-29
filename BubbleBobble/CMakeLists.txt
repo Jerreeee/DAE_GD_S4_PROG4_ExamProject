@@ -31,7 +31,7 @@ target_include_directories(${TARGET_NAME} PRIVATE
 set_target_properties(${TARGET_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>")
 
 # Enable C++20
-target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
+target_compile_features(${TARGET_NAME} PRIVATE cxx_std_20)
 
 # Compile warnings as errors
 target_compile_options(${TARGET_NAME} PRIVATE
@@ -44,12 +44,8 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${TARGET_NAME}>/Data"
 )
 
-# Get DLLs from the JREngine target
-# Copy them to the executable's folder
-get_target_property(JRENGINE_DLLS JREngine RUNTIME_DLLS)
-message(STATUS "JRENGINE_DLLS: ${JRENGINE_DLLS}")
+# Copy all required ddl's next to the exe
 add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E copy_if_different
-        ${JRENGINE_DLLS}
-        "$<TARGET_FILE_DIR:${TARGET_NAME}>"
+    COMMAND ${CMAKE_COMMAND} -E copy -t $<TARGET_FILE_DIR:${TARGET_NAME}> $<TARGET_RUNTIME_DLLS:${TARGET_NAME}>
+    COMMAND_EXPAND_LISTS
 )

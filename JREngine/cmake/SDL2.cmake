@@ -10,24 +10,19 @@ if(NOT SDL2_POPULATED)
     FetchContent_Populate(SDL2)
 endif()
 
-set(SDL2_INCLUDE_DIR "${sdl2_SOURCE_DIR}/include")
-set(SDL2_LIBRARY      "${sdl2_SOURCE_DIR}/lib/${ARCH}/SDL2.lib") # DONT ADD: ${sdl2_SOURCE_DIR}/lib/x64/SDL2main.lib
-set(SDL2_DLL          "${sdl2_SOURCE_DIR}/lib/${ARCH}/SDL2.dll")
-
-message(STATUS "SDL2 DLL: ${SDL2_DLL}")
-
 if(NOT TARGET SDL2::SDL2)
-    add_library(SDL2::SDL2 INTERFACE IMPORTED)
+    add_library(SDL2::SDL2 SHARED IMPORTED)
     set_target_properties(SDL2::SDL2 PROPERTIES
-        INTERFACE_INCLUDE_DIRECTORIES "${SDL2_INCLUDE_DIR}"
-        INTERFACE_LINK_LIBRARIES      "${SDL2_LIBRARY}"
+        IMPORTED_LOCATION "${sdl2_SOURCE_DIR}/lib/${ARCH}/SDL2.dll"
+        IMPORTED_IMPLIB "${sdl2_SOURCE_DIR}/lib/${ARCH}/SDL2.lib"
+        INTERFACE_INCLUDE_DIRECTORIES "${sdl2_SOURCE_DIR}/include"
     )
 endif()
 
 if(NOT TARGET SDL2::SDL2main)
-    add_library(SDL2::SDL2main INTERFACE IMPORTED)
+    add_library(SDL2::SDL2main STATIC IMPORTED)
     set_target_properties(SDL2::SDL2main PROPERTIES
-        INTERFACE_LINK_LIBRARIES "${sdl2_SOURCE_DIR}/lib/x64/SDL2main.lib"
+        IMPORTED_LOCATION "${sdl2_SOURCE_DIR}/lib/${ARCH}/SDL2main.lib"
     )
 endif()
 
@@ -43,15 +38,12 @@ if(NOT SDL2_image_POPULATED)
     FetchContent_Populate(SDL2_image)
 endif()
 
-set(SDL2_IMAGE_INCLUDE_DIR "${sdl2_image_SOURCE_DIR}/include")
-set(SDL2_IMAGE_LIBRARY     "${sdl2_image_SOURCE_DIR}/lib/${ARCH}/SDL2_image.lib")
-set(SDL2_IMAGE_DLL         "${sdl2_image_SOURCE_DIR}/lib/${ARCH}/SDL2_image.dll")
-
 if(NOT TARGET SDL2::Image)
-    add_library(SDL2::Image INTERFACE IMPORTED)
+    add_library(SDL2::Image SHARED IMPORTED)
     set_target_properties(SDL2::Image PROPERTIES
-        INTERFACE_INCLUDE_DIRECTORIES "${SDL2_IMAGE_INCLUDE_DIR}"
-        INTERFACE_LINK_LIBRARIES      "${SDL2_IMAGE_LIBRARY}"
+        IMPORTED_LOCATION "${sdl2_image_SOURCE_DIR}/lib/${ARCH}/SDL2_image.dll"
+        IMPORTED_IMPLIB "${sdl2_image_SOURCE_DIR}/lib/${ARCH}/SDL2_image.lib"
+        INTERFACE_INCLUDE_DIRECTORIES "${sdl2_image_SOURCE_DIR}/include"
     )
 endif()
 
@@ -67,14 +59,11 @@ if(NOT SDL2_ttf_POPULATED)
     FetchContent_Populate(SDL2_ttf)
 endif()
 
-set(SDL2_TTF_INCLUDE_DIR "${sdl2_ttf_SOURCE_DIR}/include")
-set(SDL2_TTF_LIBRARY     "${sdl2_ttf_SOURCE_DIR}/lib/${ARCH}/SDL2_ttf.lib")
-set(SDL2_TTF_DLL         "${sdl2_ttf_SOURCE_DIR}/lib/${ARCH}/SDL2_ttf.dll")
-
 if(NOT TARGET SDL2::TTF)
-    add_library(SDL2::TTF INTERFACE IMPORTED)
+    add_library(SDL2::TTF SHARED IMPORTED)
     set_target_properties(SDL2::TTF PROPERTIES
-        INTERFACE_INCLUDE_DIRECTORIES "${SDL2_TTF_INCLUDE_DIR}"
-        INTERFACE_LINK_LIBRARIES      "${SDL2_TTF_LIBRARY}"
+        IMPORTED_LOCATION "${sdl2_ttf_SOURCE_DIR}/lib/${ARCH}/SDL2_ttf.dll"
+        IMPORTED_IMPLIB "${sdl2_ttf_SOURCE_DIR}/lib/${ARCH}/SDL2_ttf.lib"
+        INTERFACE_INCLUDE_DIRECTORIES "${sdl2_ttf_SOURCE_DIR}/include"
     )
 endif()
