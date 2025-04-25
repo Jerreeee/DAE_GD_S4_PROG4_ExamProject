@@ -9,12 +9,14 @@ namespace JREngine
 {
 	class Texture2D;
 	class Font;
+	class SoundClip;
 	class ResourceManager final : public Singleton<ResourceManager>
 	{
 	public:
 		void Init(const std::filesystem::path& data);
 		std::shared_ptr<Texture2D> LoadTexture(const std::string& file);
 		std::shared_ptr<Font> LoadFont(const std::string& file, uint8_t size);
+		std::shared_ptr<SoundClip> LoadSound(const std::string& file);
 	private:
 		friend class Singleton<ResourceManager>;
 		ResourceManager() = default;
@@ -22,7 +24,8 @@ namespace JREngine
 
 		void UnloadUnusedResources();
 
-		std::map<std::string, std::shared_ptr<Texture2D>> m_loadedTextures;
-		std::map<std::pair<std::string, uint8_t>, std::shared_ptr<Font>> m_loadedFonts;
+		std::map<std::string, std::shared_ptr<Texture2D>> m_LoadedTextures;
+		std::map<std::pair<std::string, uint8_t>, std::shared_ptr<Font>> m_LoadedFonts;
+		std::map<std::string, std::shared_ptr<SoundClip>> m_LoadedSounds;
 	};
 }

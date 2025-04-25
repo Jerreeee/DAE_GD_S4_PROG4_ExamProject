@@ -28,6 +28,9 @@ set(SOURCE_FILES
     "SDLKeyboard.cpp"
     "Observer.cpp"
     "Event.cpp"
+    "ServiceLocator.cpp"
+    "SDLSoundSystem.cpp"
+    "SoundClip.cpp"
 )
 AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
 
@@ -52,6 +55,10 @@ set(INCLUDE_FILES
     "Command.h"
     "Observer.h"
     "Event.h"
+    "ISoundSystem.h"
+    "ServiceLocator.h"
+    "SDLSoundSystem.h"
+    "SoundClip.h"
 )
 AddPrefix(INCLUDE_FILES "${INTERNAL_INCLUDE_DIR}/")
 
@@ -68,6 +75,7 @@ target_link_libraries(${TARGET_NAME}
         SDL2::SDL2
         SDL2::Image
         SDL2::TTF
+        SDL2::Mixer
         ImGui
         XInput::XInput
     PUBLIC

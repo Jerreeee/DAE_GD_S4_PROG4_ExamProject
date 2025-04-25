@@ -15,6 +15,9 @@ namespace fs = std::filesystem;
 #include "JREngine/Scene.h"
 #include "JREngine/TextRendererComponent.h"
 #include "JREngine/SpriteRendererComponent.h"
+#include "JREngine/ServiceLocator.h"
+#include "JREngine/SDLSoundSystem.h"
+#include "JREngine/SoundClip.h"
 
 #include "FPSComponent.h"
 #include "Commands.h"
@@ -40,6 +43,11 @@ namespace BubbleBobble
 {
 	void load()
 	{
+		JREngine::ServiceLocator::RegisterSoundSystem(std::make_unique<JREngine::SDLSoundSystem>());
+		JREngine::ResourceManager::GetInstance().LoadTexture("SpriteSheet.png");
+		std::shared_ptr<JREngine::SoundClip> testSound = JREngine::ResourceManager::GetInstance().LoadSound("Test.mp3");
+		JREngine::ServiceLocator::GetSoundSystem().Play(testSound, 0.5f);
+
 		auto pFont = JREngine::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
 
 		auto& scene = JREngine::SceneManager::GetInstance().CreateScene("Demo");

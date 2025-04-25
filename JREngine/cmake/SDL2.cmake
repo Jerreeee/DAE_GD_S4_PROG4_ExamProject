@@ -67,3 +67,24 @@ if(NOT TARGET SDL2::TTF)
         INTERFACE_INCLUDE_DIRECTORIES "${sdl2_ttf_SOURCE_DIR}/include"
     )
 endif()
+
+# --- SDL2_mixer ---
+FetchContent_Declare(
+    SDL2_mixer
+    URL https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.6.3-VC.zip
+    DOWNLOAD_NO_PROGRESS ON
+    DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/downloads
+)
+FetchContent_GetProperties(SDL2_mixer)
+if(NOT SDL2_mixer_POPULATED)
+    FetchContent_Populate(SDL2_mixer)
+endif()
+
+if(NOT TARGET SDL2::Mixer)
+    add_library(SDL2::Mixer SHARED IMPORTED)
+    set_target_properties(SDL2::Mixer PROPERTIES
+        IMPORTED_LOCATION "${sdl2_mixer_SOURCE_DIR}/lib/${ARCH}/SDL2_mixer.dll"
+        IMPORTED_IMPLIB "${sdl2_mixer_SOURCE_DIR}/lib/${ARCH}/SDL2_mixer.lib"
+        INTERFACE_INCLUDE_DIRECTORIES "${sdl2_mixer_SOURCE_DIR}/include"
+    )
+endif()
