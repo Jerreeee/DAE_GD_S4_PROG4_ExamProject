@@ -6,6 +6,7 @@
 #endif
 #include <filesystem>
 namespace fs = std::filesystem;
+#include <iostream>
 
 #include "JREngine/JREngine.h"
 #include "JREngine/SceneManager.h"
@@ -45,12 +46,19 @@ namespace BubbleBobble
 	void load()
 	{
 		JRE::ResourceHandle<JRE::SoundClip> testSound = JRE::ServiceLocator::GetResourceManager().LoadSound("Test.mp3");
-		std::shared_ptr<JRE::SoundClip> pSoundClip = JRE::ServiceLocator::GetResourceManager().GetSound(testSound);
+		std::shared_ptr<JRE::SoundClip> pSoundClip = nullptr;
+		while (!(pSoundClip = JRE::ServiceLocator::GetResourceManager().GetSound(testSound)))
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Sleep a bit to not burn CPU
+		}
 		JRE::ServiceLocator::GetSoundSystem().Play(pSoundClip, 0.5f);
 
-
 		JRE::ResourceHandle<JRE::Font> fontHandle = JRE::ServiceLocator::GetResourceManager().LoadFont("Lingua.otf", 20);
-		std::shared_ptr<JRE::Font> pFont = JRE::ServiceLocator::GetResourceManager().GetFont(fontHandle);
+		std::shared_ptr<JRE::Font> pFont = nullptr;
+		while (!(pFont = JRE::ServiceLocator::GetResourceManager().GetFont(fontHandle)))
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Sleep to avoid busy waiting
+		}
 
 		auto& scene = JRE::SceneManager::GetInstance().CreateScene("Demo");
 

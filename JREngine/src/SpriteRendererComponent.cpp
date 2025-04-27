@@ -2,6 +2,7 @@
 #include "ServiceLocator.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
+#include "Texture2D.h"
 
 namespace JRE
 {

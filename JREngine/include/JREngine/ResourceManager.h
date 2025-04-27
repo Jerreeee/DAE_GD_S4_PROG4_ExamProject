@@ -3,6 +3,12 @@
 #include <string>
 #include <memory>
 #include <map>
+#include <queue>
+#include <mutex>
+#include <condition_variable>
+#include <thread>
+#include <stop_token>
+#include "Event.h"
 #include "Singleton.h"
 #include "ResourceHandle.h"
 #include "IResourceManager.h"
@@ -22,7 +28,42 @@ namespace JRE
 		virtual std::shared_ptr<Font> GetFont(ResourceHandle<Font> handle) const override;
 		virtual std::shared_ptr<SoundClip> GetSound(ResourceHandle<SoundClip> handle) const override;
 	private:
-		std::filesystem::path m_dataPath;
+		struct LoadEvents
+		{
+			struct LoadFont
+			{
+				static const EventID ID{ HashEventID("LoadFont") };
+				struct Args : public EventArgs
+				{
+					Args(std::string _path, uint8_t _size, GUID _guid)
+						: path(std::move(_path)), size(_size), guid(_guid) {
+					}
+
+					std::string path;
+					uint8_t size;
+					GUID guid;
+				};
+			};
+
+			struct LoadSound
+			{
+				static const EventID ID{ HashEventID("LoadSound") };
+				struct Args : public EventArgs
+				{
+					Args(std::string _path, GUID _guid)
+						: path(std::move(_path)), guid(_guid) {
+					}
+
+					std::string path;
+					GUID guid;
+				};
+			};
+		};
+
+		void WorkerLoop(std::stop_token token);
+		void EnqueueLoadEvent(EventInfo&& event);
+
+		std::filesystem::path m_dataPath{};
 
 		void UnloadUnusedResources();
 
@@ -33,5 +74,10 @@ namespace JRE
 		std::map<std::filesystem::path, GUID> m_TexturePathToGUID{};
 		std::map<std::pair<std::filesystem::path, uint8_t>, GUID> m_FontPathSizeToGUID{};
 		std::map<std::filesystem::path, GUID> m_SoundPathToGUID{};
+
+		std::queue<EventInfo> m_LoadEventsQueue{};
+		mutable std::mutex m_Mutex{};
+		std::condition_variable_any m_Condition{};
+		std::jthread m_WorkerThread{};
 	};
 }

@@ -19,6 +19,8 @@ namespace JRE
 		{
 			throw std::runtime_error(std::string("Failed to load support for fonts: ") + SDL_GetError());
 		}
+
+		m_WorkerThread = std::jthread{ [this](std::stop_token token) { WorkerLoop(token); } };
 	}
 
 	ResourceHandle<Texture2D> ResourceManager::LoadTexture(const std::string& file)
@@ -29,11 +31,14 @@ namespace JRE
 		if (it != m_TexturePathToGUID.end())
 			return ResourceHandle<Texture2D>(it->second);
 
-		auto texture = std::make_shared<Texture2D>(fullPath.string());
 		GUID guid = GenerateGUID();
-
-		m_LoadedTextures.emplace(guid, texture);
 		m_TexturePathToGUID.emplace(fullPath, guid);
+
+		auto pTexture = std::make_shared<Texture2D>(fullPath.string());
+		{
+			std::scoped_lock lock(m_Mutex);
+			m_LoadedTextures.emplace(guid, pTexture);
+		}
 
 		return ResourceHandle<Texture2D>(guid);
 	}
@@ -51,11 +56,14 @@ namespace JRE
 		if (it != m_TexturePathToGUID.end())
 			return ResourceHandle<Texture2D>(it->second);
 
-		auto pTexture = std::make_shared<Texture2D>(text, fontHandle);
 		GUID guid = GenerateGUID();
-
-		m_LoadedTextures.emplace(guid, pTexture);
 		m_TexturePathToGUID.emplace(fakeFilePath, guid);
+
+		auto pTexture = std::make_shared<Texture2D>(text, fontHandle);
+		{
+			std::scoped_lock lock(m_Mutex);
+			m_LoadedTextures.emplace(guid, pTexture);
+		}
 
 		return ResourceHandle<Texture2D>(guid);
 	}
@@ -68,11 +76,10 @@ namespace JRE
 		if (it != m_FontPathSizeToGUID.end())
 			return ResourceHandle<Font>(it->second);
 
-		auto font = std::make_shared<Font>(fullPath.string(), size);
 		GUID guid = GenerateGUID();
-
-		m_LoadedFonts.emplace(guid, font);
 		m_FontPathSizeToGUID.emplace(key, guid);
+
+		EnqueueLoadEvent(CreateEvent<LoadEvents::LoadFont>(file, size, guid));
 
 		return ResourceHandle<Font>(guid);
 	}
@@ -85,11 +92,10 @@ namespace JRE
 		if (it != m_SoundPathToGUID.end())
 			return ResourceHandle<SoundClip>(it->second);
 
-		auto sound = std::make_shared<SoundClip>(fullPath.string());
 		GUID guid = GenerateGUID();
-
-		m_LoadedSounds.emplace(guid, sound);
 		m_SoundPathToGUID.emplace(fullPath, guid);
+
+		EnqueueLoadEvent(CreateEvent<LoadEvents::LoadSound>(file, guid));
 
 		return ResourceHandle<SoundClip>(guid);
 	}
@@ -118,6 +124,51 @@ namespace JRE
 			return it->second;
 		else
 			return nullptr;
+	}
+	void ResourceManager::WorkerLoop(std::stop_token token)
+	{
+		std::unique_lock lock(m_Mutex);
+
+		while (!token.stop_requested())
+		{
+			m_Condition.wait(lock, token, [&] { return !m_LoadEventsQueue.empty(); });
+
+			while (!m_LoadEventsQueue.empty())
+			{
+				EventInfo event = std::move(m_LoadEventsQueue.front());
+				m_LoadEventsQueue.pop();
+
+				lock.unlock();
+
+				switch (event.GetID())
+				{
+				case LoadEvents::LoadFont::ID:
+				{
+					auto& args = event.GetArgs<LoadEvents::LoadFont>();
+					auto font = std::make_shared<Font>((m_dataPath / args.path).string(), args.size);
+					std::scoped_lock g(m_Mutex);
+					m_LoadedFonts[args.guid] = font;
+					break;
+				}
+				case LoadEvents::LoadSound::ID:
+				{
+					auto& args = event.GetArgs<LoadEvents::LoadSound>();
+					auto sound = std::make_shared<SoundClip>((m_dataPath / args.path).string());
+					std::scoped_lock g(m_Mutex);
+					m_LoadedSounds[args.guid] = sound;
+					break;
+				}
+				}
+
+				lock.lock();
+			}
+		}
+	}
+	void ResourceManager::EnqueueLoadEvent(EventInfo&& event)
+	{
+		std::scoped_lock lock(m_Mutex);
+		m_LoadEventsQueue.push(std::move(event));
+		m_Condition.notify_one();
 	}
 	void ResourceManager::UnloadUnusedResources()
 	{

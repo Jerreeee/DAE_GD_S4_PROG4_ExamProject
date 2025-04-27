@@ -15,10 +15,6 @@ JRE::TextRendererComponent::TextRendererComponent(GameObject& gameObject, const 
 	if (!fontHandle.IsValid())
 		throw std::runtime_error(std::string("Not a valid font"));
 
-	m_pFont = ServiceLocator::GetResourceManager().GetFont(m_FontHandle);
-	if (!m_pFont)
-		throw std::runtime_error("TextRendererComponent: Could not resolve font!");
-
 	m_NeedsUpdate = text != "";
 }
 void JRE::TextRendererComponent::Update()
