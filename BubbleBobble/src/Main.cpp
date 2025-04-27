@@ -45,20 +45,8 @@ namespace BubbleBobble
 {
 	void load()
 	{
-		JRE::ResourceHandle<JRE::SoundClip> testSound = JRE::ServiceLocator::GetResourceManager().LoadSound("Test.mp3");
-		std::shared_ptr<JRE::SoundClip> pSoundClip = nullptr;
-		while (!(pSoundClip = JRE::ServiceLocator::GetResourceManager().GetSound(testSound)))
-		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Sleep a bit to not burn CPU
-		}
-		JRE::ServiceLocator::GetSoundSystem().Play(pSoundClip, 0.5f);
-
+		JRE::ResourceHandle<JRE::SoundClip> hitSound = JRE::ServiceLocator::GetResourceManager().LoadSound("Test.mp3");
 		JRE::ResourceHandle<JRE::Font> fontHandle = JRE::ServiceLocator::GetResourceManager().LoadFont("Lingua.otf", 20);
-		std::shared_ptr<JRE::Font> pFont = nullptr;
-		while (!(pFont = JRE::ServiceLocator::GetResourceManager().GetFont(fontHandle)))
-		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Sleep to avoid busy waiting
-		}
 
 		auto& scene = JRE::SceneManager::GetInstance().CreateScene("Demo");
 
@@ -81,6 +69,7 @@ namespace BubbleBobble
 			pComponent->SetTexture("logo.tga");
 		}
 		auto p1HealthComponent = player1->AddComponent<HealthComponent>(3);
+		p1HealthComponent->SetHitSound(hitSound);
 		auto p1TakeDamageCommand = std::make_unique<TakeDamageCommand>(p1HealthComponent);
 		auto p1ScoreComponent = player1->AddComponent<ScoreComponent>();
 		auto p1IncreaseScoreCommand = std::make_unique<IncreaseScoreCommand>(p1ScoreComponent, 2);
@@ -106,6 +95,7 @@ namespace BubbleBobble
 			pComponent->SetTexture("logo.tga");
 		}
 		auto p2HealthComponent = player2->AddComponent<HealthComponent>(3);
+		p2HealthComponent->SetHitSound(hitSound);
 		auto p2TakeDamageCommand = std::make_unique<TakeDamageCommand>(p2HealthComponent);
 		auto p2ScoreComponent = player2->AddComponent<ScoreComponent>();
 		auto p2IncreaseScoreCommand = std::make_unique<IncreaseScoreCommand>(p2ScoreComponent, 2);
@@ -127,9 +117,9 @@ namespace BubbleBobble
 
 		//Keybind info
 		auto p1UIInfo = std::make_unique<JRE::GameObject>();
-		p1UIInfo->AddComponent<JRE::TextRendererComponent>("Player1 | Move: DPAD | Damage: FACE_DOWN | Score: FACE_UP", fontHandle);
+		p1UIInfo->AddComponent<JRE::TextRendererComponent>("Player1 | Move: DPAD | Damage: FACE_DOWN (plays sound) | Score: FACE_UP", fontHandle);
 		auto p2UIInfo = std::make_unique<JRE::GameObject>();
-		p2UIInfo->AddComponent<JRE::TextRendererComponent>("Player2 | Move: W,A,S,D | Damage: F | Score: G", fontHandle);
+		p2UIInfo->AddComponent<JRE::TextRendererComponent>("Player2 | Move: W,A,S,D | Damage: F (plays sound) | Score: G", fontHandle);
 
 		//Player UI
 		auto UI = std::make_unique<JRE::GameObject>("UI");

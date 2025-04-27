@@ -10,6 +10,7 @@ namespace JRE
 	class Font;
 	class GameObject;
 	class TextRendererComponent;
+	class SoundClip;
 }
 
 namespace BubbleBobble
@@ -22,6 +23,7 @@ namespace BubbleBobble
 
 		virtual void Update() override {};
 
+		void SetHitSound(JRE::ResourceHandle<JRE::SoundClip> hitSoundHandle);
 		void SetHealth(int health);
 		void SetMaxHealth(int maxHealth);
 		void TakeDamage(int amount);
@@ -32,6 +34,8 @@ namespace BubbleBobble
 		int m_Health{};
 		int m_MaxHealth{};
 		JRE::Event_t m_DamageEvent{};
+		JRE::ResourceHandle<JRE::SoundClip> m_HitSoundHandle{};
+		std::shared_ptr<JRE::SoundClip> m_pHitSound{};
 	};
 
 	class ScoreComponent final : public JRE::ComponentBase

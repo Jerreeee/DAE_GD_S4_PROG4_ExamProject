@@ -66,7 +66,11 @@ namespace JRE
 		std::filesystem::path m_dataPath{};
 
 		void UnloadUnusedResources();
-
+		
+		//Not ideal yet because GUID is just an incrementing int
+		//so idx 0-2 might be a texture, 3 a font and 4 a Sound
+		//this means each map will have a lot of missing indices
+		//but its a start :)
 		std::map<GUID, std::shared_ptr<Texture2D>> m_LoadedTextures{};
 		std::map<GUID, std::shared_ptr<Font>> m_LoadedFonts{};
 		std::map<GUID, std::shared_ptr<SoundClip>> m_LoadedSounds{};

@@ -2,6 +2,9 @@
 #include "JREngine/GameObject.h"
 #include "JREngine/TextRendererComponent.h"
 #include "JREngine/SceneManager.h"
+#include "JREngine/ServiceLocator.h"
+#include "JREngine/ResourceManager.h"
+#include "JREngine/SDLSoundSystem.h"
 #include "JREngine/Scene.h"
 
 #include "Components.h"
@@ -17,6 +20,11 @@ namespace BubbleBobble
 	{
 	}
 	HealthComponent::~HealthComponent() = default;
+
+	void HealthComponent::SetHitSound(JRE::ResourceHandle<JRE::SoundClip> hitSoundHandle)
+	{
+		m_HitSoundHandle = hitSoundHandle;
+	}
 	void HealthComponent::SetHealth(int health)
 	{
 		if (health < 0 || health > m_MaxHealth)
@@ -32,6 +40,13 @@ namespace BubbleBobble
 		m_Health -= amount;
 		JRE::EventInfo e{ JRE::CreateEvent<Event::PlayerDamaged>(amount, m_Health) };
 		m_DamageEvent->NotifyObservers(e);
+
+		if (!m_pHitSound)
+		{
+			m_pHitSound = JRE::ServiceLocator::GetResourceManager().GetSound(m_HitSoundHandle);
+			if (!m_pHitSound) return;
+		}
+		JRE::ServiceLocator::GetSoundSystem().Play(m_pHitSound);
 	}
 	PlayerUIComponent::PlayerUIComponent(JRE::GameObject& UIGameObject, JRE::GameObject& player, JRE::ResourceHandle<JRE::Font> fontHandle) :
 		ComponentBase(UIGameObject),
