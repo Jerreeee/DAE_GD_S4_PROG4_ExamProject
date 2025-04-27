@@ -1,24 +1,23 @@
 #pragma once
 #include <memory>
 
-namespace JREngine
+namespace JRE
 {
 	class ISoundSystem;
+	class IResourceManager;
 	class ServiceLocator final
 	{
 	public:
 		ServiceLocator();
 		~ServiceLocator();
 
-		static ISoundSystem& GetSoundSystem()
-		{
-			return *s_pSoundSystem;
-		}
-		static void RegisterSoundSystem(std::unique_ptr<ISoundSystem>&& pSoundSystem)
-		{
-			s_pSoundSystem = std::move(pSoundSystem);
-		}
+		static ISoundSystem& GetSoundSystem();
+		static void RegisterSoundSystem(std::unique_ptr<ISoundSystem>&& pSoundSystem);
+
+		static IResourceManager& GetResourceManager();
+		static void RegisterResourceManager(std::unique_ptr<IResourceManager>&& pResourceManager);
 	private:
-		inline static std::unique_ptr<ISoundSystem> s_pSoundSystem{};
+		static std::unique_ptr<ISoundSystem> s_pSoundSystem;
+		static std::unique_ptr<IResourceManager> s_pResourceManager;
 	};
 }

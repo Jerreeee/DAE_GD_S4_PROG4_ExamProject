@@ -1,51 +1,53 @@
 #include <stdexcept>
-#include <SDL_ttf.h>
-#include "TextRendererComponent.h"
+#include <memory>
 #include "Renderer.h"
 #include "Font.h"
 #include "Texture2D.h"
+#include "ServiceLocator.h"
+#include "IResourceManager.h"
+#include "TextRendererComponent.h"
 
-JREngine::TextRendererComponent::TextRendererComponent(GameObject& gameObject, const std::string& text, std::shared_ptr<Font> font) :
+JRE::TextRendererComponent::TextRendererComponent(GameObject& gameObject, const std::string& text, ResourceHandle<Font> fontHandle) :
 	RendererComponentBase(gameObject),
 	m_Text(text),
-	m_Font(std::move(font)),
-	m_TextTexture(nullptr)
+	m_FontHandle(fontHandle)
 {
+	if (!fontHandle.IsValid())
+		throw std::runtime_error(std::string("Not a valid font"));
+
+	m_pFont = ServiceLocator::GetResourceManager().GetFont(m_FontHandle);
+	if (!m_pFont)
+		throw std::runtime_error("TextRendererComponent: Could not resolve font!");
+
 	m_NeedsUpdate = text != "";
 }
-
-void JREngine::TextRendererComponent::Update()
+void JRE::TextRendererComponent::Update()
 {
+	if (!m_pFont) //loading phase, afterwards really cheap
+	{
+		m_pFont = ServiceLocator::GetResourceManager().GetFont(m_FontHandle);
+		if (!m_pFont) return;
+	}
+
 	if (m_NeedsUpdate)
 	{
-		const SDL_Color color = { 255,255,255,255 }; // only white text is supported now
-		const auto surf = TTF_RenderText_Blended(m_Font->GetFont(), m_Text.c_str(), color);
-		if (surf == nullptr) 
-		{
-			throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());
-		}
-		auto texture = SDL_CreateTextureFromSurface(Renderer::GetInstance().GetSDLRenderer(), surf);
-		if (texture == nullptr) 
-		{
-			throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
-		}
-		SDL_FreeSurface(surf);
-		m_TextTexture = std::make_shared<Texture2D>(texture);
+		m_TextTextureHandle = ServiceLocator::GetResourceManager().LoadTexture(m_Text, m_FontHandle);
+		m_pTextTexture = ServiceLocator::GetResourceManager().GetTexture(m_TextTextureHandle);
 		m_NeedsUpdate = false;
 	}
 }
 
-void JREngine::TextRendererComponent::Render() const
+void JRE::TextRendererComponent::Render() const
 {
-	if (m_TextTexture)
+	if (m_pTextTexture)
 	{
 		const auto& pos = GetWorldTransform().GetPosition();
-		Renderer::GetInstance().RenderTexture(*m_TextTexture, pos.x, pos.y);
+		Renderer::GetInstance().RenderTexture(m_pTextTexture, pos.x, pos.y);
 	}
 }
 
 // This implementation uses the "dirty flag" pattern
-void JREngine::TextRendererComponent::SetText(const std::string& text)
+void JRE::TextRendererComponent::SetText(const std::string& text)
 {
 	m_Text = text;
 	m_NeedsUpdate = true;

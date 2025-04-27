@@ -1,0 +1,21 @@
+Moving from ResourceManager to solely uses shared_ptr<Resource_t> and the entire engine passes around shared_ptr<Resource_t> to the engine only passing around ResourceHand<Resource_t> that internally stores a GUID, the ResourceManager has GetResource(GUID id) Methods to retreive the actual resource based on the GUID.
+
+Problems:
+#1
+Description:
+	ResourceManager internally stores resources as a vector of shared_ptr's. The GetResource(GUID id) methods return a shared_ptr to the resource. But, the entire engine passes around ResourceHandle's because it's fast and only calls GetResource(GUID id) if it needs the actual resource. So if I have a game and the Scene only stores ResourceHandles() and then Renderer::RenderTexture(textureHandle) is called on all handles then all textures will still need to be loaded because there is no shared_ptr<Texture> keeping the texture alive in the ResourceManager.
+Solution:
+	So in these cases, you need to cache the shared_ptr<Resource_t> if you know you will need it often. This makes sure that the resource stays alive in the ResourceManager(). So GetResource(GUID id) is just a quick retrieval of the already loaded resource instead of again loading the resource.
+
+#2
+Description:
+	If the user would now manually create a Texture2D() then it would be useless because the entire engine expects ResourceHandle<Texture2D>.
+Solution:
+	1) Maybe we could still manually create a Texture2D and then call "ResourceHandle<Texture2D> ResourceManager::AddTexture(Texture2D&& texture)". And pass an rvalue
+	to say that the ResourceManager must now manage it. And it would also return a proper handle that we can then use to pass around. But this is a bit cumbersome.
+	2) Have the ResourceManager itself create ALL resources. This means that it is used as a factory. It will need a copy of the all resource constructors so it can then itself internally call the resource constructor. And immediatly add the resource to its internal tracking system + return a valid ResourceHandle to the caller.
+
+#3
+Description:
+	Previously all .cpp files that worked with resources only had to include "Texture2D.h" or "Font.h" but now every file that makes use of a resource must include ResourceManager.h which is a big include and every time ResourceManager changes a lot of other dependant cpp files will also need to be recompiled
+Solution:

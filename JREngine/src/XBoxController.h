@@ -2,7 +2,7 @@
 #include <memory>
 #include "Controller.h"
 
-namespace JREngine::Input
+namespace JRE::Input
 {
 	class XBoxController final : public Controller
 	{

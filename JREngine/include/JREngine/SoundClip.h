@@ -2,7 +2,7 @@
 
 	struct Mix_Chunk;
 
-	namespace JREngine
+	namespace JRE
 	{
 		class SoundClip
 		{

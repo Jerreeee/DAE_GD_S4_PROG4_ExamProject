@@ -13,8 +13,10 @@
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "Renderer.h"
+#include "SDLSoundSystem.h"
 #include "ResourceManager.h"
 #include "Timer.h"
+#include "ServiceLocator.h"
 
 SDL_Window* g_window{};
 
@@ -63,7 +65,7 @@ void PrintSDLVersion()
 	LogSDLVersion("We linked against SDL_ttf version ", version);
 }
 
-JREngine::JREngine::JREngine(const std::filesystem::path &dataPath)
+JRE::JREngine::JREngine(const std::filesystem::path &dataPath)
 {
 	PrintSDLVersion();
 	
@@ -85,12 +87,15 @@ JREngine::JREngine::JREngine(const std::filesystem::path &dataPath)
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
+	ServiceLocator::RegisterSoundSystem(std::make_unique<SDLSoundSystem>());
+	ServiceLocator::RegisterResourceManager(std::make_unique<ResourceManager>());
+
 	Renderer::GetInstance().Init(g_window);
-	ResourceManager::GetInstance().Init(dataPath);
+	ServiceLocator::GetResourceManager().Init(dataPath);
 	Timer::GetInstance().SetFixedTimeStep(m_FixedTimeStep);
 }
 
-JREngine::JREngine::~JREngine()
+JRE::JREngine::~JREngine()
 {
 	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(g_window);
@@ -98,7 +103,7 @@ JREngine::JREngine::~JREngine()
 	SDL_Quit();
 }
 
-void JREngine::JREngine::Run(const std::function<void()>& load)
+void JRE::JREngine::Run(const std::function<void()>& load)
 {
 	load();
 
@@ -112,7 +117,7 @@ void JREngine::JREngine::Run(const std::function<void()>& load)
 #endif
 }
 
-void JREngine::JREngine::RunOneFrame()
+void JRE::JREngine::RunOneFrame()
 {
 	const auto currentTime = std::chrono::high_resolution_clock::now();
 	const float deltaTime = std::chrono::duration<float>(currentTime - m_LastTime).count();

@@ -2,7 +2,7 @@
 #include "SDL_mixer.h"
 #include "SoundClip.h"
 
-namespace JREngine
+namespace JRE
 {
 	SoundClip::SoundClip(const std::string& filePath)
 	{

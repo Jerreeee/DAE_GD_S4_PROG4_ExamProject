@@ -2,15 +2,16 @@
 #include <string>
 #include <memory>
 #include "RendererComponentBase.h"
+#include "ResourceHandle.h"
 
-namespace JREngine
+namespace JRE
 {
 	class Font;
 	class Texture2D;
 	class TextRendererComponent final : public RendererComponentBase
 	{
 	public:
-		TextRendererComponent(GameObject& gameObject, const std::string& text, std::shared_ptr<Font> font);
+		TextRendererComponent(GameObject& gameObject, const std::string& text, ResourceHandle<Font> fontHandle);
 
 		TextRendererComponent(const TextRendererComponent& other) = delete;
 		TextRendererComponent(TextRendererComponent&& other) = delete;
@@ -24,7 +25,9 @@ namespace JREngine
 	private:
 		bool m_NeedsUpdate{};
 		std::string m_Text{};
-		std::shared_ptr<Font> m_Font{};
-		std::shared_ptr<Texture2D> m_TextTexture{};
+		ResourceHandle<Font> m_FontHandle{};
+		std::shared_ptr<Font> m_pFont{};
+		ResourceHandle<Texture2D> m_TextTextureHandle{};
+		std::shared_ptr<Texture2D> m_pTextTexture{};
 	};
 }

@@ -1,6 +1,5 @@
 #include <stdexcept>
 #include <cstring>
-#include "Renderer.h"
 #include "SceneManager.h"
 #include "Texture2D.h"
 #include "RendererComponentBase.h"
@@ -8,6 +7,8 @@
 #include "imgui.h"
 #include "backends/imgui_impl_sdl2.h"
 #include "backends/imgui_impl_sdlrenderer2.h"
+
+#include "Renderer.h"
 
 int GetOpenGLDriverIndex()
 {
@@ -23,7 +24,7 @@ int GetOpenGLDriverIndex()
 	return openglIndex;
 }
 
-void JREngine::Renderer::Init(SDL_Window* window)
+void JRE::Renderer::Init(SDL_Window* window)
 {
 	m_window = window;
 	m_renderer = SDL_CreateRenderer(window, GetOpenGLDriverIndex(), SDL_RENDERER_ACCELERATED);
@@ -41,7 +42,7 @@ void JREngine::Renderer::Init(SDL_Window* window)
 	ImGui_ImplSDLRenderer2_Init(m_renderer);
 }
 
-void JREngine::Renderer::Render()
+void JRE::Renderer::Render()
 {
 	const auto& color = GetBackgroundColor();
 	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
@@ -61,7 +62,7 @@ void JREngine::Renderer::Render()
 	SDL_RenderPresent(m_renderer);
 }
 
-void JREngine::Renderer::Destroy()
+void JRE::Renderer::Destroy()
 {
 	if (m_renderer != nullptr)
 	{
@@ -74,33 +75,37 @@ void JREngine::Renderer::Destroy()
 	}
 }
 
-void JREngine::Renderer::RenderTexture(const Texture2D& texture, const float x, const float y) const
+void JRE::Renderer::RenderTexture(const std::shared_ptr<Texture2D>& pTexture, const float x, const float y) const
 {
+	if (!pTexture) return;
+
 	SDL_Rect dst{};
 	dst.x = static_cast<int>(x);
 	dst.y = static_cast<int>(y);
-	SDL_QueryTexture(texture.GetSDLTexture(), nullptr, nullptr, &dst.w, &dst.h);
-	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
+	SDL_QueryTexture(pTexture->GetSDLTexture(), nullptr, nullptr, &dst.w, &dst.h);
+	SDL_RenderCopy(GetSDLRenderer(), pTexture->GetSDLTexture(), nullptr, &dst);
 }
 
-void JREngine::Renderer::RenderTexture(const Texture2D& texture, const float x, const float y, const float width, const float height) const
+void JRE::Renderer::RenderTexture(const std::shared_ptr<Texture2D>& pTexture, const float x, const float y, const float width, const float height) const
 {
+	if (!pTexture) return;
+
 	SDL_Rect dst{};
 	dst.x = static_cast<int>(x);
 	dst.y = static_cast<int>(y);
 	dst.w = static_cast<int>(width);
 	dst.h = static_cast<int>(height);
-	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
+	SDL_RenderCopy(GetSDLRenderer(), pTexture->GetSDLTexture(), nullptr, &dst);
 }
 
-SDL_Renderer* JREngine::Renderer::GetSDLRenderer() const { return m_renderer; }
+SDL_Renderer* JRE::Renderer::GetSDLRenderer() const { return m_renderer; }
 
-void JREngine::Renderer::RegisterRendererComponent(RendererComponentBase* pRendererComponent)
+void JRE::Renderer::RegisterRendererComponent(RendererComponentBase* pRendererComponent)
 {
 	m_RendererComponents.emplace_back(pRendererComponent);
 }
 
-void JREngine::Renderer::UnRegisterRendererComponent(RendererComponentBase* pRendererComponent)
+void JRE::Renderer::UnRegisterRendererComponent(RendererComponentBase* pRendererComponent)
 {
 	m_RendererComponents.erase(std::find(m_RendererComponents.begin(), m_RendererComponents.end(), pRendererComponent));
 }

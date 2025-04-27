@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <chrono>
 
-namespace JREngine
+namespace JRE
 {
 	class JREngine final
 	{

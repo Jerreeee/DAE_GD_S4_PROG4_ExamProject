@@ -8,8 +8,8 @@ namespace BubbleBobble
 	{
 		struct PlayerDamaged
 		{
-			static const JREngine::EventID ID{ JREngine::HashEventID("PlayerDamaged") };
-			struct Args : public JREngine::EventArgs
+			static const JRE::EventID ID{ JRE::HashEventID("PlayerDamaged") };
+			struct Args : public JRE::EventArgs
 			{
 				Args(int _damage, int _newHealth)
 					: damage{ _damage }, newhealth{ _newHealth }
@@ -22,8 +22,8 @@ namespace BubbleBobble
 
 		struct IncreasedScore
 		{
-			static const JREngine::EventID ID{ JREngine::HashEventID("IncreasedScore") };
-			struct Args : public JREngine::EventArgs
+			static const JRE::EventID ID{ JRE::HashEventID("IncreasedScore") };
+			struct Args : public JRE::EventArgs
 			{
 				Args(int _newScore) : newScore{ _newScore } {};
 				int newScore;

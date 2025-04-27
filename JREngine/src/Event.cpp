@@ -1,6 +1,6 @@
 #include "Event.h"
 
-namespace JREngine
+namespace JRE
 {
 	EventInfo::EventInfo(EventID id) : m_ID{ id } {}
 	EventInfo::~EventInfo() = default;

@@ -1,5 +1,5 @@
 #pragma once
-namespace JREngine
+namespace JRE
 {
 	template <typename T>
 	class Singleton

@@ -31,6 +31,7 @@ set(SOURCE_FILES
     "ServiceLocator.cpp"
     "SDLSoundSystem.cpp"
     "SoundClip.cpp"
+    "ResourceHandle.cpp"
 )
 AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
 
@@ -42,6 +43,7 @@ set(INCLUDE_FILES
     "InputManager.h"
     "JREngine.h"
     "Renderer.h"
+    "IResourceManager.h"
     "ResourceManager.h"
     "Scene.h"
     "SceneManager.h"
@@ -59,6 +61,7 @@ set(INCLUDE_FILES
     "ServiceLocator.h"
     "SDLSoundSystem.h"
     "SoundClip.h"
+    "ResourceHandle.h"
 )
 AddPrefix(INCLUDE_FILES "${INTERNAL_INCLUDE_DIR}/")
 

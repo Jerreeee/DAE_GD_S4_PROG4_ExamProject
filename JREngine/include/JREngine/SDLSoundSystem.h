@@ -2,7 +2,7 @@
 #include <memory>
 #include "ISoundSystem.h"
 
-namespace JREngine
+namespace JRE
 {
 	using SoundHandle = uint16_t;
 	class SoundClip;

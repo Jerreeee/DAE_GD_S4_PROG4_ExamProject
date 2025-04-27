@@ -6,7 +6,7 @@
 
 namespace BubbleBobble
 {
-	MoveCommand::MoveCommand(JREngine::GameObject& gameObject, float speed, glm::vec2 direction) :
+	MoveCommand::MoveCommand(JRE::GameObject& gameObject, float speed, glm::vec2 direction) :
 		m_GameObject{ gameObject },
 		m_Speed{ speed },
 		m_Direction{ direction }
@@ -16,7 +16,7 @@ namespace BubbleBobble
 	void MoveCommand::Execute()
 	{
 		glm::vec3 pos = m_GameObject.GetLocalPosition();
-		float offset = m_Speed * JREngine::Timer::GetInstance().GetDeltaTime();
+		float offset = m_Speed * JRE::Timer::GetInstance().GetDeltaTime();
 		pos.x += offset * m_Direction.x;
 		pos.y += offset * m_Direction.y;
 		m_GameObject.SetLocalPosition(pos);

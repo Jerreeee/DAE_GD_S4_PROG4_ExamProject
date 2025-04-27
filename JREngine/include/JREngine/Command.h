@@ -1,7 +1,7 @@
 #pragma once
 #include "InputUtils.h"
 
-namespace JREngine
+namespace JRE
 {
 	class Command
 	{

@@ -7,7 +7,7 @@
 #include "XBoxController.h"
 #include "SDLKeyboard.h"
 
-namespace JREngine::Input
+namespace JRE::Input
 {
 	InputManager::InputManager() = default;
 	InputManager::~InputManager() = default;

@@ -9,11 +9,11 @@
 
 namespace BubbleBobble
 {
-	HealthComponent::HealthComponent(JREngine::GameObject& gameObject, int maxHealth) :
-		JREngine::ComponentBase(gameObject),
+	HealthComponent::HealthComponent(JRE::GameObject& gameObject, int maxHealth) :
+		JRE::ComponentBase(gameObject),
 		m_Health{ maxHealth },
 		m_MaxHealth{ maxHealth },
-		m_DamageEvent{ std::make_unique<JREngine::Observable>() }
+		m_DamageEvent{ std::make_unique<JRE::Observable>() }
 	{
 	}
 	HealthComponent::~HealthComponent() = default;
@@ -30,27 +30,27 @@ namespace BubbleBobble
 	void HealthComponent::TakeDamage(int amount)
 	{
 		m_Health -= amount;
-		JREngine::EventInfo e{ JREngine::CreateEvent<Event::PlayerDamaged>(amount, m_Health) };
+		JRE::EventInfo e{ JRE::CreateEvent<Event::PlayerDamaged>(amount, m_Health) };
 		m_DamageEvent->NotifyObservers(e);
 	}
-	PlayerUIComponent::PlayerUIComponent(JREngine::GameObject& UIGameObject, JREngine::GameObject& player, std::shared_ptr<JREngine::Font> pFont) :
+	PlayerUIComponent::PlayerUIComponent(JRE::GameObject& UIGameObject, JRE::GameObject& player, JRE::ResourceHandle<JRE::Font> fontHandle) :
 		ComponentBase(UIGameObject),
 		m_pHealthComponent{ player.GetComponent<HealthComponent>() },
 		m_pScoreComponent{ player.GetComponent<ScoreComponent>() }
 	{
 		m_pHealthComponent->OnDamageEvent().AddObserver(this);
-		auto livesObject = std::make_unique<JREngine::GameObject>();
-		m_pLivesText = livesObject->AddComponent<JREngine::TextRendererComponent>("", pFont);
+		auto livesObject = std::make_unique<JRE::GameObject>();
+		m_pLivesText = livesObject->AddComponent<JRE::TextRendererComponent>("", fontHandle);
 
 		m_pScoreComponent->OnIncreasedScoreEvent().AddObserver(this);
-		auto scoreObject = std::make_unique<JREngine::GameObject>();
-		m_pScoreText = scoreObject->AddComponent<JREngine::TextRendererComponent>("", pFont);
+		auto scoreObject = std::make_unique<JRE::GameObject>();
+		m_pScoreText = scoreObject->AddComponent<JRE::TextRendererComponent>("", fontHandle);
 
 		scoreObject->SetLocalPosition(0.f, 25.f);
 		livesObject->SetParent(&UIGameObject);
 		scoreObject->SetParent(&UIGameObject);
 
-		auto& scene = JREngine::SceneManager::GetInstance().GetCurrentScene();
+		auto& scene = JRE::SceneManager::GetInstance().GetCurrentScene();
 		scene.Add(std::move(livesObject));
 		scene.Add(std::move(scoreObject));
 
@@ -64,7 +64,7 @@ namespace BubbleBobble
 		m_pScoreComponent->OnIncreasedScoreEvent().RemoveObserver(this);
 	}
 
-	void PlayerUIComponent::OnNotify(JREngine::EventInfo& event)
+	void PlayerUIComponent::OnNotify(JRE::EventInfo& event)
 	{
 		switch (event.GetID())
 		{
@@ -81,21 +81,21 @@ namespace BubbleBobble
 		}
 		}
 	}
-	void PlayerUIComponent::SetTextComponentText(JREngine::TextRendererComponent* pTextComp, const std::string& prefix, const std::string& text)
+	void PlayerUIComponent::SetTextComponentText(JRE::TextRendererComponent* pTextComp, const std::string& prefix, const std::string& text)
 	{
 		std::stringstream ss{};
 		ss << prefix << text;
 		pTextComp->SetText(ss.str());
 	}
-	ScoreComponent::ScoreComponent(JREngine::GameObject& gameObject) :
+	ScoreComponent::ScoreComponent(JRE::GameObject& gameObject) :
 		ComponentBase(gameObject),
-		m_IncreasedScoreEvent{ std::make_unique<JREngine::Observable>() }
+		m_IncreasedScoreEvent{ std::make_unique<JRE::Observable>() }
 	{
 	}
 	void ScoreComponent::IncreaseScore(int points)
 	{
 		m_Score += points;
-		JREngine::EventInfo e{ JREngine::CreateEvent<Event::IncreasedScore>(m_Score) };
+		JRE::EventInfo e{ JRE::CreateEvent<Event::IncreasedScore>(m_Score) };
 		m_IncreasedScoreEvent->NotifyObservers(e);
 	}
 }

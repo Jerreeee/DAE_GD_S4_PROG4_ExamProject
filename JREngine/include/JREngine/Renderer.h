@@ -1,9 +1,10 @@
 #pragma once
 #include <SDL.h>
+#include <memory>
 #include "Singleton.h"
 #include <vector>
 
-namespace JREngine
+namespace JRE
 {
 	class RendererComponentBase;
 	class UIComponentBase;
@@ -18,8 +19,8 @@ namespace JREngine
 		void Render();
 		void Destroy();
 
-		void RenderTexture(const Texture2D& texture, float x, float y) const;
-		void RenderTexture(const Texture2D& texture, float x, float y, float width, float height) const;
+		void RenderTexture(const std::shared_ptr<Texture2D>& pTexture, float x, float y) const;
+		void RenderTexture(const std::shared_ptr<Texture2D>& pTexture, float x, float y, float width, float height) const;
 
 		SDL_Renderer* GetSDLRenderer() const;
 

@@ -2,7 +2,7 @@
 #include <algorithm>
 #include "SDLKeyboard.h"
 
-namespace JREngine::Input
+namespace JRE::Input
 {
 	class SDLKeyboard::Impl final
 	{
@@ -92,8 +92,8 @@ namespace JREngine::Input
 		return static_cast<uint32_t>(key) + static_cast<uint32_t>(SDL_SCANCODE_A); //map Button::A-Z -> SDL_SCANCODE_A-Z
 	}
 
-	JREngine::Input::SDLKeyboard::SDLKeyboard() : m_pImpl{ std::make_unique<Impl>() } {};
-	JREngine::Input::SDLKeyboard::~SDLKeyboard() = default;
+	JRE::Input::SDLKeyboard::SDLKeyboard() : m_pImpl{ std::make_unique<Impl>() } {};
+	JRE::Input::SDLKeyboard::~SDLKeyboard() = default;
 	void SDLKeyboard::AddKeysToTrack(const std::vector<KeyboardKey>& keysToTrack)
 	{
 		m_pImpl->AddKeysToTrack(keysToTrack);

@@ -9,7 +9,7 @@
 
 namespace fs = std::filesystem;
 
-namespace JREngine
+namespace JRE
 {
 	void ResourceManager::Init(const std::filesystem::path& dataPath)
 	{
@@ -21,40 +21,104 @@ namespace JREngine
 		}
 	}
 
-	std::shared_ptr<Texture2D> ResourceManager::LoadTexture(const std::string& file)
+	ResourceHandle<Texture2D> ResourceManager::LoadTexture(const std::string& file)
 	{
 		const auto fullPath = m_dataPath / file;
-		const auto filename = fs::path(fullPath).filename().string();
-		if (m_LoadedTextures.find(filename) == m_LoadedTextures.end())
-			m_LoadedTextures.insert(std::pair(filename, std::make_shared<Texture2D>(fullPath.string())));
-		return m_LoadedTextures.at(filename);
-	}
 
-	std::shared_ptr<Font> ResourceManager::LoadFont(const std::string& file, uint8_t size)
+		auto it = m_TexturePathToGUID.find(fullPath);
+		if (it != m_TexturePathToGUID.end())
+			return ResourceHandle<Texture2D>(it->second);
+
+		auto texture = std::make_shared<Texture2D>(fullPath.string());
+		GUID guid = GenerateGUID();
+
+		m_LoadedTextures.emplace(guid, texture);
+		m_TexturePathToGUID.emplace(fullPath, guid);
+
+		return ResourceHandle<Texture2D>(guid);
+	}
+	ResourceHandle<Texture2D> ResourceManager::LoadTexture(const std::string& text, ResourceHandle<Font> fontHandle)
+	{
+		auto pFont = GetFont(fontHandle);
+		if (!pFont)
+			throw std::runtime_error(std::string("Not a valid font"));
+
+		// Make a fake path based on the text + font GUID
+		std::string fakePath = "generated/" + text + "_" + std::to_string(fontHandle.GetGUID());
+		std::filesystem::path fakeFilePath(fakePath);
+
+		auto it = m_TexturePathToGUID.find(fakeFilePath);
+		if (it != m_TexturePathToGUID.end())
+			return ResourceHandle<Texture2D>(it->second);
+
+		auto pTexture = std::make_shared<Texture2D>(text, fontHandle);
+		GUID guid = GenerateGUID();
+
+		m_LoadedTextures.emplace(guid, pTexture);
+		m_TexturePathToGUID.emplace(fakeFilePath, guid);
+
+		return ResourceHandle<Texture2D>(guid);
+	}
+	ResourceHandle<Font> ResourceManager::LoadFont(const std::string& file, uint8_t size)
 	{
 		const auto fullPath = m_dataPath / file;
-		const auto filename = fs::path(fullPath).filename().string();
-		const auto key = std::pair<std::string, uint8_t>(filename, size);
-		if (m_LoadedFonts.find(key) == m_LoadedFonts.end())
-			m_LoadedFonts.insert(std::pair(key, std::make_shared<Font>(fullPath.string(), size)));
-		return m_LoadedFonts.at(key);
+		auto key = std::make_pair(fullPath, size);
+
+		auto it = m_FontPathSizeToGUID.find(key);
+		if (it != m_FontPathSizeToGUID.end())
+			return ResourceHandle<Font>(it->second);
+
+		auto font = std::make_shared<Font>(fullPath.string(), size);
+		GUID guid = GenerateGUID();
+
+		m_LoadedFonts.emplace(guid, font);
+		m_FontPathSizeToGUID.emplace(key, guid);
+
+		return ResourceHandle<Font>(guid);
 	}
 
-	std::shared_ptr<SoundClip> ResourceManager::LoadSound(const std::string& file)
+	ResourceHandle<SoundClip> ResourceManager::LoadSound(const std::string& file)
 	{
 		const auto fullPath = m_dataPath / file;
-		const auto filename = fs::path(fullPath).filename().string();
 
-		auto it = m_LoadedSounds.find(filename);
-		if (it == m_LoadedSounds.end())
-		{
-			auto sound = std::make_shared<SoundClip>(fullPath.string());
-			m_LoadedSounds.emplace(filename, sound);
-			return sound;
-		}
-		return it->second;
+		auto it = m_SoundPathToGUID.find(fullPath);
+		if (it != m_SoundPathToGUID.end())
+			return ResourceHandle<SoundClip>(it->second);
+
+		auto sound = std::make_shared<SoundClip>(fullPath.string());
+		GUID guid = GenerateGUID();
+
+		m_LoadedSounds.emplace(guid, sound);
+		m_SoundPathToGUID.emplace(fullPath, guid);
+
+		return ResourceHandle<SoundClip>(guid);
+	}
+	std::shared_ptr<Texture2D> ResourceManager::GetTexture(ResourceHandle<Texture2D> handle) const
+	{
+		auto it = m_LoadedTextures.find(handle.GetGUID());
+		if (it != m_LoadedTextures.end())
+			return it->second;
+		else
+			return nullptr;
 	}
 
+	std::shared_ptr<Font> ResourceManager::GetFont(ResourceHandle<Font> handle) const
+	{
+		auto it = m_LoadedFonts.find(handle.GetGUID());
+		if (it != m_LoadedFonts.end())
+			return it->second;
+		else
+			return nullptr;
+	}
+
+	std::shared_ptr<SoundClip> ResourceManager::GetSound(ResourceHandle<SoundClip> handle) const
+	{
+		auto it = m_LoadedSounds.find(handle.GetGUID());
+		if (it != m_LoadedSounds.end())
+			return it->second;
+		else
+			return nullptr;
+	}
 	void ResourceManager::UnloadUnusedResources()
 	{
 		for (auto it = m_LoadedTextures.begin(); it != m_LoadedTextures.end();)

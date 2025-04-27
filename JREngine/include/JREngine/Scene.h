@@ -1,7 +1,7 @@
 #pragma once
 #include "SceneManager.h"
 
-namespace JREngine
+namespace JRE
 {
 	class GameObject;
 	class Scene final

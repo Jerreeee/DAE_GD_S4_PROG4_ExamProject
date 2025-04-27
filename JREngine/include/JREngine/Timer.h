@@ -1,7 +1,7 @@
 #pragma once
 #include "Singleton.h"
 
-namespace JREngine
+namespace JRE
 {
 	class Timer : public Singleton<Timer>
 	{

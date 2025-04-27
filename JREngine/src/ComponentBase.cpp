@@ -1,7 +1,7 @@
 #include "ComponentBase.h"
 #include "GameObject.h"
 
-namespace JREngine
+namespace JRE
 {
 	ComponentBase::ComponentBase(GameObject& gameObject)
 		: m_GameObject(gameObject)

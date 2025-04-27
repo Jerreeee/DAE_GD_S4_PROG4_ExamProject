@@ -9,7 +9,7 @@
 #include "SoundClip.h"
 #include "SDLSoundSystem.h"
 
-namespace JREngine
+namespace JRE
 {
 	struct SoundEvent
 	{

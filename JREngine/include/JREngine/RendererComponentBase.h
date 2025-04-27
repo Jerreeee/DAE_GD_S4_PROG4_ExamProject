@@ -1,7 +1,7 @@
 #pragma once
 #include "ComponentBase.h"
 
-namespace JREngine
+namespace JRE
 {
 	class RendererComponentBase : public ComponentBase
 	{

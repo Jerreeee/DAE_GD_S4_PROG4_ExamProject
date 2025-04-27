@@ -2,7 +2,7 @@
 #include <vector>
 #include "InputUtils.h"
 
-namespace JREngine::Input
+namespace JRE::Input
 {
 	class Keyboard
 	{
