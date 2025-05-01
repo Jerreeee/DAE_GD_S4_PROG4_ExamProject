@@ -15,7 +15,7 @@ namespace JRE
 	}
 	void ServiceLocator::RegisterSoundSystem(std::unique_ptr<ISoundSystem>&& pSoundSystem)
 	{
-		s_pSoundSystem = std::move(pSoundSystem);
+		s_pSoundSystem = pSoundSystem ? std::move(pSoundSystem) : std::make_unique<NullSoundSystem>();
 	}
 	IResourceManager& ServiceLocator::GetResourceManager()
 	{
@@ -23,6 +23,6 @@ namespace JRE
 	}
 	void ServiceLocator::RegisterResourceManager(std::unique_ptr<IResourceManager>&& pResourceManager)
 	{
-		s_pResourceManager = std::move(pResourceManager);
+		s_pResourceManager = pResourceManager ? std::move(pResourceManager) : std::make_unique<NullResourceManager>();
 	}
 }

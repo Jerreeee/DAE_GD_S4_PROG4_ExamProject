@@ -4,7 +4,7 @@
 #include "JREngine/SceneManager.h"
 #include "JREngine/ServiceLocator.h"
 #include "JREngine/ResourceManager.h"
-#include "JREngine/SDLSoundSystem.h"
+#include "JREngine/ISoundSystem.h"
 #include "JREngine/Scene.h"
 
 #include "Components.h"
@@ -21,7 +21,7 @@ namespace BubbleBobble
 	}
 	HealthComponent::~HealthComponent() = default;
 
-	void HealthComponent::SetHitSound(JRE::ResourceHandle<JRE::SoundClip> hitSoundHandle)
+	void HealthComponent::SetHitSound(JRE::ResourceHandle<JRE::ISoundClip> hitSoundHandle)
 	{
 		m_HitSoundHandle = hitSoundHandle;
 	}

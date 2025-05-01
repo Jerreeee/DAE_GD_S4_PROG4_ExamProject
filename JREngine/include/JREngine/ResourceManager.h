@@ -22,11 +22,11 @@ namespace JRE
 		virtual ResourceHandle<Texture2D> LoadTexture(const std::string& file) override;
 		virtual ResourceHandle<Texture2D> LoadTexture(const std::string& text, ResourceHandle<Font> fontHandle) override;
 		virtual ResourceHandle<Font> LoadFont(const std::string& file, uint8_t size) override;
-		virtual ResourceHandle<SoundClip> LoadSound(const std::string& file) override;
+		virtual ResourceHandle<ISoundClip> LoadSound(const std::string& file) override;
 
 		virtual std::shared_ptr<Texture2D> GetTexture(ResourceHandle<Texture2D> handle) const override;
 		virtual std::shared_ptr<Font> GetFont(ResourceHandle<Font> handle) const override;
-		virtual std::shared_ptr<SoundClip> GetSound(ResourceHandle<SoundClip> handle) const override;
+		virtual std::shared_ptr<ISoundClip> GetSound(ResourceHandle<ISoundClip> handle) const override;
 	private:
 		struct LoadEvents
 		{
@@ -73,7 +73,7 @@ namespace JRE
 		//but its a start :)
 		std::map<GUID, std::shared_ptr<Texture2D>> m_LoadedTextures{};
 		std::map<GUID, std::shared_ptr<Font>> m_LoadedFonts{};
-		std::map<GUID, std::shared_ptr<SoundClip>> m_LoadedSounds{};
+		std::map<GUID, std::shared_ptr<ISoundClip>> m_LoadedSounds{};
 
 		std::map<std::filesystem::path, GUID> m_TexturePathToGUID{};
 		std::map<std::pair<std::filesystem::path, uint8_t>, GUID> m_FontPathSizeToGUID{};

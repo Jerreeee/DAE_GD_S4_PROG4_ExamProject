@@ -1,10 +1,15 @@
 ﻿#include <stdexcept>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+
 #include "Renderer.h"
 #include "Texture2D.h"
 #include "Font.h"
-#include "SoundClip.h"
+
+#include "ServiceLocator.h"
+#include "ISoundSystem.h"
+#include "ISoundClip.h"
+
 #include "ResourceManager.h"
 
 namespace fs = std::filesystem;
@@ -84,20 +89,20 @@ namespace JRE
 		return ResourceHandle<Font>(guid);
 	}
 
-	ResourceHandle<SoundClip> ResourceManager::LoadSound(const std::string& file)
+	ResourceHandle<ISoundClip> ResourceManager::LoadSound(const std::string& file)
 	{
 		const auto fullPath = m_dataPath / file;
 
 		auto it = m_SoundPathToGUID.find(fullPath);
 		if (it != m_SoundPathToGUID.end())
-			return ResourceHandle<SoundClip>(it->second);
+			return ResourceHandle<ISoundClip>(it->second);
 
 		GUID guid = GenerateGUID();
 		m_SoundPathToGUID.emplace(fullPath, guid);
 
 		EnqueueLoadEvent(CreateEvent<LoadEvents::LoadSound>(file, guid));
 
-		return ResourceHandle<SoundClip>(guid);
+		return ResourceHandle<ISoundClip>(guid);
 	}
 	std::shared_ptr<Texture2D> ResourceManager::GetTexture(ResourceHandle<Texture2D> handle) const
 	{
@@ -117,7 +122,7 @@ namespace JRE
 			return nullptr;
 	}
 
-	std::shared_ptr<SoundClip> ResourceManager::GetSound(ResourceHandle<SoundClip> handle) const
+	std::shared_ptr<ISoundClip> ResourceManager::GetSound(ResourceHandle<ISoundClip> handle) const
 	{
 		auto it = m_LoadedSounds.find(handle.GetGUID());
 		if (it != m_LoadedSounds.end())
@@ -146,20 +151,20 @@ namespace JRE
 				{
 					auto& args = event.GetArgs<LoadEvents::LoadFont>();
 					auto font = std::make_shared<Font>((m_dataPath / args.path).string(), args.size);
-					std::scoped_lock g(m_Mutex);
+					std::lock_guard g(m_Mutex);
 					m_LoadedFonts[args.guid] = font;
 					break;
 				}
 				case LoadEvents::LoadSound::ID:
 				{
 					auto& args = event.GetArgs<LoadEvents::LoadSound>();
-					auto sound = std::make_shared<SoundClip>((m_dataPath / args.path).string());
-					std::scoped_lock g(m_Mutex);
+					auto sound = ServiceLocator::GetSoundSystem().CreateSoundClip((m_dataPath / args.path).string());
+					std::lock_guard g(m_Mutex);
 					m_LoadedSounds[args.guid] = sound;
 					break;
 				}
 				}
-
+				//lock again for next iteration of while loop to safely check "m_SoundQueue.empty()"
 				lock.lock();
 			}
 		}

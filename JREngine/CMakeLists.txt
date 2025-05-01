@@ -30,7 +30,7 @@ set(SOURCE_FILES
     "Event.cpp"
     "ServiceLocator.cpp"
     "SDLSoundSystem.cpp"
-    "SoundClip.cpp"
+    "SDLSoundClip.cpp"
     "ResourceHandle.cpp"
 )
 AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
@@ -60,7 +60,8 @@ set(INCLUDE_FILES
     "ISoundSystem.h"
     "ServiceLocator.h"
     "SDLSoundSystem.h"
-    "SoundClip.h"
+    "ISoundClip.h"
+    "SDLSoundClip.h"
     "ResourceHandle.h"
 )
 AddPrefix(INCLUDE_FILES "${INTERNAL_INCLUDE_DIR}/")

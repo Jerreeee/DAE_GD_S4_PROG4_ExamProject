@@ -6,14 +6,14 @@
 #include <thread>
 #include <stop_token>
 #include <SDL_mixer.h>
-#include "SoundClip.h"
+#include "SDLSoundClip.h"
 #include "SDLSoundSystem.h"
 
 namespace JRE
 {
 	struct SoundEvent
 	{
-		std::shared_ptr<SoundClip> clip;
+		std::shared_ptr<ISoundClip> clip;
 		float volume;
 	};
 
@@ -22,7 +22,7 @@ namespace JRE
 	public:
 		Impl();
 
-		void Play(std::shared_ptr<SoundClip> clip, float volume);
+		void Play(std::shared_ptr<ISoundClip> clip, float volume);
 	private:
 		void SoundThread(std::stop_token token);
 
@@ -35,7 +35,7 @@ namespace JRE
 		m_Worker([this](std::stop_token st) { SoundThread(st); })
 	{
 	}
-	void SDLSoundSystem::Impl::Play(std::shared_ptr<SoundClip> clip, float volume)
+	void SDLSoundSystem::Impl::Play(std::shared_ptr<ISoundClip> clip, float volume)
 	{
 		if (!clip)
 		{
@@ -69,6 +69,7 @@ namespace JRE
 					evt.clip->SetVolume(std::clamp(evt.volume, 0.0f, 1.0f));
 					evt.clip->Play();
 				}
+				//lock again for next iteration of while loop to safely check "m_SoundQueue.empty()"
 				lock.lock();
 			}
 		}
@@ -85,7 +86,11 @@ namespace JRE
 	{
 		Mix_CloseAudio();
 	}
-	void SDLSoundSystem::Play(std::shared_ptr<SoundClip> clip, float volume)
+	std::shared_ptr<ISoundClip> SDLSoundSystem::CreateSoundClip(const std::string& path)
+	{
+		return std::make_shared<SDLSoundClip>(path);
+	}
+	void SDLSoundSystem::Play(std::shared_ptr<ISoundClip> clip, float volume)
 	{
 		m_pImpl->Play(clip, volume);
 	}
