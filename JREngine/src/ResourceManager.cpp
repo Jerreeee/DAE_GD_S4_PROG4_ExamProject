@@ -1,139 +1,186 @@
-﻿#include <stdexcept>
-#include <SDL_image.h>
+﻿#include <filesystem>
+#include <string>
+#include <memory>
+#include <map>
+#include <queue>
+#include <mutex>
+#include <condition_variable>
+#include <thread>
+#include <stop_token>
+#include <iostream>
+
 #include <SDL_ttf.h>
 
-#include "Renderer.h"
 #include "Texture2D.h"
 #include "Font.h"
-
-#include "ServiceLocator.h"
-#include "ISoundSystem.h"
 #include "ISoundClip.h"
+#include "ISoundSystem.h"
+#include "ServiceLocator.h"
 
+#include "Event.h"
 #include "ResourceManager.h"
-
-namespace fs = std::filesystem;
 
 namespace JRE
 {
-	void ResourceManager::Init(const std::filesystem::path& dataPath)
+	class ResourceManager::Impl
 	{
-		m_dataPath = dataPath;
+	public:
+		Impl();
+
+		void Init(const std::filesystem::path& dataPath);
+		ResourceHandle<Texture2D> LoadTexture(const std::string& file);
+		ResourceHandle<Texture2D> LoadTexture(const std::string& text, ResourceHandle<Font> fontHandle);
+		ResourceHandle<Font> LoadFont(const std::string& file, uint8_t size);
+		ResourceHandle<ISoundClip> LoadSound(const std::string& file);
+
+		std::shared_ptr<Texture2D> GetTexture(ResourceHandle<Texture2D> handle) const;
+		std::shared_ptr<Font> GetFont(ResourceHandle<Font> handle) const;
+		std::shared_ptr<ISoundClip> GetSound(ResourceHandle<ISoundClip> handle) const;
+	private:
+		struct LoadEvents
+		{
+			struct LoadFont
+			{
+				static const EventID ID{ HashEventID("LoadFont") };
+				struct Args : public EventArgs
+				{
+					Args(std::string _path, uint8_t _size, GUID _guid)
+						: path(std::move(_path)), size(_size), guid(_guid) {
+					}
+
+					std::string path;
+					uint8_t size;
+					GUID guid;
+				};
+			};
+
+			struct LoadSound
+			{
+				static const EventID ID{ HashEventID("LoadSound") };
+				struct Args : public EventArgs
+				{
+					Args(std::string _path, GUID _guid)
+						: path(std::move(_path)), guid(_guid) {
+					}
+
+					std::string path;
+					GUID guid;
+				};
+			};
+		};
+
+		void WorkerLoop(std::stop_token token);
+		void EnqueueLoadEvent(EventInfo&& event);
+
+		std::filesystem::path m_DataPath{};
+
+		std::map<GUID, std::shared_ptr<Texture2D>> m_LoadedTextures{};
+		std::map<GUID, std::shared_ptr<Font>> m_LoadedFonts{};
+		std::map<GUID, std::shared_ptr<ISoundClip>> m_LoadedSounds{};
+
+		std::map<std::filesystem::path, GUID> m_TexturePathToGUID{};
+		std::map<std::pair<std::filesystem::path, uint8_t>, GUID> m_FontPathSizeToGUID{};
+		std::map<std::filesystem::path, GUID> m_SoundPathToGUID{};
+
+		std::queue<EventInfo> m_LoadEventsQueue{};
+		mutable std::mutex m_Mutex{};
+		std::condition_variable_any m_Condition{};
+		std::jthread m_WorkerThread{};
+	};
+	ResourceManager::Impl::Impl() = default;
+	void ResourceManager::Impl::Init(const std::filesystem::path& dataPath)
+	{
+		m_DataPath = dataPath;
 
 		if (TTF_Init() != 0)
 		{
-			throw std::runtime_error(std::string("Failed to load support for fonts: ") + SDL_GetError());
+			throw std::runtime_error("Failed to initialize TTF: " + std::string(SDL_GetError()));
 		}
 
-		m_WorkerThread = std::jthread{ [this](std::stop_token token) { WorkerLoop(token); } };
+		m_WorkerThread = std::jthread([this](std::stop_token token) { WorkerLoop(token); });
 	}
-
-	ResourceHandle<Texture2D> ResourceManager::LoadTexture(const std::string& file)
+	ResourceHandle<Texture2D> ResourceManager::Impl::LoadTexture(const std::string& file)
 	{
-		const auto fullPath = m_dataPath / file;
-
-		auto it = m_TexturePathToGUID.find(fullPath);
-		if (it != m_TexturePathToGUID.end())
+		auto fullPath = m_DataPath / file;
+		if (auto it = m_TexturePathToGUID.find(fullPath); it != m_TexturePathToGUID.end())
 			return ResourceHandle<Texture2D>(it->second);
 
 		GUID guid = GenerateGUID();
-		m_TexturePathToGUID.emplace(fullPath, guid);
-
-		auto pTexture = std::make_shared<Texture2D>(fullPath.string());
+		m_TexturePathToGUID[fullPath] = guid;
+		auto tex = std::make_shared<Texture2D>(fullPath.string());
 		{
 			std::scoped_lock lock(m_Mutex);
-			m_LoadedTextures.emplace(guid, pTexture);
+			m_LoadedTextures[guid] = tex;
 		}
-
 		return ResourceHandle<Texture2D>(guid);
 	}
-	ResourceHandle<Texture2D> ResourceManager::LoadTexture(const std::string& text, ResourceHandle<Font> fontHandle)
+	ResourceHandle<Texture2D> ResourceManager::Impl::LoadTexture(const std::string& text, ResourceHandle<Font> fontHandle)
 	{
-		auto pFont = GetFont(fontHandle);
-		if (!pFont)
-			throw std::runtime_error(std::string("Not a valid font"));
+		auto font = GetFont(fontHandle);
+		if (!font) throw std::runtime_error("Invalid font handle");
+		auto fakePath = std::filesystem::path("generated/" + text + "_" + std::to_string(fontHandle.GetGUID()));
 
-		// Make a fake path based on the text + font GUID
-		std::string fakePath = "generated/" + text + "_" + std::to_string(fontHandle.GetGUID());
-		std::filesystem::path fakeFilePath(fakePath);
-
-		auto it = m_TexturePathToGUID.find(fakeFilePath);
-		if (it != m_TexturePathToGUID.end())
+		if (auto it = m_TexturePathToGUID.find(fakePath); it != m_TexturePathToGUID.end())
 			return ResourceHandle<Texture2D>(it->second);
 
 		GUID guid = GenerateGUID();
-		m_TexturePathToGUID.emplace(fakeFilePath, guid);
-
-		auto pTexture = std::make_shared<Texture2D>(text, fontHandle);
+		m_TexturePathToGUID[fakePath] = guid;
+		auto tex = std::make_shared<Texture2D>(text, fontHandle);
 		{
 			std::scoped_lock lock(m_Mutex);
-			m_LoadedTextures.emplace(guid, pTexture);
+			m_LoadedTextures[guid] = tex;
 		}
-
 		return ResourceHandle<Texture2D>(guid);
 	}
-	ResourceHandle<Font> ResourceManager::LoadFont(const std::string& file, uint8_t size)
+	ResourceHandle<Font> ResourceManager::Impl::LoadFont(const std::string& file, uint8_t size)
 	{
-		const auto fullPath = m_dataPath / file;
+		auto fullPath = m_DataPath / file;
 		auto key = std::make_pair(fullPath, size);
 
-		auto it = m_FontPathSizeToGUID.find(key);
-		if (it != m_FontPathSizeToGUID.end())
+		if (auto it = m_FontPathSizeToGUID.find(key); it != m_FontPathSizeToGUID.end())
 			return ResourceHandle<Font>(it->second);
 
 		GUID guid = GenerateGUID();
-		m_FontPathSizeToGUID.emplace(key, guid);
-
+		m_FontPathSizeToGUID[key] = guid;
 		EnqueueLoadEvent(CreateEvent<LoadEvents::LoadFont>(file, size, guid));
-
 		return ResourceHandle<Font>(guid);
 	}
-
-	ResourceHandle<ISoundClip> ResourceManager::LoadSound(const std::string& file)
+	ResourceHandle<ISoundClip> ResourceManager::Impl::LoadSound(const std::string& file)
 	{
-		const auto fullPath = m_dataPath / file;
-
-		auto it = m_SoundPathToGUID.find(fullPath);
-		if (it != m_SoundPathToGUID.end())
+		auto fullPath = m_DataPath / file;
+		if (auto it = m_SoundPathToGUID.find(fullPath); it != m_SoundPathToGUID.end())
 			return ResourceHandle<ISoundClip>(it->second);
 
 		GUID guid = GenerateGUID();
-		m_SoundPathToGUID.emplace(fullPath, guid);
-
+		m_SoundPathToGUID[fullPath] = guid;
 		EnqueueLoadEvent(CreateEvent<LoadEvents::LoadSound>(file, guid));
-
 		return ResourceHandle<ISoundClip>(guid);
 	}
-	std::shared_ptr<Texture2D> ResourceManager::GetTexture(ResourceHandle<Texture2D> handle) const
+	std::shared_ptr<Texture2D> ResourceManager::Impl::GetTexture(ResourceHandle<Texture2D> handle) const
 	{
 		auto it = m_LoadedTextures.find(handle.GetGUID());
-		if (it != m_LoadedTextures.end())
-			return it->second;
-		else
-			return nullptr;
+		return (it != m_LoadedTextures.end()) ? it->second : nullptr;
 	}
 
-	std::shared_ptr<Font> ResourceManager::GetFont(ResourceHandle<Font> handle) const
+	std::shared_ptr<Font> ResourceManager::Impl::GetFont(ResourceHandle<Font> handle) const
 	{
 		auto it = m_LoadedFonts.find(handle.GetGUID());
-		if (it != m_LoadedFonts.end())
-			return it->second;
-		else
-			return nullptr;
+		return (it != m_LoadedFonts.end()) ? it->second : nullptr;
 	}
-
-	std::shared_ptr<ISoundClip> ResourceManager::GetSound(ResourceHandle<ISoundClip> handle) const
+	std::shared_ptr<ISoundClip> ResourceManager::Impl::GetSound(ResourceHandle<ISoundClip> handle) const
 	{
 		auto it = m_LoadedSounds.find(handle.GetGUID());
-		if (it != m_LoadedSounds.end())
-			return it->second;
-		else
-			return nullptr;
+		return (it != m_LoadedSounds.end()) ? it->second : nullptr;
 	}
-	void ResourceManager::WorkerLoop(std::stop_token token)
+	void ResourceManager::Impl::EnqueueLoadEvent(EventInfo&& event)
+	{
+		std::scoped_lock lock(m_Mutex);
+		m_LoadEventsQueue.push(std::move(event));
+		m_Condition.notify_one();
+	}
+	void ResourceManager::Impl::WorkerLoop(std::stop_token token)
 	{
 		std::unique_lock lock(m_Mutex);
-
 		while (!token.stop_requested())
 		{
 			m_Condition.wait(lock, token, [&] { return !m_LoadEventsQueue.empty(); });
@@ -144,61 +191,41 @@ namespace JRE
 				m_LoadEventsQueue.pop();
 
 				lock.unlock();
-
 				switch (event.GetID())
 				{
 				case LoadEvents::LoadFont::ID:
 				{
 					auto& args = event.GetArgs<LoadEvents::LoadFont>();
-					auto font = std::make_shared<Font>((m_dataPath / args.path).string(), args.size);
-					std::lock_guard g(m_Mutex);
+					auto font = std::make_shared<Font>((m_DataPath / args.path).string(), args.size);
+					std::scoped_lock g(m_Mutex);
 					m_LoadedFonts[args.guid] = font;
 					break;
 				}
 				case LoadEvents::LoadSound::ID:
 				{
 					auto& args = event.GetArgs<LoadEvents::LoadSound>();
-					auto sound = ServiceLocator::GetSoundSystem().CreateSoundClip((m_dataPath / args.path).string());
-					std::lock_guard g(m_Mutex);
+					auto sound = ServiceLocator::GetSoundSystem().CreateSoundClip((m_DataPath / args.path).string());
+					std::scoped_lock g(m_Mutex);
 					m_LoadedSounds[args.guid] = sound;
 					break;
 				}
+				default:
+					std::cerr << "Unknown event ID in ResourceManager\n";
+					break;
 				}
-				//lock again for next iteration of while loop to safely check "m_SoundQueue.empty()"
 				lock.lock();
 			}
 		}
 	}
-	void ResourceManager::EnqueueLoadEvent(EventInfo&& event)
-	{
-		std::scoped_lock lock(m_Mutex);
-		m_LoadEventsQueue.push(std::move(event));
-		m_Condition.notify_one();
-	}
-	void ResourceManager::UnloadUnusedResources()
-	{
-		for (auto it = m_LoadedTextures.begin(); it != m_LoadedTextures.end();)
-		{
-			if (it->second.use_count() == 1)
-				it = m_LoadedTextures.erase(it);
-			else
-				++it;
-		}
 
-		for (auto it = m_LoadedFonts.begin(); it != m_LoadedFonts.end();)
-		{
-			if (it->second.use_count() == 1)
-				it = m_LoadedFonts.erase(it);
-			else
-				++it;
-		}
-
-		for (auto it = m_LoadedSounds.begin(); it != m_LoadedSounds.end();)
-		{
-			if (it->second.use_count() == 1)
-				it = m_LoadedSounds.erase(it);
-			else
-				++it;
-		}
-	}
+	ResourceManager::ResourceManager() : m_pImpl{ std::make_unique<Impl>() } {}
+	ResourceManager::~ResourceManager() = default;
+	void ResourceManager::Init(const std::filesystem::path& data) { m_pImpl->Init(data); }
+	ResourceHandle<Texture2D> ResourceManager::LoadTexture(const std::string& file) { return m_pImpl->LoadTexture(file); }
+	ResourceHandle<Texture2D> ResourceManager::LoadTexture(const std::string& text, ResourceHandle<Font> font) { return m_pImpl->LoadTexture(text, font); }
+	ResourceHandle<Font> ResourceManager::LoadFont(const std::string& file, uint8_t size) { return m_pImpl->LoadFont(file, size); }
+	ResourceHandle<ISoundClip> ResourceManager::LoadSound(const std::string& file) { return m_pImpl->LoadSound(file); }
+	std::shared_ptr<Texture2D> ResourceManager::GetTexture(ResourceHandle<Texture2D> handle) const { return m_pImpl->GetTexture(handle); }
+	std::shared_ptr<Font> ResourceManager::GetFont(ResourceHandle<Font> handle) const { return m_pImpl->GetFont(handle); }
+	std::shared_ptr<ISoundClip> ResourceManager::GetSound(ResourceHandle<ISoundClip> handle) const { return m_pImpl->GetSound(handle); }
 }
