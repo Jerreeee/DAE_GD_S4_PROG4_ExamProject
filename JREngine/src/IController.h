@@ -3,10 +3,10 @@
 
 namespace JRE::Input
 {
-	class Controller
+	class IController
 	{
 	public:
-		virtual ~Controller() = default;
+		virtual ~IController() = default;
 		virtual void PollState(int controllerIdx = 0) = 0;
 		virtual bool HasButtonState(ControllerButton button, ButtonState buttonState) const = 0;
 		virtual bool IsDownThisFrame(ControllerButton button) const = 0;

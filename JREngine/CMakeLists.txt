@@ -20,7 +20,7 @@ set(SOURCE_FILES
     "SpriteRendererComponent.cpp"
     "TextRendererComponent.cpp"
     "RendererComponentBase.cpp"
-    "Controller.h"
+    "IController.h"
     "XBoxController.h"
     "XBoxController.cpp"
     "Keyboard.h"

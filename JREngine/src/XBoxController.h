@@ -1,10 +1,10 @@
 #pragma once
 #include <memory>
-#include "Controller.h"
+#include "IController.h"
 
 namespace JRE::Input
 {
-	class XBoxController final : public Controller
+	class XBoxController final : public IController
 	{
 	public:
 		XBoxController();

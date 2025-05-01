@@ -6,6 +6,7 @@
 #include <thread>
 #include <stop_token>
 #include <SDL_mixer.h>
+
 #include "SDLSoundClip.h"
 #include "SDLSoundSystem.h"
 
@@ -21,6 +22,7 @@ namespace JRE
 	{
 	public:
 		Impl();
+		~Impl();
 
 		void Play(std::shared_ptr<ISoundClip> clip, float volume);
 	private:
@@ -29,11 +31,19 @@ namespace JRE
 		std::queue<SoundEvent> m_SoundQueue{};
 		std::mutex m_Mutex{};
 		std::condition_variable_any m_Condition{};
-		std::jthread m_Worker{};
+		std::jthread m_Worker;
 	};
-	SDLSoundSystem::Impl::Impl() :
-		m_Worker([this](std::stop_token st) { SoundThread(st); })
+	SDLSoundSystem::Impl::Impl()
+		: m_Worker([this](std::stop_token st) { SoundThread(st); })
 	{
+		if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+		{
+			std::cerr << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError() << "\n";
+		}
+	}
+	SDLSoundSystem::Impl::~Impl()
+	{
+		Mix_CloseAudio();
 	}
 	void SDLSoundSystem::Impl::Play(std::shared_ptr<ISoundClip> clip, float volume)
 	{
@@ -49,7 +59,6 @@ namespace JRE
 		}
 		m_Condition.notify_one();
 	}
-
 	void SDLSoundSystem::Impl::SoundThread(std::stop_token token)
 	{
 		std::unique_lock lock(m_Mutex);
@@ -69,29 +78,13 @@ namespace JRE
 					evt.clip->SetVolume(std::clamp(evt.volume, 0.0f, 1.0f));
 					evt.clip->Play();
 				}
-				//lock again for next iteration of while loop to safely check "m_SoundQueue.empty()"
 				lock.lock();
 			}
 		}
 	}
 
-	SDLSoundSystem::SDLSoundSystem() : m_pImpl{ std::make_unique<Impl>() }
-	{
-		if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
-		{
-			std::cerr << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError() << "\n";
-		}
-	}
-	SDLSoundSystem::~SDLSoundSystem()
-	{
-		Mix_CloseAudio();
-	}
-	std::shared_ptr<ISoundClip> SDLSoundSystem::CreateSoundClip(const std::string& path)
-	{
-		return std::make_shared<SDLSoundClip>(path);
-	}
-	void SDLSoundSystem::Play(std::shared_ptr<ISoundClip> clip, float volume)
-	{
-		m_pImpl->Play(clip, volume);
-	}
+	SDLSoundSystem::SDLSoundSystem() : m_pImpl{ std::make_unique<Impl>() } {}
+	SDLSoundSystem::~SDLSoundSystem() = default;
+	std::shared_ptr<ISoundClip> SDLSoundSystem::CreateSoundClip(const std::string& path) { return std::make_shared<SDLSoundClip>(path); }
+	void SDLSoundSystem::Play(std::shared_ptr<ISoundClip> clip, float volume) { m_pImpl->Play(clip, volume); }
 }

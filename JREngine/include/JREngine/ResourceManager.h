@@ -26,9 +26,8 @@ namespace JRE
 		std::shared_ptr<Texture2D> GetTexture(ResourceHandle<Texture2D> handle) const override;
 		std::shared_ptr<Font> GetFont(ResourceHandle<Font> handle) const override;
 		std::shared_ptr<ISoundClip> GetSound(ResourceHandle<ISoundClip> handle) const override;
-
 	private:
 		class Impl;
-		std::unique_ptr<Impl> m_pImpl;
+		std::unique_ptr<Impl> m_pImpl{};
 	};
 }

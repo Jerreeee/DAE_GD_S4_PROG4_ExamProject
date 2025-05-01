@@ -11,7 +11,7 @@ namespace JRE
 	class Command;
 namespace Input
 {
-	class Controller;
+	class IController;
 	class Keyboard;
 
 	struct KeyboardBindingInfo
@@ -40,7 +40,7 @@ namespace Input
 		std::map<Command*, ControllerBindingInfo> controllerBindings{};
 
 		std::unique_ptr<Keyboard> pKeyboard{};
-		std::unique_ptr<Controller> pController{};
+		std::unique_ptr<IController> pController{};
 	};
 
 	class InputManager final : public Singleton<InputManager>

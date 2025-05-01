@@ -1,12 +1,11 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <XInput.h>
-#include "XBoxController.h"
 #include <vector>
+#include "XBoxController.h"
 
 namespace JRE::Input
 {
-
 	class XBoxController::Impl final
 	{
 	public:
@@ -16,6 +15,7 @@ namespace JRE::Input
 		bool IsUpThisFrame(ControllerButton button) const;
 		bool IsPressed(ControllerButton button) const;
 		uint32_t MapToInternalButton(ControllerButton button) const;
+
 	private:
 		static const std::vector<uint32_t> m_MapToInternalButtons;
 		XINPUT_STATE m_PreviousState{};
@@ -41,7 +41,6 @@ namespace JRE::Input
 		XINPUT_GAMEPAD_X,
 		XINPUT_GAMEPAD_Y
 	};
-
 	void XBoxController::Impl::PollState(int controllerIdx)
 	{
 		CopyMemory(&m_PreviousState, &m_CurrentState, sizeof(XINPUT_STATE));
@@ -59,16 +58,11 @@ namespace JRE::Input
 	{
 		switch (buttonState)
 		{
-		case KeyState::Pressed:
-			return IsPressed(button);
-		case KeyState::DownThisFrame:
-			return IsDownThisFrame(button);
-		case KeyState::UpThisFrame:
-			return IsUpThisFrame(button);
-		case KeyState::Up:
-			return true;
-		default:
-			return false;
+		case KeyState::Pressed: return IsPressed(button);
+		case KeyState::DownThisFrame: return IsDownThisFrame(button);
+		case KeyState::UpThisFrame: return IsUpThisFrame(button);
+		case KeyState::Up: return true;
+		default: return false;
 		}
 	}
 	bool XBoxController::Impl::IsDownThisFrame(ControllerButton button) const
@@ -89,26 +83,10 @@ namespace JRE::Input
 	}
 
 	XBoxController::XBoxController() : m_pImpl{ std::make_unique<Impl>() } {}
-	XBoxController::~XBoxController() {}
-	void XBoxController::PollState(int controllerIdx)
-	{
-		m_pImpl->PollState(controllerIdx);
-	}
-	bool XBoxController::HasButtonState(ControllerButton button, ButtonState buttonState) const
-	{
-		return m_pImpl->HasButtonState(button, buttonState);
-	}
-	bool XBoxController::IsDownThisFrame(ControllerButton button) const
-	{
-		return m_pImpl->IsDownThisFrame(button);
-	}
-	bool XBoxController::IsUpThisFrame(ControllerButton button) const
-	{
-		return m_pImpl->IsUpThisFrame(button);
-	}
-	bool XBoxController::IsPressed(ControllerButton button) const
-	{
-		return m_pImpl->IsPressed(button);
-	}
+	XBoxController::~XBoxController() = default;
+	void XBoxController::PollState(int controllerIdx) { m_pImpl->PollState(controllerIdx); }
+	bool XBoxController::HasButtonState(ControllerButton button, ButtonState buttonState) const { return m_pImpl->HasButtonState(button, buttonState); }
+	bool XBoxController::IsDownThisFrame(ControllerButton button) const { return m_pImpl->IsDownThisFrame(button); }
+	bool XBoxController::IsUpThisFrame(ControllerButton button) const { return m_pImpl->IsUpThisFrame(button); }
+	bool XBoxController::IsPressed(ControllerButton button) const { return m_pImpl->IsPressed(button); }
 }
-

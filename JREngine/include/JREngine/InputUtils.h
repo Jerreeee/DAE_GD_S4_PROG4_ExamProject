@@ -5,7 +5,7 @@
 namespace JRE::Input
 {
 	class Keyboard;
-	class Controller;
+	class IController;
 
 	enum class Direction
 	{
