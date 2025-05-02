@@ -1,6 +1,6 @@
 #pragma once
 #include "glm.hpp"
-#include "JREngine/Command.h"
+#include "JREngine/Core/Command.h"
 
 namespace JRE
 {

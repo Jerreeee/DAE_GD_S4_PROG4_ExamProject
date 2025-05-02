@@ -1,7 +1,7 @@
 #pragma once
-#include "JREngine/ComponentBase.h"
-#include "JREngine/TextRendererComponent.h"
-#include "JREngine/ResourceHandle.h"
+#include "JREngine/Scene/ComponentBase.h"
+#include "JREngine/Rendering/TextRendererComponent.h"
+#include "JREngine/Resources/ResourceHandle.h"
 
 namespace JRE
 {

@@ -1,5 +1,5 @@
-#include "JREngine/GameObject.h"
-#include "JREngine/Timer.h"
+#include "JREngine/Scene/GameObject.h"
+#include "JREngine/Core/Timer.h"
 
 #include "Commands.h"
 #include "Components.h"

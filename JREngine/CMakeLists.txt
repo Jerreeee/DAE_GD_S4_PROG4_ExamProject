@@ -5,67 +5,80 @@ set(INTERNAL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/JREngine)
 set(EXTERNAL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(SOURCE_FILES
-    "Font.cpp"
-    "GameObject.cpp"
-    "InputManager.cpp"
     "JREngine.cpp"
-    "Renderer.cpp"
-    "ResourceManager.cpp"
-    "Scene.cpp"
-    "SceneManager.cpp"
-    "Texture2D.cpp"
-    "Transform.cpp"
-    "Timer.cpp"
-    "ComponentBase.cpp"
-    "SpriteRendererComponent.cpp"
-    "TextRendererComponent.cpp"
-    "RendererComponentBase.cpp"
-    "IController.h"
-    "XBoxController.h"
-    "XBoxController.cpp"
-    "Keyboard.h"
-    "SDLKeyboard.h"
-    "SDLKeyboard.cpp"
-    "Observer.cpp"
-    "Event.cpp"
-    "ServiceLocator.cpp"
-    "SDLSoundSystem.cpp"
-    "SDLSoundClip.cpp"
-    "ResourceHandle.cpp"
-    "Sprite.cpp"
+
+    "Core/Timer.cpp"
+    "Core/Event.cpp"
+    "Core/Observer.cpp"
+    "Core/ServiceLocator.cpp"
+
+    "Input/InputManager.cpp"
+    "Input/SDLKeyboard.cpp"
+    "Input/SDLKeyboard.h"
+    "Input/XBoxController.cpp"
+    "Input/XBoxController.h"
+
+    "Rendering/Renderer.cpp"
+    "Rendering/Texture2D.cpp"
+    "Rendering/Sprite.cpp"
+    "Rendering/RendererComponentBase.cpp"
+    "Rendering/SpriteRendererComponent.cpp"
+    "Rendering/TextRendererComponent.cpp"
+
+    "Resources/Font.cpp"
+    "Resources/ResourceManager.cpp"
+    "Resources/ResourceHandle.cpp"
+
+    "Audio/SDLSoundSystem.cpp"
+    "Audio/SDLSoundSystem.h"
+    "Audio/SDLSoundClip.cpp"
+    "Audio/SDLSoundClip.h"
+
+    "Scene/GameObject.cpp"
+    "Scene/Scene.cpp"
+    "Scene/SceneManager.cpp"
+    "Scene/Transform.cpp"
+    "Scene/ComponentBase.cpp"
 )
 AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
 
 set(INCLUDE_FILES
-    "Rect.h"
-    "Singleton.h"
-    "Font.h"
-    "GameObject.h"
-    "InputUtils.h"
-    "InputManager.h"
     "JREngine.h"
-    "Renderer.h"
-    "IResourceManager.h"
-    "ResourceManager.h"
-    "Scene.h"
-    "SceneManager.h"
-    "Texture2D.h"
-    "Transform.h"
-    "Timer.h"
-    "ComponentBase.h"
-    "SpriteRendererComponent.h"
-    "TextRendererComponent.h"
-    "RendererComponentBase.h"
-    "Command.h"
-    "Observer.h"
-    "Event.h"
-    "ISoundSystem.h"
-    "ServiceLocator.h"
-    "SDLSoundSystem.h"
-    "ISoundClip.h"
-    "SDLSoundClip.h"
-    "ResourceHandle.h"
-    "Sprite.h"
+
+    "Math/Rect.h"
+
+    "Core/Singleton.h"
+    "Core/Command.h"
+    "Core/Timer.h"
+    "Core/Event.h"
+    "Core/Observer.h"
+    "Core/ServiceLocator.h"
+
+    "Input/InputUtils.h"
+    "Input/InputManager.h"
+    "Input/IController.h"
+    "Input/IKeyboard.h"
+
+    "Rendering/Renderer.h"
+    "Rendering/Texture2D.h"
+    "Rendering/Sprite.h"
+    "Rendering/RendererComponentBase.h"
+    "Rendering/SpriteRendererComponent.h"
+    "Rendering/TextRendererComponent.h"
+
+    "Resources/Font.h"
+    "Resources/IResourceManager.h"
+    "Resources/ResourceManager.h"
+    "Resources/ResourceHandle.h"
+
+    "Audio/ISoundSystem.h"
+    "Audio/ISoundClip.h"
+
+    "Scene/GameObject.h"
+    "Scene/Scene.h"
+    "Scene/SceneManager.h"
+    "Scene/Transform.h"
+    "Scene/ComponentBase.h"
 )
 AddPrefix(INCLUDE_FILES "${INTERNAL_INCLUDE_DIR}/")
 
@@ -88,12 +101,12 @@ target_link_libraries(${TARGET_NAME}
     PUBLIC
         glm::glm
 )
-target_include_directories(${TARGET_NAME} PRIVATE
-    ${INTERNAL_INCLUDE_DIR}
-    ${SOURCE_DIR} #for headers not exposed in include dir
-)
-target_include_directories(${TARGET_NAME} PUBLIC
-    ${EXTERNAL_INCLUDE_DIR}
+target_include_directories(${TARGET_NAME}
+    PRIVATE
+        ${INTERNAL_INCLUDE_DIR}
+        ${SOURCE_DIR} #for headers not exposed in include dir
+    PUBLIC
+        ${EXTERNAL_INCLUDE_DIR}
 )
 
 # Enable C++20

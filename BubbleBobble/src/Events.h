@@ -1,6 +1,6 @@
 #pragma once
 #include <string_view>
-#include "JREngine/Event.h"
+#include "JREngine/Core/Event.h"
 
 namespace BubbleBobble
 {

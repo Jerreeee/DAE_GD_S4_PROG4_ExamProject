@@ -1,5 +1,5 @@
 #pragma once
-#include "JREngine/ComponentBase.h"
+#include "JREngine/Scene/ComponentBase.h"
 
 namespace JRE
 {

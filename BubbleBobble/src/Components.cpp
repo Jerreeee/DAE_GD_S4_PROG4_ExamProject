@@ -1,11 +1,11 @@
 #include <sstream>
-#include "JREngine/GameObject.h"
-#include "JREngine/TextRendererComponent.h"
-#include "JREngine/SceneManager.h"
-#include "JREngine/ServiceLocator.h"
-#include "JREngine/ResourceManager.h"
-#include "JREngine/ISoundSystem.h"
-#include "JREngine/Scene.h"
+#include "JREngine/Scene/GameObject.h"
+#include "JREngine/Rendering/TextRendererComponent.h"
+#include "JREngine/Scene/SceneManager.h"
+#include "JREngine/Core/ServiceLocator.h"
+#include "JREngine/Resources/ResourceManager.h"
+#include "JREngine/Audio/ISoundSystem.h"
+#include "JREngine/Scene/Scene.h"
 
 #include "Components.h"
 #include "Events.h"

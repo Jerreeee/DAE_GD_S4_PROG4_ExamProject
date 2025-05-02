@@ -1,5 +1,5 @@
 #include <glm.hpp>
-#include "JREngine/GameObject.h"
+#include "JREngine/Scene/GameObject.h"
 #include "RotateParentComponent.h"
 
 namespace BubbleBobble

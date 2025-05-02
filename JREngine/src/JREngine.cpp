@@ -10,13 +10,13 @@
 #include <SDL_ttf.h>
 
 #include "JREngine.h"
-#include "InputManager.h"
-#include "SceneManager.h"
-#include "Renderer.h"
-#include "SDLSoundSystem.h"
-#include "ResourceManager.h"
-#include "Timer.h"
-#include "ServiceLocator.h"
+#include "Input/InputManager.h"
+#include "Scene/SceneManager.h"
+#include "Rendering/Renderer.h"
+#include "Audio/SDLSoundSystem.h"
+#include "Resources/ResourceManager.h"
+#include "Core/Timer.h"
+#include "Core/ServiceLocator.h"
 
 SDL_Window* g_window{};
 

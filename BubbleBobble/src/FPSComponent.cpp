@@ -1,7 +1,7 @@
 #include <format>
 #include <sstream>
-#include "JREngine/GameObject.h"
-#include "JREngine/Font.h"
+#include "JREngine/Scene/GameObject.h"
+#include "JREngine/Resources/Font.h"
 #include "FPSComponent.h"
 
 namespace BubbleBobble

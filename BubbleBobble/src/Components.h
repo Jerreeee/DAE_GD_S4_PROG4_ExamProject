@@ -1,8 +1,8 @@
 #pragma once
 #include <memory>
-#include "JREngine/ComponentBase.h"
-#include "JREngine/Observer.h"
-#include "JREngine/ResourceHandle.h"
+#include "JREngine/Scene/ComponentBase.h"
+#include "JREngine/Core/Observer.h"
+#include "JREngine/Resources/ResourceHandle.h"
 #include "Events.h"
 
 namespace JRE
