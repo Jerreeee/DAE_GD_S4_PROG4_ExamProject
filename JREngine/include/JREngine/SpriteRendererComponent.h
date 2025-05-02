@@ -18,7 +18,7 @@ namespace JRE
 
 		virtual void Render() const override;
 
-		void SetTexture(const std::string& filename);
+		void SetSprite(ResourceHandle<Texture2D> textureHandle);
 	private:
 		ResourceHandle<Texture2D> m_TextureHandle{};
 		mutable std::shared_ptr<Texture2D> m_pTexture{};

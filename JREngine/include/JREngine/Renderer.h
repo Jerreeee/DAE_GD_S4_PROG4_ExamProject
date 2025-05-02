@@ -12,7 +12,7 @@ namespace JRE
 	/**
 	 * Simple RAII wrapper for the SDL renderer
 	 */
-	class Renderer final : public Singleton<Renderer>
+	class SDLRenderer final : public Singleton<SDLRenderer>
 	{
 	public:
 		void Init(SDL_Window* window);
@@ -21,6 +21,7 @@ namespace JRE
 
 		void RenderTexture(const std::shared_ptr<Texture2D>& pTexture, float x, float y) const;
 		void RenderTexture(const std::shared_ptr<Texture2D>& pTexture, float x, float y, float width, float height) const;
+		//void RenderTexture(const std::shared_ptr<Texture2D>& pTexture, float x, float y, )
 
 		SDL_Renderer* GetSDLRenderer() const;
 

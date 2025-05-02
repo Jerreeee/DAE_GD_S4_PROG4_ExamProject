@@ -32,10 +32,12 @@ set(SOURCE_FILES
     "SDLSoundSystem.cpp"
     "SDLSoundClip.cpp"
     "ResourceHandle.cpp"
+    "Sprite.cpp"
 )
 AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
 
 set(INCLUDE_FILES
+    "Rect.h"
     "Singleton.h"
     "Font.h"
     "GameObject.h"
@@ -63,6 +65,7 @@ set(INCLUDE_FILES
     "ISoundClip.h"
     "SDLSoundClip.h"
     "ResourceHandle.h"
+    "Sprite.h"
 )
 AddPrefix(INCLUDE_FILES "${INTERNAL_INCLUDE_DIR}/")
 

@@ -24,7 +24,7 @@ int GetOpenGLDriverIndex()
 	return openglIndex;
 }
 
-void JRE::Renderer::Init(SDL_Window* window)
+void JRE::SDLRenderer::Init(SDL_Window* window)
 {
 	m_window = window;
 	m_renderer = SDL_CreateRenderer(window, GetOpenGLDriverIndex(), SDL_RENDERER_ACCELERATED);
@@ -42,7 +42,7 @@ void JRE::Renderer::Init(SDL_Window* window)
 	ImGui_ImplSDLRenderer2_Init(m_renderer);
 }
 
-void JRE::Renderer::Render()
+void JRE::SDLRenderer::Render()
 {
 	const auto& color = GetBackgroundColor();
 	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
@@ -62,7 +62,7 @@ void JRE::Renderer::Render()
 	SDL_RenderPresent(m_renderer);
 }
 
-void JRE::Renderer::Destroy()
+void JRE::SDLRenderer::Destroy()
 {
 	if (m_renderer != nullptr)
 	{
@@ -75,7 +75,7 @@ void JRE::Renderer::Destroy()
 	}
 }
 
-void JRE::Renderer::RenderTexture(const std::shared_ptr<Texture2D>& pTexture, const float x, const float y) const
+void JRE::SDLRenderer::RenderTexture(const std::shared_ptr<Texture2D>& pTexture, const float x, const float y) const
 {
 	if (!pTexture) return;
 
@@ -86,7 +86,7 @@ void JRE::Renderer::RenderTexture(const std::shared_ptr<Texture2D>& pTexture, co
 	SDL_RenderCopy(GetSDLRenderer(), pTexture->GetSDLTexture(), nullptr, &dst);
 }
 
-void JRE::Renderer::RenderTexture(const std::shared_ptr<Texture2D>& pTexture, const float x, const float y, const float width, const float height) const
+void JRE::SDLRenderer::RenderTexture(const std::shared_ptr<Texture2D>& pTexture, const float x, const float y, const float width, const float height) const
 {
 	if (!pTexture) return;
 
@@ -98,14 +98,14 @@ void JRE::Renderer::RenderTexture(const std::shared_ptr<Texture2D>& pTexture, co
 	SDL_RenderCopy(GetSDLRenderer(), pTexture->GetSDLTexture(), nullptr, &dst);
 }
 
-SDL_Renderer* JRE::Renderer::GetSDLRenderer() const { return m_renderer; }
+SDL_Renderer* JRE::SDLRenderer::GetSDLRenderer() const { return m_renderer; }
 
-void JRE::Renderer::RegisterRendererComponent(RendererComponentBase* pRendererComponent)
+void JRE::SDLRenderer::RegisterRendererComponent(RendererComponentBase* pRendererComponent)
 {
 	m_RendererComponents.emplace_back(pRendererComponent);
 }
 
-void JRE::Renderer::UnRegisterRendererComponent(RendererComponentBase* pRendererComponent)
+void JRE::SDLRenderer::UnRegisterRendererComponent(RendererComponentBase* pRendererComponent)
 {
 	m_RendererComponents.erase(std::find(m_RendererComponents.begin(), m_RendererComponents.end(), pRendererComponent));
 }

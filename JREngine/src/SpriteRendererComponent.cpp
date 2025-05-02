@@ -19,10 +19,11 @@ namespace JRE
 		}
 
 		const auto& pos = GetWorldTransform().GetPosition();
-		Renderer::GetInstance().RenderTexture(m_pTexture, pos.x, pos.y);
+		SDLRenderer::GetInstance().RenderTexture(m_pTexture, pos.x, pos.y);
 	}
-	void SpriteRendererComponent::SetTexture(const std::string& filename)
+	void SpriteRendererComponent::SetSprite(ResourceHandle<Texture2D> textureHandle)
 	{
-		m_TextureHandle = ServiceLocator::GetResourceManager().LoadTexture(filename);
+		m_TextureHandle = textureHandle;
+		m_pTexture.reset();
 	}
 }

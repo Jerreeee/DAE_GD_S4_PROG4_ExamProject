@@ -4,12 +4,12 @@
 JRE::RendererComponentBase::RendererComponentBase(GameObject& gameObject)
 	: ComponentBase(gameObject)
 {
-	Renderer::GetInstance().RegisterRendererComponent(this);
+	SDLRenderer::GetInstance().RegisterRendererComponent(this);
 }
 
 JRE::RendererComponentBase::~RendererComponentBase()
 {
-	Renderer::GetInstance().UnRegisterRendererComponent(this);
+	SDLRenderer::GetInstance().UnRegisterRendererComponent(this);
 }
 
 void JRE::RendererComponentBase::SetActive(bool active)

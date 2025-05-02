@@ -45,17 +45,17 @@ namespace BubbleBobble
 {
 	void load()
 	{
-		JRE::ResourceHandle<JRE::ISoundClip> hitSound = JRE::ServiceLocator::GetResourceManager().LoadSound("Test.mp3");
+		JRE::ResourceHandle<JRE::ISoundClip> hitSound = JRE::ServiceLocator::GetResourceManager().LoadSound("HUD/Select.wav");
 		JRE::ResourceHandle<JRE::Font> fontHandle = JRE::ServiceLocator::GetResourceManager().LoadFont("Lingua.otf", 20);
 
 		auto& scene = JRE::SceneManager::GetInstance().CreateScene("Demo");
 
-		auto go = std::make_unique<JRE::GameObject>("Background Image");
-		if (auto pComponent = go->AddComponent<JRE::SpriteRendererComponent>(); pComponent)
-		{
-			pComponent->SetTexture("background.tga");
-		}
-		scene.Add(std::move(go));
+		//auto go = std::make_unique<JRE::GameObject>("Background Image");
+		//if (auto pComponent = go->AddComponent<JRE::SpriteRendererComponent>(); pComponent)
+		//{
+		//	pComponent->SetSprite("");
+		//}
+		//scene.Add(std::move(go));
 
 		JRE::Input::InputManager& inputManager = JRE::Input::InputManager::GetInstance();
 
@@ -66,7 +66,8 @@ namespace BubbleBobble
 		player1->SetLocalPosition(216, 180);
 		if (auto* pComponent = player1->AddComponent<JRE::SpriteRendererComponent>(); pComponent)
 		{
-			pComponent->SetTexture("logo.tga");
+			JRE::ResourceHandle<JRE::Texture2D> texHandle = JRE::ServiceLocator::GetResourceManager().LoadTexture("Player/Bobby/Bubble_Anim.png");
+			pComponent->SetSprite(texHandle);
 		}
 		auto p1HealthComponent = player1->AddComponent<HealthComponent>(3);
 		p1HealthComponent->SetHitSound(hitSound);
@@ -92,7 +93,8 @@ namespace BubbleBobble
 		player2->SetLocalPosition(416, 180);
 		if (auto* pComponent = player2->AddComponent<JRE::SpriteRendererComponent>(); pComponent)
 		{
-			pComponent->SetTexture("logo.tga");
+			JRE::ResourceHandle<JRE::Texture2D> texHandle = JRE::ServiceLocator::GetResourceManager().LoadTexture("Player/Bobby/Bubble_Anim.png");
+			pComponent->SetSprite(texHandle);
 		}
 		auto p2HealthComponent = player2->AddComponent<HealthComponent>(3);
 		p2HealthComponent->SetHitSound(hitSound);

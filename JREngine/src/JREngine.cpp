@@ -90,14 +90,14 @@ JRE::JREngine::JREngine(const std::filesystem::path &dataPath)
 	ServiceLocator::RegisterSoundSystem(std::make_unique<SDLSoundSystem>());
 	ServiceLocator::RegisterResourceManager(std::make_unique<ResourceManager>());
 
-	Renderer::GetInstance().Init(g_window);
+	SDLRenderer::GetInstance().Init(g_window);
 	ServiceLocator::GetResourceManager().Init(dataPath);
 	Timer::GetInstance().SetFixedTimeStep(m_FixedTimeStep);
 }
 
 JRE::JREngine::~JREngine()
 {
-	Renderer::GetInstance().Destroy();
+	SDLRenderer::GetInstance().Destroy();
 	SDL_DestroyWindow(g_window);
 	g_window = nullptr;
 	SDL_Quit();
@@ -127,5 +127,5 @@ void JRE::JREngine::RunOneFrame()
 	m_Quit = !Input::InputManager::GetInstance().ProcessInput();
 	SceneManager::GetInstance().Update();
 	SceneManager::GetInstance().Cleanup();
-	Renderer::GetInstance().Render();
+	SDLRenderer::GetInstance().Render();
 }

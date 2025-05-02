@@ -38,7 +38,7 @@ void JRE::TextRendererComponent::Render() const
 	if (m_pTextTexture)
 	{
 		const auto& pos = GetWorldTransform().GetPosition();
-		Renderer::GetInstance().RenderTexture(m_pTextTexture, pos.x, pos.y);
+		SDLRenderer::GetInstance().RenderTexture(m_pTextTexture, pos.x, pos.y);
 	}
 }
 
