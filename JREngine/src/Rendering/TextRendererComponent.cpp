@@ -3,8 +3,7 @@
 #include "Rendering/Renderer.h"
 #include "Resources/Font.h"
 #include "Rendering/Texture2D.h"
-#include "Core/ServiceLocator.h"
-#include "Resources/IResourceManager.h"
+#include "Resources/ResourceManager.h"
 #include "Rendering/TextRendererComponent.h"
 
 namespace JRE
@@ -23,14 +22,14 @@ namespace JRE
 	{
 		if (!m_pFont) //loading phase, afterwards really cheap
 		{
-			m_pFont = ServiceLocator::GetResourceManager().GetFont(m_FontHandle);
+			m_pFont = ResourceManager::GetInstance().GetFont(m_FontHandle);
 			if (!m_pFont) return;
 		}
 
 		if (m_NeedsUpdate)
 		{
-			m_TextTextureHandle = ServiceLocator::GetResourceManager().LoadTexture(m_Text, m_FontHandle);
-			m_pTextTexture = ServiceLocator::GetResourceManager().GetTexture(m_TextTextureHandle);
+			m_TextTextureHandle = ResourceManager::GetInstance().LoadTexture(m_Text, m_FontHandle);
+			m_pTextTexture = ResourceManager::GetInstance().GetTexture(m_TextTextureHandle);
 			m_NeedsUpdate = false;
 		}
 	}

@@ -45,8 +45,8 @@ namespace BubbleBobble
 {
 	void load()
 	{
-		JRE::ResourceHandle<JRE::ISoundClip> hitSound = JRE::ServiceLocator::GetResourceManager().LoadSound("HUD/Select.wav");
-		JRE::ResourceHandle<JRE::Font> fontHandle = JRE::ServiceLocator::GetResourceManager().LoadFont("Lingua.otf", 20);
+		JRE::ResourceHandle<JRE::ISoundClip> hitSound = JRE::ResourceManager::GetInstance().LoadSound("HUD/Select.wav");
+		JRE::ResourceHandle<JRE::Font> fontHandle = JRE::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
 
 		auto& scene = JRE::SceneManager::GetInstance().CreateScene("Demo");
 
@@ -66,7 +66,7 @@ namespace BubbleBobble
 		player1->SetLocalPosition(216, 180);
 		if (auto* pComponent = player1->AddComponent<JRE::SpriteRendererComponent>(); pComponent)
 		{
-			JRE::ResourceHandle<JRE::Texture2D> texHandle = JRE::ServiceLocator::GetResourceManager().LoadTexture("Player/Bobby/Bubble_Anim.png");
+			JRE::ResourceHandle<JRE::Texture2D> texHandle = JRE::ResourceManager::GetInstance().LoadTexture("Player/Bobby/Bubble_Anim.png");
 			pComponent->SetSprite(texHandle);
 		}
 		auto p1HealthComponent = player1->AddComponent<HealthComponent>(3);
@@ -93,7 +93,7 @@ namespace BubbleBobble
 		player2->SetLocalPosition(416, 180);
 		if (auto* pComponent = player2->AddComponent<JRE::SpriteRendererComponent>(); pComponent)
 		{
-			JRE::ResourceHandle<JRE::Texture2D> texHandle = JRE::ServiceLocator::GetResourceManager().LoadTexture("Player/Bobby/Bubble_Anim.png");
+			JRE::ResourceHandle<JRE::Texture2D> texHandle = JRE::ResourceManager::GetInstance().LoadTexture("Player/Bobby/Bubble_Anim.png");
 			pComponent->SetSprite(texHandle);
 		}
 		auto p2HealthComponent = player2->AddComponent<HealthComponent>(3);

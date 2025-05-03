@@ -1,6 +1,6 @@
 #pragma once
 
-namespace JRE::Math
+namespace JRE
 {
 	struct Region
 	{

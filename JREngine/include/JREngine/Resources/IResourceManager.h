@@ -21,6 +21,9 @@ namespace JRE
 		virtual ResourceHandle<Font> LoadFont(const std::string& path, uint8_t size) = 0;
 		virtual ResourceHandle<ISoundClip> LoadSound(const std::string& path) = 0;
 
+		//template<typename Resource_t>
+		//virtual std::shared_ptr<Resource_t> GetResource(ResourceHandle<Resource_t> handle) const = 0;
+
 		virtual std::shared_ptr<Texture2D> GetTexture(ResourceHandle<Texture2D> handle) const = 0;
 		virtual std::shared_ptr<Font> GetFont(ResourceHandle<Font> handle) const = 0;
 		virtual std::shared_ptr<ISoundClip> GetSound(ResourceHandle<ISoundClip> handle) const = 0;

@@ -1,11 +1,9 @@
 #include "Core/ServiceLocator.h"
 #include "Audio/ISoundSystem.h"
-#include "Resources/IResourceManager.h"
 
 namespace JRE
 {
 	std::unique_ptr<ISoundSystem> ServiceLocator::s_pSoundSystem{std::make_unique<NullSoundSystem>()};
-	std::unique_ptr<IResourceManager> ServiceLocator::s_pResourceManager{ std::make_unique<NullResourceManager>() };
 
 	ServiceLocator::ServiceLocator() = default;
 	ServiceLocator::~ServiceLocator() = default;
@@ -16,13 +14,5 @@ namespace JRE
 	void ServiceLocator::RegisterSoundSystem(std::unique_ptr<ISoundSystem>&& pSoundSystem)
 	{
 		s_pSoundSystem = pSoundSystem ? std::move(pSoundSystem) : std::make_unique<NullSoundSystem>();
-	}
-	IResourceManager& ServiceLocator::GetResourceManager()
-	{
-		return *s_pResourceManager;
-	}
-	void ServiceLocator::RegisterResourceManager(std::unique_ptr<IResourceManager>&& pResourceManager)
-	{
-		s_pResourceManager = pResourceManager ? std::move(pResourceManager) : std::make_unique<NullResourceManager>();
 	}
 }

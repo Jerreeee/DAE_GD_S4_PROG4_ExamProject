@@ -1,5 +1,4 @@
 #include "Rendering/SpriteRendererComponent.h"
-#include "Core/ServiceLocator.h"
 #include "Resources/ResourceManager.h"
 #include "Rendering/Renderer.h"
 #include "Rendering/Texture2D.h"
@@ -14,7 +13,7 @@ namespace JRE
 	{
 		if (!m_pTexture) //loading phase, afterwards really cheap
 		{
-			m_pTexture = ServiceLocator::GetResourceManager().GetTexture(m_TextureHandle);
+			m_pTexture = ResourceManager::GetInstance().GetTexture(m_TextureHandle);
 			if (!m_pTexture) return;
 		}
 
