@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "JREngine/Resources/ResourceHandle.h"
+#include "JREngine/Resources/Asset.h"
 #include "JREngine/Math/Rect.h"
 
 namespace JRE
@@ -9,13 +9,13 @@ namespace JRE
 	class Sprite final
 	{
 	public:
-		Sprite(ResourceHandle<Texture2D> textureHandle, const Region& srcRegion);
+		Sprite(AssetHandle textureHandle, const Region& srcRegion);
 
-		std::shared_ptr<Texture2D> GetTexture() const;
+		Ref<Texture2D> GetTexture() const;
 		const Region& GetSrcRegion() const;
 	private:
-		ResourceHandle<Texture2D> m_TextureHandle{};
-		std::shared_ptr<Texture2D> m_pTexture{};
+		AssetHandle m_TextureHandle{ AssetHandle::InvalidUUID };
+		Ref<Texture2D> m_pTexture{};
 		Region m_SrcRegion{};
 	};
 }

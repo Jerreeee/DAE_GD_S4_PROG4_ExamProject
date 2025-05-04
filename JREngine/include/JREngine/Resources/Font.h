@@ -1,24 +1,27 @@
 #pragma once
 #include <string>
+#include "JREngine/Resources/Asset.h"
 
 struct _TTF_Font;
 namespace JRE
 {
-	/**
-	 * Simple RAII wrapper for a _TTF_Font
-	 */
-	class Font final
+	//RAII wrapper for a _TTF_Font
+	class Font final : public Asset
 	{
 	public:
-		_TTF_Font* GetFont() const;
-		explicit Font(const std::string& fullPath, unsigned int size);
+		explicit Font(const std::string& fullPath, unsigned int size, AssetHandle handle = AssetHandle::InvalidUUID);
 		~Font();
 
 		Font(const Font &) = delete;
 		Font(Font &&) = delete;
 		Font & operator= (const Font &) = delete;
 		Font & operator= (const Font &&) = delete;
+
+		_TTF_Font* GetFont() const;
+
+		static AssetType GetStaticType() { return AssetType::Font; };
+		virtual AssetType GetType() const override { return GetStaticType(); };
 	private:
-		_TTF_Font* m_font;
+		_TTF_Font* m_pFont{};
 	};
 }

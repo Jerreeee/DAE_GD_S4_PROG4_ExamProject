@@ -56,7 +56,7 @@ namespace JRE
 
 	void SDLSoundClip::Impl::Play(int loops, int channel) const { Mix_PlayChannel(channel, m_pChunk, loops); }
 	void SDLSoundClip::Impl::SetVolume(float volume) { Mix_VolumeChunk(m_pChunk, static_cast<int>(volume * MIX_MAX_VOLUME)); }
-	SDLSoundClip::SDLSoundClip(const std::string& filePath) : m_pImpl{ std::make_unique<Impl>(filePath) } {}
+	SDLSoundClip::SDLSoundClip(const std::string& filePath, AssetHandle handle) : ISoundClip(handle), m_pImpl{ std::make_unique<Impl>(filePath) } {}
 	SDLSoundClip::~SDLSoundClip() = default;
 	SDLSoundClip::SDLSoundClip(SDLSoundClip&& other) noexcept : m_pImpl{ std::move(other.m_pImpl) } {}
 	SDLSoundClip& SDLSoundClip::operator=(SDLSoundClip&& other) noexcept { if (this != &other) m_pImpl = std::move(other.m_pImpl); return *this; }

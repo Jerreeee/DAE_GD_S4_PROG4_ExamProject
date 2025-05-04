@@ -13,14 +13,14 @@ namespace JRE
 	{
 		if (!m_pTexture) //loading phase, afterwards really cheap
 		{
-			m_pTexture = ResourceManager::GetInstance().GetTexture(m_TextureHandle);
+			m_pTexture = ResourceManager::GetAsset<Texture2D>(m_TextureHandle);
 			if (!m_pTexture) return;
 		}
 
 		const auto& pos = GetWorldTransform().GetPosition();
 		SDLRenderer::GetInstance().RenderTexture(m_pTexture, pos.x, pos.y);
 	}
-	void SpriteRendererComponent::SetSprite(ResourceHandle<Texture2D> textureHandle)
+	void SpriteRendererComponent::SetSprite(AssetHandle textureHandle)
 	{
 		m_TextureHandle = textureHandle;
 		m_pTexture.reset();

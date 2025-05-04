@@ -19,3 +19,18 @@ Solution:
 Description:
 	Previously all .cpp files that worked with resources only had to include "Texture2D.h" or "Font.h" but now every file that makes use of a resource must include ResourceManager.h which is a big include and every time ResourceManager changes a lot of other dependant cpp files will also need to be recompiled
 Solution:
+	pimpl away ResourceManager to cpp file
+	
+#4
+Description:
+	Each time a new resource is added we need new Load(), Get() methods + a new map to store the new resources. This is annoying!
+Goal:
+	Have a generic base resource/asset type/class so we can store all of them in a single map + only a single GetResource() method
+Solution:
+	Asset "base" class that resources like Texture2D, Font, etc inherit from. So now we can have a single map of GUID to Asset's. We do still need type info though. So each resource class inheriting from Asset like Texture2D needs to implement a GetType() method so each Asset in the end can be cast to the correct type.
+	
+#5
+Description:
+	IResourceManager can only define "virtual Ref<Asset> GetAsset(Assethandle handle) = 0" which is not templated so we still need a way to cast it to the correct type
+Solution:
+	On the ResourceManager have a static templated function "Ref<T> GetAsset(AssetHandle handle)" and this one calls ServiceLocator::GetResourceManager().GetAsset(handle). This returns a base Asset that we can then be statically casted to the correct type T.

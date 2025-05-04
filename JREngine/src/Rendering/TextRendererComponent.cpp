@@ -8,28 +8,25 @@
 
 namespace JRE
 {
-	TextRendererComponent::TextRendererComponent(GameObject& gameObject, const std::string& text, ResourceHandle<Font> fontHandle) :
+	TextRendererComponent::TextRendererComponent(GameObject& gameObject, const std::string& text, AssetHandle fontHandle) :
 		RendererComponentBase(gameObject),
 		m_Text(text),
 		m_FontHandle(fontHandle)
 	{
-		if (!fontHandle.IsValid())
-			throw std::runtime_error(std::string("Not a valid font"));
-
 		m_NeedsUpdate = text != "";
 	}
 	void TextRendererComponent::Update()
 	{
 		if (!m_pFont) //loading phase, afterwards really cheap
 		{
-			m_pFont = ResourceManager::GetInstance().GetFont(m_FontHandle);
+			m_pFont = ResourceManager::GetAsset<Font>(m_FontHandle);
 			if (!m_pFont) return;
 		}
 
 		if (m_NeedsUpdate)
 		{
-			m_TextTextureHandle = ResourceManager::GetInstance().LoadTexture(m_Text, m_FontHandle);
-			m_pTextTexture = ResourceManager::GetInstance().GetTexture(m_TextTextureHandle);
+			m_TextTextureHandle = ServiceLocator::GetResourceManager().LoadTexture(m_Text, m_FontHandle);
+			m_pTextTexture = ResourceManager::GetAsset<Texture2D>(m_TextTextureHandle);
 			m_NeedsUpdate = false;
 		}
 	}

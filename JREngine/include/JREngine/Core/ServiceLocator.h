@@ -18,5 +18,6 @@ namespace JRE
 		static void RegisterResourceManager(std::unique_ptr<IResourceManager>&& pResourceManager);
 	private:
 		static std::unique_ptr<ISoundSystem> s_pSoundSystem;
+		static std::unique_ptr<IResourceManager> s_pResourceManager;
 	};
 }

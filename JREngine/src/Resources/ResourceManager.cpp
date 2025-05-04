@@ -28,14 +28,12 @@ namespace JRE
 		Impl();
 
 		void Init(const std::filesystem::path& dataPath);
-		ResourceHandle<Texture2D> LoadTexture(const std::string& file);
-		ResourceHandle<Texture2D> LoadTexture(const std::string& text, ResourceHandle<Font> fontHandle);
-		ResourceHandle<Font> LoadFont(const std::string& file, uint8_t size);
-		ResourceHandle<ISoundClip> LoadSound(const std::string& file);
+		AssetHandle LoadTexture(const std::string& file);
+		AssetHandle LoadTexture(const std::string& text, AssetHandle fontHandle);
+		AssetHandle LoadFont(const std::string& file, uint8_t size);
+		AssetHandle LoadSound(const std::string& file);
 
-		std::shared_ptr<Texture2D> GetTexture(ResourceHandle<Texture2D> handle) const;
-		std::shared_ptr<Font> GetFont(ResourceHandle<Font> handle) const;
-		std::shared_ptr<ISoundClip> GetSound(ResourceHandle<ISoundClip> handle) const;
+		Ref<Asset> GetAsset(AssetHandle handle);
 	private:
 		struct LoadEvents
 		{
@@ -44,13 +42,12 @@ namespace JRE
 				static const EventID ID{ HashEventID("LoadFont") };
 				struct Args : public EventArgs
 				{
-					Args(std::string _path, uint8_t _size, GUID _guid)
-						: path(std::move(_path)), size(_size), guid(_guid) {
-					}
+					Args(std::string _path, uint8_t _size, AssetHandle _handle)
+						: path(std::move(_path)), size(_size), handle(_handle) {}
 
 					std::string path;
 					uint8_t size;
-					GUID guid;
+					AssetHandle handle;
 				};
 			};
 
@@ -59,12 +56,11 @@ namespace JRE
 				static const EventID ID{ HashEventID("LoadSound") };
 				struct Args : public EventArgs
 				{
-					Args(std::string _path, GUID _guid)
-						: path(std::move(_path)), guid(_guid) {
-					}
+					Args(std::string _path, AssetHandle _handle)
+						: path(std::move(_path)), handle(_handle) {}
 
 					std::string path;
-					GUID guid;
+					AssetHandle handle;
 				};
 			};
 		};
@@ -74,13 +70,8 @@ namespace JRE
 
 		std::filesystem::path m_DataPath{};
 
-		std::map<GUID, std::shared_ptr<Texture2D>> m_LoadedTextures{};
-		std::map<GUID, std::shared_ptr<Font>> m_LoadedFonts{};
-		std::map<GUID, std::shared_ptr<ISoundClip>> m_LoadedSounds{};
-
-		std::map<std::filesystem::path, GUID> m_TexturePathToGUID{};
-		std::map<std::pair<std::filesystem::path, uint8_t>, GUID> m_FontPathSizeToGUID{};
-		std::map<std::filesystem::path, GUID> m_SoundPathToGUID{};
+		std::map<AssetHandle, Ref<Asset>> m_Assets{};
+		std::map<std::filesystem::path, AssetHandle> m_PathToAssetHandle{};
 
 		std::queue<EventInfo> m_LoadEventsQueue{};
 		mutable std::mutex m_Mutex{};
@@ -99,78 +90,65 @@ namespace JRE
 
 		m_WorkerThread = std::jthread([this](std::stop_token token) { WorkerLoop(token); });
 	}
-	ResourceHandle<Texture2D> ResourceManager::Impl::LoadTexture(const std::string& file)
+	AssetHandle ResourceManager::Impl::LoadTexture(const std::string& file)
 	{
 		auto fullPath = m_DataPath / file;
-		if (auto it = m_TexturePathToGUID.find(fullPath); it != m_TexturePathToGUID.end())
-			return ResourceHandle<Texture2D>(it->second);
+		if (auto it = m_PathToAssetHandle.find(fullPath); it != m_PathToAssetHandle.end())
+			return it->second;
 
-		GUID guid = GenerateGUID();
-		m_TexturePathToGUID[fullPath] = guid;
 		auto tex = std::make_shared<Texture2D>(fullPath.string());
+		m_PathToAssetHandle[fullPath] = tex->GetHandle();
 		{
 			std::scoped_lock lock(m_Mutex);
-			m_LoadedTextures[guid] = tex;
+			m_Assets[tex->GetHandle()] = tex;
 		}
-		return ResourceHandle<Texture2D>(guid);
+		return tex->GetHandle();
 	}
-	ResourceHandle<Texture2D> ResourceManager::Impl::LoadTexture(const std::string& text, ResourceHandle<Font> fontHandle)
+	AssetHandle ResourceManager::Impl::LoadTexture(const std::string& text, AssetHandle fontHandle)
 	{
-		auto font = GetFont(fontHandle);
+		auto font = GetAsset(fontHandle);
 		if (!font) throw std::runtime_error("Invalid font handle");
-		auto fakePath = std::filesystem::path("generated/" + text + "_" + std::to_string(fontHandle.GetGUID()));
+		auto fakePath = std::filesystem::path("generated/" + text + "@" + std::to_string(uint64_t(fontHandle)));
 
-		if (auto it = m_TexturePathToGUID.find(fakePath); it != m_TexturePathToGUID.end())
-			return ResourceHandle<Texture2D>(it->second);
+		if (auto it = m_PathToAssetHandle.find(fakePath); it != m_PathToAssetHandle.end())
+			return it->second;
 
-		GUID guid = GenerateGUID();
-		m_TexturePathToGUID[fakePath] = guid;
 		auto tex = std::make_shared<Texture2D>(text, fontHandle);
+		m_PathToAssetHandle[fakePath] = tex->GetHandle();
 		{
 			std::scoped_lock lock(m_Mutex);
-			m_LoadedTextures[guid] = tex;
+			m_Assets[tex->GetHandle()] = tex;
 		}
-		return ResourceHandle<Texture2D>(guid);
+		return tex->GetHandle();
 	}
-	ResourceHandle<Font> ResourceManager::Impl::LoadFont(const std::string& file, uint8_t size)
+	AssetHandle ResourceManager::Impl::LoadFont(const std::string& file, uint8_t size)
 	{
 		auto fullPath = m_DataPath / file;
-		auto key = std::make_pair(fullPath, size);
+		std::filesystem::path fakePath{ fullPath.filename().string() + "@" + std::to_string(size) };
 
-		if (auto it = m_FontPathSizeToGUID.find(key); it != m_FontPathSizeToGUID.end())
-			return ResourceHandle<Font>(it->second);
+		if (auto it = m_PathToAssetHandle.find(fakePath); it != m_PathToAssetHandle.end())
+			return it->second;
 
-		GUID guid = GenerateGUID();
-		m_FontPathSizeToGUID[key] = guid;
-		EnqueueLoadEvent(CreateEvent<LoadEvents::LoadFont>(file, size, guid));
-		return ResourceHandle<Font>(guid);
+		AssetHandle handle{};
+		m_PathToAssetHandle.emplace(fullPath, handle);
+		EnqueueLoadEvent(CreateEvent<LoadEvents::LoadFont>(file, size, handle));
+		return handle;
 	}
-	ResourceHandle<ISoundClip> ResourceManager::Impl::LoadSound(const std::string& file)
+	AssetHandle ResourceManager::Impl::LoadSound(const std::string& file)
 	{
 		auto fullPath = m_DataPath / file;
-		if (auto it = m_SoundPathToGUID.find(fullPath); it != m_SoundPathToGUID.end())
-			return ResourceHandle<ISoundClip>(it->second);
+		if (auto it = m_PathToAssetHandle.find(fullPath); it != m_PathToAssetHandle.end())
+			return it->second;
 
-		GUID guid = GenerateGUID();
-		m_SoundPathToGUID[fullPath] = guid;
-		EnqueueLoadEvent(CreateEvent<LoadEvents::LoadSound>(file, guid));
-		return ResourceHandle<ISoundClip>(guid);
+		AssetHandle handle{};
+		m_PathToAssetHandle.emplace(fullPath, handle);
+		EnqueueLoadEvent(CreateEvent<LoadEvents::LoadSound>(file, handle));
+		return handle;
 	}
-	std::shared_ptr<Texture2D> ResourceManager::Impl::GetTexture(ResourceHandle<Texture2D> handle) const
+	Ref<Asset> ResourceManager::Impl::GetAsset(AssetHandle handle)
 	{
-		auto it = m_LoadedTextures.find(handle.GetGUID());
-		return (it != m_LoadedTextures.end()) ? it->second : nullptr;
-	}
-
-	std::shared_ptr<Font> ResourceManager::Impl::GetFont(ResourceHandle<Font> handle) const
-	{
-		auto it = m_LoadedFonts.find(handle.GetGUID());
-		return (it != m_LoadedFonts.end()) ? it->second : nullptr;
-	}
-	std::shared_ptr<ISoundClip> ResourceManager::Impl::GetSound(ResourceHandle<ISoundClip> handle) const
-	{
-		auto it = m_LoadedSounds.find(handle.GetGUID());
-		return (it != m_LoadedSounds.end()) ? it->second : nullptr;
+		auto it = m_Assets.find(handle);
+		return it != m_Assets.end() ? it->second : nullptr;
 	}
 	void ResourceManager::Impl::EnqueueLoadEvent(EventInfo&& event)
 	{
@@ -196,17 +174,19 @@ namespace JRE
 				case LoadEvents::LoadFont::ID:
 				{
 					auto& args = event.GetArgs<LoadEvents::LoadFont>();
-					auto font = std::make_shared<Font>((m_DataPath / args.path).string(), args.size);
+					auto font = std::make_shared<Font>((m_DataPath / args.path).string(), args.size, args.handle);
+					font->SetHandle(args.handle);
 					std::scoped_lock g(m_Mutex);
-					m_LoadedFonts[args.guid] = font;
+					m_Assets.emplace(args.handle, font);
 					break;
 				}
 				case LoadEvents::LoadSound::ID:
 				{
 					auto& args = event.GetArgs<LoadEvents::LoadSound>();
-					auto sound = ServiceLocator::GetSoundSystem().CreateSoundClip((m_DataPath / args.path).string());
+					auto sound = ServiceLocator::GetSoundSystem().CreateSoundClip((m_DataPath / args.path).string(), args.handle);
+					sound->SetHandle(args.handle);
 					std::scoped_lock g(m_Mutex);
-					m_LoadedSounds[args.guid] = sound;
+					m_Assets.emplace(args.handle, sound);
 					break;
 				}
 				default:
@@ -221,11 +201,9 @@ namespace JRE
 	ResourceManager::ResourceManager() : m_pImpl{ std::make_unique<Impl>() } {}
 	ResourceManager::~ResourceManager() = default;
 	void ResourceManager::Init(const std::filesystem::path& data) { m_pImpl->Init(data); }
-	ResourceHandle<Texture2D> ResourceManager::LoadTexture(const std::string& file) { return m_pImpl->LoadTexture(file); }
-	ResourceHandle<Texture2D> ResourceManager::LoadTexture(const std::string& text, ResourceHandle<Font> font) { return m_pImpl->LoadTexture(text, font); }
-	ResourceHandle<Font> ResourceManager::LoadFont(const std::string& file, uint8_t size) { return m_pImpl->LoadFont(file, size); }
-	ResourceHandle<ISoundClip> ResourceManager::LoadSound(const std::string& file) { return m_pImpl->LoadSound(file); }
-	std::shared_ptr<Texture2D> ResourceManager::GetTexture(ResourceHandle<Texture2D> handle) const { return m_pImpl->GetTexture(handle); }
-	std::shared_ptr<Font> ResourceManager::GetFont(ResourceHandle<Font> handle) const { return m_pImpl->GetFont(handle); }
-	std::shared_ptr<ISoundClip> ResourceManager::GetSound(ResourceHandle<ISoundClip> handle) const { return m_pImpl->GetSound(handle); }
+	AssetHandle ResourceManager::LoadTexture(const std::string& file) { return m_pImpl->LoadTexture(file); }
+	AssetHandle ResourceManager::LoadTexture(const std::string& text, AssetHandle fontHandle) { return m_pImpl->LoadTexture(text, fontHandle); }
+	AssetHandle ResourceManager::LoadFont(const std::string& file, uint8_t size) { return m_pImpl->LoadFont(file, size); }
+	AssetHandle ResourceManager::LoadSound(const std::string& file) { return m_pImpl->LoadSound(file); }
+	Ref<Asset> ResourceManager::GetAsset(AssetHandle handle) const { return m_pImpl->GetAsset(handle); }
 }

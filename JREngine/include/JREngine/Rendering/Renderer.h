@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <memory>
 #include <vector>
+#include "JREngine/Resources/Asset.h"
 #include "JREngine/Core/Singleton.h"
 
 namespace JRE
@@ -19,9 +20,8 @@ namespace JRE
 		void Render();
 		void Destroy();
 
-		void RenderTexture(const std::shared_ptr<Texture2D>& pTexture, float x, float y) const;
-		void RenderTexture(const std::shared_ptr<Texture2D>& pTexture, float x, float y, float width, float height) const;
-		//void RenderTexture(const std::shared_ptr<Texture2D>& pTexture, float x, float y, )
+		void RenderTexture(const Ref<Texture2D>& pTexture, float x, float y) const;
+		void RenderTexture(const Ref<Texture2D>& pTexture, float x, float y, float width, float height) const;
 
 		SDL_Renderer* GetSDLRenderer() const;
 

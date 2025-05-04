@@ -9,6 +9,7 @@ set(SOURCE_FILES
 
     "Animation/AnimationClip.cpp"
 
+    "Core/UUID.cpp"
     "Core/Timer.cpp"
     "Core/Event.cpp"
     "Core/Observer.cpp"
@@ -29,7 +30,7 @@ set(SOURCE_FILES
 
     "Resources/Font.cpp"
     "Resources/ResourceManager.cpp"
-    "Resources/ResourceHandle.cpp"
+    "Resources/Asset.cpp"
 
     "Audio/SDLSoundSystem.cpp"
     "Audio/SDLSoundSystem.h"
@@ -51,6 +52,7 @@ set(INCLUDE_FILES
 
     "Math/Rect.h"
 
+    "Core/UUID.h"
     "Core/Singleton.h"
     "Core/Command.h"
     "Core/Timer.h"
@@ -73,7 +75,7 @@ set(INCLUDE_FILES
     "Resources/Font.h"
     "Resources/IResourceManager.h"
     "Resources/ResourceManager.h"
-    "Resources/ResourceHandle.h"
+    "Resources/Asset.h"
 
     "Audio/ISoundSystem.h"
     "Audio/ISoundClip.h"

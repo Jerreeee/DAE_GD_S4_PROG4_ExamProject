@@ -34,9 +34,9 @@ namespace JRE
 			throw std::runtime_error(std::string("Failed to load texture: ") + SDL_GetError());
 	}
 
-	Texture2D::Texture2D(const std::string& text, ResourceHandle<Font> fontHandle)
+	Texture2D::Texture2D(const std::string& text, AssetHandle fontHandle)
 	{
-		auto pFont = ResourceManager::GetInstance().GetFont(fontHandle);
+		auto pFont = ResourceManager::GetAsset<Font>(fontHandle);
 		if (!pFont) return;
 
 		const SDL_Color color = { 255,255,255,255 }; // only white text is supported now

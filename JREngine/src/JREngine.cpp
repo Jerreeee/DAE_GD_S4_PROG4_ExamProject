@@ -88,9 +88,10 @@ JRE::JREngine::JREngine(const std::filesystem::path &dataPath)
 	}
 
 	ServiceLocator::RegisterSoundSystem(std::make_unique<SDLSoundSystem>());
+	ServiceLocator::RegisterResourceManager(std::make_unique<ResourceManager>());
 
 	SDLRenderer::GetInstance().Init(g_window);
-	ResourceManager::GetInstance().Init(dataPath);
+	ServiceLocator::GetResourceManager().Init(dataPath);
 	Timer::GetInstance().SetFixedTimeStep(m_FixedTimeStep);
 }
 

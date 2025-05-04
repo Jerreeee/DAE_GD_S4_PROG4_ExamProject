@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "JREngine/Resources/ResourceHandle.h"
+#include "JREngine/Resources/Asset.h"
 #include "JREngine/Rendering/RendererComponentBase.h"
 
 namespace JRE
@@ -18,10 +18,10 @@ namespace JRE
 
 		virtual void Render() const override;
 
-		void SetSprite(ResourceHandle<Texture2D> textureHandle);
+		void SetSprite(AssetHandle textureHandle);
 	private:
-		ResourceHandle<Texture2D> m_TextureHandle{};
-		mutable std::shared_ptr<Texture2D> m_pTexture{};
+		AssetHandle m_TextureHandle{ AssetHandle::InvalidUUID };
+		mutable Ref<Texture2D> m_pTexture{ nullptr };
 	};
 }
 

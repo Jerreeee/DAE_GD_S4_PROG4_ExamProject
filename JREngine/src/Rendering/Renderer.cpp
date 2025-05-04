@@ -74,7 +74,7 @@ void JRE::SDLRenderer::Destroy()
 	}
 }
 
-void JRE::SDLRenderer::RenderTexture(const std::shared_ptr<Texture2D>& pTexture, const float x, const float y) const
+void JRE::SDLRenderer::RenderTexture(const Ref<Texture2D>& pTexture, const float x, const float y) const
 {
 	if (!pTexture) return;
 
@@ -85,7 +85,7 @@ void JRE::SDLRenderer::RenderTexture(const std::shared_ptr<Texture2D>& pTexture,
 	SDL_RenderCopy(GetSDLRenderer(), pTexture->GetSDLTexture(), nullptr, &dst);
 }
 
-void JRE::SDLRenderer::RenderTexture(const std::shared_ptr<Texture2D>& pTexture, const float x, const float y, const float width, const float height) const
+void JRE::SDLRenderer::RenderTexture(const Ref<Texture2D>& pTexture, const float x, const float y, const float width, const float height) const
 {
 	if (!pTexture) return;
 

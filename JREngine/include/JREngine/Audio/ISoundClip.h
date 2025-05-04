@@ -1,14 +1,20 @@
 #pragma once
+#include "JREngine/Resources/Asset.h"
 
 namespace JRE
 {
-	class ISoundClip
+	class ISoundClip : public Asset
 	{
 	public:
+		ISoundClip() = default;
+		ISoundClip(AssetHandle handle) : Asset(handle) {};
 		virtual ~ISoundClip() = default;
 
 		virtual void Play(int loops = 0, int channel = -1) const = 0;
 		virtual void SetVolume(float volume) = 0;
+
+		static AssetType GetStaticType() { return AssetType::SoundClip; };
+		virtual AssetType GetType() const override { return GetStaticType(); };
 	};
 
 	class NullSoundClip final : public ISoundClip

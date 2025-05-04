@@ -2,7 +2,7 @@
 #include <string>
 #include <memory>
 #include "JREngine/Rendering/RendererComponentBase.h"
-#include "JREngine/Resources/ResourceHandle.h"
+#include "JREngine/Resources/Asset.h"
 
 namespace JRE
 {
@@ -11,7 +11,7 @@ namespace JRE
 	class TextRendererComponent final : public RendererComponentBase
 	{
 	public:
-		TextRendererComponent(GameObject& gameObject, const std::string& text, ResourceHandle<Font> fontHandle);
+		TextRendererComponent(GameObject& gameObject, const std::string& text, AssetHandle fontHandle);
 
 		TextRendererComponent(const TextRendererComponent& other) = delete;
 		TextRendererComponent(TextRendererComponent&& other) = delete;
@@ -25,9 +25,9 @@ namespace JRE
 	private:
 		bool m_NeedsUpdate{};
 		std::string m_Text{};
-		ResourceHandle<Font> m_FontHandle{};
-		std::shared_ptr<Font> m_pFont{};
-		ResourceHandle<Texture2D> m_TextTextureHandle{};
-		std::shared_ptr<Texture2D> m_pTextTexture{};
+		AssetHandle m_FontHandle{ AssetHandle::InvalidUUID };
+		Ref<Font> m_pFont{};
+		AssetHandle m_TextTextureHandle{ AssetHandle::InvalidUUID };
+		Ref<Texture2D> m_pTextTexture{};
 	};
 }

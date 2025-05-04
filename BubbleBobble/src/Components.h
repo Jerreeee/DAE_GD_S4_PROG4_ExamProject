@@ -2,7 +2,7 @@
 #include <memory>
 #include "JREngine/Scene/ComponentBase.h"
 #include "JREngine/Core/Observer.h"
-#include "JREngine/Resources/ResourceHandle.h"
+#include "JREngine/Resources/Asset.h"
 #include "Events.h"
 
 namespace JRE
@@ -23,7 +23,7 @@ namespace BubbleBobble
 
 		virtual void Update() override {};
 
-		void SetHitSound(JRE::ResourceHandle<JRE::ISoundClip> hitSoundHandle);
+		void SetHitSound(JRE::AssetHandle hitSoundHandle);
 		void SetHealth(int health);
 		void SetMaxHealth(int maxHealth);
 		void TakeDamage(int amount);
@@ -34,8 +34,8 @@ namespace BubbleBobble
 		int m_Health{};
 		int m_MaxHealth{};
 		JRE::Event_t m_DamageEvent{};
-		JRE::ResourceHandle<JRE::ISoundClip> m_HitSoundHandle{};
-		std::shared_ptr<JRE::ISoundClip> m_pHitSound{};
+		JRE::AssetHandle m_HitSoundHandle{ JRE::AssetHandle::InvalidUUID };
+		JRE::Ref<JRE::ISoundClip> m_pHitSound{};
 	};
 
 	class ScoreComponent final : public JRE::ComponentBase
@@ -55,7 +55,7 @@ namespace BubbleBobble
 	class PlayerUIComponent final : public JRE::ComponentBase, public JRE::IObserver
 	{
 	public:
-		PlayerUIComponent(JRE::GameObject& UIGameObject, JRE::GameObject& player, JRE::ResourceHandle<JRE::Font> fontHandle);
+		PlayerUIComponent(JRE::GameObject& UIGameObject, JRE::GameObject& player, JRE::AssetHandle fontHandle);
 		~PlayerUIComponent();
 		virtual void Update() override {};
 		virtual void OnNotify(JRE::EventInfo& event) override;

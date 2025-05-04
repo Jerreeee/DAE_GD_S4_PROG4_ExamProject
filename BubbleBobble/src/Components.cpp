@@ -21,7 +21,7 @@ namespace BubbleBobble
 	}
 	HealthComponent::~HealthComponent() = default;
 
-	void HealthComponent::SetHitSound(JRE::ResourceHandle<JRE::ISoundClip> hitSoundHandle)
+	void HealthComponent::SetHitSound(JRE::AssetHandle hitSoundHandle)
 	{
 		m_HitSoundHandle = hitSoundHandle;
 	}
@@ -43,12 +43,12 @@ namespace BubbleBobble
 
 		if (!m_pHitSound)
 		{
-			m_pHitSound = JRE::ResourceManager::GetInstance().GetSound(m_HitSoundHandle);
+			m_pHitSound = JRE::ResourceManager::GetAsset<JRE::ISoundClip>(m_HitSoundHandle);
 			if (!m_pHitSound) return;
 		}
 		JRE::ServiceLocator::GetSoundSystem().Play(m_pHitSound);
 	}
-	PlayerUIComponent::PlayerUIComponent(JRE::GameObject& UIGameObject, JRE::GameObject& player, JRE::ResourceHandle<JRE::Font> fontHandle) :
+	PlayerUIComponent::PlayerUIComponent(JRE::GameObject& UIGameObject, JRE::GameObject& player, JRE::AssetHandle fontHandle) :
 		ComponentBase(UIGameObject),
 		m_pHealthComponent{ player.GetComponent<HealthComponent>() },
 		m_pScoreComponent{ player.GetComponent<ScoreComponent>() }

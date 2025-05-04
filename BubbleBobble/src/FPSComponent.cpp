@@ -6,7 +6,7 @@
 
 namespace BubbleBobble
 {
-	FPSComponent::FPSComponent(JRE::GameObject& gameObject, JRE::ResourceHandle<JRE::Font> fontHandle, float updateRate)
+	FPSComponent::FPSComponent(JRE::GameObject& gameObject, JRE::AssetHandle fontHandle, float updateRate)
 		: ComponentBase(gameObject)
 		,m_UpdateRate{ updateRate }
 		,m_AccTime{ m_UpdateRate }

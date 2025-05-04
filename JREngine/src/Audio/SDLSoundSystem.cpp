@@ -14,7 +14,7 @@ namespace JRE
 {
 	struct SoundEvent
 	{
-		std::shared_ptr<ISoundClip> clip;
+		Ref<ISoundClip> clip;
 		float volume;
 	};
 
@@ -24,7 +24,7 @@ namespace JRE
 		Impl();
 		~Impl();
 
-		void Play(std::shared_ptr<ISoundClip> clip, float volume);
+		void Play(Ref<ISoundClip> clip, float volume);
 	private:
 		void SoundThread(std::stop_token token);
 
@@ -45,7 +45,7 @@ namespace JRE
 	{
 		Mix_CloseAudio();
 	}
-	void SDLSoundSystem::Impl::Play(std::shared_ptr<ISoundClip> clip, float volume)
+	void SDLSoundSystem::Impl::Play(Ref<ISoundClip> clip, float volume)
 	{
 		if (!clip)
 		{
@@ -85,6 +85,6 @@ namespace JRE
 
 	SDLSoundSystem::SDLSoundSystem() : m_pImpl{ std::make_unique<Impl>() } {}
 	SDLSoundSystem::~SDLSoundSystem() = default;
-	std::shared_ptr<ISoundClip> SDLSoundSystem::CreateSoundClip(const std::string& path) { return std::make_shared<SDLSoundClip>(path); }
-	void SDLSoundSystem::Play(std::shared_ptr<ISoundClip> clip, float volume) { m_pImpl->Play(clip, volume); }
+	Ref<ISoundClip> SDLSoundSystem::CreateSoundClip(const std::string& path, AssetHandle handle) { return std::make_shared<SDLSoundClip>(path, handle); }
+	void SDLSoundSystem::Play(Ref<ISoundClip> clip, float volume) { m_pImpl->Play(clip, volume); }
 }

@@ -8,7 +8,7 @@ namespace JRE
 	class SDLSoundClip : public ISoundClip
 	{
 	public:
-		explicit SDLSoundClip(const std::string& filePath);
+		explicit SDLSoundClip(const std::string& filePath, AssetHandle handle = AssetHandle::InvalidUUID);
 		~SDLSoundClip();
 
 		SDLSoundClip(const SDLSoundClip&) = delete;
