@@ -11,7 +11,6 @@ namespace JRE
 		SDLSoundSystem();
 		~SDLSoundSystem();
 
-		virtual Ref<ISoundClip> CreateSoundClip(const std::string& path, AssetHandle handle = AssetHandle::InvalidUUID) override;
 		virtual void Play(Ref<ISoundClip> clip, float volume = 1.0f) override;
 	private:
 		class Impl;

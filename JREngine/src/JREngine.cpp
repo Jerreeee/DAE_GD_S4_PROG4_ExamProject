@@ -14,7 +14,7 @@
 #include "Scene/SceneManager.h"
 #include "Rendering/Renderer.h"
 #include "Audio/SDLSoundSystem.h"
-#include "Resources/ResourceManager.h"
+#include "Resources/RuntimeResourceManager.h"
 #include "Core/Timer.h"
 #include "Core/ServiceLocator.h"
 
@@ -88,7 +88,7 @@ JRE::JREngine::JREngine(const std::filesystem::path &dataPath)
 	}
 
 	ServiceLocator::RegisterSoundSystem(std::make_unique<SDLSoundSystem>());
-	ServiceLocator::RegisterResourceManager(std::make_unique<ResourceManager>());
+	ServiceLocator::RegisterResourceManager(std::make_unique<RuntimeResourceManager>());
 
 	SDLRenderer::GetInstance().Init(g_window);
 	ServiceLocator::GetResourceManager().Init(dataPath);

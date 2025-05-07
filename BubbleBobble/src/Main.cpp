@@ -20,6 +20,10 @@ namespace fs = std::filesystem;
 #include "JREngine/Audio/ISoundSystem.h"
 #include "JREngine/Audio/ISoundClip.h"
 #include "JREngine/Resources/Font.h"
+#include "JREngine/Rendering/Texture2D.h"
+#include "JREngine/Rendering/Sprite.h"
+
+#include "JREngine/Resources/SpriteEditor.h"
 
 #include "FPSComponent.h"
 #include "Commands.h"
@@ -45,8 +49,8 @@ namespace BubbleBobble
 {
 	void load()
 	{
-		JRE::AssetHandle hitSound = JRE::ServiceLocator::GetResourceManager().LoadSound("HUD/Select.wav");
-		JRE::AssetHandle fontHandle = JRE::ServiceLocator::GetResourceManager().LoadFont("Lingua.otf", 20);
+		JRE::AssetHandle hitSound = JRE::ResourceManager::LoadAsset<JRE::ISoundClip>("HUD/Select.wav");
+		JRE::AssetHandle fontHandle = JRE::ResourceManager::LoadAsset<JRE::Font>("Lingua.otf", 20);
 
 		auto& scene = JRE::SceneManager::GetInstance().CreateScene("Demo");
 
@@ -66,8 +70,10 @@ namespace BubbleBobble
 		player1->SetLocalPosition(216, 180);
 		if (auto* pComponent = player1->AddComponent<JRE::SpriteRendererComponent>(); pComponent)
 		{
-			JRE::AssetHandle texHandle = JRE::ServiceLocator::GetResourceManager().LoadTexture("Player/Bobby/Bubble_Anim.png");
-			pComponent->SetSprite(texHandle);
+			JRE::AssetHandle texHandle = JRE::ResourceManager::LoadAsset<JRE::Texture2D>("Player/Bobby/Bubble_Anim.png");
+			//std::vector<JRE::AssetHandle> playerSprites = JRE::SpriteEditor::SplitTexture2D(texHandle, 3, 3, 1);
+			JRE::AssetHandle sprite = JRE::ResourceManager::CreateAsset<JRE::Sprite>(texHandle);
+			pComponent->SetSprite(sprite);
 		}
 		auto p1HealthComponent = player1->AddComponent<HealthComponent>(3);
 		p1HealthComponent->SetHitSound(hitSound);
@@ -91,11 +97,11 @@ namespace BubbleBobble
 		//##################
 		auto player2 = std::make_unique<JRE::GameObject>("Player 2");
 		player2->SetLocalPosition(416, 180);
-		if (auto* pComponent = player2->AddComponent<JRE::SpriteRendererComponent>(); pComponent)
-		{
-			JRE::AssetHandle texHandle = JRE::ServiceLocator::GetResourceManager().LoadTexture("Player/Bobby/Bubble_Anim.png");
-			pComponent->SetSprite(texHandle);
-		}
+		//if (auto* pComponent = player2->AddComponent<JRE::SpriteRendererComponent>(); pComponent)
+		//{
+		//	JRE::AssetHandle texHandle = JRE::ServiceLocator::GetResourceManager().LoadTexture("Player/Bobby/Bubble_Anim.png");
+		//	pComponent->SetSprite(texHandle);
+		//}
 		auto p2HealthComponent = player2->AddComponent<HealthComponent>(3);
 		p2HealthComponent->SetHitSound(hitSound);
 		auto p2TakeDamageCommand = std::make_unique<TakeDamageCommand>(p2HealthComponent);

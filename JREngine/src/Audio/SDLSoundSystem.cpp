@@ -85,6 +85,5 @@ namespace JRE
 
 	SDLSoundSystem::SDLSoundSystem() : m_pImpl{ std::make_unique<Impl>() } {}
 	SDLSoundSystem::~SDLSoundSystem() = default;
-	Ref<ISoundClip> SDLSoundSystem::CreateSoundClip(const std::string& path, AssetHandle handle) { return std::make_shared<SDLSoundClip>(path, handle); }
 	void SDLSoundSystem::Play(Ref<ISoundClip> clip, float volume) { m_pImpl->Play(clip, volume); }
 }

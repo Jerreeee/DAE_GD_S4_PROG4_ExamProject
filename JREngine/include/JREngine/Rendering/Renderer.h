@@ -9,7 +9,7 @@ namespace JRE
 {
 	class RendererComponentBase;
 	class UIComponentBase;
-	class Texture2D;
+	class Sprite;
 	/**
 	 * Simple RAII wrapper for the SDL renderer
 	 */
@@ -20,8 +20,8 @@ namespace JRE
 		void Render();
 		void Destroy();
 
-		void RenderTexture(const Ref<Texture2D>& pTexture, float x, float y) const;
-		void RenderTexture(const Ref<Texture2D>& pTexture, float x, float y, float width, float height) const;
+		void RenderTexture(const Ref<Sprite>& pSprite, float x, float y) const;
+		void RenderTexture(const Ref<Sprite>& pSprite, float x, float y, float width, float height) const;
 
 		SDL_Renderer* GetSDLRenderer() const;
 

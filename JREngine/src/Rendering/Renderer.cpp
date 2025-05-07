@@ -7,6 +7,7 @@
 #include "Scene/SceneManager.h"
 #include "Rendering/Renderer.h"
 #include "Rendering/Texture2D.h"
+#include "Rendering/Sprite.h"
 #include "Rendering/RendererComponentBase.h"
 
 int GetOpenGLDriverIndex()
@@ -74,27 +75,37 @@ void JRE::SDLRenderer::Destroy()
 	}
 }
 
-void JRE::SDLRenderer::RenderTexture(const Ref<Texture2D>& pTexture, const float x, const float y) const
+void JRE::SDLRenderer::RenderTexture(const Ref<Sprite>& pSprite, const float x, const float y) const
 {
-	if (!pTexture) return;
+	if (!pSprite) return;
+
+	const Ref<Texture2D>& pTexture = pSprite->GetTexture();
+	SDL_Texture* pSDLTexture = pTexture->GetSDLTexture();
+	const Region& region = pSprite->GetSrcRegion();
+	SDL_Rect src{ region.x, region.y, region.width, region.height };
 
 	SDL_Rect dst{};
 	dst.x = static_cast<int>(x);
 	dst.y = static_cast<int>(y);
-	SDL_QueryTexture(pTexture->GetSDLTexture(), nullptr, nullptr, &dst.w, &dst.h);
-	SDL_RenderCopy(GetSDLRenderer(), pTexture->GetSDLTexture(), nullptr, &dst);
+	SDL_QueryTexture(pSDLTexture, nullptr, nullptr, &dst.w, &dst.h);
+	SDL_RenderCopy(GetSDLRenderer(), pSDLTexture, &src, &dst);
 }
 
-void JRE::SDLRenderer::RenderTexture(const Ref<Texture2D>& pTexture, const float x, const float y, const float width, const float height) const
+void JRE::SDLRenderer::RenderTexture(const Ref<Sprite>& pSprite, const float x, const float y, const float width, const float height) const
 {
-	if (!pTexture) return;
+	if (!pSprite) return;
+
+	const Ref<Texture2D>& pTexture = pSprite->GetTexture();
+	SDL_Texture* pSDLTexture = pTexture->GetSDLTexture();
+	const Region& region = pSprite->GetSrcRegion();
+	SDL_Rect src{ region.x, region.y, region.width, region.height };
 
 	SDL_Rect dst{};
 	dst.x = static_cast<int>(x);
 	dst.y = static_cast<int>(y);
 	dst.w = static_cast<int>(width);
 	dst.h = static_cast<int>(height);
-	SDL_RenderCopy(GetSDLRenderer(), pTexture->GetSDLTexture(), nullptr, &dst);
+	SDL_RenderCopy(GetSDLRenderer(), pSDLTexture, &src, &dst);
 }
 
 SDL_Renderer* JRE::SDLRenderer::GetSDLRenderer() const { return m_renderer; }

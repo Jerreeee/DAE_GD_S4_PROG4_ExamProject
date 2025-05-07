@@ -29,8 +29,14 @@ set(SOURCE_FILES
     "Rendering/TextRendererComponent.cpp"
 
     "Resources/Font.cpp"
-    "Resources/ResourceManager.cpp"
+    "Resources/RuntimeResourceManager.cpp"
+    "Resources/EditorResourceManager.cpp"
+    "Resources/AssetImporter.cpp"
     "Resources/Asset.cpp"
+    "Resources/SpriteEditor.cpp"
+    "Resources/TextureImporter.cpp"
+    "Resources/FontImporter.cpp"
+    "Resources/SoundClipImporter.cpp"
 
     "Audio/SDLSoundSystem.cpp"
     "Audio/SDLSoundSystem.h"
@@ -74,8 +80,16 @@ set(INCLUDE_FILES
 
     "Resources/Font.h"
     "Resources/IResourceManager.h"
+    "Resources/RuntimeResourceManager.h"
+    "Resources/EditorResourceManager.h"
     "Resources/ResourceManager.h"
+    "Resources/IAssetImporter.h"
+    "Resources/AssetImporter.h"
     "Resources/Asset.h"
+    "Resources/SpriteEditor.h"
+    "Resources/SoundClipImporter.h"
+    "Resources/FontImporter.h"
+    "Resources/TextureImporter.h"
 
     "Audio/ISoundSystem.h"
     "Audio/ISoundClip.h"

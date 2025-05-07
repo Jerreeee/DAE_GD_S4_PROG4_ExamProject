@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <memory>
+#include <sstream>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -10,21 +11,11 @@
 
 namespace JRE
 {
-	Texture2D::~Texture2D()
+	std::filesystem::path Texture2D::PathBuilder::Build(const std::string& text, AssetHandle fontHandle)
 	{
-		SDL_DestroyTexture(m_texture);
-	}
-
-	glm::ivec2 Texture2D::GetSize() const
-	{
-		SDL_Rect dst;
-		SDL_QueryTexture(GetSDLTexture(), nullptr, nullptr, &dst.w, &dst.h);
-		return { dst.w,dst.h };
-	}
-
-	SDL_Texture* Texture2D::GetSDLTexture() const
-	{
-		return m_texture;
+		std::stringstream ss{};
+		ss << "Texture2D/" << text << '@' << static_cast<uint64_t>(fontHandle);
+		return std::filesystem::path(ss.str());
 	}
 
 	Texture2D::Texture2D(const std::string& fullPath)
@@ -48,5 +39,22 @@ namespace JRE
 		if (m_texture == nullptr)
 			throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
 		SDL_FreeSurface(surf);
+	}
+
+	Texture2D::~Texture2D()
+	{
+		SDL_DestroyTexture(m_texture);
+	}
+
+	SDL_Texture* Texture2D::GetSDLTexture() const
+	{
+		return m_texture;
+	}
+
+	glm::ivec2 Texture2D::GetSize() const
+	{
+		SDL_Rect dst;
+		SDL_QueryTexture(GetSDLTexture(), nullptr, nullptr, &dst.w, &dst.h);
+		return { dst.w,dst.h };
 	}
 }

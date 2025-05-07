@@ -34,3 +34,12 @@ Description:
 	IResourceManager can only define "virtual Ref<Asset> GetAsset(Assethandle handle) = 0" which is not templated so we still need a way to cast it to the correct type
 Solution:
 	On the ResourceManager have a static templated function "Ref<T> GetAsset(AssetHandle handle)" and this one calls ServiceLocator::GetResourceManager().GetAsset(handle). This returns a base Asset that we can then be statically casted to the correct type T.
+	
+#6
+Description:
+
+- generic Load method
+- AssetHandle/UUID by default creating a new valid UUID but by default should be invalid
+- some Asset's need extra info asside from the filepath when creating an instance. => importsettings
+- LoadAsset insert {path, assetHandle} pair to detect duplication but for some assetType's like Font this is not just dependant on the path but also extra metadata like the fontSize. So this extra metadata must be appended to the path to be able to make a clear distinction. Have the Import method return a struct that returns the Ref<Asset> but also a path.
+- generic Create method

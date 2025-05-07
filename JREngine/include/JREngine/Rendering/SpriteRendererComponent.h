@@ -5,7 +5,7 @@
 
 namespace JRE
 {
-	class Texture2D;
+	class Sprite;
 	class SpriteRendererComponent final: public RendererComponentBase
 	{
 	public:
@@ -18,10 +18,10 @@ namespace JRE
 
 		virtual void Render() const override;
 
-		void SetSprite(AssetHandle textureHandle);
+		void SetSprite(AssetHandle spriteHandle);
 	private:
-		AssetHandle m_TextureHandle{ AssetHandle::InvalidUUID };
-		mutable Ref<Texture2D> m_pTexture{ nullptr };
+		AssetHandle m_SpriteHandle{ AssetHandle::InvalidUUID };
+		mutable Ref<Sprite> m_pSprite{ nullptr };
 	};
 }
 

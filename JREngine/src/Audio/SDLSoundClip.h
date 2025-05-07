@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include <string>
+#include <filesystem>
 #include "JREngine/Audio/ISoundClip.h"
 
 namespace JRE
@@ -8,7 +8,7 @@ namespace JRE
 	class SDLSoundClip : public ISoundClip
 	{
 	public:
-		explicit SDLSoundClip(const std::string& filePath, AssetHandle handle = AssetHandle::InvalidUUID);
+		explicit SDLSoundClip(const std::filesystem::path& path);
 		~SDLSoundClip();
 
 		SDLSoundClip(const SDLSoundClip&) = delete;

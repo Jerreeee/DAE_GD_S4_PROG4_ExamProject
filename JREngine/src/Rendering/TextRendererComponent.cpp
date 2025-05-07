@@ -2,6 +2,7 @@
 #include <memory>
 #include "Rendering/Renderer.h"
 #include "Resources/Font.h"
+#include "Rendering/Sprite.h"
 #include "Rendering/Texture2D.h"
 #include "Resources/ResourceManager.h"
 #include "Rendering/TextRendererComponent.h"
@@ -25,18 +26,21 @@ namespace JRE
 
 		if (m_NeedsUpdate)
 		{
-			m_TextTextureHandle = ServiceLocator::GetResourceManager().LoadTexture(m_Text, m_FontHandle);
-			m_pTextTexture = ResourceManager::GetAsset<Texture2D>(m_TextTextureHandle);
+			auto textureHandle = ResourceManager::CreateAsset<Texture2D>(m_Text, m_FontHandle);
+			if (textureHandle == AssetHandle::InvalidUUID)
+				throw std::runtime_error("error");
+			m_SpriteHandle = ResourceManager::CreateAsset<Sprite>(textureHandle);
+			m_pSprite = ResourceManager::GetAsset<Sprite>(m_SpriteHandle);
 			m_NeedsUpdate = false;
 		}
 	}
 
 	void TextRendererComponent::Render() const
 	{
-		if (m_pTextTexture)
+		if (m_pSprite)
 		{
 			const auto& pos = GetWorldTransform().GetPosition();
-			SDLRenderer::GetInstance().RenderTexture(m_pTextTexture, pos.x, pos.y);
+			SDLRenderer::GetInstance().RenderTexture(m_pSprite, pos.x, pos.y);
 		}
 	}
 

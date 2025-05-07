@@ -15,7 +15,7 @@ namespace JRE
 
 		static const UUID InvalidUUID;
 	private:
-		uint64_t m_UUID; //generate UUID using default constructor
+		uint64_t m_UUID; //generate valid UUID by default by calling UUID()
 	};
 }
 

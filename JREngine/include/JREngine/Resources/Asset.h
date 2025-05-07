@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <memory>
 #include <utility>
+#include <filesystem>
 #include "JREngine/Core/UUID.h"
 
 namespace JRE
@@ -15,6 +16,13 @@ namespace JRE
 		Sprite
 	};
 
+	enum class AssetLoadMode
+	{
+		None,
+		Immediate,
+		Async
+	};
+
 	using AssetHandle = UUID;
 
 	template<typename T>
@@ -23,7 +31,7 @@ namespace JRE
 	template<typename T, typename... Args>
 	Ref<T> CreateRef(Args&&... args)
 	{
-		return Ref<T>(std::forward<Args>(args)...);
+		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
 
 	class Asset
@@ -36,6 +44,11 @@ namespace JRE
 		AssetHandle GetHandle() const { return m_Handle; }
 		virtual AssetType GetType() const = 0;
 	private:
-		AssetHandle m_Handle;
+		//Invalid handle by default so for any class inheriting from Asset
+		//an instance can be created without generating a new valid UUID.
+		//This is nice if you want to manually manage an asset instance
+		//without relying on an AssetManager. And it is only such an AssetManager
+		//that would need a valid UUID to map from AssetHandle -> Asset
+		AssetHandle m_Handle{ AssetHandle::InvalidUUID };
 	};
 }

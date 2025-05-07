@@ -1,35 +1,63 @@
-﻿#pragma once
-#include <filesystem>
-#include <string>
-#include <memory>
+#pragma once
+#include <concepts>
 #include "JREngine/Core/ServiceLocator.h"
 #include "JREngine/Resources/IResourceManager.h"
+#include "JREngine/Resources/IAssetImporter.h"
 #include "JREngine/Resources/Asset.h"
+
+template<typename T>
+concept IsAsset = std::derived_from<T, JRE::Asset>;
+
+template<typename T, typename... Args>
+concept CreatableAsset = IsAsset<T> &&
+std::constructible_from<T, Args...>&&
+	requires(Args&&... args) {
+		{ T::PathBuilder::Build(std::forward<Args>(args)...) } -> std::same_as<std::filesystem::path>;
+};
 
 namespace JRE
 {
-	class ResourceManager final : public IResourceManager
+	/// <summary>
+	/// Static ResourceManager class that provides extra utility functions
+	/// </summary>
+	class ResourceManager final
 	{
 	public:
-		ResourceManager();
-		~ResourceManager();
+		static IResourceManager& GetActive()
+		{
+			return ServiceLocator::GetResourceManager();
+		}
 
-		template<typename T>
+		template<IsAsset T>
 		static Ref<T> GetAsset(AssetHandle handle)
 		{
 			return static_pointer_cast<T>(ServiceLocator::GetResourceManager().GetAsset(handle));
 		}
 
-		virtual void Init(const std::filesystem::path& data) override;
+		template<IsAsset T>
+		static Ref<T> GetAsset(const std::filesystem::path& path)
+		{
+			return static_pointer_cast<T>(ServiceLocator::GetResourceManager().GetAsset(path));
+		}
 
-		AssetHandle LoadTexture(const std::string& file) override;
-		AssetHandle LoadTexture(const std::string& text, AssetHandle fontHandle) override;
-		AssetHandle LoadFont(const std::string& file, uint8_t size) override;
-		AssetHandle LoadSound(const std::string& file) override;
+		template<IsAsset T>
+		static AssetHandle LoadAsset(const std::filesystem::path& path,
+			std::unique_ptr<IAssetSpecificImportSettings>&& pSettings = nullptr,
+			AssetLoadMode loadMode = AssetLoadMode::Immediate)
+		{
+			return ServiceLocator::GetResourceManager().LoadAsset(path, T::GetStaticType(), std::move(pSettings), loadMode);
+		}
 
-		virtual Ref<Asset> GetAsset(AssetHandle handle) const override;
-	private:
-		class Impl;
-		std::unique_ptr<Impl> m_pImpl{};
+		template<typename T, typename... Args>
+		requires CreatableAsset<T, Args...>
+		AssetHandle CreateAsset(Args... args)
+		{
+			auto path = T::PathBuilder(std::forward<Args>(args)...);
+			if (GetActive().IsAssetLoaded(path))
+				return GetAsset<T>(path)->GetHandle();
+			auto asset = CreateRef<T>(std::forward<Args>(args)...);
+			GetActive().AddAsset(asset, path);
+			return asset->GetHandle();
+		}
 	};
 }

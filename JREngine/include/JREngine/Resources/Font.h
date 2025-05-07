@@ -9,7 +9,7 @@ namespace JRE
 	class Font final : public Asset
 	{
 	public:
-		explicit Font(const std::string& fullPath, unsigned int size, AssetHandle handle = AssetHandle::InvalidUUID);
+		explicit Font(const std::filesystem::path& path, unsigned int size);
 		~Font();
 
 		Font(const Font &) = delete;

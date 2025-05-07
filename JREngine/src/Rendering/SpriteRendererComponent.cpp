@@ -1,7 +1,7 @@
 #include "Rendering/SpriteRendererComponent.h"
 #include "Resources/ResourceManager.h"
 #include "Rendering/Renderer.h"
-#include "Rendering/Texture2D.h"
+#include "Rendering/Sprite.h"
 
 namespace JRE
 {
@@ -11,18 +11,18 @@ namespace JRE
 	}
 	void SpriteRendererComponent::Render() const
 	{
-		if (!m_pTexture) //loading phase, afterwards really cheap
+		if (!m_pSprite) //loading phase, afterwards really cheap
 		{
-			m_pTexture = ResourceManager::GetAsset<Texture2D>(m_TextureHandle);
-			if (!m_pTexture) return;
+			m_pSprite = ResourceManager::GetAsset<Sprite>(m_SpriteHandle);
+			if (!m_pSprite) return;
 		}
 
 		const auto& pos = GetWorldTransform().GetPosition();
-		SDLRenderer::GetInstance().RenderTexture(m_pTexture, pos.x, pos.y);
+		SDLRenderer::GetInstance().RenderTexture(m_pSprite, pos.x, pos.y);
 	}
-	void SpriteRendererComponent::SetSprite(AssetHandle textureHandle)
+	void SpriteRendererComponent::SetSprite(AssetHandle spriteHandle)
 	{
-		m_TextureHandle = textureHandle;
-		m_pTexture.reset();
+		m_SpriteHandle = spriteHandle;
+		m_pSprite.reset();
 	}
 }

@@ -4,23 +4,19 @@
 
 namespace JRE
 {
-	TTF_Font* Font::GetFont() const {
-		return m_pFont;
-	}
-
-	Font::Font(const std::string& fullPath, unsigned int size, AssetHandle handle) :
-		Asset(handle),
-		m_pFont(nullptr)
+	Font::Font(const std::filesystem::path& path, unsigned int size)
 	{
-		m_pFont = TTF_OpenFont(fullPath.c_str(), size);
+		m_pFont = TTF_OpenFont(path.string().c_str(), size);
 		if (m_pFont == nullptr)
-		{
 			throw std::runtime_error(std::string("Failed to load font: ") + SDL_GetError());
-		}
 	}
 
 	Font::~Font()
 	{
 		TTF_CloseFont(m_pFont);
+	}
+
+	TTF_Font* Font::GetFont() const {
+		return m_pFont;
 	}
 }

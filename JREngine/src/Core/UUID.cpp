@@ -24,6 +24,6 @@ namespace JRE
 	UUID::UUID(const UUID& other) :
 		m_UUID{ other.m_UUID }
 	{
-		std::cout << "Copy Constructor called\n";
+		//std::cout << "Copy Constructor called\n";
 	}
 }
