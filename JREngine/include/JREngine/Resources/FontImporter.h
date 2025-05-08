@@ -6,16 +6,17 @@ namespace JRE
 	class FontImporter : public IAssetImporter
 	{
 	public:
-		struct ImportSettings : IAssetSpecificImportSettings
-		{
-			ImportSettings(uint8_t _size) : size{ _size } {};
+		FontImporter(const std::filesystem::path& filepath);
 
-			uint8_t size = 16;
-		};
+		static Ref<Asset> ImportAsset(AssetHandle handle, const AssetMetadata& metadata);
 
-		virtual std::filesystem::path GenerateVirtualPath(const AssetImportSettings& settings) override;
-		virtual Ref<Asset> Import(const AssetImportSettings& settings) override;
-		virtual AssetLoadMode GetMandatoryLoadMode() const override { return AssetLoadMode::Immediate; }
-		virtual std::unique_ptr<IAssetSpecificImportSettings> CreateSettingsFromArgs(const std::vector<std::any>& args) const override;
+		virtual AssetMetadata GetMetadata() const override;
+
+		std::string GetUniqueID() const;
+
+		FontImporter& SetSize(int size);
+	private:
+		std::filesystem::path m_Path{};
+		int m_Size{ 16 };
 	};
 }

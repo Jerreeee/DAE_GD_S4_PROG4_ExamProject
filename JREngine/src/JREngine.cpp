@@ -8,13 +8,15 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 
 #include "JREngine.h"
 #include "Input/InputManager.h"
 #include "Scene/SceneManager.h"
 #include "Rendering/Renderer.h"
 #include "Audio/SDLSoundSystem.h"
-#include "Resources/RuntimeResourceManager.h"
+#include "Resources/EditorResourceManager.h"
+#include "Resources/AssetImporter.h"
 #include "Core/Timer.h"
 #include "Core/ServiceLocator.h"
 
@@ -65,7 +67,7 @@ void PrintSDLVersion()
 	LogSDLVersion("We linked against SDL_ttf version ", version);
 }
 
-JRE::JREngine::JREngine(const std::filesystem::path &dataPath)
+JRE::JREngine::JREngine(const std::filesystem::path& dataPath)
 {
 	PrintSDLVersion();
 	
@@ -87,16 +89,28 @@ JRE::JREngine::JREngine(const std::filesystem::path &dataPath)
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+	{
+		std::cerr << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError() << "\n";
+	}
+
+	if (TTF_Init() != 0)
+	{
+		throw std::runtime_error("Failed to initialize TTF: " + std::string(SDL_GetError()));
+	}
+
+	AssetImporter::GetInstance().Init(dataPath);
+
 	ServiceLocator::RegisterSoundSystem(std::make_unique<SDLSoundSystem>());
-	ServiceLocator::RegisterResourceManager(std::make_unique<RuntimeResourceManager>());
+	ServiceLocator::RegisterResourceManager(std::make_unique<EditorResourceManager>());
 
 	SDLRenderer::GetInstance().Init(g_window);
-	ServiceLocator::GetResourceManager().Init(dataPath);
 	Timer::GetInstance().SetFixedTimeStep(m_FixedTimeStep);
 }
 
 JRE::JREngine::~JREngine()
 {
+	Mix_CloseAudio();
 	SDLRenderer::GetInstance().Destroy();
 	SDL_DestroyWindow(g_window);
 	g_window = nullptr;

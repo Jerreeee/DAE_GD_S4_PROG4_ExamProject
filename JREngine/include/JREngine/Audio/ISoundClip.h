@@ -12,9 +12,6 @@ namespace JRE
 
 		virtual void Play(int loops = 0, int channel = -1) const = 0;
 		virtual void SetVolume(float volume) = 0;
-
-		static AssetType GetStaticType() { return AssetType::SoundClip; };
-		virtual AssetType GetType() const override { return GetStaticType(); };
 	};
 
 	class NullSoundClip final : public ISoundClip

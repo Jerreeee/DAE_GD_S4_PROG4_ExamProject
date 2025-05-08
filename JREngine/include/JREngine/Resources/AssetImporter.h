@@ -1,29 +1,49 @@
 #pragma once
+#include <functional>
 #include <map>
+
+#include <JREngine/Core/Singleton.h>
 #include "JREngine/Resources/IAssetImporter.h"
+#include "JREngine/Resources/AssetMetadata.h"
 
 namespace JRE
 {
 	/// <summary>
-	///	Static registry that contains IAssetImporter's
+	///	Registry that contains IAssetImporter's
 	///	Meant usecase:
 	///		Classes that inherit from Asset and load data from disk to construct itself
 	///		should also define a separate Importer class that inherits from IAssetImporter.
-	///		In the class .cpp file you should place the following:
+	///		In the class .cpp file you should place the following (replace types):
 	///			static bool s_Registered = []()
-	///			{
-	///			  AssetImporter::RegisterImporter(AssetType::Example, CreateRef&lt;ExampleImporter&gt;());
-	///			  return true;
-	///			}();
-	///		This will cause all AssetImporters to be added to the static registry during static initialization
+	///				{
+	///					AssetImporter::GetInstance().RegisterImporter(AssetType::Font, FontImporter::RegisterAsset);
+	///					return true;
+	///				}();
+	///		FontImporter::RegisterAsset must be a static method.
+	///		This will cause all AssetImporters to be automatically added to the registry during static initialization.
+	///		Each class in its constructor should also call AssetImporter::GetFullDatapath(filepath) and set
+	///		metadata.filepath to the result.
 	/// </summary>
-	class AssetImporter
+	class AssetImporter : public Singleton<AssetImporter>
 	{
 	public:
-		static void RegisterImporter(AssetType type, Ref<IAssetImporter> importer);
-		static Ref<IAssetImporter> GetImporter(AssetType type);
+		void Init(const std::filesystem::path& dataPath);
 
+		using ImportFunc = std::function<Ref<Asset>(AssetHandle handle, const AssetMetadata& metadata)>;
+		void RegisterImporter(AssetType type, ImportFunc importFunc);
+
+		//Registers the asset in the AssetRegistry
+		AssetHandle ImportAsset(IAssetImporter&& importer);
+		//Imports the asset from disk
+		Ref<Asset> ImportAsset(AssetHandle handle, const AssetMetadata& metadata);
+
+		const std::filesystem::path& GetDatapath() const;
+		const std::filesystem::path& GetFullDatapath(const std::filesystem::path& filepath) const;
 	private:
-		static std::map<AssetType, Ref<IAssetImporter>>& GetImporterMap();
+		AssetImporter();
+		friend class Singleton<AssetImporter>;
+
+		std::filesystem::path m_Datapath{};
+		std::map<AssetType, ImportFunc> s_Importers{};
 	};
 }

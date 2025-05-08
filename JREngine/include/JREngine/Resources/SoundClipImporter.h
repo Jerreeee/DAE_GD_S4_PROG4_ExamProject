@@ -6,8 +6,12 @@ namespace JRE
 	class SoundClipImporter : public IAssetImporter
 	{
 	public:
-		virtual std::filesystem::path GenerateVirtualPath(const AssetImportSettings& settings) override;
-		virtual Ref<Asset> Import(const AssetImportSettings& settings) override;
-		virtual AssetLoadMode GetMandatoryLoadMode() const override { return AssetLoadMode::Immediate; }
+		SoundClipImporter(const std::filesystem::path& filepath);
+
+		static Ref<Asset> ImportAsset(AssetHandle handle, const AssetMetadata& metadata);
+
+		virtual AssetMetadata GetMetadata() const override;
+	private:
+		std::filesystem::path m_Path{};
 	};
 }

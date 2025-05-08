@@ -36,15 +36,8 @@ namespace JRE
 	SDLSoundSystem::Impl::Impl()
 		: m_Worker([this](std::stop_token st) { SoundThread(st); })
 	{
-		if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
-		{
-			std::cerr << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError() << "\n";
-		}
 	}
-	SDLSoundSystem::Impl::~Impl()
-	{
-		Mix_CloseAudio();
-	}
+	SDLSoundSystem::Impl::~Impl() = default;
 	void SDLSoundSystem::Impl::Play(Ref<ISoundClip> clip, float volume)
 	{
 		if (!clip)

@@ -8,6 +8,7 @@
 #include "Rendering/Renderer.h"
 #include "Rendering/Texture2D.h"
 #include "Rendering/Sprite.h"
+#include "Resources/ResourceManager.h"
 #include "Rendering/RendererComponentBase.h"
 
 int GetOpenGLDriverIndex()
@@ -75,13 +76,13 @@ void JRE::SDLRenderer::Destroy()
 	}
 }
 
-void JRE::SDLRenderer::RenderTexture(const Ref<Sprite>& pSprite, const float x, const float y) const
+void JRE::SDLRenderer::RenderTexture(AssetHandle spriteHandle, const float x, const float y) const
 {
-	if (!pSprite) return;
+	auto sprite = ResourceManager::GetAsset<Sprite>(spriteHandle);
 
-	const Ref<Texture2D>& pTexture = pSprite->GetTexture();
+	const Ref<Texture2D>& pTexture = sprite->GetTexture();
 	SDL_Texture* pSDLTexture = pTexture->GetSDLTexture();
-	const Region& region = pSprite->GetSrcRegion();
+	const Region& region = sprite->GetSrcRegion();
 	SDL_Rect src{ region.x, region.y, region.width, region.height };
 
 	SDL_Rect dst{};
@@ -91,13 +92,13 @@ void JRE::SDLRenderer::RenderTexture(const Ref<Sprite>& pSprite, const float x, 
 	SDL_RenderCopy(GetSDLRenderer(), pSDLTexture, &src, &dst);
 }
 
-void JRE::SDLRenderer::RenderTexture(const Ref<Sprite>& pSprite, const float x, const float y, const float width, const float height) const
+void JRE::SDLRenderer::RenderTexture(AssetHandle spriteHandle, const float x, const float y, const float width, const float height) const
 {
-	if (!pSprite) return;
+	auto sprite = ResourceManager::GetAsset<Sprite>(spriteHandle);
 
-	const Ref<Texture2D>& pTexture = pSprite->GetTexture();
+	const Ref<Texture2D>& pTexture = sprite->GetTexture();
 	SDL_Texture* pSDLTexture = pTexture->GetSDLTexture();
-	const Region& region = pSprite->GetSrcRegion();
+	const Region& region = sprite->GetSrcRegion();
 	SDL_Rect src{ region.x, region.y, region.width, region.height };
 
 	SDL_Rect dst{};

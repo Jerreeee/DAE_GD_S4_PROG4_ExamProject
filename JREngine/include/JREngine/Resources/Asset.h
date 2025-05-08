@@ -1,7 +1,5 @@
 #pragma once
-#include <cstdint>
 #include <memory>
-#include <utility>
 #include <filesystem>
 #include "JREngine/Core/UUID.h"
 
@@ -18,7 +16,7 @@ namespace JRE
 
 	enum class AssetLoadMode
 	{
-		None,
+		Unspecified,
 		Immediate,
 		Async
 	};

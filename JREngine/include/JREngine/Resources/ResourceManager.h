@@ -8,13 +8,6 @@
 template<typename T>
 concept IsAsset = std::derived_from<T, JRE::Asset>;
 
-template<typename T, typename... Args>
-concept CreatableAsset = IsAsset<T> &&
-std::constructible_from<T, Args...>&&
-	requires(Args&&... args) {
-		{ T::PathBuilder::Build(std::forward<Args>(args)...) } -> std::same_as<std::filesystem::path>;
-};
-
 namespace JRE
 {
 	/// <summary>
@@ -23,41 +16,21 @@ namespace JRE
 	class ResourceManager final
 	{
 	public:
-		static IResourceManager& GetActive()
+		template<IsAsset T>
+		static Ref<T> TryGetAssset(AssetHandle handle, AssetLoadMode loadMode = AssetLoadMode::Unspecified)
 		{
-			return ServiceLocator::GetResourceManager();
+			return static_pointer_cast<T>(ServiceLocator::GetResourceManager().GetAsset(handle, loadMode));
 		}
 
 		template<IsAsset T>
 		static Ref<T> GetAsset(AssetHandle handle)
 		{
-			return static_pointer_cast<T>(ServiceLocator::GetResourceManager().GetAsset(handle));
+			return static_pointer_cast<T>(ServiceLocator::GetResourceManager().GetAsset(handle, AssetLoadMode::Immediate));
 		}
 
-		template<IsAsset T>
-		static Ref<T> GetAsset(const std::filesystem::path& path)
+		static AssetHandle AddAsset(Ref<Asset> asset)
 		{
-			return static_pointer_cast<T>(ServiceLocator::GetResourceManager().GetAsset(path));
-		}
-
-		template<IsAsset T>
-		static AssetHandle LoadAsset(const std::filesystem::path& path,
-			std::unique_ptr<IAssetSpecificImportSettings>&& pSettings = nullptr,
-			AssetLoadMode loadMode = AssetLoadMode::Immediate)
-		{
-			return ServiceLocator::GetResourceManager().LoadAsset(path, T::GetStaticType(), std::move(pSettings), loadMode);
-		}
-
-		template<typename T, typename... Args>
-		requires CreatableAsset<T, Args...>
-		AssetHandle CreateAsset(Args... args)
-		{
-			auto path = T::PathBuilder(std::forward<Args>(args)...);
-			if (GetActive().IsAssetLoaded(path))
-				return GetAsset<T>(path)->GetHandle();
-			auto asset = CreateRef<T>(std::forward<Args>(args)...);
-			GetActive().AddAsset(asset, path);
-			return asset->GetHandle();
+			return ServiceLocator::GetResourceManager().AddAsset(asset);
 		}
 	};
 }

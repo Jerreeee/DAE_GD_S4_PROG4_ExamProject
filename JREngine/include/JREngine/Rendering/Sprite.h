@@ -9,12 +9,6 @@ namespace JRE
 	class Sprite final : public Asset
 	{
 	public:
-		struct PathBuilder
-		{
-			static std::filesystem::path Build(AssetHandle textureHandle, const Region& srcRegion);
-			static std::filesystem::path Build(AssetHandle textureHandle);
-		};
-
 		Sprite(AssetHandle textureHandle, const Region& srcRegion);
 		Sprite(AssetHandle textureHandle);
 
@@ -24,8 +18,11 @@ namespace JRE
 		static AssetType GetStaticType() { return AssetType::Sprite; };
 		virtual AssetType GetType() const { return GetStaticType(); };
 	private:
-		AssetHandle m_TextureHandle{ AssetHandle::InvalidUUID };
-		Ref<Texture2D> m_pTexture{};
-		Region m_SrcRegion{};
+		void ForceLoad() const;
+
+		AssetHandle m_TextureHandle{};
+		mutable Ref<Texture2D> m_pTexture{};
+		bool m_UsesWholeTextureRegion;
+		mutable Region m_SrcRegion;
 	};
 }

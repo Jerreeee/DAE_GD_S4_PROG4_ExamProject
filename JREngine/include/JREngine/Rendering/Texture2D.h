@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <vec2.hpp>
 #include <string>
+#include <filesystem>
 #include "JREngine/Resources/Asset.h"
 
 struct SDL_Texture;
@@ -12,13 +13,8 @@ namespace JRE
 	class Texture2D final : public Asset
 	{
 	public:
-		struct PathBuilder
-		{
-			static std::filesystem::path Build(const std::string& text, AssetHandle fontHandle);
-		};
-
 		explicit Texture2D(const std::string& text, AssetHandle fontHandle);
-		explicit Texture2D(const std::string& fullPath);
+		explicit Texture2D(const std::filesystem::path& path);
 		~Texture2D();
 		Texture2D(const Texture2D &) = delete;
 		Texture2D(Texture2D &&) = delete;

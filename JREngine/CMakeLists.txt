@@ -37,6 +37,7 @@ set(SOURCE_FILES
     "Resources/TextureImporter.cpp"
     "Resources/FontImporter.cpp"
     "Resources/SoundClipImporter.cpp"
+    "Resources/AssetRegistry.cpp"
 
     "Audio/SDLSoundSystem.cpp"
     "Audio/SDLSoundSystem.h"
@@ -90,6 +91,8 @@ set(INCLUDE_FILES
     "Resources/SoundClipImporter.h"
     "Resources/FontImporter.h"
     "Resources/TextureImporter.h"
+    "Resources/AssetRegistry.h"
+    "Resources/AssetMetadata.h"
 
     "Audio/ISoundSystem.h"
     "Audio/ISoundClip.h"

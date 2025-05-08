@@ -26,7 +26,6 @@ namespace JRE
 		bool m_NeedsUpdate{};
 		std::string m_Text{};
 		AssetHandle m_FontHandle{ AssetHandle::InvalidUUID };
-		Ref<Font> m_pFont{};
 		AssetHandle m_SpriteHandle{ AssetHandle::InvalidUUID };
 		Ref<Sprite> m_pSprite{};
 	};

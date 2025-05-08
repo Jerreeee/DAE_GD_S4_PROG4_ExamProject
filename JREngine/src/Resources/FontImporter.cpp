@@ -6,31 +6,41 @@ namespace JRE
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::RegisterImporter(AssetType::Font, CreateRef<FontImporter>());
+			AssetImporter::GetInstance().RegisterImporter(AssetType::Font, FontImporter::ImportAsset);
 			return true;
 		}();
 
-	std::filesystem::path FontImporter::GenerateVirtualPath(const AssetImportSettings& settings)
+	FontImporter::FontImporter(const std::filesystem::path& filepath) :
+		m_Path{ AssetImporter::GetInstance().GetFullDatapath(filepath) }
 	{
-		auto fontSettings = static_cast<const ImportSettings*>(settings.pSettings.get());
-		uint8_t size = fontSettings->size;
+	}
+
+	Ref<Asset> FontImporter::ImportAsset(AssetHandle, const AssetMetadata& metadata)
+	{
+		const std::string& id = metadata.uniqueID;
+
+		if (id.empty() || id[0] != '@')
+			throw std::runtime_error("Invalid Font metadata.uniqueID format");
+
+		uint8_t size = static_cast<uint8_t>(std::stoi(id.substr(1)));
+		return CreateRef<Font>(metadata.filepath, size);
+	}
+
+	AssetMetadata FontImporter::GetMetadata() const
+	{
+		return AssetMetadata{ AssetType::Font, m_Path, GetUniqueID(), true };
+	}
+
+	std::string FontImporter::GetUniqueID() const
+	{
 		std::stringstream ss{};
-		ss << "Font/" << settings.path << '@' << std::to_string(size);
-		return std::filesystem::path(ss.str());
+		ss << '@' << std::to_string(m_Size);
+		return ss.str();
 	}
 
-	Ref<Asset> FontImporter::Import(const AssetImportSettings& settings)
+	FontImporter& FontImporter::SetSize(int size)
 	{
-		auto fontSettings = static_cast<const ImportSettings*>(settings.pSettings.get());
-		uint8_t size = fontSettings->size;
-		return CreateRef<Font>(settings.path, size);
-	}
-	std::unique_ptr<IAssetSpecificImportSettings> FontImporter::CreateSettingsFromArgs(const std::vector<std::any>& args) const
-	{
-		if (args.size() != 1 || !args[0].has_value() || args[0].type() != typeid(int))
-			throw std::invalid_argument("FontImporter expects 1 int argument (font size)");
-
-		int size = std::any_cast<int>(args[0]);
-		return std::make_unique<ImportSettings>(static_cast<uint8_t>(size));
+		m_Size = size;
+		return *this;
 	}
 }

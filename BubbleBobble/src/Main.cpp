@@ -25,6 +25,11 @@ namespace fs = std::filesystem;
 
 #include "JREngine/Resources/SpriteEditor.h"
 
+#include "JREngine/Resources/AssetImporter.h"
+#include "JREngine/Resources/SoundClipImporter.h"
+#include "JREngine/Resources/TextureImporter.h"
+#include "JREngine/Resources/FontImporter.h"
+
 #include "FPSComponent.h"
 #include "Commands.h"
 #include "Components.h"
@@ -49,8 +54,11 @@ namespace BubbleBobble
 {
 	void load()
 	{
-		JRE::AssetHandle hitSound = JRE::ResourceManager::LoadAsset<JRE::ISoundClip>("HUD/Select.wav");
-		JRE::AssetHandle fontHandle = JRE::ResourceManager::LoadAsset<JRE::Font>("Lingua.otf", 20);
+		//JRE::AssetHandle hitSound = JRE::AssetImporter::ImportAsset("HUD/Select.wav");
+		JRE::AssetHandle hitSound = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::SoundClipImporter("HUD/Select.wav")));
+		JRE::AssetHandle fontHandle = JRE::ResourceManager::LoadAsset<JRE::Font>(std::move(JRE::FontImporter("Lingua.otf").SetSize(20)));
+
+		//TODO fix all other assets being importer
 
 		auto& scene = JRE::SceneManager::GetInstance().CreateScene("Demo");
 

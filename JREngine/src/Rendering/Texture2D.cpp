@@ -11,27 +11,19 @@
 
 namespace JRE
 {
-	std::filesystem::path Texture2D::PathBuilder::Build(const std::string& text, AssetHandle fontHandle)
+	Texture2D::Texture2D(const std::filesystem::path& path)
 	{
-		std::stringstream ss{};
-		ss << "Texture2D/" << text << '@' << static_cast<uint64_t>(fontHandle);
-		return std::filesystem::path(ss.str());
-	}
-
-	Texture2D::Texture2D(const std::string& fullPath)
-	{
-		m_texture = IMG_LoadTexture(SDLRenderer::GetInstance().GetSDLRenderer(), fullPath.c_str());
+		m_texture = IMG_LoadTexture(SDLRenderer::GetInstance().GetSDLRenderer(), path.string().c_str());
 		if (m_texture == nullptr)
 			throw std::runtime_error(std::string("Failed to load texture: ") + SDL_GetError());
 	}
 
 	Texture2D::Texture2D(const std::string& text, AssetHandle fontHandle)
 	{
-		auto pFont = ResourceManager::GetAsset<Font>(fontHandle);
-		if (!pFont) return;
+		auto font = ResourceManager::GetAsset<Font>(fontHandle);
 
 		const SDL_Color color = { 255,255,255,255 }; // only white text is supported now
-		const auto surf = TTF_RenderText_Blended(pFont->GetFont(), text.c_str(), color);
+		const auto surf = TTF_RenderText_Blended(font->GetFont(), text.c_str(), color);
 		if (surf == nullptr)
 			throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());
 

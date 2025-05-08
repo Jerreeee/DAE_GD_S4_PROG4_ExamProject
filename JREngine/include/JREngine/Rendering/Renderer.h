@@ -20,8 +20,8 @@ namespace JRE
 		void Render();
 		void Destroy();
 
-		void RenderTexture(const Ref<Sprite>& pSprite, float x, float y) const;
-		void RenderTexture(const Ref<Sprite>& pSprite, float x, float y, float width, float height) const;
+		void RenderTexture(AssetHandle spriteHandle, float x, float y) const;
+		void RenderTexture(AssetHandle spriteHandle, float x, float y, float width, float height) const;
 
 		SDL_Renderer* GetSDLRenderer() const;
 

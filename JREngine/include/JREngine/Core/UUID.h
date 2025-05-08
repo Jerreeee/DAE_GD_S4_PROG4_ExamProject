@@ -11,6 +11,8 @@ namespace JRE
 		UUID(uint64_t uuid);
 		UUID(const UUID& other);
 
+		bool IsValid() const { return m_UUID != InvalidUUID; };
+
 		operator uint64_t() const { return m_UUID; };
 
 		static const UUID InvalidUUID;

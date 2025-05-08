@@ -6,19 +6,22 @@ namespace JRE
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::RegisterImporter(AssetType::Texture2D, CreateRef<TextureImporter>());
+			AssetImporter::GetInstance().RegisterImporter(AssetType::Texture2D, TextureImporter::ImportAsset);
 			return true;
 		}();
 
-	std::filesystem::path TextureImporter::GenerateVirtualPath(const AssetImportSettings& settings)
+	TextureImporter::TextureImporter(const std::filesystem::path& filepath) :
+		m_Path{ AssetImporter::GetInstance().GetFullDatapath(filepath) }
 	{
-		std::stringstream ss{};
-		ss << "Texture2D/" << settings.path;
-		return std::filesystem::path(ss.str());
 	}
 
-	Ref<Asset> TextureImporter::Import(const AssetImportSettings& settings)
+	Ref<Asset> TextureImporter::ImportAsset(AssetHandle, const AssetMetadata& metadata)
 	{
-		return CreateRef<Texture2D>(settings.path.string());
+		return CreateRef<Texture2D>(metadata.filepath);
+	}
+
+	AssetMetadata TextureImporter::GetMetadata() const
+	{
+		return AssetMetadata{ AssetType::Texture2D, m_Path, "", false };
 	}
 }

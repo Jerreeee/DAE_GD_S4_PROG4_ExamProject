@@ -43,7 +43,7 @@ namespace BubbleBobble
 
 		if (!m_pHitSound)
 		{
-			m_pHitSound = JRE::ResourceManager::GetAsset<JRE::ISoundClip>(m_HitSoundHandle);
+			m_pHitSound = JRE::ResourceManager::TryGetAssset<JRE::ISoundClip>(m_HitSoundHandle);
 			if (!m_pHitSound) return;
 		}
 		JRE::ServiceLocator::GetSoundSystem().Play(m_pHitSound);

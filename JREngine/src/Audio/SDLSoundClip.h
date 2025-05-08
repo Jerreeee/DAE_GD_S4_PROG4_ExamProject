@@ -16,6 +16,9 @@ namespace JRE
 		SDLSoundClip(SDLSoundClip&& other) noexcept;
 		SDLSoundClip& operator=(SDLSoundClip&& other) noexcept;
 
+		static AssetType GetStaticType() { return AssetType::SoundClip; };
+		virtual AssetType GetType() const override { return GetStaticType(); };
+
 		void Play(int loops = 0, int channel = -1) const;
 		void SetVolume(float volume);
 	private:

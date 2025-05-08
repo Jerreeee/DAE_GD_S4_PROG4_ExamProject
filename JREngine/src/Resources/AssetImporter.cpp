@@ -1,24 +1,33 @@
+#include "Resources/AssetRegistry.h"
 #include "Resources/AssetImporter.h"
 
 namespace JRE
 {
-	void AssetImporter::RegisterImporter(AssetType type, Ref<IAssetImporter> importer)
+	void AssetImporter::Init(const std::filesystem::path& dataPath)
 	{
-		GetImporterMap().emplace(type, std::move(importer));
+		m_Datapath = dataPath;
+	}
+	void AssetImporter::RegisterImporter(AssetType type, ImportFunc importFunc)
+	{
+		s_Importers.emplace(type, importFunc);
 	}
 
-	Ref<IAssetImporter> AssetImporter::GetImporter(AssetType type)
+	AssetHandle AssetImporter::ImportAsset(IAssetImporter&& importer)
 	{
-		auto& map = GetImporterMap();
-		auto it = map.find(type);
-		if (it == map.end())
-			throw std::runtime_error("No importer registered for the requested AssetType");
-		return it->second;
+		return AssetRegistry::GetInstance().RegisterAsset(std::move(importer));
 	}
 
-	std::map<AssetType, Ref<IAssetImporter>>& AssetImporter::GetImporterMap()
+	Ref<Asset> AssetImporter::ImportAsset(AssetHandle handle, const AssetMetadata& metadata)
 	{
-		static std::map<AssetType, Ref<IAssetImporter>> s_Importers{};
-		return s_Importers;
+		auto it = s_Importers.find(metadata.assetType);
+		return it != s_Importers.end() ? it->second(handle, metadata) : nullptr;
+	}
+	const std::filesystem::path& AssetImporter::GetDatapath() const
+	{
+		return m_Datapath;
+	}
+	const std::filesystem::path& AssetImporter::GetFullDatapath(const std::filesystem::path& filepath) const
+	{
+		return std::filesystem::path(m_Datapath / filepath);
 	}
 }
