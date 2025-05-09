@@ -7,7 +7,7 @@
 
 namespace JRE
 {
-    Sprite::Sprite(SoftAssetRef<Texture2D> softTextureRef, const Region& srcRegion) :
+    Sprite::Sprite(const SoftAssetRef<Texture2D>& softTextureRef, const Region& srcRegion) :
         m_SoftTextureRef{ softTextureRef },
         m_UsesWholeTextureRegion{ false },
         m_SrcRegion{ srcRegion }
@@ -15,7 +15,7 @@ namespace JRE
         std::cout << "Creating sprite using texturehandle and region\n";
     }
 
-    Sprite::Sprite(SoftAssetRef<Texture2D> softTextureRef) :
+    Sprite::Sprite(const SoftAssetRef<Texture2D>& softTextureRef) :
         m_SoftTextureRef{ softTextureRef },
         m_UsesWholeTextureRegion{ true }
     {

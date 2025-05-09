@@ -10,8 +10,8 @@ namespace JRE
 	class Sprite final : public Asset
 	{
 	public:
-		Sprite(SoftAssetRef<Texture2D> softTextureRef, const Region& srcRegion);
-		Sprite(SoftAssetRef<Texture2D> softTextureRef);
+		Sprite(const SoftAssetRef<Texture2D>& softTextureRef, const Region& srcRegion);
+		Sprite(const SoftAssetRef<Texture2D>& softTextureRef);
 
 		AssetRef<Texture2D> GetTexture() const;
 		const Region& GetSrcRegion() const;

@@ -8,7 +8,7 @@
 
 namespace JRE
 {
-	TextRendererComponent::TextRendererComponent(GameObject& gameObject, const std::string& text, SoftAssetRef<Font> softFontRef) :
+	TextRendererComponent::TextRendererComponent(GameObject& gameObject, const std::string& text, const SoftAssetRef<Font>& softFontRef) :
 		RendererComponentBase(gameObject),
 		m_Text(text),
 		m_SoftFontRef(softFontRef)

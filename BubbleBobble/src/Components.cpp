@@ -21,9 +21,9 @@ namespace BubbleBobble
 	}
 	HealthComponent::~HealthComponent() = default;
 
-	void HealthComponent::SetHitSound(JRE::AssetHandle hitSoundHandle)
+	void HealthComponent::SetHitSound(const JRE::SoftAssetRef<JRE::ISoundClip>& softHitSoundRef)
 	{
-		m_HitSoundHandle = hitSoundHandle;
+		m_SoftHitSoundRef = softHitSoundRef;
 	}
 	void HealthComponent::SetHealth(int health)
 	{
@@ -41,24 +41,24 @@ namespace BubbleBobble
 		JRE::EventInfo e{ JRE::CreateEvent<Event::PlayerDamaged>(amount, m_Health) };
 		m_DamageEvent->NotifyObservers(e);
 
-		if (!m_pHitSound)
-			m_pHitSound = JRE::ResourceManager::TryGetAsset<JRE::ISoundClip>(m_HitSoundHandle);
+		if (!m_SoftHitSoundRef.IsLoaded())
+			m_SoftHitSoundRef.Load();
 
-		JRE::ServiceLocator::GetSoundSystem().Play(m_pHitSound);
+		JRE::ServiceLocator::GetSoundSystem().Play(m_SoftHitSoundRef.Get());
 
 	}
-	PlayerUIComponent::PlayerUIComponent(JRE::GameObject& UIGameObject, JRE::GameObject& player, JRE::AssetHandle fontHandle) :
+	PlayerUIComponent::PlayerUIComponent(JRE::GameObject& UIGameObject, JRE::GameObject& player, const JRE::SoftAssetRef<JRE::Font>& softFontRef) :
 		ComponentBase(UIGameObject),
 		m_pHealthComponent{ player.GetComponent<HealthComponent>() },
 		m_pScoreComponent{ player.GetComponent<ScoreComponent>() }
 	{
 		m_pHealthComponent->OnDamageEvent().AddObserver(this);
 		auto livesObject = std::make_unique<JRE::GameObject>();
-		m_pLivesText = livesObject->AddComponent<JRE::TextRendererComponent>("", JRE::SoftAssetRef<JRE::Font>(fontHandle));
+		m_pLivesText = livesObject->AddComponent<JRE::TextRendererComponent>("", softFontRef);
 
 		m_pScoreComponent->OnIncreasedScoreEvent().AddObserver(this);
 		auto scoreObject = std::make_unique<JRE::GameObject>();
-		m_pScoreText = scoreObject->AddComponent<JRE::TextRendererComponent>("", JRE::SoftAssetRef<JRE::Font>(fontHandle));
+		m_pScoreText = scoreObject->AddComponent<JRE::TextRendererComponent>("", softFontRef);
 
 		scoreObject->SetLocalPosition(0.f, 25.f);
 		livesObject->SetParent(&UIGameObject);

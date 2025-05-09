@@ -13,7 +13,7 @@ namespace JRE
 	class TextRendererComponent final : public RendererComponentBase
 	{
 	public:
-		TextRendererComponent(GameObject& gameObject, const std::string& text, SoftAssetRef<Font> softFontRef);
+		TextRendererComponent(GameObject& gameObject, const std::string& text, const SoftAssetRef<Font>& softFontRef);
 
 		TextRendererComponent(const TextRendererComponent& other) = delete;
 		TextRendererComponent(TextRendererComponent&& other) = delete;
