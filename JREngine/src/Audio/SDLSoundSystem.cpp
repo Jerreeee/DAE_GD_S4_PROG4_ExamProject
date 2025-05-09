@@ -9,6 +9,7 @@
 
 #include "Audio/SDLSoundClip.h"
 #include "Audio/SDLSoundSystem.h"
+#include "Resources/AssetMetadata.h"
 
 namespace JRE
 {
@@ -24,6 +25,7 @@ namespace JRE
 		Impl();
 		~Impl();
 
+		Ref<ISoundClip> CreateSoundClip(AssetHandle, const AssetMetadata& metadata);
 		void Play(Ref<ISoundClip> clip, float volume);
 	private:
 		void SoundThread(std::stop_token token);
@@ -38,6 +40,10 @@ namespace JRE
 	{
 	}
 	SDLSoundSystem::Impl::~Impl() = default;
+	Ref<ISoundClip> SDLSoundSystem::Impl::CreateSoundClip(AssetHandle, const AssetMetadata& metadata)
+	{
+		return CreateRef<SDLSoundClip>(metadata.filepath);
+	}
 	void SDLSoundSystem::Impl::Play(Ref<ISoundClip> clip, float volume)
 	{
 		if (!clip)
@@ -78,5 +84,6 @@ namespace JRE
 
 	SDLSoundSystem::SDLSoundSystem() : m_pImpl{ std::make_unique<Impl>() } {}
 	SDLSoundSystem::~SDLSoundSystem() = default;
+	Ref<ISoundClip> SDLSoundSystem::CreateSoundClip(AssetHandle handle, const AssetMetadata& metadata) { return m_pImpl->CreateSoundClip(handle, metadata); }
 	void SDLSoundSystem::Play(Ref<ISoundClip> clip, float volume) { m_pImpl->Play(clip, volume); }
 }

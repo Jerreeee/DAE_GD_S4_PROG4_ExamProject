@@ -1,4 +1,6 @@
+#include "Core/ServiceLocator.h"
 #include "Audio/ISoundClip.h"
+#include "Audio/ISoundSystem.h"
 #include "Resources/AssetImporter.h"
 #include "Resources/SoundClipImporter.h"
 
@@ -6,7 +8,7 @@ namespace JRE
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::GetInstance().RegisterImporter(AssetType::Font, SoundClipImporter::ImportAsset);
+			AssetImporter::GetInstance().RegisterImporter(AssetType::SoundClip, SoundClipImporter::ImportAsset);
 			return true;
 		}();
 
@@ -14,9 +16,9 @@ namespace JRE
 		m_Path{ AssetImporter::GetInstance().GetFullDatapath(filepath) }
 	{
 	}
-	Ref<Asset> SoundClipImporter::ImportAsset(AssetHandle, const AssetMetadata& metadata)
+	Ref<Asset> SoundClipImporter::ImportAsset(AssetHandle handle, const AssetMetadata& metadata)
 	{
-		return CreateRef<ISoundClip>(metadata.filepath);
+		return ServiceLocator::GetSoundSystem().CreateSoundClip(handle, metadata);
 	}
 	AssetMetadata SoundClipImporter::GetMetadata() const
 	{

@@ -38,9 +38,9 @@ namespace JRE
 		Ref<Asset> ImportAsset(AssetHandle handle, const AssetMetadata& metadata);
 
 		const std::filesystem::path& GetDatapath() const;
-		const std::filesystem::path& GetFullDatapath(const std::filesystem::path& filepath) const;
+		std::filesystem::path GetFullDatapath(const std::filesystem::path& filepath) const;
 	private:
-		AssetImporter();
+		AssetImporter() = default;
 		friend class Singleton<AssetImporter>;
 
 		std::filesystem::path m_Datapath{};

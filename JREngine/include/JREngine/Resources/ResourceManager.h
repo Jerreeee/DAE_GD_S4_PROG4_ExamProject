@@ -32,5 +32,12 @@ namespace JRE
 		{
 			return ServiceLocator::GetResourceManager().AddAsset(asset);
 		}
+
+		template<IsAsset T, typename... Args>
+		static AssetHandle CreateAsset(Args&&... args)
+		{
+			Ref<T> asset = CreateRef<T>(std::forward<Args>(args)...);
+			return ServiceLocator::GetResourceManager().AddAsset(asset);
+		}
 	};
 }

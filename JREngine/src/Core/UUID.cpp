@@ -14,7 +14,7 @@ namespace JRE
 	UUID::UUID() :
 		m_UUID{ GenerateGUID() }
 	{
-		std::cout << "Constructor called\n";
+		std::cout << "UUID created: " << m_UUID << "\n";
 	}
 
 	UUID::UUID(uint64_t uuid) :

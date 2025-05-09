@@ -9,10 +9,13 @@
 #include "Resources/Font.h"
 #include "Rendering/Texture2D.h"
 
+#include <iostream>
+
 namespace JRE
 {
 	Texture2D::Texture2D(const std::filesystem::path& path)
 	{
+		std::cout << "Creating texture from disk: " << path.string() << "\n";
 		m_texture = IMG_LoadTexture(SDLRenderer::GetInstance().GetSDLRenderer(), path.string().c_str());
 		if (m_texture == nullptr)
 			throw std::runtime_error(std::string("Failed to load texture: ") + SDL_GetError());
@@ -22,6 +25,7 @@ namespace JRE
 	{
 		auto font = ResourceManager::GetAsset<Font>(fontHandle);
 
+		std::cout << "Creating texture from font: " << text << "\n";
 		const SDL_Color color = { 255,255,255,255 }; // only white text is supported now
 		const auto surf = TTF_RenderText_Blended(font->GetFont(), text.c_str(), color);
 		if (surf == nullptr)

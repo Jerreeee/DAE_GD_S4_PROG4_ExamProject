@@ -3,6 +3,8 @@
 #include <mutex>
 #include "Audio/SDLSoundClip.h"
 
+#include <iostream>
+
 struct Mix_Chunk;
 
 namespace JRE
@@ -26,6 +28,8 @@ namespace JRE
 	};
 	SDLSoundClip::Impl::Impl(const std::filesystem::path& path)
 	{
+		std::cout << "Creating SDLSoundClip: " << path.string() << "\n";
+
 		//Mix_LoadWAV is not threadsafe, therefore the mutex
 		static std::mutex mutex{};
 		std::lock_guard<std::mutex> lock(mutex);

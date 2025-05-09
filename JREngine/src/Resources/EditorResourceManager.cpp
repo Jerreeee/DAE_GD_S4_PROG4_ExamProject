@@ -2,6 +2,8 @@
 #include "Resources/AssetImporter.h"
 #include "Resources/EditorResourceManager.h"
 
+#include <iostream>
+
 namespace JRE
 {
 	void EditorResourceManager::Init()
@@ -59,6 +61,7 @@ namespace JRE
 	{
 		std::lock_guard<std::mutex> lock(m_LoadedAssetsMutex);
 		AssetHandle handle{};
+		std::cout << "Adding asset with UUID: " << uint64_t(handle) << "\n";
 		m_LoadedAssets.emplace(handle, asset);
 		return handle;
 	}
@@ -112,7 +115,7 @@ namespace JRE
 		}
 
 		//This is the first thread loading this asset so creata a new job for it
-		auto job = Ref<AssetLoadJob>{};
+		auto job = CreateRef<AssetLoadJob>();
 
 		switch (loadMode)
 		{

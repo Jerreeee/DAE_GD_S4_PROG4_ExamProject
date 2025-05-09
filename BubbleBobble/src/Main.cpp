@@ -56,7 +56,7 @@ namespace BubbleBobble
 	{
 		//JRE::AssetHandle hitSound = JRE::AssetImporter::ImportAsset("HUD/Select.wav");
 		JRE::AssetHandle hitSound = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::SoundClipImporter("HUD/Select.wav")));
-		JRE::AssetHandle fontHandle = JRE::ResourceManager::LoadAsset<JRE::Font>(std::move(JRE::FontImporter("Lingua.otf").SetSize(20)));
+		JRE::AssetHandle fontHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::FontImporter("Lingua.otf").SetSize(20)));
 
 		//TODO fix all other assets being importer
 
@@ -78,10 +78,10 @@ namespace BubbleBobble
 		player1->SetLocalPosition(216, 180);
 		if (auto* pComponent = player1->AddComponent<JRE::SpriteRendererComponent>(); pComponent)
 		{
-			JRE::AssetHandle texHandle = JRE::ResourceManager::LoadAsset<JRE::Texture2D>("Player/Bobby/Bubble_Anim.png");
+			JRE::AssetHandle texHandle = JRE::AssetImporter::GetInstance().ImportAsset(JRE::TextureImporter("Player/Bobby/Bubble_Anim.png"));
 			//std::vector<JRE::AssetHandle> playerSprites = JRE::SpriteEditor::SplitTexture2D(texHandle, 3, 3, 1);
-			JRE::AssetHandle sprite = JRE::ResourceManager::CreateAsset<JRE::Sprite>(texHandle);
-			pComponent->SetSprite(sprite);
+			auto spriteHandle = JRE::ResourceManager::CreateAsset<JRE::Sprite>(texHandle);
+			pComponent->SetSprite(spriteHandle);
 		}
 		auto p1HealthComponent = player1->AddComponent<HealthComponent>(3);
 		p1HealthComponent->SetHitSound(hitSound);

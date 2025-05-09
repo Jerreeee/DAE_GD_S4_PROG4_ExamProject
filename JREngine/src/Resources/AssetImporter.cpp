@@ -26,7 +26,7 @@ namespace JRE
 	{
 		return m_Datapath;
 	}
-	const std::filesystem::path& AssetImporter::GetFullDatapath(const std::filesystem::path& filepath) const
+	std::filesystem::path AssetImporter::GetFullDatapath(const std::filesystem::path& filepath) const
 	{
 		return std::filesystem::path(m_Datapath / filepath);
 	}

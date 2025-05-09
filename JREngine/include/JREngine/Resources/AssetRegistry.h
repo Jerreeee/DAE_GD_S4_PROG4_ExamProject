@@ -17,7 +17,7 @@ namespace JRE
 		AssetHandle GetHandleAtPath(const std::filesystem::path virtualPath) const;
 		const AssetMetadata& GetMetadata(AssetHandle handle) const;
 	private:
-		AssetRegistry();
+		AssetRegistry() = default;
 		friend class Singleton<AssetRegistry>;
 
 		mutable std::mutex m_Mutex{};

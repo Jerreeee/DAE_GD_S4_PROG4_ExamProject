@@ -4,6 +4,8 @@
 #include "Rendering/Texture2D.h"
 #include "Rendering/Sprite.h"
 
+#include <iostream>
+
 namespace JRE
 {
     Sprite::Sprite(AssetHandle textureHandle, const Region& srcRegion) :
@@ -11,12 +13,14 @@ namespace JRE
         m_UsesWholeTextureRegion{ false },
         m_SrcRegion{ srcRegion }
     {
+        std::cout << "Creating sprite using texturehandle and region\n";
     }
 
     Sprite::Sprite(AssetHandle textureHandle) :
         m_TextureHandle{ textureHandle },
         m_UsesWholeTextureRegion{ true }
     {
+        std::cout << "Creating sprite using texturehandle\n";
     }
 
     Ref<Texture2D> Sprite::GetTexture() const
