@@ -2,7 +2,7 @@
 #include <string>
 #include <memory>
 #include "JREngine/Rendering/RendererComponentBase.h"
-#include "JREngine/Resources/Asset.h"
+#include "JREngine/Asset/Asset.h"
 
 namespace JRE
 {

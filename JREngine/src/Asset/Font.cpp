@@ -1,6 +1,6 @@
 #include <stdexcept>
 #include <SDL_ttf.h>
-#include "Resources/Font.h"
+#include "Asset/Font.h"
 
 #include <iostream>
 

@@ -3,7 +3,7 @@
 #include "JREngine/Rendering/TextRendererComponent.h"
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Core/ServiceLocator.h"
-#include "JREngine/Resources/ResourceManager.h"
+#include "JREngine/Asset/ResourceManager.h"
 #include "JREngine/Audio/ISoundSystem.h"
 #include "JREngine/Scene/Scene.h"
 

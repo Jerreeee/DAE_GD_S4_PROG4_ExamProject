@@ -1,10 +1,10 @@
 #include <stdexcept>
 #include <memory>
-#include "Rendering/Renderer.h"
-#include "Resources/Font.h"
-#include "Rendering/Sprite.h"
-#include "Rendering/Texture2D.h"
-#include "Resources/ResourceManager.h"
+#include "Rendering/SDLRenderer.h"
+#include "Asset/Font.h"
+#include "Asset/Sprite.h"
+#include "Asset/Texture2D.h"
+#include "Asset/ResourceManager.h"
 #include "Rendering/TextRendererComponent.h"
 
 namespace JRE

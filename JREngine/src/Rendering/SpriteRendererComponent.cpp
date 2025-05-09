@@ -1,7 +1,7 @@
 #include "Rendering/SpriteRendererComponent.h"
-#include "Resources/ResourceManager.h"
-#include "Rendering/Renderer.h"
-#include "Rendering/Sprite.h"
+#include "Asset/ResourceManager.h"
+#include "Rendering/SDLRenderer.h"
+#include "Asset/Sprite.h"
 
 namespace JRE
 {

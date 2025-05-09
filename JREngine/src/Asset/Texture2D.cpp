@@ -4,10 +4,10 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
-#include "Rendering/Renderer.h"
-#include "Resources/ResourceManager.h"
-#include "Resources/Font.h"
-#include "Rendering/Texture2D.h"
+#include "Rendering/SDLRenderer.h"
+#include "Asset/ResourceManager.h"
+#include "Asset/Font.h"
+#include "Asset/Texture2D.h"
 
 #include <iostream>
 

@@ -9,7 +9,7 @@
 
 #include "Audio/SDLSoundClip.h"
 #include "Audio/SDLSoundSystem.h"
-#include "Resources/AssetMetadata.h"
+#include "Asset/AssetMetadata.h"
 
 namespace JRE
 {

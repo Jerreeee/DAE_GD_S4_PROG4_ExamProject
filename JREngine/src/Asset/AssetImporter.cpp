@@ -1,5 +1,5 @@
-#include "Resources/AssetRegistry.h"
-#include "Resources/AssetImporter.h"
+#include "Asset/AssetRegistry.h"
+#include "Asset/AssetImporter.h"
 
 namespace JRE
 {

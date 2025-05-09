@@ -1,5 +1,5 @@
 #include "Rendering/RendererComponentBase.h"
-#include "Rendering/Renderer.h"
+#include "Rendering/SDLRenderer.h"
 
 namespace JRE
 {

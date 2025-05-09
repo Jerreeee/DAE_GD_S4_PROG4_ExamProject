@@ -1,8 +1,8 @@
 #include "Core/ServiceLocator.h"
 #include "Audio/ISoundClip.h"
 #include "Audio/ISoundSystem.h"
-#include "Resources/AssetImporter.h"
-#include "Resources/SoundClipImporter.h"
+#include "Asset/AssetImporter.h"
+#include "Asset/SoundClipImporter.h"
 
 namespace JRE
 {

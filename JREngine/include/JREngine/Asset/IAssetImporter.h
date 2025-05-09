@@ -1,8 +1,8 @@
 #pragma once
 #include <filesystem>
 #include <string>
-#include "JREngine/Resources/Asset.h"
-#include "JREngine/Resources/AssetMetadata.h"
+#include "JREngine/Asset/Asset.h"
+#include "JREngine/Asset/AssetMetadata.h"
 
 namespace JRE
 {

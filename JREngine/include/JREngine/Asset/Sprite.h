@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "JREngine/Resources/Asset.h"
+#include "JREngine/Asset/Asset.h"
 #include "JREngine/Math/Rect.h"
 
 namespace JRE

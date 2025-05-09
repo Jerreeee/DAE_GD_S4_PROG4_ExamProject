@@ -1,6 +1,6 @@
 #pragma once
 #include <filesystem>
-#include "JREngine/Resources/Asset.h"
+#include "JREngine/Asset/Asset.h"
 
 namespace JRE
 {

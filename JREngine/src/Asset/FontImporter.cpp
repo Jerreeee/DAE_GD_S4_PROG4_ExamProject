@@ -1,6 +1,6 @@
-#include "Resources/Font.h"
-#include "Resources/AssetImporter.h"
-#include "Resources/FontImporter.h"
+#include "Asset/Font.h"
+#include "Asset/AssetImporter.h"
+#include "Asset/FontImporter.h"
 
 namespace JRE
 {

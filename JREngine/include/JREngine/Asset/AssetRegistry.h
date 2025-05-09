@@ -2,9 +2,9 @@
 #include <map>
 #include <mutex>
 #include "JREngine/Core/Singleton.h"
-#include "JREngine/Resources/Asset.h"
-#include "JREngine/Resources/IAssetImporter.h"
-#include "JREngine/Resources/AssetMetadata.h"
+#include "JREngine/Asset/Asset.h"
+#include "JREngine/Asset/IAssetImporter.h"
+#include "JREngine/Asset/AssetMetadata.h"
 
 namespace JRE
 {

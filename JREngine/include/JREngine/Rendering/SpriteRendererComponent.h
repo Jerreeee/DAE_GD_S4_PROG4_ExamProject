@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "JREngine/Resources/Asset.h"
+#include "JREngine/Asset/Asset.h"
 #include "JREngine/Rendering/RendererComponentBase.h"
 
 namespace JRE

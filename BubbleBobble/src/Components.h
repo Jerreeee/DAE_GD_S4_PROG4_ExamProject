@@ -2,7 +2,7 @@
 #include <memory>
 #include "JREngine/Scene/ComponentBase.h"
 #include "JREngine/Core/Observer.h"
-#include "JREngine/Resources/Asset.h"
+#include "JREngine/Asset/Asset.h"
 #include "Events.h"
 
 namespace JRE

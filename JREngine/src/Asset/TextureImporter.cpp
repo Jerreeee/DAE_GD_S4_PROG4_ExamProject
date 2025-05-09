@@ -1,6 +1,6 @@
-#include "Rendering/Texture2D.h"
-#include "Resources/AssetImporter.h"
-#include "Resources/TextureImporter.h"
+#include "Asset/Texture2D.h"
+#include "Asset/AssetImporter.h"
+#include "Asset/TextureImporter.h"
 
 namespace JRE
 {

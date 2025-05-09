@@ -1,8 +1,8 @@
 #include <stdexcept>
 #include <sstream>
-#include "Resources/ResourceManager.h"
-#include "Rendering/Texture2D.h"
-#include "Rendering/Sprite.h"
+#include "Asset/ResourceManager.h"
+#include "Asset/Texture2D.h"
+#include "Asset/Sprite.h"
 
 #include <iostream>
 

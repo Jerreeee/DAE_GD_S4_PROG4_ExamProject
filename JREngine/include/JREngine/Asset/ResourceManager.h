@@ -1,9 +1,9 @@
 #pragma once
 #include <concepts>
 #include "JREngine/Core/ServiceLocator.h"
-#include "JREngine/Resources/IResourceManager.h"
-#include "JREngine/Resources/IAssetImporter.h"
-#include "JREngine/Resources/Asset.h"
+#include "JREngine/Asset/IResourceManager.h"
+#include "JREngine/Asset/IAssetImporter.h"
+#include "JREngine/Asset/Asset.h"
 
 template<typename T>
 concept IsAsset = std::derived_from<T, JRE::Asset>;

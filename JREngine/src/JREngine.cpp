@@ -13,10 +13,10 @@
 #include "JREngine.h"
 #include "Input/InputManager.h"
 #include "Scene/SceneManager.h"
-#include "Rendering/Renderer.h"
+#include "Rendering/SDLRenderer.h"
 #include "Audio/SDLSoundSystem.h"
-#include "Resources/EditorResourceManager.h"
-#include "Resources/AssetImporter.h"
+#include "Asset/EditorResourceManager.h"
+#include "Asset/AssetImporter.h"
 #include "Core/Timer.h"
 #include "Core/ServiceLocator.h"
 

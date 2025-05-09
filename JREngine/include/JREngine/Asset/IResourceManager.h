@@ -3,8 +3,8 @@
 #include <string>
 #include <filesystem>
 #include <functional>
-#include "JREngine/Resources/IAssetImporter.h"
-#include "JREngine/Resources/Asset.h"
+#include "JREngine/Asset/IAssetImporter.h"
+#include "JREngine/Asset/Asset.h"
 
 namespace JRE
 {

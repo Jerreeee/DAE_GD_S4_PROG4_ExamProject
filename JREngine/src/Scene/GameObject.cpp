@@ -1,7 +1,7 @@
 #include <string>
 #include "Scene/GameObject.h"
-#include "Resources/ResourceManager.h"
-#include "Rendering/Renderer.h"
+#include "Asset/ResourceManager.h"
+#include "Rendering/SDLRenderer.h"
 
 namespace JRE
 {

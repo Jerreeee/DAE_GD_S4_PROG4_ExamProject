@@ -2,7 +2,7 @@
 #include <vec2.hpp>
 #include <string>
 #include <filesystem>
-#include "JREngine/Resources/Asset.h"
+#include "JREngine/Asset/Asset.h"
 
 struct SDL_Texture;
 namespace JRE

@@ -1,8 +1,8 @@
-#include "Resources/ResourceManager.h"
-#include "Rendering/Texture2D.h"
+#include "Asset/ResourceManager.h"
+#include "Asset/Texture2D.h"
 #include "Math/Rect.h"
-#include "Rendering/Sprite.h"
-#include "Resources/SpriteEditor.h"
+#include "Asset/Sprite.h"
+#include "Asset/SpriteEditor.h"
 
 namespace JRE
 {

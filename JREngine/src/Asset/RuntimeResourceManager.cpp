@@ -4,8 +4,8 @@
 #include "Core/ServiceLocator.h"
 
 #include "Core/Event.h"
-#include "Resources/AssetImporter.h"
-#include "Resources/RuntimeResourceManager.h"
+#include "Asset/AssetImporter.h"
+#include "Asset/RuntimeResourceManager.h"
 
 namespace JRE
 {

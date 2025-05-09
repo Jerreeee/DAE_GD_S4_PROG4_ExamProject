@@ -1,5 +1,5 @@
 #pragma once
-#include "JREngine/Resources/IAssetImporter.h"
+#include "JREngine/Asset/IAssetImporter.h"
 
 namespace JRE
 {

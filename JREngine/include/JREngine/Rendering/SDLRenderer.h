@@ -2,7 +2,7 @@
 #include <SDL.h>
 #include <memory>
 #include <vector>
-#include "JREngine/Resources/Asset.h"
+#include "JREngine/Asset/Asset.h"
 #include "JREngine/Core/Singleton.h"
 
 namespace JRE

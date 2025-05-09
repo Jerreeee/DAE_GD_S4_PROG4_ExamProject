@@ -1,6 +1,6 @@
-﻿#include "Resources/AssetRegistry.h"
-#include "Resources/AssetImporter.h"
-#include "Resources/EditorResourceManager.h"
+﻿#include "Asset/AssetRegistry.h"
+#include "Asset/AssetImporter.h"
+#include "Asset/EditorResourceManager.h"
 
 #include <iostream>
 

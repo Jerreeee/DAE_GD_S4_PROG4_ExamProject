@@ -11,7 +11,7 @@
 #include <stop_token>
 
 #include "JREngine/Core/Event.h"
-#include "JREngine/Resources/IResourceManager.h"
+#include "JREngine/Asset/IResourceManager.h"
 
 namespace JRE
 {

@@ -1,6 +1,6 @@
 #pragma once
-#include "JREngine/Resources/Asset.h"
-#include "JREngine/Resources/AssetMetadata.h"
+#include "JREngine/Asset/Asset.h"
+#include "JREngine/Asset/AssetMetadata.h"
 #include "JREngine/Audio/ISoundClip.h"
 
 namespace JRE

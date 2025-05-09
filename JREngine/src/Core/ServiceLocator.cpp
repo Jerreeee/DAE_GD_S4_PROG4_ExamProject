@@ -1,5 +1,5 @@
 #include "Audio/ISoundSystem.h"
-#include "Resources/IResourceManager.h"
+#include "Asset/IResourceManager.h"
 #include "Core/ServiceLocator.h"
 
 namespace JRE

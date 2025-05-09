@@ -1,4 +1,4 @@
-#include "Resources/AssetRegistry.h"
+#include "Asset/AssetRegistry.h"
 
 namespace JRE
 {
