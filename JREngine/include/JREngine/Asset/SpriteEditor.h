@@ -12,6 +12,6 @@ namespace JRE
 		/// Adds all the generated sprites to the ResourceManager
 		/// </summary>
 		/// <returns> AssetHandles to the created sprites </returns>
-		static std::vector<AssetHandle> SplitTexture2D(AssetRef<Texture2D> textureRef, int nrSprites, int cols, int rows);
+		static std::vector<AssetRef<Sprite>> SplitTexture2D(AssetRef<Texture2D> textureRef, int nrSprites, int cols, int rows);
 	};
 }

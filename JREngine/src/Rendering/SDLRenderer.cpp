@@ -95,7 +95,8 @@ void JRE::SDLRenderer::RenderTexture(AssetRef<Asset> spriteAsset, const float x,
 	SDL_Rect dst{};
 	dst.x = static_cast<int>(x);
 	dst.y = static_cast<int>(y);
-	SDL_QueryTexture(pSDLTexture, nullptr, nullptr, &dst.w, &dst.h);
+	dst.w = src.w;
+	dst.h = src.h;
 	SDL_RenderCopy(GetSDLRenderer(), pSDLTexture, &src, &dst);
 }
 

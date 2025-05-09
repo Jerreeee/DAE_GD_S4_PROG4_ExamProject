@@ -70,10 +70,11 @@ namespace BubbleBobble
 		player1->SetLocalPosition(216, 180);
 		if (auto* pComponent = player1->AddComponent<JRE::SpriteRendererComponent>(); pComponent)
 		{
-			JRE::AssetHandle texHandle = JRE::AssetImporter::GetInstance().ImportAsset(JRE::TextureImporter("Player/Bobby/Bubble_Anim.png"));
-			//std::vector<JRE::AssetHandle> playerSprites = JRE::SpriteEditor::SplitTexture2D(texHandle, 3, 3, 1);
-			auto spriteHandle = JRE::ResourceManager::CreateAsset<JRE::Sprite>(JRE::SoftAssetRef<JRE::Texture2D>(texHandle));
-			pComponent->SetSprite(spriteHandle);
+			auto texHandle = JRE::AssetImporter::GetInstance().ImportAsset(JRE::TextureImporter("Player/Bobby/Run_Anim.png"));
+			auto texRef = JRE::ResourceManager::GetAsset<JRE::Texture2D>(texHandle);
+			auto playerSprites = JRE::SpriteEditor::SplitTexture2D(texRef, 4, 4, 1);
+			//auto spriteHandle = JRE::ResourceManager::CreateAsset<JRE::Sprite>(JRE::SoftAssetRef<JRE::Texture2D>(texHandle));
+			pComponent->SetSprite(JRE::SoftAssetRef<JRE::Sprite>(playerSprites[1]));
 		}
 		auto p1HealthComponent = player1->AddComponent<HealthComponent>(3);
 		p1HealthComponent->SetHitSound(hitSoundHandle);

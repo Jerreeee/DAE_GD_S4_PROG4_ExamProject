@@ -12,7 +12,7 @@ namespace JRE
     //ResourceManager::GetActive().AddAsset(std::move(sprite), fakePath);
     //return handle;
 
-    std::vector<AssetHandle> SpriteEditor::SplitTexture2D(AssetRef<Texture2D> textureRef, int nrSprites, int cols, int rows)
+    std::vector<AssetRef<Sprite>> SpriteEditor::SplitTexture2D(AssetRef<Texture2D> textureRef, int nrSprites, int cols, int rows)
     {
         if (!textureRef)
             throw std::runtime_error("SpriteEditor::SplitTexture2D() | AssetRef<Texture2D> textureRef was nullptr");
@@ -21,7 +21,7 @@ namespace JRE
         int spriteWidth = static_cast<int>(size.x / cols);
         int spriteHeight = static_cast<int>(size.y / rows);
 
-        std::vector<AssetHandle> assetHandles{};
+        std::vector<AssetRef<Sprite>> sprites{};
         for (int spriteIdx{}; spriteIdx < nrSprites; ++spriteIdx)
         {
             int r = static_cast<int>(spriteIdx / cols);
@@ -30,9 +30,8 @@ namespace JRE
             int y = r * spriteHeight;
             Region region{ x, y, spriteWidth, spriteHeight };
             SoftAssetRef<Texture2D> softTextureRef{ textureRef };
-            Sprite sprite(softTextureRef, region);
-            assetHandles.emplace_back(sprite.GetHandle());
+            sprites.emplace_back(CreateAssetRef<Sprite>(softTextureRef, region));
         }
-        return assetHandles;
+        return sprites;
     }
 }

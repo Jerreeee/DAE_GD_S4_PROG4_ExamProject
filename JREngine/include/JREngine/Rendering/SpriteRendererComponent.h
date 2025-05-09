@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include "JREngine/Asset/Asset.h"
+#include "JREngine/Asset/SoftAssetRef.h"
+#include "JREngine/Asset/Sprite.h"
 #include "JREngine/Rendering/RendererComponentBase.h"
 
 namespace JRE
@@ -18,10 +20,9 @@ namespace JRE
 
 		virtual void Render() const override;
 
-		void SetSprite(AssetHandle spriteHandle);
+		void SetSprite(SoftAssetRef<Sprite> softSpriteRef);
 	private:
-		AssetHandle m_SpriteHandle{ AssetHandle::InvalidUUID };
-		mutable AssetRef<Sprite> m_Sprite{ nullptr };
+		SoftAssetRef<Sprite> m_SoftSpriteRef{};
 	};
 }
 
