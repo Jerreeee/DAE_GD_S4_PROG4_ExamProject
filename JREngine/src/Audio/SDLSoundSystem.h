@@ -11,8 +11,8 @@ namespace JRE
 		SDLSoundSystem();
 		~SDLSoundSystem();
 
-		virtual Ref<ISoundClip> CreateSoundClip(AssetHandle handle, const AssetMetadata& metadata) override;
-		virtual void Play(Ref<ISoundClip> clip, float volume = 1.0f) override;
+		virtual AssetRef<ISoundClip> CreateSoundClip(AssetHandle handle, const AssetMetadata& metadata) override;
+		virtual void Play(AssetRef<ISoundClip> soundClipAsset, float volume = 1.0f) override;
 	private:
 		class Impl;
 		std::unique_ptr<Impl> m_pImpl{};

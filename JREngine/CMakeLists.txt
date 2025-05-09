@@ -93,6 +93,7 @@ set(INCLUDE_FILES
     "Asset/TextureImporter.h"
     "Asset/AssetRegistry.h"
     "Asset/AssetMetadata.h"
+    "Asset/SoftAssetRef.h"
 
     "Audio/ISoundSystem.h"
     "Audio/ISoundClip.h"

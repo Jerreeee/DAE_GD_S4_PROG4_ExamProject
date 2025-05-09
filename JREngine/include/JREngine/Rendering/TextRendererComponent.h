@@ -3,6 +3,8 @@
 #include <memory>
 #include "JREngine/Rendering/RendererComponentBase.h"
 #include "JREngine/Asset/Asset.h"
+#include "JREngine/Asset/SoftAssetRef.h"
+#include "JREngine/Asset/Font.h"
 
 namespace JRE
 {
@@ -11,7 +13,7 @@ namespace JRE
 	class TextRendererComponent final : public RendererComponentBase
 	{
 	public:
-		TextRendererComponent(GameObject& gameObject, const std::string& text, AssetHandle fontHandle);
+		TextRendererComponent(GameObject& gameObject, const std::string& text, SoftAssetRef<Font> softFontRef);
 
 		TextRendererComponent(const TextRendererComponent& other) = delete;
 		TextRendererComponent(TextRendererComponent&& other) = delete;
@@ -25,8 +27,7 @@ namespace JRE
 	private:
 		bool m_NeedsUpdate{};
 		std::string m_Text{};
-		AssetHandle m_FontHandle{ AssetHandle::InvalidUUID };
-		AssetHandle m_SpriteHandle{ AssetHandle::InvalidUUID };
-		Ref<Sprite> m_pSprite{};
+		SoftAssetRef<Font> m_SoftFontRef{};
+		AssetRef<Sprite> m_Sprite{ nullptr };
 	};
 }

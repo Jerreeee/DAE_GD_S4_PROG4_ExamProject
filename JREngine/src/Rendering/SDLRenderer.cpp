@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <cstring>
+#include <iostream>
 #include "imgui.h"
 #include "backends/imgui_impl_sdl2.h"
 #include "backends/imgui_impl_sdlrenderer2.h"
@@ -76,11 +77,17 @@ void JRE::SDLRenderer::Destroy()
 	}
 }
 
-void JRE::SDLRenderer::RenderTexture(AssetHandle spriteHandle, const float x, const float y) const
+void JRE::SDLRenderer::RenderTexture(AssetRef<Asset> spriteAsset, const float x, const float y) const
 {
-	auto sprite = ResourceManager::GetAsset<Sprite>(spriteHandle);
+	if (!spriteAsset)
+	{
+		std::cerr << "SDLRenderer::RenderTexture() | Ref<Asset> asset was nullptr\n";
+		return;
+	}
 
-	const Ref<Texture2D>& pTexture = sprite->GetTexture();
+	auto sprite = std::static_pointer_cast<Sprite>(spriteAsset);
+
+	const AssetRef<Texture2D>& pTexture = sprite->GetTexture();
 	SDL_Texture* pSDLTexture = pTexture->GetSDLTexture();
 	const Region& region = sprite->GetSrcRegion();
 	SDL_Rect src{ region.x, region.y, region.width, region.height };
@@ -92,11 +99,17 @@ void JRE::SDLRenderer::RenderTexture(AssetHandle spriteHandle, const float x, co
 	SDL_RenderCopy(GetSDLRenderer(), pSDLTexture, &src, &dst);
 }
 
-void JRE::SDLRenderer::RenderTexture(AssetHandle spriteHandle, const float x, const float y, const float width, const float height) const
+void JRE::SDLRenderer::RenderTexture(AssetRef<Asset> spriteAsset, const float x, const float y, const float width, const float height) const
 {
-	auto sprite = ResourceManager::GetAsset<Sprite>(spriteHandle);
+	if (!spriteAsset)
+	{
+		std::cerr << "SDLRenderer::RenderTexture() | Ref<Asset> asset was nullptr\n";
+		return;
+	}
 
-	const Ref<Texture2D>& pTexture = sprite->GetTexture();
+	auto sprite = std::static_pointer_cast<Sprite>(spriteAsset);
+
+	const AssetRef<Texture2D>& pTexture = sprite->GetTexture();
 	SDL_Texture* pSDLTexture = pTexture->GetSDLTexture();
 	const Region& region = sprite->GetSrcRegion();
 	SDL_Rect src{ region.x, region.y, region.width, region.height };

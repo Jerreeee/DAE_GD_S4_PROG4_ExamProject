@@ -12,10 +12,12 @@ namespace JRE
     //ResourceManager::GetActive().AddAsset(std::move(sprite), fakePath);
     //return handle;
 
-    std::vector<AssetHandle> SpriteEditor::SplitTexture2D(AssetHandle textureHandle, int nrSprites, int cols, int rows)
+    std::vector<AssetHandle> SpriteEditor::SplitTexture2D(AssetRef<Texture2D> textureRef, int nrSprites, int cols, int rows)
     {
-        Ref<Texture2D> tex = ResourceManager::GetAsset<Texture2D>(textureHandle);
-        glm::ivec2 size = tex->GetSize();
+        if (!textureRef)
+            throw std::runtime_error("SpriteEditor::SplitTexture2D() | AssetRef<Texture2D> textureRef was nullptr");
+
+        glm::ivec2 size = textureRef->GetSize();
         int spriteWidth = static_cast<int>(size.x / cols);
         int spriteHeight = static_cast<int>(size.y / rows);
 
@@ -27,9 +29,9 @@ namespace JRE
             int x = c * spriteWidth;
             int y = r * spriteHeight;
             Region region{ x, y, spriteWidth, spriteHeight };
-            Sprite sprite(textureHandle, region);
+            SoftAssetRef<Texture2D> softTextureRef{ textureRef };
+            Sprite sprite(softTextureRef, region);
             assetHandles.emplace_back(sprite.GetHandle());
-            auto fakePath = std::filesystem::path("generated/Sprite" + '@' + std::to_string(uint64_t(textureHandle)) + '@' + std::to_string(spriteIdx));
         }
         return assetHandles;
     }

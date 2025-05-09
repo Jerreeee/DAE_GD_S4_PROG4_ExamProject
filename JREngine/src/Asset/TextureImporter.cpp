@@ -15,9 +15,9 @@ namespace JRE
 	{
 	}
 
-	Ref<Asset> TextureImporter::ImportAsset(AssetHandle, const AssetMetadata& metadata)
+	AssetRef<Asset> TextureImporter::ImportAsset(AssetHandle, const AssetMetadata& metadata)
 	{
-		return CreateRef<Texture2D>(metadata.filepath);
+		return CreateAssetRef<Texture2D>(metadata.filepath);
 	}
 
 	AssetMetadata TextureImporter::GetMetadata() const

@@ -1,7 +1,6 @@
 #include <stdexcept>
 #include <memory>
 #include "Rendering/SDLRenderer.h"
-#include "Asset/Font.h"
 #include "Asset/Sprite.h"
 #include "Asset/Texture2D.h"
 #include "Asset/ResourceManager.h"
@@ -9,10 +8,10 @@
 
 namespace JRE
 {
-	TextRendererComponent::TextRendererComponent(GameObject& gameObject, const std::string& text, AssetHandle fontHandle) :
+	TextRendererComponent::TextRendererComponent(GameObject& gameObject, const std::string& text, SoftAssetRef<Font> softFontRef) :
 		RendererComponentBase(gameObject),
 		m_Text(text),
-		m_FontHandle(fontHandle)
+		m_SoftFontRef(softFontRef)
 	{
 		m_NeedsUpdate = text != "";
 	}
@@ -20,21 +19,18 @@ namespace JRE
 	{
 		if (m_NeedsUpdate)
 		{
-			auto texture = CreateRef<Texture2D>(m_Text, m_FontHandle);
-			auto textureHandle = ResourceManager::AddAsset(texture);
-			m_pSprite = CreateRef<Sprite>(textureHandle);
-			m_SpriteHandle = ResourceManager::AddAsset(m_pSprite);
+			if (!m_SoftFontRef.IsLoaded())
+				m_SoftFontRef.Load();
+			auto textureRef = CreateAssetRef<Texture2D>(m_Text, m_SoftFontRef.Get());
+			m_Sprite = CreateAssetRef<Sprite>(SoftAssetRef<Texture2D>(textureRef));
 			m_NeedsUpdate = false;
 		}
 	}
 
 	void TextRendererComponent::Render() const
 	{
-		if (m_pSprite)
-		{
-			const auto& pos = GetWorldTransform().GetPosition();
-			SDLRenderer::GetInstance().RenderTexture(m_SpriteHandle, pos.x, pos.y);
-		}
+		const auto& pos = GetWorldTransform().GetPosition();
+		SDLRenderer::GetInstance().RenderTexture(m_Sprite, pos.x, pos.y);
 	}
 
 	// This implementation uses the "dirty flag" pattern

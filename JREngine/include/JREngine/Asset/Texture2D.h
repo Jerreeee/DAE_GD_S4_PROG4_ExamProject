@@ -13,7 +13,7 @@ namespace JRE
 	class Texture2D final : public Asset
 	{
 	public:
-		explicit Texture2D(const std::string& text, AssetHandle fontHandle);
+		explicit Texture2D(const std::string& text, AssetRef<Asset> fontAsset);
 		explicit Texture2D(const std::filesystem::path& path);
 		~Texture2D();
 		Texture2D(const Texture2D &) = delete;

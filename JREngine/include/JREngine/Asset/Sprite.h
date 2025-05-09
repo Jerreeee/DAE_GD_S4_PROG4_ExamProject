@@ -1,7 +1,8 @@
 #pragma once
 #include <memory>
-#include "JREngine/Asset/Asset.h"
+#include "JREngine/Asset/SoftAssetRef.h"
 #include "JREngine/Math/Rect.h"
+#include "JREngine/Asset/Texture2D.h"
 
 namespace JRE
 {
@@ -9,20 +10,20 @@ namespace JRE
 	class Sprite final : public Asset
 	{
 	public:
-		Sprite(AssetHandle textureHandle, const Region& srcRegion);
-		Sprite(AssetHandle textureHandle);
+		Sprite(SoftAssetRef<Texture2D> softTextureRef, const Region& srcRegion);
+		Sprite(SoftAssetRef<Texture2D> softTextureRef);
 
-		Ref<Texture2D> GetTexture() const;
+		AssetRef<Texture2D> GetTexture() const;
 		const Region& GetSrcRegion() const;
 
 		static AssetType GetStaticType() { return AssetType::Sprite; };
 		virtual AssetType GetType() const { return GetStaticType(); };
 	private:
-		void ForceLoad() const;
+		void Initialize() const;
 
-		AssetHandle m_TextureHandle{};
-		mutable Ref<Texture2D> m_pTexture{};
-		bool m_UsesWholeTextureRegion;
-		mutable Region m_SrcRegion;
+		SoftAssetRef<Texture2D> m_SoftTextureRef{};
+		bool m_UsesWholeTextureRegion{};
+		mutable Region m_SrcRegion{};
+		mutable bool m_IsInitialized{ false };
 	};
 }

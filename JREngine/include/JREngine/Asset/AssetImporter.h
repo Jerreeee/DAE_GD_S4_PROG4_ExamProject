@@ -29,13 +29,13 @@ namespace JRE
 	public:
 		void Init(const std::filesystem::path& dataPath);
 
-		using ImportFunc = std::function<Ref<Asset>(AssetHandle handle, const AssetMetadata& metadata)>;
+		using ImportFunc = std::function<AssetRef<Asset>(AssetHandle handle, const AssetMetadata& metadata)>;
 		void RegisterImporter(AssetType type, ImportFunc importFunc);
 
 		//Registers the asset in the AssetRegistry
 		AssetHandle ImportAsset(IAssetImporter&& importer);
 		//Imports the asset from disk
-		Ref<Asset> ImportAsset(AssetHandle handle, const AssetMetadata& metadata);
+		AssetRef<Asset> ImportAsset(AssetHandle handle, const AssetMetadata& metadata);
 
 		const std::filesystem::path& GetDatapath() const;
 		std::filesystem::path GetFullDatapath(const std::filesystem::path& filepath) const;

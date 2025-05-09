@@ -1,48 +1,48 @@
 #include <stdexcept>
 #include <sstream>
 #include "Asset/ResourceManager.h"
-#include "Asset/Texture2D.h"
 #include "Asset/Sprite.h"
 
 #include <iostream>
 
 namespace JRE
 {
-    Sprite::Sprite(AssetHandle textureHandle, const Region& srcRegion) :
-        m_TextureHandle{ textureHandle },
+    Sprite::Sprite(SoftAssetRef<Texture2D> softTextureRef, const Region& srcRegion) :
+        m_SoftTextureRef{ softTextureRef },
         m_UsesWholeTextureRegion{ false },
         m_SrcRegion{ srcRegion }
     {
         std::cout << "Creating sprite using texturehandle and region\n";
     }
 
-    Sprite::Sprite(AssetHandle textureHandle) :
-        m_TextureHandle{ textureHandle },
+    Sprite::Sprite(SoftAssetRef<Texture2D> softTextureRef) :
+        m_SoftTextureRef{ softTextureRef },
         m_UsesWholeTextureRegion{ true }
     {
         std::cout << "Creating sprite using texturehandle\n";
     }
 
-    Ref<Texture2D> Sprite::GetTexture() const
+    AssetRef<Texture2D> Sprite::GetTexture() const
     {
-        if (!m_pTexture)
-            ForceLoad();
-        return m_pTexture;
+        if (!m_IsInitialized)
+            Initialize();
+        return m_SoftTextureRef.Get();
     }
 
     const Region& Sprite::GetSrcRegion() const
     {
-        if (!m_pTexture)
-            ForceLoad();
+        if (!m_IsInitialized)
+            Initialize();
         return m_SrcRegion;
     }
-    void Sprite::ForceLoad() const
+    void Sprite::Initialize() const
     {
-        m_pTexture = ResourceManager::GetAsset<Texture2D>(m_TextureHandle);
+        m_SoftTextureRef.Load();
         if (m_UsesWholeTextureRegion)
         {
-            glm::ivec2 size = m_pTexture->GetSize();
+            glm::ivec2 size = m_SoftTextureRef.Get()->GetSize();
             m_SrcRegion = Region{ 0, 0, size.x, size.y };
         }
+        m_IsInitialized = true;
     }
 }

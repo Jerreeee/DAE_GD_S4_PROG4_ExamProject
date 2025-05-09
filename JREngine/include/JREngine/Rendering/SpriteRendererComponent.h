@@ -21,6 +21,7 @@ namespace JRE
 		void SetSprite(AssetHandle spriteHandle);
 	private:
 		AssetHandle m_SpriteHandle{ AssetHandle::InvalidUUID };
+		mutable AssetRef<Sprite> m_Sprite{ nullptr };
 	};
 }
 

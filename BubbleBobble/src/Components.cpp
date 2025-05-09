@@ -42,11 +42,10 @@ namespace BubbleBobble
 		m_DamageEvent->NotifyObservers(e);
 
 		if (!m_pHitSound)
-		{
-			m_pHitSound = JRE::ResourceManager::TryGetAssset<JRE::ISoundClip>(m_HitSoundHandle);
-			if (!m_pHitSound) return;
-		}
+			m_pHitSound = JRE::ResourceManager::TryGetAsset<JRE::ISoundClip>(m_HitSoundHandle);
+
 		JRE::ServiceLocator::GetSoundSystem().Play(m_pHitSound);
+
 	}
 	PlayerUIComponent::PlayerUIComponent(JRE::GameObject& UIGameObject, JRE::GameObject& player, JRE::AssetHandle fontHandle) :
 		ComponentBase(UIGameObject),
@@ -55,11 +54,11 @@ namespace BubbleBobble
 	{
 		m_pHealthComponent->OnDamageEvent().AddObserver(this);
 		auto livesObject = std::make_unique<JRE::GameObject>();
-		m_pLivesText = livesObject->AddComponent<JRE::TextRendererComponent>("", fontHandle);
+		m_pLivesText = livesObject->AddComponent<JRE::TextRendererComponent>("", JRE::SoftAssetRef<JRE::Font>(fontHandle));
 
 		m_pScoreComponent->OnIncreasedScoreEvent().AddObserver(this);
 		auto scoreObject = std::make_unique<JRE::GameObject>();
-		m_pScoreText = scoreObject->AddComponent<JRE::TextRendererComponent>("", fontHandle);
+		m_pScoreText = scoreObject->AddComponent<JRE::TextRendererComponent>("", JRE::SoftAssetRef<JRE::Font>(fontHandle));
 
 		scoreObject->SetLocalPosition(0.f, 25.f);
 		livesObject->SetParent(&UIGameObject);

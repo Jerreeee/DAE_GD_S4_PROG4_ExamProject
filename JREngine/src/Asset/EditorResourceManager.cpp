@@ -22,7 +22,7 @@ namespace JRE
 		return m_LoadedAssets.find(handle) != m_LoadedAssets.end();
 	}
 
-	Ref<Asset> EditorResourceManager::GetAsset(AssetHandle handle, AssetLoadMode loadMode)
+	AssetRef<Asset> EditorResourceManager::GetAsset(AssetHandle handle, AssetLoadMode loadMode)
 	{
 		//Check if the asset is already loaded. If handle is invalid asset should be nullptr
 		if (auto asset = TryGetLoadedAsset(handle))
@@ -40,7 +40,7 @@ namespace JRE
 
 		auto job = StartOrGetAssetJob(handle, metadata, loadMode);
 
-		Ref<Asset> asset = nullptr;
+		AssetRef<Asset> asset = nullptr;
 		switch (job->status)
 		{
 		case LoadState::Loaded:
@@ -57,7 +57,7 @@ namespace JRE
 		return asset;
 	}
 
-	AssetHandle EditorResourceManager::AddAsset(Ref<Asset> asset)
+	AssetHandle EditorResourceManager::AddAsset(AssetRef<Asset> asset)
 	{
 		std::lock_guard<std::mutex> lock(m_LoadedAssetsMutex);
 		AssetHandle handle{};
@@ -66,14 +66,14 @@ namespace JRE
 		return handle;
 	}
 
-	Ref<Asset> EditorResourceManager::TryGetLoadedAsset(AssetHandle handle)
+	AssetRef<Asset> EditorResourceManager::TryGetLoadedAsset(AssetHandle handle)
 	{
 		std::lock_guard lock(m_LoadedAssetsMutex);
 		auto it = m_LoadedAssets.find(handle);
 		return it != m_LoadedAssets.end() ? it->second : nullptr;
 	}
 	
-	Ref<EditorResourceManager::AssetLoadJob> EditorResourceManager::StartOrGetAssetJob(AssetHandle handle, const AssetMetadata& metadata, AssetLoadMode loadMode)
+	std::shared_ptr<EditorResourceManager::AssetLoadJob> EditorResourceManager::StartOrGetAssetJob(AssetHandle handle, const AssetMetadata& metadata, AssetLoadMode loadMode)
 	{
 		std::unique_lock assetLoadingLock(m_AssetLoadingMutex);
 
@@ -115,7 +115,7 @@ namespace JRE
 		}
 
 		//This is the first thread loading this asset so creata a new job for it
-		auto job = CreateRef<AssetLoadJob>();
+		auto job = std::make_shared<AssetLoadJob>();
 
 		switch (loadMode)
 		{
@@ -153,7 +153,7 @@ namespace JRE
 		return job;
 	} //assetLoadingLock unlocks
 
-	Ref<Asset> EditorResourceManager::WaitForAssetToLoad(Ref<AssetLoadJob> job)
+	AssetRef<Asset> EditorResourceManager::WaitForAssetToLoad(AssetRef<AssetLoadJob> job)
 	{
 		std::unique_lock lock(m_AssetLoadingMutex);
 		job->condition.wait(lock, [&]() { return job->status == LoadState::Loaded; });
@@ -181,7 +181,7 @@ namespace JRE
 				{
 					const auto& args = event.GetArgs<GenericImportEvent>();
 
-					Ref<AssetLoadJob> job = nullptr;
+					std::shared_ptr<AssetLoadJob> job = nullptr;
 
 					//Asset was already loaded so we can skip this asset
 					{
@@ -199,7 +199,7 @@ namespace JRE
 					}
 
 					// Import
-					Ref<Asset> asset = AssetImporter::GetInstance().ImportAsset(args.handle, args.metadata);
+					AssetRef<Asset> asset = AssetImporter::GetInstance().ImportAsset(args.handle, args.metadata);
 
 					//Ensure the asset is considered fully loaded before notifying any waiting threads
 					{

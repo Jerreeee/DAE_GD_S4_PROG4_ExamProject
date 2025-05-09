@@ -8,7 +8,7 @@ namespace JRE
 	public:
 		TextureImporter(const std::filesystem::path& filepath);
 
-		static Ref<Asset> ImportAsset(AssetHandle handle, const AssetMetadata& metadata);
+		static AssetRef<Asset> ImportAsset(AssetHandle handle, const AssetMetadata& metadata);
 
 		virtual AssetMetadata GetMetadata() const override;
 	private:

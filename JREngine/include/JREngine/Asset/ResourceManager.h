@@ -1,12 +1,9 @@
 #pragma once
 #include <concepts>
-#include "JREngine/Core/ServiceLocator.h"
-#include "JREngine/Asset/IResourceManager.h"
-#include "JREngine/Asset/IAssetImporter.h"
-#include "JREngine/Asset/Asset.h"
-
-template<typename T>
-concept IsAsset = std::derived_from<T, JRE::Asset>;
+//#include "JREngine/Core/ServiceLocator.h"
+//#include "JREngine/Asset/IResourceManager.h"
+//#include "JREngine/Asset/Asset.h"
+#include "JREngine/Asset/SoftAssetRef.h"
 
 namespace JRE
 {
@@ -16,28 +13,56 @@ namespace JRE
 	class ResourceManager final
 	{
 	public:
+		//Returns the active ResourceManager
+		static IResourceManager& GetActive()
+		{
+			return ServiceLocator::GetResourceManager();
+		}
+
+		//Tries to get the asset but wont force load
 		template<IsAsset T>
-		static Ref<T> TryGetAssset(AssetHandle handle, AssetLoadMode loadMode = AssetLoadMode::Unspecified)
+		static AssetRef<T> TryGetAsset(AssetHandle handle, AssetLoadMode loadMode = AssetLoadMode::Unspecified)
 		{
-			return static_pointer_cast<T>(ServiceLocator::GetResourceManager().GetAsset(handle, loadMode));
+			return static_pointer_cast<T>(GetActive().GetAsset(handle, loadMode));
 		}
 
+		//Gets the asset, force laods if needed
 		template<IsAsset T>
-		static Ref<T> GetAsset(AssetHandle handle)
+		static AssetRef<T> GetAsset(AssetHandle handle)
 		{
-			return static_pointer_cast<T>(ServiceLocator::GetResourceManager().GetAsset(handle, AssetLoadMode::Immediate));
+			return static_pointer_cast<T>(GetActive().GetAsset(handle, AssetLoadMode::Immediate));
 		}
 
-		static AssetHandle AddAsset(Ref<Asset> asset)
+		//Adds an existing asset and assigns it a AssetHandle
+		static AssetHandle AddAsset(AssetRef<Asset> asset)
 		{
-			return ServiceLocator::GetResourceManager().AddAsset(asset);
+			return GetActive().AddAsset(asset);
 		}
 
+		//Creates an asset from args and adds it to the ResourceManager
 		template<IsAsset T, typename... Args>
 		static AssetHandle CreateAsset(Args&&... args)
 		{
-			Ref<T> asset = CreateRef<T>(std::forward<Args>(args)...);
-			return ServiceLocator::GetResourceManager().AddAsset(asset);
+			AssetRef<T> asset = JRE::CreateAssetRef<T>(std::forward<Args>(args)...);
+			return GetActive().AddAsset(asset);
 		}
+
+		//Creates an AssetRef<T> from args and adds the asset to the ResourceManager
+		template<IsAsset T, typename... Args>
+		static AssetRef<T> CreateAssetRef(Args&&... args)
+		{
+			AssetRef<T> asset = JRE::CreateAssetRef<T>(std::forward<Args>(args)...);
+			GetActive().AddAsset(asset);
+			return asset;
+		}
+
+		////Creates an AssetRef<T> from args and adds the asset to the ResourceManager
+		//template<IsAsset T, typename... Args>
+		//static SoftAssetRef<T> CreateSoftAssetRef(Args&&... args)
+		//{
+		//	auto asset = CreateRef<T>(std::forward<Args>(args)...);
+		//	auto handle = GetActive().AddAsset(asset);
+		//	return SoftAssetRef<T>(handle, asset);
+		//}
 	};
 }

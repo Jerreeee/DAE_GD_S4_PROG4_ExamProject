@@ -17,7 +17,7 @@ namespace JRE
 		return AssetRegistry::GetInstance().RegisterAsset(std::move(importer));
 	}
 
-	Ref<Asset> AssetImporter::ImportAsset(AssetHandle handle, const AssetMetadata& metadata)
+	AssetRef<Asset> AssetImporter::ImportAsset(AssetHandle handle, const AssetMetadata& metadata)
 	{
 		auto it = s_Importers.find(metadata.assetType);
 		return it != s_Importers.end() ? it->second(handle, metadata) : nullptr;

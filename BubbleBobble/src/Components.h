@@ -35,7 +35,7 @@ namespace BubbleBobble
 		int m_MaxHealth{};
 		JRE::Event_t m_DamageEvent{};
 		JRE::AssetHandle m_HitSoundHandle{ JRE::AssetHandle::InvalidUUID };
-		JRE::Ref<JRE::ISoundClip> m_pHitSound{};
+		JRE::AssetRef<JRE::ISoundClip> m_pHitSound{};
 	};
 
 	class ScoreComponent final : public JRE::ComponentBase

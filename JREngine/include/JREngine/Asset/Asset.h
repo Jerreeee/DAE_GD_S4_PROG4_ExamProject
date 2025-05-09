@@ -1,7 +1,15 @@
 #pragma once
 #include <memory>
-#include <filesystem>
+#include <filesystem> //all deriving classes and AssetImporters will probably need this
 #include "JREngine/Core/UUID.h"
+
+namespace JRE
+{
+	class Asset;
+}
+
+template<typename T>
+concept IsAsset = std::derived_from<T, JRE::Asset>;
 
 namespace JRE
 {
@@ -24,10 +32,10 @@ namespace JRE
 	using AssetHandle = UUID;
 
 	template<typename T>
-	using Ref = std::shared_ptr<T>;
+	using AssetRef = std::shared_ptr<T>;
 
-	template<typename T, typename... Args>
-	Ref<T> CreateRef(Args&&... args)
+	template<IsAsset T, typename... Args>
+	AssetRef<T> CreateAssetRef(Args&&... args)
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}

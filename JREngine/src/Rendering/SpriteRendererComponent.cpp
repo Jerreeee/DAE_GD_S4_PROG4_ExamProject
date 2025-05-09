@@ -11,8 +11,11 @@ namespace JRE
 	}
 	void SpriteRendererComponent::Render() const
 	{
+		if (!m_Sprite)
+			m_Sprite = ResourceManager::TryGetAsset<Sprite>(m_SpriteHandle);
+
 		const auto& pos = GetWorldTransform().GetPosition();
-		SDLRenderer::GetInstance().RenderTexture(m_SpriteHandle, pos.x, pos.y);
+		SDLRenderer::GetInstance().RenderTexture(m_Sprite, pos.x, pos.y);
 	}
 	void SpriteRendererComponent::SetSprite(AssetHandle spriteHandle)
 	{

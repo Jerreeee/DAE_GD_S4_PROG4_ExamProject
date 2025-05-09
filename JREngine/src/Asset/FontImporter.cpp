@@ -15,7 +15,7 @@ namespace JRE
 	{
 	}
 
-	Ref<Asset> FontImporter::ImportAsset(AssetHandle, const AssetMetadata& metadata)
+	AssetRef<Asset> FontImporter::ImportAsset(AssetHandle, const AssetMetadata& metadata)
 	{
 		const std::string& id = metadata.uniqueID;
 
@@ -23,7 +23,7 @@ namespace JRE
 			throw std::runtime_error("Invalid Font metadata.uniqueID format");
 
 		uint8_t size = static_cast<uint8_t>(std::stoi(id.substr(1)));
-		return CreateRef<Font>(metadata.filepath, size);
+		return CreateAssetRef<Font>(metadata.filepath, size);
 	}
 
 	AssetMetadata FontImporter::GetMetadata() const

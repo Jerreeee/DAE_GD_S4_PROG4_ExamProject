@@ -22,8 +22,8 @@ namespace JRE
 
 		virtual bool IsValidAssetHandle(AssetHandle handle) const override;
 		virtual bool IsAssetLoaded(AssetHandle handle) const override;
-		virtual Ref<Asset> GetAsset(AssetHandle handle, AssetLoadMode loadMode = AssetLoadMode::Unspecified) override;
-		virtual AssetHandle AddAsset(Ref<Asset> asset) override;
+		virtual AssetRef<Asset> GetAsset(AssetHandle handle, AssetLoadMode loadMode = AssetLoadMode::Unspecified) override;
+		virtual AssetHandle AddAsset(AssetRef<Asset> asset) override;
 	private:
 		struct GenericImportEvent
 		{
@@ -49,20 +49,20 @@ namespace JRE
 		struct AssetLoadJob
 		{
 			LoadState status = LoadState::Pending;
-			Ref<Asset> asset = nullptr;
+			AssetRef<Asset> asset = nullptr;
 			std::condition_variable_any condition;
 		};
 
-		Ref<Asset> TryGetLoadedAsset(AssetHandle handle);
-		Ref<AssetLoadJob> StartOrGetAssetJob(AssetHandle handle, const AssetMetadata& metadata, AssetLoadMode loadMode);
-		Ref<Asset> WaitForAssetToLoad(Ref<AssetLoadJob> job);
+		AssetRef<Asset> TryGetLoadedAsset(AssetHandle handle);
+		std::shared_ptr<AssetLoadJob> StartOrGetAssetJob(AssetHandle handle, const AssetMetadata& metadata, AssetLoadMode loadMode);
+		AssetRef<Asset> WaitForAssetToLoad(AssetRef<AssetLoadJob> job);
 		void WorkerLoop(std::stop_token token);
 
 		mutable std::mutex m_LoadedAssetsMutex{};
-		std::map<AssetHandle, Ref<Asset>> m_LoadedAssets{};
+		std::map<AssetHandle, AssetRef<Asset>> m_LoadedAssets{};
 
 		mutable std::mutex m_AssetLoadingMutex{};
-		std::unordered_map<AssetHandle, Ref<AssetLoadJob>> m_AssetLoadingJobs{};
+		std::unordered_map<AssetHandle, std::shared_ptr<AssetLoadJob>> m_AssetLoadingJobs{};
 
 		mutable std::mutex m_EventQueueMutex{};
 		std::queue<EventInfo> m_EventQueue{};

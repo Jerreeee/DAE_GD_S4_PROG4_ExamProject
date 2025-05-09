@@ -15,7 +15,7 @@ namespace JRE
 {
 	struct SoundEvent
 	{
-		Ref<ISoundClip> clip;
+		AssetRef<ISoundClip> clip;
 		float volume;
 	};
 
@@ -25,8 +25,8 @@ namespace JRE
 		Impl();
 		~Impl();
 
-		Ref<ISoundClip> CreateSoundClip(AssetHandle, const AssetMetadata& metadata);
-		void Play(Ref<ISoundClip> clip, float volume);
+		AssetRef<ISoundClip> CreateSoundClip(AssetHandle, const AssetMetadata& metadata);
+		void Play(AssetRef<ISoundClip> soundClipAsset, float volume);
 	private:
 		void SoundThread(std::stop_token token);
 
@@ -40,21 +40,23 @@ namespace JRE
 	{
 	}
 	SDLSoundSystem::Impl::~Impl() = default;
-	Ref<ISoundClip> SDLSoundSystem::Impl::CreateSoundClip(AssetHandle, const AssetMetadata& metadata)
+	AssetRef<ISoundClip> SDLSoundSystem::Impl::CreateSoundClip(AssetHandle, const AssetMetadata& metadata)
 	{
-		return CreateRef<SDLSoundClip>(metadata.filepath);
+		return CreateAssetRef<SDLSoundClip>(metadata.filepath);
 	}
-	void SDLSoundSystem::Impl::Play(Ref<ISoundClip> clip, float volume)
+	void SDLSoundSystem::Impl::Play(AssetRef<ISoundClip> soundClipAsset, float volume)
 	{
-		if (!clip)
+		if (!soundClipAsset)
 		{
-			std::cerr << "SDLSoundSystem: Tried to play null SoundClip\n";
+			std::cerr << "SLDSoundSystem::Play() | Ref<ISoundClip> clip was nullptr\n";
 			return;
 		}
 
+		auto soundClip = std::static_pointer_cast<SDLSoundClip>(soundClipAsset);
+
 		{
 			std::lock_guard lock(m_Mutex);
-			m_SoundQueue.push({ clip, volume });
+			m_SoundQueue.emplace(SoundEvent{ soundClip, volume });
 		}
 		m_Condition.notify_one();
 	}
@@ -84,6 +86,6 @@ namespace JRE
 
 	SDLSoundSystem::SDLSoundSystem() : m_pImpl{ std::make_unique<Impl>() } {}
 	SDLSoundSystem::~SDLSoundSystem() = default;
-	Ref<ISoundClip> SDLSoundSystem::CreateSoundClip(AssetHandle handle, const AssetMetadata& metadata) { return m_pImpl->CreateSoundClip(handle, metadata); }
-	void SDLSoundSystem::Play(Ref<ISoundClip> clip, float volume) { m_pImpl->Play(clip, volume); }
+	AssetRef<ISoundClip> SDLSoundSystem::CreateSoundClip(AssetHandle handle, const AssetMetadata& metadata) { return m_pImpl->CreateSoundClip(handle, metadata); }
+	void SDLSoundSystem::Play(AssetRef<ISoundClip> soundClipAsset, float volume) { m_pImpl->Play(soundClipAsset, volume); }
 }

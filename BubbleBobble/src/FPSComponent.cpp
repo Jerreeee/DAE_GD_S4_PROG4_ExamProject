@@ -11,7 +11,7 @@ namespace BubbleBobble
 		,m_UpdateRate{ updateRate }
 		,m_AccTime{ m_UpdateRate }
 	{
-		m_pTextRendererComponent = GetGameObject().AddComponent<JRE::TextRendererComponent>("", fontHandle);
+		m_pTextRendererComponent = GetGameObject().AddComponent<JRE::TextRendererComponent>("", JRE::SoftAssetRef<JRE::Font>(fontHandle));
 	}
 
 	void FPSComponent::Update()

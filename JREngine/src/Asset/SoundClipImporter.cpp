@@ -16,7 +16,7 @@ namespace JRE
 		m_Path{ AssetImporter::GetInstance().GetFullDatapath(filepath) }
 	{
 	}
-	Ref<Asset> SoundClipImporter::ImportAsset(AssetHandle handle, const AssetMetadata& metadata)
+	AssetRef<Asset> SoundClipImporter::ImportAsset(AssetHandle handle, const AssetMetadata& metadata)
 	{
 		return ServiceLocator::GetSoundSystem().CreateSoundClip(handle, metadata);
 	}

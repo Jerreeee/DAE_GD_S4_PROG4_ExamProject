@@ -54,20 +54,12 @@ namespace BubbleBobble
 {
 	void load()
 	{
-		//JRE::AssetHandle hitSound = JRE::AssetImporter::ImportAsset("HUD/Select.wav");
-		JRE::AssetHandle hitSound = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::SoundClipImporter("HUD/Select.wav")));
-		JRE::AssetHandle fontHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::FontImporter("Lingua.otf").SetSize(20)));
-
-		//TODO fix all other assets being importer
+		//JRE::AssetHandle hitSoundHandle = JRE::AssetImporter::ImportAsset("HUD/Select.wav");
+		auto hitSoundHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::SoundClipImporter("HUD/Select.wav")));
+		auto fontHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::FontImporter("Lingua.otf").SetSize(20)));
+		auto softFontRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
 
 		auto& scene = JRE::SceneManager::GetInstance().CreateScene("Demo");
-
-		//auto go = std::make_unique<JRE::GameObject>("Background Image");
-		//if (auto pComponent = go->AddComponent<JRE::SpriteRendererComponent>(); pComponent)
-		//{
-		//	pComponent->SetSprite("");
-		//}
-		//scene.Add(std::move(go));
 
 		JRE::Input::InputManager& inputManager = JRE::Input::InputManager::GetInstance();
 
@@ -80,11 +72,11 @@ namespace BubbleBobble
 		{
 			JRE::AssetHandle texHandle = JRE::AssetImporter::GetInstance().ImportAsset(JRE::TextureImporter("Player/Bobby/Bubble_Anim.png"));
 			//std::vector<JRE::AssetHandle> playerSprites = JRE::SpriteEditor::SplitTexture2D(texHandle, 3, 3, 1);
-			auto spriteHandle = JRE::ResourceManager::CreateAsset<JRE::Sprite>(texHandle);
+			auto spriteHandle = JRE::ResourceManager::CreateAsset<JRE::Sprite>(JRE::SoftAssetRef<JRE::Texture2D>(texHandle));
 			pComponent->SetSprite(spriteHandle);
 		}
 		auto p1HealthComponent = player1->AddComponent<HealthComponent>(3);
-		p1HealthComponent->SetHitSound(hitSound);
+		p1HealthComponent->SetHitSound(hitSoundHandle);
 		auto p1TakeDamageCommand = std::make_unique<TakeDamageCommand>(p1HealthComponent);
 		auto p1ScoreComponent = player1->AddComponent<ScoreComponent>();
 		auto p1IncreaseScoreCommand = std::make_unique<IncreaseScoreCommand>(p1ScoreComponent, 2);
@@ -111,7 +103,7 @@ namespace BubbleBobble
 		//	pComponent->SetSprite(texHandle);
 		//}
 		auto p2HealthComponent = player2->AddComponent<HealthComponent>(3);
-		p2HealthComponent->SetHitSound(hitSound);
+		p2HealthComponent->SetHitSound(hitSoundHandle);
 		auto p2TakeDamageCommand = std::make_unique<TakeDamageCommand>(p2HealthComponent);
 		auto p2ScoreComponent = player2->AddComponent<ScoreComponent>();
 		auto p2IncreaseScoreCommand = std::make_unique<IncreaseScoreCommand>(p2ScoreComponent, 2);
@@ -133,9 +125,9 @@ namespace BubbleBobble
 
 		//Keybind info
 		auto p1UIInfo = std::make_unique<JRE::GameObject>();
-		p1UIInfo->AddComponent<JRE::TextRendererComponent>("Player1 | Move: DPAD | Damage: FACE_DOWN (plays sound) | Score: FACE_UP", fontHandle);
+		p1UIInfo->AddComponent<JRE::TextRendererComponent>("Player1 | Move: DPAD | Damage: FACE_DOWN (plays sound) | Score: FACE_UP", softFontRef);
 		auto p2UIInfo = std::make_unique<JRE::GameObject>();
-		p2UIInfo->AddComponent<JRE::TextRendererComponent>("Player2 | Move: W,A,S,D | Damage: F (plays sound) | Score: G", fontHandle);
+		p2UIInfo->AddComponent<JRE::TextRendererComponent>("Player2 | Move: W,A,S,D | Damage: F (plays sound) | Score: G", softFontRef);
 
 		//Player UI
 		auto UI = std::make_unique<JRE::GameObject>("UI");
