@@ -24,7 +24,6 @@ namespace fs = std::filesystem;
 #include "JREngine/Asset/Sprite.h"
 
 #include "JREngine/Asset/SpriteEditor.h"
-
 #include "JREngine/Asset/AssetImporter.h"
 #include "JREngine/Asset/SoundClipImporter.h"
 #include "JREngine/Asset/TextureImporter.h"
@@ -54,8 +53,8 @@ namespace BubbleBobble
 {
 	void load()
 	{
-		//JRE::AssetHandle hitSoundHandle = JRE::AssetImporter::ImportAsset("HUD/Select.wav");
 		auto hitSoundHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::SoundClipImporter("HUD/Select.wav")));
+		auto softHitSoundRef = JRE::SoftAssetRef<JRE::ISoundClip>(hitSoundHandle);
 		auto fontHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::FontImporter("Lingua.otf").SetSize(20)));
 		auto softFontRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
 
@@ -77,7 +76,7 @@ namespace BubbleBobble
 			pComponent->SetSprite(JRE::SoftAssetRef<JRE::Sprite>(playerSprites[1]));
 		}
 		auto p1HealthComponent = player1->AddComponent<HealthComponent>(3);
-		p1HealthComponent->SetHitSound(hitSoundHandle);
+		p1HealthComponent->SetHitSound(softHitSoundRef);
 		auto p1TakeDamageCommand = std::make_unique<TakeDamageCommand>(p1HealthComponent);
 		auto p1ScoreComponent = player1->AddComponent<ScoreComponent>();
 		auto p1IncreaseScoreCommand = std::make_unique<IncreaseScoreCommand>(p1ScoreComponent, 2);
@@ -104,7 +103,7 @@ namespace BubbleBobble
 		//	pComponent->SetSprite(texHandle);
 		//}
 		auto p2HealthComponent = player2->AddComponent<HealthComponent>(3);
-		p2HealthComponent->SetHitSound(hitSoundHandle);
+		p2HealthComponent->SetHitSound(softHitSoundRef);
 		auto p2TakeDamageCommand = std::make_unique<TakeDamageCommand>(p2HealthComponent);
 		auto p2ScoreComponent = player2->AddComponent<ScoreComponent>();
 		auto p2IncreaseScoreCommand = std::make_unique<IncreaseScoreCommand>(p2ScoreComponent, 2);
@@ -133,9 +132,9 @@ namespace BubbleBobble
 		//Player UI
 		auto UI = std::make_unique<JRE::GameObject>("UI");
 		auto player1UI = std::make_unique<JRE::GameObject>("player1UI");
-		player1UI->AddComponent<PlayerUIComponent>(*(player1.get()), fontHandle);
+		player1UI->AddComponent<PlayerUIComponent>(*(player1.get()), softFontRef);
 		auto player2UI = std::make_unique<JRE::GameObject>("player2UI");
-		player2UI->AddComponent<PlayerUIComponent>(*(player2.get()), fontHandle);
+		player2UI->AddComponent<PlayerUIComponent>(*(player2.get()), softFontRef);
 
 		p1UIInfo->SetParent(UI.get());
 		p2UIInfo->SetParent(UI.get());

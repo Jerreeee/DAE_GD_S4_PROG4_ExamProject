@@ -14,7 +14,7 @@ namespace JRE
 		const auto& pos = GetWorldTransform().GetPosition();
 		SDLRenderer::GetInstance().RenderTexture(m_SoftSpriteRef.TryGet(), pos.x, pos.y);
 	}
-	void SpriteRendererComponent::SetSprite(SoftAssetRef<Sprite> softSpriteRef)
+	void SpriteRendererComponent::SetSprite(const SoftAssetRef<Sprite>& softSpriteRef)
 	{
 		m_SoftSpriteRef = softSpriteRef;
 	}

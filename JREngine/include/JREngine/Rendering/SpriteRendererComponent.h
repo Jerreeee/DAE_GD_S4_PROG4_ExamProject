@@ -20,7 +20,7 @@ namespace JRE
 
 		virtual void Render() const override;
 
-		void SetSprite(SoftAssetRef<Sprite> softSpriteRef);
+		void SetSprite(const SoftAssetRef<Sprite>& softSpriteRef);
 	private:
 		SoftAssetRef<Sprite> m_SoftSpriteRef{};
 	};

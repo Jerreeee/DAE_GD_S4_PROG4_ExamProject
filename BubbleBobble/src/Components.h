@@ -2,7 +2,9 @@
 #include <memory>
 #include "JREngine/Scene/ComponentBase.h"
 #include "JREngine/Core/Observer.h"
-#include "JREngine/Asset/Asset.h"
+#include "JREngine/Asset/Font.h"
+#include "JREngine/Asset/SoftAssetRef.h"
+#include "JREngine/Audio/ISoundClip.h"
 #include "Events.h"
 
 namespace JRE
@@ -23,7 +25,7 @@ namespace BubbleBobble
 
 		virtual void Update() override {};
 
-		void SetHitSound(JRE::AssetHandle hitSoundHandle);
+		void SetHitSound(const JRE::SoftAssetRef<JRE::ISoundClip>& softHitSoundRef);
 		void SetHealth(int health);
 		void SetMaxHealth(int maxHealth);
 		void TakeDamage(int amount);
@@ -34,8 +36,7 @@ namespace BubbleBobble
 		int m_Health{};
 		int m_MaxHealth{};
 		JRE::Event_t m_DamageEvent{};
-		JRE::AssetHandle m_HitSoundHandle{ JRE::AssetHandle::InvalidUUID };
-		JRE::AssetRef<JRE::ISoundClip> m_pHitSound{};
+		JRE::SoftAssetRef<JRE::ISoundClip> m_SoftHitSoundRef{};
 	};
 
 	class ScoreComponent final : public JRE::ComponentBase
@@ -55,7 +56,7 @@ namespace BubbleBobble
 	class PlayerUIComponent final : public JRE::ComponentBase, public JRE::IObserver
 	{
 	public:
-		PlayerUIComponent(JRE::GameObject& UIGameObject, JRE::GameObject& player, JRE::AssetHandle fontHandle);
+		PlayerUIComponent(JRE::GameObject& UIGameObject, JRE::GameObject& player, const JRE::SoftAssetRef<JRE::Font>& softFontRef);
 		~PlayerUIComponent();
 		virtual void Update() override {};
 		virtual void OnNotify(JRE::EventInfo& event) override;
