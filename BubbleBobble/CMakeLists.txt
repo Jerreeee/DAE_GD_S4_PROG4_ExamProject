@@ -4,9 +4,8 @@ set(SOURCE_DIR src)
 
 set(SOURCE_FILES
     "main.cpp"
-    "Commands.h"
-    "Commands.cpp"
     "Events.h"
+
     "Components/PlayerUIComponent.h"
     "Components/PlayerUIComponent.cpp"
     "Components/ScoreComponent.h"
@@ -17,6 +16,13 @@ set(SOURCE_FILES
     "Components/RotateParentComponent.h"
     "Components/FPSComponent.cpp"
     "Components/RotateParentComponent.cpp"
+
+    "Player/MoveCommand.h"
+    "Player/MoveCommand.cpp"
+    "Player/TakeDamageCommand.h"
+    "Player/TakeDamageCommand.cpp"
+    "Player/IncreaseScoreCommand.h"
+    "Player/IncreaseScoreCommand.cpp"
 )
 AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
 
