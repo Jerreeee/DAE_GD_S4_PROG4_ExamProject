@@ -37,7 +37,7 @@ namespace JRE
     }
     void Sprite::Initialize() const
     {
-        m_SoftTextureRef.Load();
+        m_SoftTextureRef.Get();
         if (m_UsesWholeTextureRegion)
         {
             glm::ivec2 size = m_SoftTextureRef.Get()->GetSize();

@@ -76,7 +76,6 @@ namespace BubbleBobble
 			auto texHandle = JRE::AssetImporter::GetInstance().ImportAsset(JRE::TextureImporter("Player/Bobby/Run_Anim.png"));
 			auto texRef = JRE::ResourceManager::GetAsset<JRE::Texture2D>(texHandle);
 			auto playerSprites = JRE::SpriteEditor::SplitTexture2D(texRef, 4, 4, 1);
-			//auto spriteHandle = JRE::ResourceManager::CreateAsset<JRE::Sprite>(JRE::SoftAssetRef<JRE::Texture2D>(texHandle));
 			pComponent->SetSprite(JRE::SoftAssetRef<JRE::Sprite>(playerSprites[1]));
 		}
 		auto p1HealthComponent = player1->AddComponent<HealthComponent>(3);

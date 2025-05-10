@@ -20,7 +20,7 @@ namespace JRE
 		if (m_NeedsUpdate)
 		{
 			if (!m_SoftFontRef.IsLoaded())
-				m_SoftFontRef.Load();
+				m_SoftFontRef.Get();
 			auto textureRef = CreateAssetRef<Texture2D>(m_Text, m_SoftFontRef.Get());
 			m_Sprite = CreateAssetRef<Sprite>(SoftAssetRef<Texture2D>(textureRef));
 			m_NeedsUpdate = false;

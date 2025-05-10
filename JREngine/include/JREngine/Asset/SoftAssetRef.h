@@ -31,57 +31,19 @@ namespace JRE
         //If the internal asset is not nullptr
         bool IsLoaded() const { return m_Asset != nullptr; }
 
-        //If the asset is not yet loaded and the asset is owned by ResourceManager,
-        //then try to load it from the ResourceManager
-        bool TryLoad() const
-        {
-            if (!m_Asset && m_Handle.IsValid())
-                m_Asset = static_pointer_cast<T>(ServiceLocator::GetResourceManager().GetAsset(m_Handle, AssetLoadMode::Unspecified));
-            return m_Asset != nullptr;
-        }
-
-        //If the asset is not yet loaded and the asset is owned by ResourceManager,
-        //then load it form the ResourceManager
-        void Load() const
-        {
-            if (!m_Asset && m_Handle.IsValid())
-                m_Asset = static_pointer_cast<T>(ServiceLocator::GetResourceManager().GetAsset(m_Handle, AssetLoadMode::Immediate));
-        }
-
-        //Only try reloading if the asset is owned by ResourceManager
-        bool TryReload()
-        {
-            if (!m_Handle.IsValid())
-                return false;
-
-            //Only updates m_Asset if GetAsset() was successful
-            auto newAsset = static_pointer_cast<T>(ServiceLocator::GetResourceManager().GetAsset(m_Handle, AssetLoadMode::Unspecified));
-            if (newAsset)
-                m_Asset = newAsset;
-
-            return m_Asset != nullptr;
-        }
-
-        //Only reload if the asest exists in the ResourceManager
-        void Reload() const
-        {
-            if (!m_Handle.IsValid())
-                return;
-
-            m_Asset = static_pointer_cast<T>(ServiceLocator::GetResourceManager().GetAsset(m_Handle, AssetLoadMode::Immediate));
-        }
-
         //Tries to get the asset, doesnt do anything if its not yet loaded
         AssetRef<T> TryGet() const
         {
-            TryLoad();
+            if (!m_Asset && m_Handle.IsValid())
+                m_Asset = static_pointer_cast<T>(ServiceLocator::GetResourceManager().GetAsset(m_Handle, AssetLoadMode::Unspecified));
             return m_Asset;
         }
 
         //Gets the asset, blocking if not yet loaded and asset is owned by the ResourceManager
         AssetRef<T> Get() const
         {
-            Load();
+            if (!m_Asset && m_Handle.IsValid())
+                m_Asset = static_pointer_cast<T>(ServiceLocator::GetResourceManager().GetAsset(m_Handle, AssetLoadMode::Immediate));
             return m_Asset;
         }
 

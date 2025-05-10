@@ -36,7 +36,7 @@ namespace BubbleBobble
 		m_DamageEvent->NotifyObservers(e);
 
 		if (!m_HitSound.IsLoaded())
-			m_HitSound.Load();
+			m_HitSound.Get();
 
 		JRE::ServiceLocator::GetSoundSystem().Play(m_HitSound.Get());
 	}
