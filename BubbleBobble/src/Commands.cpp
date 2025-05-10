@@ -2,7 +2,9 @@
 #include "JREngine/Core/Timer.h"
 
 #include "Commands.h"
-#include "Components.h"
+#include "Components/HealthComponent.h"
+#include "Components/ScoreComponent.h"
+#include "Components/PlayerUIComponent.h"
 
 namespace BubbleBobble
 {

@@ -6,13 +6,18 @@ set(SOURCE_FILES
     "main.cpp"
     "Commands.h"
     "Commands.cpp"
-    "Components.h"
-    "Components.cpp"
     "Events.h"
-    "FPSComponent.h"
-    "RotateParentComponent.h"
-    "FPSComponent.cpp"
-    "RotateParentComponent.cpp"
+
+    "Components/PlayerUIComponent.h"
+    "Components/PlayerUIComponent.cpp"
+    "Components/HealthComponent.h"
+    "Components/HealthComponent.cpp"
+    "Components/ScoreComponent.h"
+    "Components/ScoreComponent.cpp"
+    "Components/FPSComponent.h"
+    "Components/RotateParentComponent.h"
+    "Components/FPSComponent.cpp"
+    "Components/RotateParentComponent.cpp"
 )
 AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
 
@@ -25,6 +30,7 @@ target_link_libraries(${TARGET_NAME} PRIVATE
     JREngine
 )
 target_include_directories(${TARGET_NAME} PRIVATE
+    ${SOURCE_DIR}
     ${VLD_INCLUDE_DIR}
 )
 
