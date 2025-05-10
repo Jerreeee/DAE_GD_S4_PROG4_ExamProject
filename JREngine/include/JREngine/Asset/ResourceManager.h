@@ -1,8 +1,9 @@
 #pragma once
 #include <concepts>
-#include "JREngine/Core/ServiceLocator.h"
-#include "JREngine/Asset/IResourceManager.h"
-#include "JREngine/Asset/Asset.h"
+//#include "JREngine/Core/ServiceLocator.h"
+//#include "JREngine/Asset/IResourceManager.h"
+//#include "JREngine/Asset/Asset.h"
+#include "JREngine/Asset/SoftAssetRef.h"
 
 namespace JRE
 {

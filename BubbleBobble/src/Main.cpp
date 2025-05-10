@@ -30,12 +30,9 @@ namespace fs = std::filesystem;
 #include "JREngine/Asset/TextureImporter.h"
 #include "JREngine/Asset/FontImporter.h"
 
+#include "FPSComponent.h"
 #include "Commands.h"
-#include "Components/FPSComponent.h"
-#include "Components/PlayerUIComponent.h"
-#include "Components/ScoreComponent.h"
-#include "Components/HealthComponent.h"
-#include "Components/FPSComponent.h"
+#include "Components.h"
 
 namespace BubbleBobble
 {
