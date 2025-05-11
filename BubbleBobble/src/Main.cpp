@@ -32,7 +32,6 @@ namespace fs = std::filesystem;
 #include "JREngine/Asset/TextureImporter.h"
 #include "JREngine/Asset/FontImporter.h"
 
-#include "Player/MoveCommand.h"
 #include "Player/TakeDamageCommand.h"
 #include "Player/IncreaseScoreCommand.h"
 #include "Player/PlayerScriptComponent.h"
