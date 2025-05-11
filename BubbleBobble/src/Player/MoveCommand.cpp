@@ -13,10 +13,10 @@ namespace BubbleBobble
 
 	void MoveCommand::Execute()
 	{
-		glm::vec3 pos = m_GameObject.GetLocalPosition();
+		glm::vec3 pos = m_GameObject.GetWorldPosition();
 		float offset = m_Speed * JRE::Timer::GetInstance().GetDeltaTime();
 		pos.x += offset * m_Direction.x;
 		pos.y += offset * m_Direction.y;
-		m_GameObject.SetLocalPosition(pos);
+		m_GameObject.SetWorldPosition(pos);
 	}
 }

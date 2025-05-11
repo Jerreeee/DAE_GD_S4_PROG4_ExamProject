@@ -111,6 +111,14 @@ namespace JRE
 	{
 		return m_LocalTransform.GetPosition();
 	}
+	void GameObject::SetWorldPosition(float x, float y)
+	{
+		m_WorldTransform.SetPosition(x, y, 0.f);
+	}
+	void GameObject::SetWorldPosition(const glm::vec3& pos)
+	{
+		m_WorldTransform.SetPosition(pos);
+	}
 	void GameObject::UpdateWorldPosition()
 	{
 		if (!m_PositionIsDirty)

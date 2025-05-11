@@ -23,6 +23,8 @@ set(SOURCE_FILES
     "Player/TakeDamageCommand.cpp"
     "Player/IncreaseScoreCommand.h"
     "Player/IncreaseScoreCommand.cpp"
+    "Player/PlayerScriptComponent.h"
+    "Player/PlayerScriptComponent.cpp"
 )
 AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
 

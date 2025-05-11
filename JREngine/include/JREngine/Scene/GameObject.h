@@ -72,6 +72,8 @@ namespace JRE
 		Transform& GetLocalTransform();
 		const glm::vec3& GetWorldPosition();
 		const glm::vec3& GetLocalPosition();
+		void SetWorldPosition(float x, float y);
+		void SetWorldPosition(const glm::vec3& pos);
 		void SetLocalPosition(float x, float y);
 		void SetLocalPosition(const glm::vec3& position);
 

@@ -9,19 +9,22 @@ namespace fs = std::filesystem;
 #include <iostream>
 
 #include "JREngine/JREngine.h"
+#include "JREngine/Asset/ResourceManager.h"
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Input/InputManager.h"
-#include "JREngine/Asset/ResourceManager.h"
-#include "JREngine/Scene/GameObject.h"
-#include "JREngine/Scene/Scene.h"
-#include "JREngine/Rendering/TextRendererComponent.h"
-#include "JREngine/Rendering/SpriteRendererComponent.h"
 #include "JREngine/Core/ServiceLocator.h"
 #include "JREngine/Audio/ISoundSystem.h"
+#include "JREngine/Scene/Scene.h"
+#include "JREngine/Scene/GameObject.h"
+
 #include "JREngine/Audio/ISoundClip.h"
 #include "JREngine/Asset/Font.h"
 #include "JREngine/Asset/Texture2D.h"
 #include "JREngine/Asset/Sprite.h"
+
+#include "JREngine/Rendering/TextRendererComponent.h"
+#include "JREngine/Rendering/SpriteRendererComponent.h"
+#include "JREngine/Physics/RigidBody2DComponent.h"
 
 #include "JREngine/Asset/SpriteEditor.h"
 #include "JREngine/Asset/AssetImporter.h"
@@ -32,6 +35,7 @@ namespace fs = std::filesystem;
 #include "Player/MoveCommand.h"
 #include "Player/TakeDamageCommand.h"
 #include "Player/IncreaseScoreCommand.h"
+#include "Player/PlayerScriptComponent.h"
 #include "Components/FPSComponent.h"
 #include "Components/PlayerUIComponent.h"
 #include "Components/ScoreComponent.h"
@@ -64,7 +68,7 @@ namespace BubbleBobble
 
 		auto& scene = JRE::SceneManager::GetInstance().CreateScene("Demo");
 
-		JRE::Input::InputManager& inputManager = JRE::Input::InputManager::GetInstance();
+		//JRE::Input::InputManager& inputManager = JRE::Input::InputManager::GetInstance();
 
 		//##################
 		//Player 1
@@ -78,84 +82,72 @@ namespace BubbleBobble
 			auto playerSprites = JRE::SpriteEditor::SplitTexture2D(texRef, 4, 4, 1);
 			pComponent->SetSprite(JRE::SoftAssetRef<JRE::Sprite>(playerSprites[1]));
 		}
-		auto p1HealthComponent = player1->AddComponent<HealthComponent>(3);
-		p1HealthComponent->SetHitSound(softHitSoundRef);
-		auto p1TakeDamageCommand = std::make_unique<TakeDamageCommand>(p1HealthComponent);
-		auto p1ScoreComponent = player1->AddComponent<ScoreComponent>();
-		auto p1IncreaseScoreCommand = std::make_unique<IncreaseScoreCommand>(p1ScoreComponent, 2);
-		auto p1MoveUpCommand = std::make_unique<MoveCommand>(*player1.get(), 100.f, glm::vec2{ 0.f, -1.f });
-		auto p1MoveDownCommand = std::make_unique<MoveCommand>(*player1.get(), 100.f, glm::vec2{ 0.f, 1.f });
-		auto p1MoveLeftCommand = std::make_unique<MoveCommand>(*player1.get(), 100.f, glm::vec2{ -1.f, 0.f });
-		auto p1MoveRightCommand = std::make_unique<MoveCommand>(*player1.get(), 100.f, glm::vec2{ 1.f, 0.f });
-		size_t player0Idx = inputManager.AddPlayer();
-		inputManager.BindCommand(player0Idx, std::move(p1MoveUpCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::DPAD_UP, JRE::Input::ButtonState::Pressed })
-					.BindCommand(player0Idx, std::move(p1MoveDownCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::DPAD_DOWN, JRE::Input::ButtonState::Pressed })
-					.BindCommand(player0Idx, std::move(p1MoveLeftCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::DPAD_LEFT, JRE::Input::ButtonState::Pressed })
-					.BindCommand(player0Idx, std::move(p1MoveRightCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::DPAD_RIGHT, JRE::Input::ButtonState::Pressed })
-					.BindCommand(player0Idx, std::move(p1TakeDamageCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::FACE_DOWN, JRE::Input::ButtonState::DownThisFrame })
-					.BindCommand(player0Idx, std::move(p1IncreaseScoreCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::FACE_UP, JRE::Input::ButtonState::DownThisFrame });
+		player1->AddComponent<JRE::RigidBody2DComponent>();
+		player1->AddComponent<PlayerScriptComponent>();
+
+		scene.Add(std::move(player1));
 
 		//##################
 		//Player 2
 		//##################
-		auto player2 = std::make_unique<JRE::GameObject>("Player 2");
-		player2->SetLocalPosition(416, 180);
+		//auto player2 = std::make_unique<JRE::GameObject>("Player 2");
+		//player2->SetLocalPosition(416, 180);
 		//if (auto* pComponent = player2->AddComponent<JRE::SpriteRendererComponent>(); pComponent)
 		//{
 		//	JRE::AssetHandle texHandle = JRE::ServiceLocator::GetResourceManager().LoadTexture("Player/Bobby/Bubble_Anim.png");
 		//	pComponent->SetSprite(texHandle);
 		//}
-		auto p2HealthComponent = player2->AddComponent<HealthComponent>(3);
-		p2HealthComponent->SetHitSound(softHitSoundRef);
-		auto p2TakeDamageCommand = std::make_unique<TakeDamageCommand>(p2HealthComponent);
-		auto p2ScoreComponent = player2->AddComponent<ScoreComponent>();
-		auto p2IncreaseScoreCommand = std::make_unique<IncreaseScoreCommand>(p2ScoreComponent, 2);
-		auto p2MoveUpCommand = std::make_unique<MoveCommand>(*player2.get(), 200.f, glm::vec2{ 0.f, -1.f });
-		auto p2MoveDownCommand = std::make_unique<MoveCommand>(*player2.get(), 200.f, glm::vec2{ 0.f, 1.f });
-		auto p2MoveLeftCommand = std::make_unique<MoveCommand>(*player2.get(), 200.f, glm::vec2{ -1.f, 0.f });
-		auto p2MoveRightCommand = std::make_unique<MoveCommand>(*player2.get(), 200.f, glm::vec2{ 1.f, 0.f });
-		size_t player1Idx = inputManager.AddPlayer();
-		inputManager.BindCommand(player1Idx, std::move(p2MoveUpCommand), JRE::Input::KeyboardBindingInfo{ JRE::Input::KeyboardKey::W, JRE::Input::KeyState::Pressed })
-					.BindCommand(player1Idx, std::move(p2MoveDownCommand), JRE::Input::KeyboardBindingInfo{ JRE::Input::KeyboardKey::S, JRE::Input::KeyState::Pressed })
-					.BindCommand(player1Idx, std::move(p2MoveLeftCommand), JRE::Input::KeyboardBindingInfo{ JRE::Input::KeyboardKey::A, JRE::Input::KeyState::Pressed })
-					.BindCommand(player1Idx, std::move(p2MoveRightCommand), JRE::Input::KeyboardBindingInfo{ JRE::Input::KeyboardKey::D, JRE::Input::KeyState::Pressed })
-					.BindCommand(player1Idx, std::move(p2TakeDamageCommand), JRE::Input::KeyboardBindingInfo{ JRE::Input::KeyboardKey::F, JRE::Input::KeyState::DownThisFrame })
-					.BindCommand(player1Idx, std::move(p2IncreaseScoreCommand), JRE::Input::KeyboardBindingInfo{ JRE::Input::KeyboardKey::G, JRE::Input::KeyState::DownThisFrame });
+		//auto p2HealthComponent = player2->AddComponent<HealthComponent>(3);
+		//p2HealthComponent->SetHitSound(softHitSoundRef);
+		//auto p2TakeDamageCommand = std::make_unique<TakeDamageCommand>(p2HealthComponent);
+		//auto p2ScoreComponent = player2->AddComponent<ScoreComponent>();
+		//auto p2IncreaseScoreCommand = std::make_unique<IncreaseScoreCommand>(p2ScoreComponent, 2);
+		//auto p2MoveUpCommand = std::make_unique<MoveCommand>(*player2.get(), 200.f, glm::vec2{ 0.f, -1.f });
+		//auto p2MoveDownCommand = std::make_unique<MoveCommand>(*player2.get(), 200.f, glm::vec2{ 0.f, 1.f });
+		//auto p2MoveLeftCommand = std::make_unique<MoveCommand>(*player2.get(), 200.f, glm::vec2{ -1.f, 0.f });
+		//auto p2MoveRightCommand = std::make_unique<MoveCommand>(*player2.get(), 200.f, glm::vec2{ 1.f, 0.f });
+		//size_t player1Idx = inputManager.AddPlayer();
+		//inputManager.BindCommand(player1Idx, std::move(p2MoveUpCommand), JRE::Input::KeyboardBindingInfo{ JRE::Input::KeyboardKey::W, JRE::Input::KeyState::Pressed })
+		//			.BindCommand(player1Idx, std::move(p2MoveDownCommand), JRE::Input::KeyboardBindingInfo{ JRE::Input::KeyboardKey::S, JRE::Input::KeyState::Pressed })
+		//			.BindCommand(player1Idx, std::move(p2MoveLeftCommand), JRE::Input::KeyboardBindingInfo{ JRE::Input::KeyboardKey::A, JRE::Input::KeyState::Pressed })
+		//			.BindCommand(player1Idx, std::move(p2MoveRightCommand), JRE::Input::KeyboardBindingInfo{ JRE::Input::KeyboardKey::D, JRE::Input::KeyState::Pressed })
+		//			.BindCommand(player1Idx, std::move(p2TakeDamageCommand), JRE::Input::KeyboardBindingInfo{ JRE::Input::KeyboardKey::F, JRE::Input::KeyState::DownThisFrame })
+		//			.BindCommand(player1Idx, std::move(p2IncreaseScoreCommand), JRE::Input::KeyboardBindingInfo{ JRE::Input::KeyboardKey::G, JRE::Input::KeyState::DownThisFrame });
 
 		//##################
 		//UI
 		//##################
 
 		//Keybind info
-		auto p1UIInfo = std::make_unique<JRE::GameObject>();
-		p1UIInfo->AddComponent<JRE::TextRendererComponent>("Player1 | Move: DPAD | Damage: FACE_DOWN (plays sound) | Score: FACE_UP", softFontRef);
-		auto p2UIInfo = std::make_unique<JRE::GameObject>();
-		p2UIInfo->AddComponent<JRE::TextRendererComponent>("Player2 | Move: W,A,S,D | Damage: F (plays sound) | Score: G", softFontRef);
+		//auto p1UIInfo = std::make_unique<JRE::GameObject>();
+		//p1UIInfo->AddComponent<JRE::TextRendererComponent>("Player1 | Move: DPAD | Damage: FACE_DOWN (plays sound) | Score: FACE_UP", softFontRef);
+		//auto p2UIInfo = std::make_unique<JRE::GameObject>();
+		//p2UIInfo->AddComponent<JRE::TextRendererComponent>("Player2 | Move: W,A,S,D | Damage: F (plays sound) | Score: G", softFontRef);
 
 		//Player UI
-		auto UI = std::make_unique<JRE::GameObject>("UI");
-		auto player1UI = std::make_unique<JRE::GameObject>("player1UI");
-		player1UI->AddComponent<PlayerUIComponent>(*(player1.get()), softFontRef);
-		auto player2UI = std::make_unique<JRE::GameObject>("player2UI");
-		player2UI->AddComponent<PlayerUIComponent>(*(player2.get()), softFontRef);
+		//auto UI = std::make_unique<JRE::GameObject>("UI");
+		//auto player1UI = std::make_unique<JRE::GameObject>("player1UI");
+		//player1UI->AddComponent<PlayerUIComponent>(*(player1.get()), softFontRef);
+		//auto player2UI = std::make_unique<JRE::GameObject>("player2UI");
+		//player2UI->AddComponent<PlayerUIComponent>(*(player2.get()), softFontRef);
 
-		p1UIInfo->SetParent(UI.get());
-		p2UIInfo->SetParent(UI.get());
-		player1UI->SetParent(UI.get());
-		player2UI->SetParent(UI.get());
+		//p1UIInfo->SetParent(UI.get());
+		//p2UIInfo->SetParent(UI.get());
+		//player1UI->SetParent(UI.get());
+		//player2UI->SetParent(UI.get());
 
-		p1UIInfo->SetLocalPosition(0.f, 10.f);
-		player1UI->SetLocalPosition(0.f, 40.f);
-		p2UIInfo->SetLocalPosition(0.f, 120.f);
-		player2UI->SetLocalPosition(0.f, 150.f);
+		//p1UIInfo->SetLocalPosition(0.f, 10.f);
+		//player1UI->SetLocalPosition(0.f, 40.f);
+		//p2UIInfo->SetLocalPosition(0.f, 120.f);
+		//player2UI->SetLocalPosition(0.f, 150.f);
 
-		scene.Add(std::move(p1UIInfo));
-		scene.Add(std::move(p2UIInfo));
-		scene.Add(std::move(player1UI));
-		scene.Add(std::move(player2UI));
-		scene.Add(std::move(UI));
+		//scene.Add(std::move(p1UIInfo));
+		//scene.Add(std::move(p2UIInfo));
+		//scene.Add(std::move(player1UI));
+		//scene.Add(std::move(player2UI));
+		//scene.Add(std::move(UI));
 
-		scene.Add(std::move(player1));
-		scene.Add(std::move(player2));
+		//scene.Add(std::move(player1));
+		//scene.Add(std::move(player2));
 	}
 }

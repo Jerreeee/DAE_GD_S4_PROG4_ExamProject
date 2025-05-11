@@ -49,6 +49,8 @@ set(SOURCE_FILES
     "Scene/SceneManager.cpp"
     "Scene/Transform.cpp"
     "Scene/ComponentBase.cpp"
+
+    "Physics/RigidBody2DComponent.cpp"
 )
 AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
 
@@ -103,6 +105,8 @@ set(INCLUDE_FILES
     "Scene/SceneManager.h"
     "Scene/Transform.h"
     "Scene/ComponentBase.h"
+
+    "Physics/RigidBody2DComponent.h"
 )
 AddPrefix(INCLUDE_FILES "${INTERNAL_INCLUDE_DIR}/")
 

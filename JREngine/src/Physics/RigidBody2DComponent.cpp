@@ -1,0 +1,30 @@
+#include "Core/Timer.h"
+#include "Scene/GameObject.h"
+#include "Physics/RigidBody2DComponent.h"
+
+namespace JRE
+{
+	RigidBody2DComponent::RigidBody2DComponent(GameObject& gameObject) :
+		ComponentBase(gameObject)
+	{
+	}
+	void RigidBody2DComponent::Update()
+	{
+		auto& obj = GetGameObject();
+
+		m_Vel.y += m_Gravity * Timer::GetInstance().GetDeltaTime();
+
+		glm::vec3 pos = obj.GetWorldPosition();
+		const int pixPerM{ 20 };
+		pos.y += m_Vel.y * pixPerM * Timer::GetInstance().GetDeltaTime();
+
+		float floorY = 300.f;
+		if (pos.y > floorY)
+		{
+			pos.y = floorY;
+			m_Vel.y = 0.f;
+		}
+
+		obj.SetWorldPosition(pos);
+	}
+}
