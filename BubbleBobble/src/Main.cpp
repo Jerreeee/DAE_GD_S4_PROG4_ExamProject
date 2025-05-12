@@ -118,8 +118,8 @@ namespace BubbleBobble
 		//##################
 
 		//Keybind info
-		//auto p1UIInfo = std::make_unique<JRE::GameObject>();
-		//p1UIInfo->AddComponent<JRE::TextRendererComponent>("Player1 | Move: DPAD | Damage: FACE_DOWN (plays sound) | Score: FACE_UP", softFontRef);
+		auto p1UIInfo = std::make_unique<JRE::GameObject>();
+		p1UIInfo->AddComponent<JRE::TextRendererComponent>("Player1 | Move: DPAD (state will change)", softFontRef);
 		//auto p2UIInfo = std::make_unique<JRE::GameObject>();
 		//p2UIInfo->AddComponent<JRE::TextRendererComponent>("Player2 | Move: W,A,S,D | Damage: F (plays sound) | Score: G", softFontRef);
 
@@ -140,7 +140,7 @@ namespace BubbleBobble
 		//p2UIInfo->SetLocalPosition(0.f, 120.f);
 		//player2UI->SetLocalPosition(0.f, 150.f);
 
-		//scene.Add(std::move(p1UIInfo));
+		scene.Add(std::move(p1UIInfo));
 		//scene.Add(std::move(p2UIInfo));
 		//scene.Add(std::move(player1UI));
 		//scene.Add(std::move(player2UI));
