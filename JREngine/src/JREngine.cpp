@@ -123,6 +123,8 @@ void JRE::JREngine::Run(const std::function<void()>& load)
 {
 	load();
 
+	SceneManager::GetInstance().Start();
+
 	m_Quit = false;
 	m_LastTime = std::chrono::high_resolution_clock::now();
 #ifndef __EMSCRIPTEN__

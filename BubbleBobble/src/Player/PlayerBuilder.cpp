@@ -16,7 +16,7 @@
 #include "JREngine/Animation/SpriteAnimatorComponent.h"
 
 #include "Player/PlayerScriptComponent.h"
-#include "Player/Player.h"
+#include "Player/PlayerBuilder.h"
 
 namespace BubbleBobble::Player
 {

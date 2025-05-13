@@ -10,6 +10,16 @@ namespace JRE
 	{
 	}
 
+	void GameObject::Start()
+	{
+		//TODO not ideal because Start() is only used by ScriptComponents
+		//but simple fix for now
+		for (const auto& component : m_Components)
+		{
+			component->Start();
+		}
+	}
+
 	void GameObject::Update()
 	{
 		for (const auto& component : m_Components)

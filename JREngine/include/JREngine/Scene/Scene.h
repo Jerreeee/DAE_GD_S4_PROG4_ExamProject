@@ -12,6 +12,7 @@ namespace JRE
 		void Remove(GameObject* object);
 		void RemoveAll();
 
+		void Start();
 		void Update();
 		void Cleanup();
 
@@ -20,7 +21,6 @@ namespace JRE
 		Scene(Scene&& other) = delete;
 		Scene& operator=(const Scene& other) = delete;
 		Scene& operator=(Scene&& other) = delete;
-
 	private: 
 		explicit Scene(const std::string& name);
 

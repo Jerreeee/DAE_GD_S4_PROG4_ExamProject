@@ -16,6 +16,7 @@ namespace JRE
 		ComponentBase& operator=(const ComponentBase& other) = delete;
 		ComponentBase& operator=(ComponentBase&& other) = delete;
 
+		virtual void Start() {};
 		virtual void Update() = 0;
 
 		void Destroy();

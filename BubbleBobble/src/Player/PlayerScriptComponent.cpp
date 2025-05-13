@@ -14,12 +14,26 @@ namespace BubbleBobble::Player
 		m_Player{ gameObject }
 	{
 		m_pSpriteAnimatiorComponent = m_Player.GetComponent<JRE::SpriteAnimatorComponent>();
-		assert(m_pSpriteAnimatiorComponent && "m_pSpriteAnimatiorComponent was nullptr");
+		if (!m_pSpriteAnimatiorComponent)
+			m_pSpriteAnimatiorComponent = m_Player.AddComponent<JRE::SpriteAnimatorComponent>();
+
 		m_pRigidBody2DComponent = m_Player.GetComponent<JRE::RigidBody2DComponent>();
-		assert(m_pRigidBody2DComponent && "m_pRigidBody2DComponent was nullptr");
+		if (!m_pRigidBody2DComponent)
+			m_pRigidBody2DComponent = m_Player.AddComponent<JRE::RigidBody2DComponent>();
 
 		m_Animations.resize(AnimationName::s_Names.size());
+		
+		//Create all the different states
+		m_States.emplace_back(std::make_unique<MovingState>(*this));
+		m_States.emplace_back(std::make_unique<ShootState>(*this));
+		m_States.emplace_back(std::make_unique<JumpState>(*this));
+		m_States.emplace_back(std::make_unique<DiedState>(*this));
+		//Set MovingState by default
+		m_pState = m_States[0].get();
+	}
 
+	void ScriptComponent::Start()
+	{
 		//Setup commands to collect input from the InputManager (could also poll inside the state itself)
 		auto pMoveLeftCommand = std::make_unique<MoveCommand>(*this, -1);
 		auto pMoveRightCommand = std::make_unique<MoveCommand>(*this, 1);
@@ -29,20 +43,10 @@ namespace BubbleBobble::Player
 		JRE::Input::InputManager& inputManager = JRE::Input::InputManager::GetInstance();
 		size_t playerIdx = inputManager.AddPlayer();
 		inputManager.BindCommand(playerIdx, std::move(pMoveLeftCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::DPAD_LEFT, JRE::Input::ButtonState::Pressed })
-					.BindCommand(playerIdx, std::move(pMoveRightCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::DPAD_RIGHT, JRE::Input::ButtonState::Pressed })
-					.BindCommand(playerIdx, std::move(pJumpCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::FACE_DOWN, JRE::Input::ButtonState::DownThisFrame })
-					.BindCommand(playerIdx, std::move(pShootCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::FACE_UP, JRE::Input::ButtonState::DownThisFrame });
-		
-		//Create all the different states
-		m_States.emplace_back(std::make_unique<MovingState>(*this));
-		m_States.emplace_back(std::make_unique<ShootState>(*this));
-		m_States.emplace_back(std::make_unique<JumpState>(*this));
-		m_States.emplace_back(std::make_unique<DiedState>(*this));
-		//Set MovingState by default
-		m_pState = m_States[0].get();
+			.BindCommand(playerIdx, std::move(pMoveRightCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::DPAD_RIGHT, JRE::Input::ButtonState::Pressed })
+			.BindCommand(playerIdx, std::move(pJumpCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::FACE_DOWN, JRE::Input::ButtonState::DownThisFrame })
+			.BindCommand(playerIdx, std::move(pShootCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::FACE_UP, JRE::Input::ButtonState::DownThisFrame });
 
-		//Enter first state
-		//TODO add Start() method just like in Unity so OnEnter() can be called there
 		m_pState->OnEnter();
 	}
 

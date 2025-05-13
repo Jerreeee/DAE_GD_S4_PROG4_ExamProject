@@ -12,16 +12,19 @@ namespace JRE
 	public:
 		Scene& CreateScene(const std::string& name);
 
+		void Start();
 		void Update();
 		void Cleanup();
 
-		Scene& GetCurrentScene() { return *(m_scenes[m_CurrentSceneIdx].get()); };
+		void LoadScene(size_t sceneIdx);
+		Scene& GetCurrentScene() { return *(m_Scenes[m_CurrentSceneIdx].get()); };
 	private:
 		friend class Singleton<SceneManager>;
 		SceneManager();
 		~SceneManager(); //suppress error: use of undefined type 'dae::Scene'
 
-		size_t m_CurrentSceneIdx{};
-		std::vector<std::unique_ptr<Scene>> m_scenes;
+		bool m_SceneLoaded{ false };
+		size_t m_CurrentSceneIdx{ 0 };
+		std::vector<std::unique_ptr<Scene>> m_Scenes;
 	};
 }

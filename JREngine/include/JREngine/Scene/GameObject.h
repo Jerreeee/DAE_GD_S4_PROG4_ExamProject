@@ -27,6 +27,7 @@ namespace JRE
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 
+		void Start();
 		void Update();
 		void Cleanup();
 		void Destroy();
