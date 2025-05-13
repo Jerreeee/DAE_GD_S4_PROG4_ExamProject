@@ -16,7 +16,7 @@ namespace JRE
 	///		In the class .cpp file you should place the following (replace types):
 	///			static bool s_Registered = []()
 	///				{
-	///					AssetImporter::GetInstance().RegisterImporter(AssetType::Font, FontImporter::RegisterAsset);
+	///					AssetImporter::GetInstance().RegisterImporter(Font::GetStaticType(), FontImporter::RegisterAsset);
 	///					return true;
 	///				}();
 	///		FontImporter::RegisterAsset must be a static method.

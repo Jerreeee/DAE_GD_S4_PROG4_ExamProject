@@ -30,7 +30,7 @@ namespace JRE
 	void TextRendererComponent::Render() const
 	{
 		const auto& pos = GetWorldTransform().GetPosition();
-		SDLRenderer::GetInstance().RenderTexture(m_Sprite, pos.x, pos.y);
+		SDLRenderer::GetInstance().RenderSprite(m_Sprite, pos.x, pos.y);
 	}
 
 	// This implementation uses the "dirty flag" pattern

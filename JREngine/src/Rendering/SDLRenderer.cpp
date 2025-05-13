@@ -77,15 +77,13 @@ void JRE::SDLRenderer::Destroy()
 	}
 }
 
-void JRE::SDLRenderer::RenderTexture(AssetRef<Asset> spriteAsset, const float x, const float y) const
+void JRE::SDLRenderer::RenderSprite(AssetRef<Sprite> sprite, const float x, const float y) const
 {
-	if (!spriteAsset)
+	if (!sprite)
 	{
 		std::cerr << "SDLRenderer::RenderTexture() | Ref<Asset> asset was nullptr\n";
 		return;
 	}
-
-	auto sprite = std::static_pointer_cast<Sprite>(spriteAsset);
 
 	const AssetRef<Texture2D>& pTexture = sprite->GetTexture();
 	SDL_Texture* pSDLTexture = pTexture->GetSDLTexture();
@@ -100,15 +98,13 @@ void JRE::SDLRenderer::RenderTexture(AssetRef<Asset> spriteAsset, const float x,
 	SDL_RenderCopy(GetSDLRenderer(), pSDLTexture, &src, &dst);
 }
 
-void JRE::SDLRenderer::RenderTexture(AssetRef<Asset> spriteAsset, const float x, const float y, const float width, const float height) const
+void JRE::SDLRenderer::RenderSprite(AssetRef<Sprite> sprite, const float x, const float y, const float width, const float height) const
 {
-	if (!spriteAsset)
+	if (!sprite)
 	{
 		std::cerr << "SDLRenderer::RenderTexture() | Ref<Asset> asset was nullptr\n";
 		return;
 	}
-
-	auto sprite = std::static_pointer_cast<Sprite>(spriteAsset);
 
 	const AssetRef<Texture2D>& pTexture = sprite->GetTexture();
 	SDL_Texture* pSDLTexture = pTexture->GetSDLTexture();

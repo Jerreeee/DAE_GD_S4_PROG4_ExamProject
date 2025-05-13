@@ -13,7 +13,7 @@ namespace JRE
 	void SpriteRendererComponent::Render() const
 	{
 		const auto& pos = GetWorldTransform().GetPosition();
-		SDLRenderer::GetInstance().RenderTexture(m_Sprite, pos.x, pos.y);
+		SDLRenderer::GetInstance().RenderSprite(m_Sprite, pos.x, pos.y);
 	}
 	void SpriteRendererComponent::SetSprite(const AssetRef<Sprite>& sprite)
 	{

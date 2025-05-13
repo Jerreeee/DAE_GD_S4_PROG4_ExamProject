@@ -41,7 +41,7 @@ namespace BubbleBobble::Player
 		if (!fStream)
 			throw std::runtime_error("Failed to open animation file: " + m_AnimPath.string());
 
-		std::string line;
+        std::string line{};
 		std::getline(fStream, line);
         while (std::getline(fStream, line))
         {
@@ -49,8 +49,8 @@ namespace BubbleBobble::Player
                 continue;
 
             std::stringstream ss(line);
-            std::string token;
-            std::vector<std::string> tokens;
+            std::string token{};
+            std::vector<std::string> tokens{};
 
             while (std::getline(ss, token, ','))
             {
