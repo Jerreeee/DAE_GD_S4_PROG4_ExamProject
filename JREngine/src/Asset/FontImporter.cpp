@@ -6,7 +6,7 @@ namespace JRE
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::GetInstance().RegisterImporter(AssetType::Font, FontImporter::ImportAsset);
+			AssetImporter::GetInstance().RegisterImporter(Font::GetStaticType(), FontImporter::ImportAsset);
 			return true;
 		}();
 
@@ -28,7 +28,7 @@ namespace JRE
 
 	AssetMetadata FontImporter::GetMetadata() const
 	{
-		return AssetMetadata{ AssetType::Font, m_Path, GetUniqueID(), true };
+		return AssetMetadata{ Font::GetStaticType().data(), m_Path, GetUniqueID(), true };
 	}
 
 	std::string FontImporter::GetUniqueID() const

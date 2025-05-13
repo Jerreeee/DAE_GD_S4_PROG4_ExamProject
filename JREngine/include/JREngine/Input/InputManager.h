@@ -26,6 +26,17 @@ namespace Input
 		ButtonState buttonState;
 	};
 
+	//enum class ControlType
+	//{
+	//	Key, Button, Axis
+	//};
+
+	//class IInputControl
+	//{
+	//	virtual ~IInputControl() = default;
+	//	virtual ControlType GetType() const = 0;
+	//};
+
 	struct PlayerInputBindingsInfo final
 	{
 		PlayerInputBindingsInfo();

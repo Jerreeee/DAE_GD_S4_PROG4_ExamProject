@@ -16,8 +16,8 @@ namespace JRE
 		AssetRef<Texture2D> GetTexture() const;
 		const Region& GetSrcRegion() const;
 
-		static AssetType GetStaticType() { return AssetType::Sprite; };
-		virtual AssetType GetType() const { return GetStaticType(); };
+		static constexpr std::string_view GetStaticType() { return "Sprite"; };
+		virtual std::string_view GetType() const { return GetStaticType(); };
 	private:
 		void Initialize() const;
 

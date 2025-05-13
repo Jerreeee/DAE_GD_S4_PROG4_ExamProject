@@ -1,0 +1,7 @@
+Type system problems:
+Description:
+The engine uses an "enum class AssetType" to distinguish asset types. The ResourceManager conveniently works with generic base assets so there its not a problem. However, the AssetImporter responsible for importing specific assets maps each AssetType to an ImportFunc. But what if we make a game with the engine and the game wants to define a new AssetType that can also work with the engine's systems? Then we are screwed :) .
+
+Solution:
+1) Use strings to identify asset types. Very easy to modify current systems to work with that. But not as performant.
+2à Use unique ID's for each asset type and keep track of all the asset types in an AssetTypeRegistry. All engine types could get ID 0->x. And then when the game starts during static initialization all game specific types could be registered with the AssetTypeRegistry and the get ID's from x->whatever. Or engine types start counting up from ID = 0 and game types start counting down from uint16_t max. This gives us a total of 65,535 different types (which will never be reached, not famous last words).

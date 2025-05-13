@@ -13,16 +13,6 @@ concept IsAsset = std::derived_from<T, JRE::Asset>;
 
 namespace JRE
 {
-	enum class AssetType
-	{
-		None,
-		Texture2D,
-		Font,
-		SoundClip,
-		Sprite,
-		SpriteAnimationClip
-	};
-
 	enum class AssetLoadMode
 	{
 		Unspecified,
@@ -49,7 +39,7 @@ namespace JRE
 
 		void SetHandle(AssetHandle handle) { m_Handle = handle; }
 		AssetHandle GetHandle() const { return m_Handle; }
-		virtual AssetType GetType() const = 0;
+		virtual std::string_view GetType() const = 0;
 	private:
 		//Invalid handle by default so for any class inheriting from Asset
 		//an instance can be created without generating a new valid UUID.

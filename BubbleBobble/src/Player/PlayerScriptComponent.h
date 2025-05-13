@@ -17,11 +17,6 @@ namespace JRE
 
 namespace BubbleBobble::Player
 {
-	struct InitData
-	{
-
-	};
-
 	class ScriptComponent : public JRE::ComponentBase
 	{
 	public:

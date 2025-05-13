@@ -16,6 +16,8 @@ set(SOURCE_FILES
     "Components/RotateParentComponent.h"
     "Components/FPSComponent.cpp"
     "Components/RotateParentComponent.cpp"
+    "Components/LevelComponent.h"
+    "Components/LevelComponent.cpp"
 
     "Player/PlayerBuilder.h"
     "Player/PlayerBuilder.cpp"

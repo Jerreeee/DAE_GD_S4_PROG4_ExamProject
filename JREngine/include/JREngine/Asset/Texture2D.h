@@ -24,8 +24,8 @@ namespace JRE
 		SDL_Texture* GetSDLTexture() const;
 		glm::ivec2 GetSize() const;
 
-		static AssetType GetStaticType() { return AssetType::Texture2D; };
-		virtual AssetType GetType() const override { return GetStaticType(); };
+		static constexpr std::string_view GetStaticType() { return "Texture2D"; };
+		virtual std::string_view GetType() const override { return GetStaticType(); };
 	private:
 		SDL_Texture* m_texture{};
 	};

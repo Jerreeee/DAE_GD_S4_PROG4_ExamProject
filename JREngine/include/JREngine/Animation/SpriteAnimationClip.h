@@ -29,8 +29,8 @@ namespace JRE
 		void SetSprites(const std::vector<SoftAssetRef<Sprite>>& sprites, int framesPerSec);
 		AssetRef<Sprite> GetCurrentSprite() const;
 
-		static AssetType GetStaticType() { return AssetType::SpriteAnimationClip; };
-		virtual AssetType GetType() const override { return GetStaticType(); };
+		static constexpr std::string_view GetStaticType() { return "SpriteAnimationClip"; };
+		virtual std::string_view GetType() const override { return GetStaticType(); };
 
 		Event OnEndOfClipEvent{};
 	private:

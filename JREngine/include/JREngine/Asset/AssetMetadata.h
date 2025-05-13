@@ -11,9 +11,9 @@ namespace JRE
 			return std::filesystem::path(filepath / uniqueID);
 		}
 
-		AssetType assetType{ AssetType::None };
+		std::string assetType;
 		std::filesystem::path filepath;
-		std::string uniqueID{ "" };
+		std::string uniqueID;
 		bool canLoadAsync{ false };
 		//importer
 		//dependencies

@@ -19,8 +19,8 @@ namespace JRE
 
 		_TTF_Font* GetFont() const;
 
-		static AssetType GetStaticType() { return AssetType::Font; };
-		virtual AssetType GetType() const override { return GetStaticType(); };
+		static constexpr std::string_view GetStaticType() { return "Font"; };
+		virtual std::string_view GetType() const override { return GetStaticType(); };
 	private:
 		_TTF_Font* m_pFont{};
 	};

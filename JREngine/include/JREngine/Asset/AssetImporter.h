@@ -30,7 +30,7 @@ namespace JRE
 		void Init(const std::filesystem::path& dataPath);
 
 		using ImportFunc = std::function<AssetRef<Asset>(AssetHandle handle, const AssetMetadata& metadata)>;
-		void RegisterImporter(AssetType type, ImportFunc importFunc);
+		bool RegisterImporter(const std::string_view& typeName, ImportFunc importFunc);
 
 		//Registers the asset in the AssetRegistry
 		AssetHandle ImportAsset(IAssetImporter&& importer);
@@ -44,6 +44,6 @@ namespace JRE
 		friend class Singleton<AssetImporter>;
 
 		std::filesystem::path m_Datapath{};
-		std::map<AssetType, ImportFunc> s_Importers{};
+		std::map<std::string_view, ImportFunc> s_Importers{};
 	};
 }

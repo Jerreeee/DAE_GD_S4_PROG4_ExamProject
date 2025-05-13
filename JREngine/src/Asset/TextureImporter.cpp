@@ -6,7 +6,7 @@ namespace JRE
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::GetInstance().RegisterImporter(AssetType::Texture2D, TextureImporter::ImportAsset);
+			AssetImporter::GetInstance().RegisterImporter(Texture2D::GetStaticType(), TextureImporter::ImportAsset);
 			return true;
 		}();
 
@@ -22,6 +22,6 @@ namespace JRE
 
 	AssetMetadata TextureImporter::GetMetadata() const
 	{
-		return AssetMetadata{ AssetType::Texture2D, m_Path, "", false };
+		return AssetMetadata{ Texture2D::GetStaticType().data(), m_Path, "", false};
 	}
 }
