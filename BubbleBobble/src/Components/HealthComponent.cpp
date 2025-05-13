@@ -9,8 +9,7 @@ namespace BubbleBobble
 	HealthComponent::HealthComponent(JRE::GameObject& gameObject, int maxHealth) :
 		JRE::ComponentBase(gameObject),
 		m_Health{ maxHealth },
-		m_MaxHealth{ maxHealth },
-		m_DamageEvent{ std::make_unique<JRE::Observable>() }
+		m_MaxHealth{ maxHealth }
 	{
 	}
 	HealthComponent::~HealthComponent() = default;
@@ -33,7 +32,7 @@ namespace BubbleBobble
 	{
 		m_Health -= amount;
 		JRE::EventInfo e{ JRE::CreateEvent<Event::PlayerDamaged>(amount, m_Health) };
-		m_DamageEvent->NotifyObservers(e);
+		OnDamageEvent.Notify(e);
 
 		if (!m_HitSound.IsLoaded())
 			m_HitSound.Get();

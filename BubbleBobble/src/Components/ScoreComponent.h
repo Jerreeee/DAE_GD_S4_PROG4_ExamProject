@@ -1,6 +1,6 @@
 #pragma once
 #include "JREngine/Scene/ComponentBase.h"
-#include "JREngine/Core/Observer.h"
+#include "JREngine/Core/Event.h"
 
 namespace JRE
 {
@@ -17,9 +17,8 @@ namespace BubbleBobble
 		int GetScore() const { return m_Score; };
 
 		virtual void Update() override {};
-		JRE::Observable& OnIncreasedScoreEvent() { return *(m_IncreasedScoreEvent.get()); };
+		JRE::Event OnIncreasedScoreEvent{};
 	private:
 		int m_Score{};
-		JRE::Event_t m_IncreasedScoreEvent{};
 	};
 }

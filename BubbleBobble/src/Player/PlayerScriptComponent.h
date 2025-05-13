@@ -1,44 +1,54 @@
 #pragma once
+#include <vector>
+#include <map>
 #include "JREngine/Scene/ComponentBase.h"
-#include "JREngine/Core/Command.h"
-
+#include "JREngine/Asset/Asset.h"
 #include "Player/PlayerState.h"
+#include "Player/PlayerCommands.h"
 
 namespace JRE
 {
 	class GameObject;
 	class SpriteRendererComponent;
+	class SpriteAnimatorComponent;
+	class SpriteAnimationClip;
+	class RigidBody2DComponent;
 }
 
-namespace BubbleBobble
+namespace BubbleBobble::Player
 {
-	class PlayerScriptComponent : public JRE::ComponentBase
+	class ScriptComponent : public JRE::ComponentBase
 	{
 	public:
-		PlayerScriptComponent(JRE::GameObject& gameObject);
+		ScriptComponent(JRE::GameObject& gameObject);
 
 		virtual void Update() override;
 
-		void Move(glm::vec2 direction);
+		void SetAnimation(const std::string& animName, JRE::AssetRef<JRE::SpriteAnimationClip> clip);
 	private:
-		class MoveCommand final : public JRE::Command
-		{
-		public:
-			MoveCommand(PlayerScriptComponent& player, glm::vec2 dir) : m_Player{ player }, m_Dir{dir} {}
-			virtual void Execute() override
-			{
-				m_Player.m_Input.moveDir = m_Dir;
-			};
-		private:
-			PlayerScriptComponent& m_Player;
-			glm::vec2 m_Dir{};
-		};
+		friend class MoveCommand;
+		friend class JumpCommand;
+		friend class ShootCommand;
+
+		friend class MovingState;
+		friend class JumpState;
+		friend class ShootState;
+		friend class DiedState;
+
+		void Move(int direction);
+		void Jump();
+		void ChangeAnimation(Animation anim);
 
 		JRE::GameObject& m_Player;
-		JRE::SpriteRendererComponent* m_SpriteRendererComponent{};
+		JRE::SpriteAnimatorComponent* m_pSpriteAnimatiorComponent{ nullptr };
+		JRE::RigidBody2DComponent* m_pRigidBody2DComponent{ nullptr };
 
-		std::unique_ptr<IPlayerState> m_pState{};
-		PlayerInput m_Input{};
+		IState* m_pState{};
+		std::vector<std::unique_ptr<IState>> m_States{};
+		Input m_Input{};
 		float m_Speed{ 30.f };
+		float m_JumpForce{ 20.f };
+
+		std::vector<JRE::AssetRef<JRE::SpriteAnimationClip>> m_Animations{};
 	};
 }

@@ -17,14 +17,15 @@ set(SOURCE_FILES
     "Components/FPSComponent.cpp"
     "Components/RotateParentComponent.cpp"
 
-    "Player/TakeDamageCommand.h"
-    "Player/TakeDamageCommand.cpp"
-    "Player/IncreaseScoreCommand.h"
-    "Player/IncreaseScoreCommand.cpp"
+    "Player/Player.h"
+    "Player/Player.cpp"
     "Player/PlayerScriptComponent.h"
     "Player/PlayerScriptComponent.cpp"
     "Player/PlayerState.h"
     "Player/PlayerState.cpp"
+    "Player/PlayerCommands.h"
+    "Player/PlayerCommands.cpp"
+    "Player/PlayerUtils.h"
 )
 AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
 

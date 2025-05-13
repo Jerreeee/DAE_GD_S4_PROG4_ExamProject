@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <algorithm>
-#include "JREngine/Core/Event.h"
+#include "JREngine/Core/EventInfo.h"
 
 namespace JRE
 {
@@ -23,6 +23,4 @@ namespace JRE
 	private:
 		std::vector<IObserver*> m_Observers{};
 	};
-
-	using Event_t = std::unique_ptr<Observable>;
 }

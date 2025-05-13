@@ -1,43 +1,81 @@
+#include "JREngine/Animation/SpriteAnimationClip.h"
 #include "Player/PlayerScriptComponent.h"
 #include "Player/PlayerState.h"
 
-#include <iostream>
-
-namespace BubbleBobble
+namespace BubbleBobble::Player
 {
-	void PlayerIdleState::OnEnter()
+	void MovingState::OnEnter()
 	{
-		std::cout << "Idle\n";
+		m_Player.ChangeAnimation(Animation::Run);
 	}
-	void PlayerIdleState::OnHandleInput(const PlayerInput& input)
+	State MovingState::Update()
 	{
-		m_Moving = std::abs(input.moveDir.x) > m_Eps;
+		const Input& input = m_Player.m_Input;
+
+		m_Player.Move(input.moveDir);
+
+		if (input.moveDir == 0)
+			m_Player.ChangeAnimation(Animation::Idle);
+		else
+			m_Player.ChangeAnimation(Animation::Run);
+		//TODO Flip running animation depending on going left or right
+
+		if (input.pressedShoot)
+			return State::Shooting;
+		else if (input.pressedJump) //TODO only if on the ground
+			return State::Jumping;
+		return State::None;
 	}
-	std::unique_ptr<IPlayerState> PlayerIdleState::Update()
+
+	void ShootState::OnEnter()
 	{
-		if (m_Moving)
-			return std::make_unique<PlayerRunningState>(m_Player);
-		return nullptr;
+		m_AnimClipEnded = false;
+		m_Player.ChangeAnimation(Animation::Shoot);
+	}
+	State ShootState::Update()
+	{
+		const Input& input = m_Player.m_Input;
+
+		m_Player.Move(input.moveDir);
+
+		if (!m_AnimClip || m_AnimClipEnded)
+			return State::Moving;
+		else if (input.pressedJump)
+			return State::Jumping;
+		return State::None;
+	}
+	void ShootState::SetAnimationClip(JRE::AssetRef<JRE::SpriteAnimationClip> animClip)
+	{
+		if (m_AnimClip)
+			m_AnimClip->OnEndOfClipEvent.RemoveObserver(this);
+
+		m_AnimClip = animClip;
+		if (m_AnimClip)
+			m_AnimClip->OnEndOfClipEvent.AddObserver(this);
+	}
+	void ShootState::OnNotify(JRE::EventInfo& event)
+	{
+		switch (event.GetID())
+		{
+		case JRE::Events::EndOfClipEvent::ID:
+			m_AnimClipEnded = true;
+			break;
+		}
 	}
 
 
-	void PlayerRunningState::OnEnter()
+	void DiedState::OnEnter()
 	{
-		std::cout << "Running\n";
+		m_Player.ChangeAnimation(Animation::Death);
 	}
 
-	void PlayerRunningState::OnHandleInput(const PlayerInput& input)
+
+	void JumpState::OnEnter()
 	{
-		if (input.moveDir.x < -m_Eps)
-			m_Player.Move(glm::vec2{ -1.f, 0.f });
-		else if (input.moveDir.x > m_Eps)
-			m_Player.Move(glm::vec2{ 1.f, 0.f });
-		m_Moving = std::abs(input.moveDir.x) > m_Eps;
+		m_Player.Jump();
 	}
-	std::unique_ptr<IPlayerState> PlayerRunningState::Update()
+	State JumpState::Update()
 	{
-		if (!m_Moving)
-			return std::make_unique<PlayerIdleState>(m_Player);
-		return nullptr;
+		return State::Moving; //immediatly return to move state
 	}
 }

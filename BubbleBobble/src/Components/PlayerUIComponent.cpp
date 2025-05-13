@@ -16,11 +16,11 @@ namespace BubbleBobble
 		m_pHealthComponent{ player.GetComponent<HealthComponent>() },
 		m_pScoreComponent{ player.GetComponent<ScoreComponent>() }
 	{
-		m_pHealthComponent->OnDamageEvent().AddObserver(this);
+		m_pHealthComponent->OnDamageEvent.AddObserver(this);
 		auto livesObject = std::make_unique<JRE::GameObject>();
 		m_pLivesText = livesObject->AddComponent<JRE::TextRendererComponent>("", softFontRef);
 
-		m_pScoreComponent->OnIncreasedScoreEvent().AddObserver(this);
+		m_pScoreComponent->OnIncreasedScoreEvent.AddObserver(this);
 		auto scoreObject = std::make_unique<JRE::GameObject>();
 		m_pScoreText = scoreObject->AddComponent<JRE::TextRendererComponent>("", softFontRef);
 
@@ -38,8 +38,8 @@ namespace BubbleBobble
 
 	PlayerUIComponent::~PlayerUIComponent()
 	{
-		m_pHealthComponent->OnDamageEvent().RemoveObserver(this);
-		m_pScoreComponent->OnIncreasedScoreEvent().RemoveObserver(this);
+		m_pHealthComponent->OnDamageEvent.RemoveObserver(this);
+		m_pScoreComponent->OnIncreasedScoreEvent.RemoveObserver(this);
 	}
 
 	void PlayerUIComponent::OnNotify(JRE::EventInfo& event)

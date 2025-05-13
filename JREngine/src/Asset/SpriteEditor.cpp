@@ -6,12 +6,6 @@
 
 namespace JRE
 {
-    //Sprite sprite(textureHandle);
-    //AssetHandle handle = sprite.GetHandle();
-    //auto fakePath = std::filesystem::path("generated/Sprite" + '@' + std::to_string(uint64_t(textureHandle)));
-    //ResourceManager::GetActive().AddAsset(std::move(sprite), fakePath);
-    //return handle;
-
     std::vector<AssetRef<Sprite>> SpriteEditor::SplitTexture2D(AssetRef<Texture2D> textureRef, int nrSprites, int cols, int rows)
     {
         if (!textureRef)

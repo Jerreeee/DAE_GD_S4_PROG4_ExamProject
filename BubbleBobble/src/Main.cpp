@@ -23,8 +23,6 @@ namespace fs = std::filesystem;
 #include "JREngine/Asset/Sprite.h"
 
 #include "JREngine/Rendering/TextRendererComponent.h"
-#include "JREngine/Rendering/SpriteRendererComponent.h"
-#include "JREngine/Physics/RigidBody2DComponent.h"
 
 #include "JREngine/Asset/SpriteEditor.h"
 #include "JREngine/Asset/AssetImporter.h"
@@ -32,13 +30,7 @@ namespace fs = std::filesystem;
 #include "JREngine/Asset/TextureImporter.h"
 #include "JREngine/Asset/FontImporter.h"
 
-#include "Player/TakeDamageCommand.h"
-#include "Player/IncreaseScoreCommand.h"
-#include "Player/PlayerScriptComponent.h"
-#include "Components/FPSComponent.h"
-#include "Components/PlayerUIComponent.h"
-#include "Components/ScoreComponent.h"
-#include "Components/HealthComponent.h"
+#include "Player/Player.h"
 
 namespace BubbleBobble
 {
@@ -60,10 +52,10 @@ namespace BubbleBobble
 {
 	void load()
 	{
-		auto hitSoundHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::SoundClipImporter("HUD/Select.wav")));
-		auto softHitSoundRef = JRE::SoftAssetRef<JRE::ISoundClip>(hitSoundHandle);
-		auto fontHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::FontImporter("Lingua.otf").SetSize(20)));
-		auto softFontRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
+		//auto hitSoundHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::SoundClipImporter("HUD/Select.wav")));
+		//auto softHitSoundRef = JRE::SoftAssetRef<JRE::ISoundClip>(hitSoundHandle);
+		//auto fontHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::FontImporter("Lingua.otf").SetSize(20)));
+		//auto softFontRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
 
 		auto& scene = JRE::SceneManager::GetInstance().CreateScene("Demo");
 
@@ -73,17 +65,9 @@ namespace BubbleBobble
 		//Player 1
 		//##################
 		auto player1 = std::make_unique<JRE::GameObject>("Player1");
-		player1->SetLocalPosition(216, 180);
-		if (auto* pComponent = player1->AddComponent<JRE::SpriteRendererComponent>(); pComponent)
-		{
-			auto texHandle = JRE::AssetImporter::GetInstance().ImportAsset(JRE::TextureImporter("Player/Bobby/Run_Anim.png"));
-			auto texRef = JRE::ResourceManager::GetAsset<JRE::Texture2D>(texHandle);
-			auto playerSprites = JRE::SpriteEditor::SplitTexture2D(texRef, 4, 4, 1);
-			pComponent->SetSprite(JRE::SoftAssetRef<JRE::Sprite>(playerSprites[1]));
-		}
-		player1->AddComponent<JRE::RigidBody2DComponent>();
-		player1->AddComponent<PlayerScriptComponent>();
-
+		Player::Builder()
+			.SetAnimationPath("Data/Anims/P1.txt")
+			.Build(player1);
 		scene.Add(std::move(player1));
 
 		//##################
@@ -118,8 +102,8 @@ namespace BubbleBobble
 		//##################
 
 		//Keybind info
-		auto p1UIInfo = std::make_unique<JRE::GameObject>();
-		p1UIInfo->AddComponent<JRE::TextRendererComponent>("Player1 | Move: DPAD (state will change)", softFontRef);
+		//auto p1UIInfo = std::make_unique<JRE::GameObject>();
+		//p1UIInfo->AddComponent<JRE::TextRendererComponent>("Player1 | Move: DPAD (state will change)", softFontRef);
 		//auto p2UIInfo = std::make_unique<JRE::GameObject>();
 		//p2UIInfo->AddComponent<JRE::TextRendererComponent>("Player2 | Move: W,A,S,D | Damage: F (plays sound) | Score: G", softFontRef);
 
@@ -140,7 +124,7 @@ namespace BubbleBobble
 		//p2UIInfo->SetLocalPosition(0.f, 120.f);
 		//player2UI->SetLocalPosition(0.f, 150.f);
 
-		scene.Add(std::move(p1UIInfo));
+		//scene.Add(std::move(p1UIInfo));
 		//scene.Add(std::move(p2UIInfo));
 		//scene.Add(std::move(player1UI));
 		//scene.Add(std::move(player2UI));

@@ -19,7 +19,8 @@ namespace JRE
 		Texture2D,
 		Font,
 		SoundClip,
-		Sprite
+		Sprite,
+		SpriteAnimationClip
 	};
 
 	enum class AssetLoadMode

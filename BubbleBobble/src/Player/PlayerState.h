@@ -1,55 +1,78 @@
+
 #pragma once
 #include <memory>
+#include <array>
+#include <string>
+#include "JREngine/Asset/Asset.h"
+#include "JREngine/Core/Event.h"
+#include "Player/PlayerUtils.h"
 
-namespace BubbleBobble
+namespace JRE
 {
-	class PlayerScriptComponent;
+	class SpriteAnimationClip;
+}
 
-	struct PlayerInput
+namespace BubbleBobble::Player
+{
+	class ScriptComponent;
+	enum class State
 	{
-		glm::vec2 moveDir;
-		bool jumping;
+		Moving, Shooting, Jumping, Died, None
+	};
+	inline static constexpr std::array<std::string_view, 5> s_StateNames{
+		"Moving", "Shooting", "Jumping", "Died", "None"
 	};
 
-	class IPlayerState
+	class IState
 	{
 	public:
-		virtual ~IPlayerState() = default;
+		virtual ~IState() = default;
 		virtual void OnEnter() {};
-		virtual void OnHandleInput(const PlayerInput&) {};
-		virtual std::unique_ptr<IPlayerState> Update() { return nullptr; };
+		virtual State Update() { return State::None; };
 		virtual void OnExit() {};
 	};
 
-	class PlayerIdleState : public IPlayerState
+	class MovingState : public IState
 	{
 	public:
-		PlayerIdleState(PlayerScriptComponent& player) : m_Player{ player } {};
+		MovingState(ScriptComponent& player) : m_Player{ player } {};
 		virtual void OnEnter() override;
-		virtual void OnHandleInput(const PlayerInput& input) override;
-		virtual std::unique_ptr<IPlayerState> Update() override;
+		virtual State Update() override;
 	private:
-		PlayerScriptComponent& m_Player;
-		bool m_Moving{};
-		float m_Eps{ 0.01f };
+		ScriptComponent& m_Player;
 	};
 
-	class PlayerRunningState : public IPlayerState
+	class JumpState : public IState
 	{
 	public:
-		PlayerRunningState(PlayerScriptComponent& player) : m_Player{ player } {};
+		JumpState(ScriptComponent& player) :m_Player{ player } {};
 		virtual void OnEnter() override;
-		virtual void OnHandleInput(const PlayerInput& input) override;
-		virtual std::unique_ptr<IPlayerState> Update() override;
+		virtual State Update() override;
 	private:
-		PlayerScriptComponent& m_Player;
-		bool m_Moving{};
-		float m_Eps{ 0.01f };
+		ScriptComponent& m_Player;
 	};
 
-	class PlayerDiedState : public IPlayerState
+	class ShootState : public IState, public JRE::IObserver
 	{
 	public:
+		ShootState(ScriptComponent& player) : m_Player{ player } {};
 		virtual void OnEnter() override;
+		virtual State Update() override;
+
+		void SetAnimationClip(JRE::AssetRef<JRE::SpriteAnimationClip> animClip);
+		virtual void OnNotify(JRE::EventInfo& event) override;
+	private:
+		ScriptComponent& m_Player;
+		JRE::AssetRef<JRE::SpriteAnimationClip> m_AnimClip{ nullptr };
+		bool m_AnimClipEnded{ false };
+	};
+
+	class DiedState : public IState
+	{
+	public:
+		DiedState(ScriptComponent& player) : m_Player{ player } {};
+		virtual void OnEnter() override;
+	private:
+		ScriptComponent& m_Player;
 	};
 }

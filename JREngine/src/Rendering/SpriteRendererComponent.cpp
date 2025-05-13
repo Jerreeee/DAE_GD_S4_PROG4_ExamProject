@@ -2,6 +2,7 @@
 #include "Asset/ResourceManager.h"
 #include "Rendering/SDLRenderer.h"
 #include "Asset/Sprite.h"
+#include "Asset/Sprite.h"
 
 namespace JRE
 {
@@ -12,10 +13,10 @@ namespace JRE
 	void SpriteRendererComponent::Render() const
 	{
 		const auto& pos = GetWorldTransform().GetPosition();
-		SDLRenderer::GetInstance().RenderTexture(m_SoftSpriteRef.Get(), pos.x, pos.y);
+		SDLRenderer::GetInstance().RenderTexture(m_Sprite, pos.x, pos.y);
 	}
-	void SpriteRendererComponent::SetSprite(const SoftAssetRef<Sprite>& softSpriteRef)
+	void SpriteRendererComponent::SetSprite(const AssetRef<Sprite>& sprite)
 	{
-		m_SoftSpriteRef = softSpriteRef;
+		m_Sprite = sprite;
 	}
 }

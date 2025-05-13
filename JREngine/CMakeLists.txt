@@ -7,7 +7,8 @@ set(EXTERNAL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(SOURCE_FILES
     "JREngine.cpp"
 
-    "Animation/AnimationClip.cpp"
+    "Animation/SpriteAnimationClip.cpp"
+    "Animation/SpriteAnimatorComponent.cpp"
 
     "Core/UUID.cpp"
     "Core/Timer.cpp"
@@ -57,7 +58,8 @@ AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
 set(INCLUDE_FILES
     "JREngine.h"
 
-    "Animation/AnimationClip.h"
+    "Animation/SpriteAnimationClip.h"
+    "Animation/SpriteAnimatorComponent.h"
 
     "Math/Rect.h"
 

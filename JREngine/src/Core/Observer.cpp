@@ -1,4 +1,4 @@
-#include <iostream>
+#include "JREngine/Core/Event.h"
 #include "Core/Observer.h"
 
 namespace JRE

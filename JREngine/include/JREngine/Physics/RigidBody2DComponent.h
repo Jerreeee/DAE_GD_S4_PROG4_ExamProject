@@ -10,9 +10,10 @@ namespace JRE
 		RigidBody2DComponent(JRE::GameObject& gameObject);
 
 		virtual void Update() override;
+
+		void Launch(glm::vec2 dirAndStrength);
+		inline static constexpr float m_Gravity{ 40.f };
 	private:
-		float m_Gravity{ 9.81f };
-		//float m_Acc{};
 		glm::vec2 m_Vel{};
 	};
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "JREngine/Scene/ComponentBase.h"
-#include "JREngine/Core/Observer.h"
+#include "JREngine/Core/Event.h"
 #include "JREngine/Asset/SoftAssetRef.h"
 #include "JREngine/Audio/ISoundClip.h"
 
@@ -26,11 +26,10 @@ namespace BubbleBobble
 		void TakeDamage(int amount);
 		int GetHealth() const { return m_Health; };
 
-		JRE::Observable& OnDamageEvent() { return *(m_DamageEvent.get()); };
+		JRE::Event OnDamageEvent{};
 	private:
 		int m_Health{};
 		int m_MaxHealth{};
-		JRE::Event_t m_DamageEvent{};
 		JRE::SoftAssetRef<JRE::ISoundClip> m_HitSound{};
 	};
 }

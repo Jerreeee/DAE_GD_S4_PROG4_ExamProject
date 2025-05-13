@@ -3,70 +3,30 @@
 #include <memory>
 #include <concepts>
 #include <cassert>
+#include "JREngine/Core/Observer.h"
 
 namespace JRE
 {
-	using EventID = uint32_t;
-
-	constexpr EventID HashEventID(const char* str)
-	{
-		uint32_t hash = 0;
-		while (*str)
-		{
-			hash = *str++ + (hash << 6) + (hash << 16) - hash;
-		}
-		return hash;
-	};
-
-
-	struct EventArgs
-	{
-		virtual ~EventArgs() = default;
-	};
-
-	class EventInfo final
+	class Event final
 	{
 	public:
-		~EventInfo();
-		EventInfo(const EventInfo& eventInfo) = delete;
-		EventInfo& operator=(const EventInfo& eventInfo) = delete;
-		EventInfo(EventInfo&& eventInfo) noexcept;
-		EventInfo& operator=(EventInfo&& eventInfo) noexcept;
-
-		EventID GetID() const { return m_ID; };
-
-		template<typename EventName>
-		inline typename EventName::Args& GetArgs()
+		void AddObserver(IObserver* pObserver)
 		{
-			assert(m_Args && "m_Args is null!");
-			assert(dynamic_cast<typename EventName::Args*>(m_Args.get()) && "EventInfo type mismatch!");
-			return *static_cast<typename EventName::Args*>(m_Args.get());
+			if (!m_Observable) //lazy heap allocation
+				m_Observable = std::make_unique<Observable>();
+			m_Observable->AddObserver(pObserver);
+		}
+		void RemoveObserver(IObserver* pObserver)
+		{
+			if (m_Observable)
+				m_Observable->RemoveObserver(pObserver);
+		}
+		void Notify(EventInfo& event)
+		{
+			if (m_Observable)
+				m_Observable->NotifyObservers(event);
 		}
 	private:
-		explicit EventInfo(EventID id);
-
-		EventID m_ID{};
-		std::unique_ptr<EventArgs> m_Args{};
-
-		template<typename EventName, typename... ConstructorArgs>
-		requires std::constructible_from<typename EventName::Args, ConstructorArgs...>
-		friend EventInfo CreateEvent(ConstructorArgs&&... args);
+		std::unique_ptr<Observable> m_Observable{ nullptr };
 	};
-
-	template<typename EventName, typename... ConstructorArgs>
-	requires std::constructible_from<typename EventName::Args, ConstructorArgs...>
-	inline EventInfo CreateEvent(ConstructorArgs&&... args)
-	{
-		EventInfo e(EventName::ID);
-		e.m_Args = std::make_unique<typename EventName::Args>(std::forward<ConstructorArgs>(args)...);
-		return e;
-	}
-
-	//template<typename EventName>
-	//EventInfo CreateEvent()
-	//{
-	//	EventInfo e(EventName::ID);
-	//	e.m_Args = std::make_unique<typename EventName::Args>();
-	//	return e;
-	//}
 }
