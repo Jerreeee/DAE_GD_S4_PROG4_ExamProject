@@ -122,13 +122,13 @@ include(XInput)
 add_library(${TARGET_NAME} STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 target_link_libraries(${TARGET_NAME}
     PRIVATE
-        SDL2::SDL2
+        XInput::XInput
         SDL2::Image
         SDL2::TTF
         SDL2::Mixer
         ImGui
-        XInput::XInput
     PUBLIC
+        SDL2::SDL2
         glm::glm
 )
 target_include_directories(${TARGET_NAME}

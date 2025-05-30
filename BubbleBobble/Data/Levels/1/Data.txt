@@ -1,166 +1,167 @@
+//Format: textureName,x,y,collider?,invisible?
 //Big tiles left
-BigTile,0, 672
-BigTile,0, 624
-BigTile,0, 576
-BigTile,0, 528
-BigTile,0, 480
-BigTile,0, 432
-BigTile,0, 384
-BigTile,0, 336
-BigTile,0, 288
-BigTile,0, 240
-BigTile,0, 192
-BigTile,0, 144
-BigTile,0, 96
-BigTileInvis,0, 48
+Big,0,672,1,0
+Big,0,624,1,0
+Big,0,576,1,0
+Big,0,528,1,0
+Big,0,480,1,0
+Big,0,432,1,0
+Big,0,384,1,0
+Big,0,336,1,0
+Big,0,288,1,0
+Big,0,240,1,0
+Big,0,192,1,0
+Big,0,144,1,0
+Big,0,96,1,0
+Big,0,48,1,1
 
 //Big tiles right
-BigTile,720, 672
-BigTile,720, 624
-BigTile,720, 576
-BigTile,720, 528
-BigTile,720, 480
-BigTile,720, 432
-BigTile,720, 384
-BigTile,720, 336
-BigTile,720, 288
-BigTile,720, 240
-BigTile,720, 192
-BigTile,720, 144
-BigTile,720, 96
-BigTileInvis,720, 48
+Big,720,672,1,0
+Big,720,624,1,0
+Big,720,576,1,0
+Big,720,528,1,0
+Big,720,480,1,0
+Big,720,432,1,0
+Big,720,384,1,0
+Big,720,336,1,0
+Big,720,288,1,0
+Big,720,240,1,0
+Big,720,192,1,0
+Big,720,144,1,0
+Big,720,96,1,0
+Big,720,48,1,1
 
 //Bottom floor
-Tile,48, 672
-Tile,72, 672
-Tile,96, 672
-Tile,120, 672
-Tile,144, 672
-Tile,168, 672
-Tile,192, 672
-Tile,216, 672
-Tile,240, 672
-Tile,264, 672
-Tile,288, 672
-Tile,312, 672
-Tile,336, 672
-Tile,360, 672
-Tile,384, 672
-Tile,408, 672
-Tile,432, 672
-Tile,456, 672
-Tile,480, 672
-Tile,504, 672
-Tile,528, 672
-Tile,552, 672
-Tile,576, 672
-Tile,600, 672
-Tile,624, 672
-Tile,648, 672
-Tile,672, 672
-Tile,696, 672
+Small,48,672,1,0
+Small,72,672,1,0
+Small,96,672,1,0
+Small,120,672,1,0
+Small,144,672,1,0
+Small,168,672,1,0
+Small,192,672,1,0
+Small,216,672,1,0
+Small,240,672,1,0
+Small,264,672,1,0
+Small,288,672,1,0
+Small,312,672,1,0
+Small,336,672,1,0
+Small,360,672,1,0
+Small,384,672,1,0
+Small,408,672,1,0
+Small,432,672,1,0
+Small,456,672,1,0
+Small,480,672,1,0
+Small,504,672,1,0
+Small,528,672,1,0
+Small,552,672,1,0
+Small,576,672,1,0
+Small,600,672,1,0
+Small,624,672,1,0
+Small,648,672,1,0
+Small,672,672,1,0
+Small,696,672,1,0
 
 //Upper floor
-FakeTile,48, 72
-FakeTile,72, 72
-FakeTile,96, 72
-FakeTile,120, 72
-FakeTile,144, 72
-FakeTile,168, 72
-FakeTile,192, 72
-FakeTile,216, 72
-FakeTile,240, 72
-FakeTile,264, 72
-FakeTile,288, 72
-FakeTile,312, 72
-FakeTile,336, 72
-FakeTile,360, 72
-FakeTile,384, 72
-FakeTile,408, 72
-FakeTile,432, 72
-FakeTile,456, 72
-FakeTile,480, 72
-FakeTile,504, 72
-FakeTile,528, 72
-FakeTile,552, 72
-FakeTile,576, 72
-FakeTile,600, 72
-FakeTile,624, 72
-FakeTile,648, 72
-FakeTile,672, 72
-FakeTile,696, 72
+Small,48,72,0,1
+Small,72,72,0,1
+Small,96,72,0,1
+Small,120,72,0,1
+Small,144,72,0,1
+Small,168,72,0,1
+Small,192,72,0,1
+Small,216,72,0,1
+Small,240,72,0,1
+Small,264,72,0,1
+Small,288,72,0,1
+Small,312,72,0,1
+Small,336,72,0,1
+Small,360,72,0,1
+Small,384,72,0,1
+Small,408,72,0,1
+Small,432,72,0,1
+Small,456,72,0,1
+Small,480,72,0,1
+Small,504,72,0,1
+Small,528,72,0,1
+Small,552,72,0,1
+Small,576,72,0,1
+Small,600,72,0,1
+Small,624,72,0,1
+Small,648,72,0,1
+Small,672,72,0,1
+Small,696,72,0,1
 
 //Floor 1
-Tile,48, 552
-Tile,72, 552
-Tile,168, 552
-Tile,192, 552
-Tile,216, 552
-Tile,240, 552
-Tile,264, 552
-Tile,288, 552
-Tile,312, 552
-Tile,336, 552
-Tile,360, 552
-Tile,384, 552
-Tile,408, 552
-Tile,432, 552
-Tile,456, 552
-Tile,480, 552
-Tile,504, 552
-Tile,528, 552
-Tile,552, 552
-Tile,576, 552
-Tile,672, 552
-Tile,696, 552
+Small,48,552,1,0
+Small,72,552,1,0
+Small,168,552,1,0
+Small,192,552,1,0
+Small,216,552,1,0
+Small,240,552,1,0
+Small,264,552,1,0
+Small,288,552,1,0
+Small,312,552,1,0
+Small,336,552,1,0
+Small,360,552,1,0
+Small,384,552,1,0
+Small,408,552,1,0
+Small,432,552,1,0
+Small,456,552,1,0
+Small,480,552,1,0
+Small,504,552,1,0
+Small,528,552,1,0
+Small,552,552,1,0
+Small,576,552,1,0
+Small,672,552,1,0
+Small,696,552,1,0
 
 //Floor 2
-Tile,48, 432
-Tile,72, 432
-Tile,168, 432
-Tile,192, 432
-Tile,216, 432
-Tile,240, 432
-Tile,264, 432
-Tile,288, 432
-Tile,312, 432
-Tile,336, 432
-Tile,360, 432
-Tile,384, 432
-Tile,408, 432
-Tile,432, 432
-Tile,456, 432
-Tile,480, 432
-Tile,504, 432
-Tile,528, 432
-Tile,552, 432
-Tile,576, 432
-Tile,672, 432
-Tile,696, 432
+Small,48,432,1,0
+Small,72,432,1,0
+Small,168,432,1,0
+Small,192,432,1,0
+Small,216,432,1,0
+Small,240,432,1,0
+Small,264,432,1,0
+Small,288,432,1,0
+Small,312,432,1,0
+Small,336,432,1,0
+Small,360,432,1,0
+Small,384,432,1,0
+Small,408,432,1,0
+Small,432,432,1,0
+Small,456,432,1,0
+Small,480,432,1,0
+Small,504,432,1,0
+Small,528,432,1,0
+Small,552,432,1,0
+Small,576,432,1,0
+Small,672,432,1,0
+Small,696,432,1,0
 
 //Floor 3
-Tile,48, 312
-Tile,72, 312
-Tile,168, 312
-Tile,192, 312
-Tile,216, 312
-Tile,240, 312
-Tile,264, 312
-Tile,288, 312
-Tile,312, 312
-Tile,336, 312
-Tile,360, 312
-Tile,384, 312
-Tile,408, 312
-Tile,432, 312
-Tile,456, 312
-Tile,480, 312
-Tile,504, 312
-Tile,528, 312
-Tile,552, 312
-Tile,576, 312
-Tile,672, 312
-Tile,696, 312
+Small,48,312,1,0
+Small,72,312,1,0
+Small,168,312,1,0
+Small,192,312,1,0
+Small,216,312,1,0
+Small,240,312,1,0
+Small,264,312,1,0
+Small,288,312,1,0
+Small,312,312,1,0
+Small,336,312,1,0
+Small,360,312,1,0
+Small,384,312,1,0
+Small,408,312,1,0
+Small,432,312,1,0
+Small,456,312,1,0
+Small,480,312,1,0
+Small,504,312,1,0
+Small,528,312,1,0
+Small,552,312,1,0
+Small,576,312,1,0
+Small,672,312,1,0
+Small,696,312,1,0
 
 //Players
 Player,92, 620, true

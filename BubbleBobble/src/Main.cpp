@@ -31,6 +31,9 @@ namespace fs = std::filesystem;
 #include "JREngine/Asset/FontImporter.h"
 
 #include "Player/PlayerBuilder.h"
+#include "Level/Level.h"
+#include "Level/LevelImporter.h"
+#include "Level/LevelComponent.h"
 
 namespace BubbleBobble
 {
@@ -60,6 +63,13 @@ namespace BubbleBobble
 		auto& scene = JRE::SceneManager::GetInstance().CreateScene("Demo");
 
 		//JRE::Input::InputManager& inputManager = JRE::Input::InputManager::GetInstance();
+
+		auto levelHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(LevelImporter("Levels/1")));
+		auto levelRef = JRE::ResourceManager::GetAsset<Level>(levelHandle);
+		auto level1 = std::make_unique<JRE::GameObject>("Level1");
+		auto* pComp = level1->AddComponent<LevelComponent>();
+		pComp->SetLevel(levelRef);
+		scene.Add(std::move(level1));
 
 		//##################
 		//Player 1

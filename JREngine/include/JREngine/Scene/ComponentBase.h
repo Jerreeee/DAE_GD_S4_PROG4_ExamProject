@@ -6,7 +6,6 @@
 namespace JRE
 {
 	class GameObject;
-	class Transform;
 	class ComponentBase
 	{
 	public:

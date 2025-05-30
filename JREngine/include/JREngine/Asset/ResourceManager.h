@@ -33,7 +33,7 @@ namespace JRE
 			return static_pointer_cast<T>(GetActive().GetAsset(handle, AssetLoadMode::Immediate));
 		}
 
-		//Adds an existing asset and assigns it a AssetHandle
+		//Adds an existing asset and assigns it an AssetHandle
 		static AssetHandle AddAsset(AssetRef<Asset> asset)
 		{
 			return GetActive().AddAsset(asset);

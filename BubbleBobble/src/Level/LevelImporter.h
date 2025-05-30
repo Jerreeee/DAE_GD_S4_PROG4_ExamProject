@@ -6,7 +6,7 @@ namespace BubbleBobble
 	class LevelImporter final : public JRE::IAssetImporter
 	{
 	public:
-		LevelImporter(const std::filesystem::path& filepath);
+		LevelImporter(const std::filesystem::path& levelDir);
 
 		static JRE::AssetRef<JRE::Asset> ImportAsset(JRE::AssetHandle handle, const JRE::AssetMetadata& metadata);
 

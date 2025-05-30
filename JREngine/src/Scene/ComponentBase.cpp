@@ -1,5 +1,5 @@
-#include "Scene/ComponentBase.h"
 #include "Scene/GameObject.h"
+#include "Scene/ComponentBase.h"
 
 namespace JRE
 {
