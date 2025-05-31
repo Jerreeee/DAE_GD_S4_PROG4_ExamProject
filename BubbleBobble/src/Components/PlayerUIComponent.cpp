@@ -1,5 +1,5 @@
 #include "JREngine/Scene/GameObject.h"
-#include "JREngine/Scene/Scene.h"
+#include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Rendering/TextRendererComponent.h"
 #include "JREngine/Asset/ResourceManager.h"
 #include "JREngine/Asset/Font.h"

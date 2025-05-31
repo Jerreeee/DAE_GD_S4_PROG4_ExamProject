@@ -1,0 +1,186 @@
+//General line format: type arg0,arg1,... (the type of line followed by a space followed by the arguments)
+//T = Tile, format: name,x,y,collider?,visible?
+//C = Collision block, format: leftTopX,leftTopY,rightBottomX,rightBottomY
+//P = Player, format: x,y
+//Z = Zenchan, format: x,y
+
+//Big tiles left
+C 0,48,0,674
+T Big,0,624,1,1
+T Big,0,576,1,1
+T Big,0,528,1,1
+T Big,0,480,1,1
+T Big,0,432,1,1
+T Big,0,384,1,1
+T Big,0,336,1,1
+T Big,0,288,1,1
+T Big,0,240,1,1
+T Big,0,192,1,1
+T Big,0,144,1,1
+T Big,0,96,1,1
+T Big,0,48,1,0
+
+//Big tiles right
+C 0,48,0,674
+T Big,720,624,1,1
+T Big,720,576,1,1
+T Big,720,528,1,1
+T Big,720,480,1,1
+T Big,720,432,1,1
+T Big,720,384,1,1
+T Big,720,336,1,1
+T Big,720,288,1,1
+T Big,720,240,1,1
+T Big,720,192,1,1
+T Big,720,144,1,1
+T Big,720,96,1,1
+T Big,720,48,1,0
+
+
+//Bottom floor
+C 48,648,696,674
+T Small,48,648,1,1
+T Small,72,648,1,1
+T Small,96,648,1,1
+T Small,120,648,1,1
+T Small,144,648,1,1
+T Small,168,648,1,1
+T Small,192,648,1,1
+T Small,216,648,1,1
+T Small,240,648,1,1
+T Small,264,648,1,1
+T Small,288,648,1,1
+T Small,312,648,1,1
+T Small,336,648,1,1
+T Small,360,648,1,1
+T Small,384,648,1,1
+T Small,408,648,1,1
+T Small,432,648,1,1
+T Small,456,648,1,1
+T Small,480,648,1,1
+T Small,504,648,1,1
+T Small,528,648,1,1
+T Small,552,648,1,1
+T Small,576,648,1,1
+T Small,600,648,1,1
+T Small,624,648,1,1
+T Small,648,648,1,1
+T Small,672,648,1,1
+T Small,696,648,1,1
+
+//Upper floor
+T Small,48,48,0,1
+T Small,72,48,0,1
+T Small,96,48,0,1
+T Small,120,48,0,1
+T Small,144,48,0,1
+T Small,168,48,0,1
+T Small,192,48,0,1
+T Small,216,48,0,1
+T Small,240,48,0,1
+T Small,264,48,0,1
+T Small,288,48,0,1
+T Small,312,48,0,1
+T Small,336,48,0,1
+T Small,360,48,0,1
+T Small,384,48,0,1
+T Small,408,48,0,1
+T Small,432,48,0,1
+T Small,456,48,0,1
+T Small,480,48,0,1
+T Small,504,48,0,1
+T Small,528,48,0,1
+T Small,552,48,0,1
+T Small,576,48,0,1
+T Small,600,48,0,1
+T Small,624,48,0,1
+T Small,648,48,0,1
+T Small,672,48,0,1
+T Small,696,48,0,1
+
+//Floor 1
+C 48,528,72,552
+T Small,48,528,1,1
+T Small,72,528,1,1
+
+C 168,528,576,552
+T Small,168,528,1,1
+T Small,192,528,1,1
+T Small,216,528,1,1
+T Small,240,528,1,1
+T Small,264,528,1,1
+T Small,288,528,1,1
+T Small,312,528,1,1
+T Small,336,528,1,1
+T Small,360,528,1,1
+T Small,384,528,1,1
+T Small,408,528,1,1
+T Small,432,528,1,1
+T Small,456,528,1,1
+T Small,480,528,1,1
+T Small,504,528,1,1
+T Small,528,528,1,1
+T Small,552,528,1,1
+T Small,576,528,1,1
+
+C 672,528,696,552
+T Small,672,528,1,1
+T Small,696,528,1,1
+
+//Floor 2
+C 48,408,72,432
+T Small,48,408,1,1
+T Small,72,408,1,1
+
+C 168,408,576,432
+T Small,168,408,1,1
+T Small,192,408,1,1
+T Small,216,408,1,1
+T Small,240,408,1,1
+T Small,264,408,1,1
+T Small,288,408,1,1
+T Small,312,408,1,1
+T Small,336,408,1,1
+T Small,360,408,1,1
+T Small,384,408,1,1
+T Small,408,408,1,1
+T Small,432,408,1,1
+T Small,456,408,1,1
+T Small,480,408,1,1
+T Small,504,408,1,1
+T Small,528,408,1,1
+T Small,552,408,1,1
+T Small,576,408,1,1
+
+C 672,408,696,432
+T Small,672,408,1,1
+T Small,696,408,1,1
+
+//Floor 3
+C 48,288,72,312
+T Small,48,288,1,1
+T Small,72,288,1,1
+
+C 168,288,696,312
+T Small,168,288,1,1
+T Small,192,288,1,1
+T Small,216,288,1,1
+T Small,240,288,1,1
+T Small,264,288,1,1
+T Small,288,288,1,1
+T Small,312,288,1,1
+T Small,336,288,1,1
+T Small,360,288,1,1
+T Small,384,288,1,1
+T Small,408,288,1,1
+T Small,432,288,1,1
+T Small,456,288,1,1
+T Small,480,288,1,1
+T Small,504,288,1,1
+T Small,528,288,1,1
+T Small,552,288,1,1
+T Small,576,288,1,1
+
+C 672,288,696,312
+T Small,672,288,1,1
+T Small,696,288,1,1

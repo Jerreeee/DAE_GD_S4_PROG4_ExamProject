@@ -1,5 +1,6 @@
 #pragma once
 #include "JREngine/Asset/IAssetImporter.h"
+#include "JREngine/Asset/Font.h"
 
 namespace JRE
 {

@@ -1,33 +1,40 @@
 #include <cassert>
-#include "Scene/SceneManager.h"
 #include "Scene/Scene.h"
+#include "Scene/SceneManager.h"
 
 namespace JRE
 {
 	void SceneManager::Start()
 	{
 		if (!m_SceneLoaded)
-			LoadScene(0);
+		{
+			auto it = m_Scenes.begin();
+			LoadScene(it->first);
+		}
 	}
 
 	void SceneManager::Update()
 	{
-		m_Scenes[m_CurrentSceneIdx]->Update();
+		m_Scenes[m_CurrentSceneName]->Update();
 	}
 
 	void SceneManager::Cleanup()
 	{
-		m_Scenes[m_CurrentSceneIdx]->Cleanup();
+		m_Scenes[m_CurrentSceneName]->Cleanup();
 	}
 
-	void SceneManager::LoadScene(size_t sceneIdx)
+	void SceneManager::LoadScene(const std::string& name)
 	{
-		if (m_SceneLoaded && sceneIdx == m_CurrentSceneIdx) return;
+		if (m_SceneLoaded && name == m_CurrentSceneName)
+			return;
 
-		m_Scenes[m_CurrentSceneIdx]->Cleanup();
-		assert(sceneIdx >= 0 && sceneIdx < m_Scenes.size() && "Invalid scene index");
-		m_CurrentSceneIdx = sceneIdx;
-		m_Scenes[m_CurrentSceneIdx]->Start();
+		m_CurrentSceneName = name;
+		auto it = m_Scenes.find(name);
+		if (it == m_Scenes.end())
+			return;
+		m_Scenes[m_CurrentSceneName]->Cleanup();
+		m_CurrentSceneName = name;
+		m_Scenes[m_CurrentSceneName]->Start();
 		m_SceneLoaded = true;
 	}
 
@@ -38,8 +45,7 @@ namespace JRE
 	{
 		auto scene = std::unique_ptr<Scene>(new Scene(name));
 		auto pScene = scene.get();
-		m_Scenes.emplace_back(std::move(scene));
-		m_CurrentSceneIdx = m_Scenes.size() - 1;
+		m_Scenes.emplace(name, std::move(scene));
 		return *pScene;
 	}
 }

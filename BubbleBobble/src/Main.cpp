@@ -10,11 +10,11 @@ namespace fs = std::filesystem;
 
 #include "JREngine/JREngine.h"
 #include "JREngine/Asset/ResourceManager.h"
+#include "JREngine/Scene/Scene.h"
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Input/InputManager.h"
 #include "JREngine/Core/ServiceLocator.h"
 #include "JREngine/Audio/ISoundSystem.h"
-#include "JREngine/Scene/Scene.h"
 #include "JREngine/Scene/GameObject.h"
 
 #include "JREngine/Audio/ISoundClip.h"
@@ -31,9 +31,8 @@ namespace fs = std::filesystem;
 #include "JREngine/Asset/FontImporter.h"
 
 #include "Player/PlayerBuilder.h"
-#include "Level/Level.h"
-#include "Level/LevelImporter.h"
-#include "Level/LevelComponent.h"
+#include "GameInstance.h"
+#include "MainMenuBuilder.h"
 
 namespace BubbleBobble
 {
@@ -60,25 +59,29 @@ namespace BubbleBobble
 		//auto fontHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::FontImporter("Lingua.otf").SetSize(20)));
 		//auto softFontRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
 
-		auto& scene = JRE::SceneManager::GetInstance().CreateScene("Demo");
+		auto& scene = JRE::SceneManager::GetInstance().CreateScene("MainMenu");
+		MainMenuBuilder().Build(scene);
+
+		JRE::SceneManager::GetInstance().LoadScene("MainMenu");
 
 		//JRE::Input::InputManager& inputManager = JRE::Input::InputManager::GetInstance();
 
-		auto levelHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(LevelImporter("Levels/1")));
-		auto levelRef = JRE::ResourceManager::GetAsset<Level>(levelHandle);
-		auto level1 = std::make_unique<JRE::GameObject>("Level1");
-		auto* pComp = level1->AddComponent<LevelComponent>();
-		pComp->SetLevel(levelRef);
-		scene.Add(std::move(level1));
+
+		/*
+		Loading a sceen:
+		1) game obejct + tilemap
+		2) add player (from previous level)
+		*/
+
 
 		//##################
 		//Player 1
 		//##################
-		auto player1 = std::make_unique<JRE::GameObject>("Player1");
-		Player::Builder()
-			.SetAnimationPath("Data/Anims/P1.txt")
-			.Build(player1);
-		scene.Add(std::move(player1));
+		//auto player1 = std::make_unique<JRE::GameObject>("Player1");
+		//Player::Builder()
+		//	.SetAnimationPath("Data/Anims/P1.txt")
+		//	.Build(player1);
+		//scene.Add(std::move(player1));
 
 		//##################
 		//Player 2

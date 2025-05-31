@@ -11,7 +11,7 @@ namespace JRE
 
 namespace BubbleBobble
 {
-	class Level final : public JRE::Asset
+	class TileMap final : public JRE::Asset
 	{
 	public:
 		struct SpritePos
@@ -20,20 +20,22 @@ namespace BubbleBobble
 			glm::vec2 pos;
 		};
 
-		Level() = default;
+		TileMap() = default;
 
 		void Render();
 
 		void SetSprites(const std::vector<JRE::AssetRef<JRE::Sprite>>& sprites);
-		void SetSpritePositions(const std::vector<Level::SpritePos>& spritePositions);
+		void SetSpritePositions(const std::vector<TileMap::SpritePos>& spritePositions);
+		void SetCollisionRects(const std::vector<glm::vec4>& rects);
 
 		const std::vector<SpritePos>& GetDrawInfo() const;
 
-		static constexpr std::string_view GetStaticType() { return "BubbleBobble::Level"; };
+		static constexpr std::string_view GetStaticType() { return "BubbleBobble::TileMap"; };
 		virtual std::string_view GetType() const override { return GetStaticType(); };
 	private:
 		std::vector<SpritePos> m_SpritePositions{};
 		std::vector<JRE::AssetRef<JRE::Sprite>> m_Sprites{};
 		std::vector<std::string> m_SpriteNames{};
+		std::vector<glm::vec4> m_CollisionRects{};
 	};
 }

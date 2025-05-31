@@ -31,7 +31,7 @@ namespace BubbleBobble::Player
         player->AddComponent<JRE::SpriteRendererComponent>();
         player->AddComponent<JRE::RigidBody2DComponent>();
         player->AddComponent<JRE::SpriteAnimatorComponent>();
-        auto pScriptCmp = player->AddComponent<ScriptComponent>();
+        auto pScriptCmp = player->AddComponent<Player::ScriptComponent>();
         assert(pScriptCmp && "pScriptCmp wass nullptr");
 		SetAnimations(pScriptCmp);
 	}

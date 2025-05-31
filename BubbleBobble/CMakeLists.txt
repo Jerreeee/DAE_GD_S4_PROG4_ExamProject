@@ -4,6 +4,12 @@ set(SOURCE_DIR src)
 
 set(SOURCE_FILES
     "main.cpp"
+    "GameInstance.h"
+    "GameInstance.cpp"
+
+    "MainMenuBuilder.h"
+    "MainMenuBuilder.cpp"
+
     "Events.h"
 
     "Components/PlayerUIComponent.h"
@@ -17,12 +23,15 @@ set(SOURCE_FILES
     "Components/FPSComponent.cpp"
     "Components/RotateParentComponent.cpp"
 
-    "Level/LevelComponent.h"
-    "Level/LevelComponent.cpp"
-    "Level/Level.h"
-    "Level/Level.cpp"
-    "Level/LevelImporter.h"
-    "Level/LevelImporter.cpp"
+    "SceneBuilder.h"
+    "SceneBuilder.cpp"
+
+    "Level/TileMapComponent.h"
+    "Level/TileMapComponent.cpp"
+    "Level/TileMap.h"
+    "Level/TileMap.cpp"
+    "Level/TileMapImporter.h"
+    "Level/TileMapImporter.cpp"
 
     "Player/PlayerBuilder.h"
     "Player/PlayerBuilder.cpp"

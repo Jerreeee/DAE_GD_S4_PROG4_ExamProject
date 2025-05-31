@@ -1,5 +1,6 @@
 #include <algorithm>
 #include "Scene/GameObject.h"
+#include "JREngine/Scene/SceneManager.h"
 #include "Scene/Scene.h"
 
 namespace JRE
