@@ -18,13 +18,7 @@ namespace JRE
 	void TextRendererComponent::Update()
 	{
 		if (m_NeedsUpdate)
-		{
-			if (!m_SoftFontRef.IsLoaded())
-				m_SoftFontRef.Get();
-			auto textureRef = CreateAssetRef<Texture2D>(m_Text, m_SoftFontRef.Get());
-			m_Sprite = CreateAssetRef<Sprite>(SoftAssetRef<Texture2D>(textureRef));
-			m_NeedsUpdate = false;
-		}
+			UpdateTexture();
 	}
 
 	void TextRendererComponent::Render() const
@@ -38,5 +32,22 @@ namespace JRE
 	{
 		m_Text = text;
 		m_NeedsUpdate = true;
+	}
+	const Sprite& TextRendererComponent::GetSprite() const
+	{
+		if (m_NeedsUpdate)
+			UpdateTexture();
+		return *m_Sprite;
+	}
+	void TextRendererComponent::UpdateTexture() const
+	{
+		if (!m_NeedsUpdate)
+			return;
+
+		if (!m_SoftFontRef.IsLoaded())
+			m_SoftFontRef.Get();
+		auto textureRef = CreateAssetRef<Texture2D>(m_Text, m_SoftFontRef.Get());
+		m_Sprite = CreateAssetRef<Sprite>(SoftAssetRef<Texture2D>(textureRef));
+		m_NeedsUpdate = false;
 	}
 }

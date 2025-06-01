@@ -60,7 +60,7 @@ namespace BubbleBobble
 		//auto softFontRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
 
 		auto& scene = JRE::SceneManager::GetInstance().CreateScene("MainMenu");
-		MainMenuBuilder().Build(scene);
+		MainMenuBuilder(scene).Build();
 
 		JRE::SceneManager::GetInstance().LoadScene("MainMenu");
 

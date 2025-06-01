@@ -24,10 +24,13 @@ namespace JRE
 		virtual void Render() const override;
 
 		void SetText(const std::string& text);
+		const Sprite& GetSprite() const;
 	private:
-		bool m_NeedsUpdate{};
+		void UpdateTexture() const;
+
+		mutable bool m_NeedsUpdate{};
 		std::string m_Text{};
 		SoftAssetRef<Font> m_SoftFontRef{};
-		AssetRef<Sprite> m_Sprite{ nullptr };
+		mutable AssetRef<Sprite> m_Sprite{ nullptr };
 	};
 }

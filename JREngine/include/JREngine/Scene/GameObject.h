@@ -87,7 +87,7 @@ namespace JRE
 		std::string m_Name{};
 		Transform m_LocalTransform{};
 		Transform m_WorldTransform{};
-		bool m_PositionIsDirty{ true };
+		bool m_PositionIsDirty{ false };
 		std::vector<std::unique_ptr<ComponentBase>> m_Components{};
 		GameObject* m_pParent{};
 		std::vector<GameObject*> m_Children{};
