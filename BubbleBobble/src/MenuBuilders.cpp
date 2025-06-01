@@ -11,6 +11,8 @@
 #include "JREngine/Rendering/SpriteRendererComponent.h"
 #include "JREngine/Rendering/TextRendererComponent.h"
 
+#include "FileIO.h"
+#include "Utils.h"
 #include "MenuBuilders.h"
 
 namespace BubbleBobble
@@ -31,18 +33,13 @@ namespace BubbleBobble
 	}
 	void MainMenuBuilder::Build()
 	{
+		std::vector<AnimData> animDataVec = FileIO::GetAnimData("Data/Anims/Logo.txt");
+		const AnimData& animData = animDataVec[0];
 		auto logo = std::make_unique<JRE::GameObject>("Logo");
 		logo->AddComponent<JRE::SpriteRendererComponent>();
 		auto spriteAnimCmp = logo->AddComponent<JRE::SpriteAnimatorComponent>();
-		auto logoHandle = JRE::AssetImporter::GetInstance().ImportAsset(JRE::TextureImporter("HUD/Logo_Anim.png"));
-		auto logoRef = JRE::ResourceManager::GetAsset<JRE::Texture2D>(logoHandle);
-		auto spritesRef = JRE::SpriteEditor::SplitTexture2D(logoRef, 6, 6, 1);
-		std::vector<JRE::SoftAssetRef<JRE::Sprite>> spriteSoftRefs{};
-		for (auto& spriteRef : spritesRef)
-			spriteSoftRefs.emplace_back(JRE::SoftAssetRef<JRE::Sprite>(spriteRef));
-		auto clipRef = JRE::CreateAssetRef<JRE::SpriteAnimationClip>(spriteSoftRefs, 2);
+		auto clipRef = Utils::CreateAnimationClipFromAnimData(animData);
 		spriteAnimCmp->SetSpriteAnimationClip(clipRef);
-		//const JRE::Region& region = spriteRef->GetSrcRegion();
 		logo->SetWorldPosition(117.f, 50.f);
 
 		//load font
@@ -78,5 +75,24 @@ namespace BubbleBobble
 		BuilderHelpers::AddCenteredTxt(m_Scene, "FANTASTIC STORY!! LETS MAKE A", fontSoftRef, centerX, 200.f, color);
 		BuilderHelpers::AddCenteredTxt(m_Scene, "JOURNEY TO THE CAVE OF MONSTERS!", fontSoftRef, centerX, 260.f, color);
 		BuilderHelpers::AddCenteredTxt(m_Scene, "GOOD LUCK!", fontSoftRef, centerX, 320.f, color);
+
+		//anims
+		std::vector<std::string> animsDataNames{ "Data/Anims/Intro_P1.txt", "Data/Anims/Intro_P2.txt" };
+		std::vector<glm::vec2> positions{
+			glm::vec2{238.f, 450.f},
+			glm::vec2{434.f, 450.f}
+		};
+		for (int i{}; i < animsDataNames.size(); ++i)
+		{
+			std::vector<AnimData> animDataVec = FileIO::GetAnimData(animsDataNames[i]);
+			const AnimData& animData = animDataVec[0];
+			auto go = std::make_unique<JRE::GameObject>(animData.animName + "GO");
+			go->AddComponent<JRE::SpriteRendererComponent>();
+			auto spriteAnimCmp = go->AddComponent<JRE::SpriteAnimatorComponent>();
+			auto clipRef = Utils::CreateAnimationClipFromAnimData(animData);
+			spriteAnimCmp->SetSpriteAnimationClip(clipRef);
+			go->SetWorldPosition(positions[i].x, positions[i].y);
+			m_Scene.Add(std::move(go));
+		}
 	}
 }

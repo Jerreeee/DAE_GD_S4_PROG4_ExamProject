@@ -7,6 +7,11 @@ set(SOURCE_FILES
     "GameInstance.h"
     "GameInstance.cpp"
 
+    "FileIO.h"
+    "FileIO.cpp"
+    "Utils.h"
+    "Utils.cpp"
+
     "MenuBuilders.h"
     "MenuBuilders.cpp"
 

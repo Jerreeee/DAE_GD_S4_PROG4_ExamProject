@@ -17,6 +17,7 @@
 
 #include "Player/PlayerScriptComponent.h"
 #include "Player/PlayerBuilder.h"
+#include "FileIO.h"
 
 namespace BubbleBobble::Player
 {
@@ -37,52 +38,22 @@ namespace BubbleBobble::Player
 	}
 	void Builder::SetAnimations(ScriptComponent* pScriptCmp)
 	{
-		std::ifstream fStream(m_AnimPath.string().c_str());
-		if (!fStream)
-			throw std::runtime_error("Failed to open animation file: " + m_AnimPath.string());
+        std::vector<AnimData> animDataVec = FileIO::GetAnimData(m_AnimPath);
 
-        std::string line{};
-		std::getline(fStream, line);
-        while (std::getline(fStream, line))
+        for (const AnimData& animData : animDataVec)
         {
-            if (line.empty() || line[0] == '/')
-                continue;
-
-            std::stringstream ss(line);
-            std::string token{};
-            std::vector<std::string> tokens{};
-
-            while (std::getline(ss, token, ','))
-            {
-                //Trim quotes "" if present
-                if (!token.empty() && token.front() == '"' && token.back() == '"')
-                    token = token.substr(1, token.size() - 2);
-                tokens.push_back(token);
-            }
-
-            if (tokens.size() != 7)
-                throw std::runtime_error("Incorrectly formed animation data: " + line);
-
-            const std::string& path = tokens[0];
-            int frameCount = std::stoi(tokens[1]);
-            int cols = std::stoi(tokens[2]);
-            int rows = std::stoi(tokens[3]);
-            int fps = std::stoi(tokens[4]);
-            //bool isPong = (tokens[5] == "true");
-            const std::string& animName = tokens[6];
-
             // Now create the animation using the extracted data
-            auto texture = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::TextureImporter(path)));
+            auto texture = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::TextureImporter(animData.path)));
             auto textureRef = JRE::ResourceManager::GetAsset<JRE::Texture2D>(texture);
-            auto sprites = JRE::SpriteEditor::SplitTexture2D(textureRef, frameCount, cols, rows);
+            auto sprites = JRE::SpriteEditor::SplitTexture2D(textureRef, animData.frameCount, animData.cols, animData.rows);
 
             std::vector<JRE::SoftAssetRef<JRE::Sprite>> softSprites;
             softSprites.reserve(sprites.size());
             for (const auto& sprite : sprites)
                 softSprites.emplace_back(sprite);
 
-            auto animRef = JRE::CreateAssetRef<JRE::SpriteAnimationClip>(softSprites, fps);
-            pScriptCmp->SetAnimation(animName, animRef);
+            auto animRef = JRE::CreateAssetRef<JRE::SpriteAnimationClip>(softSprites, animData.fps);
+            pScriptCmp->SetAnimation(animData.animName, animRef);
         }
 	}
 }
