@@ -3,12 +3,12 @@ set(TARGET_NAME BubbleBobble)
 set(SOURCE_DIR src)
 
 set(SOURCE_FILES
-    "main.cpp"
+    "Main.cpp"
     "GameInstance.h"
     "GameInstance.cpp"
 
-    "MainMenuBuilder.h"
-    "MainMenuBuilder.cpp"
+    "MenuBuilders.h"
+    "MenuBuilders.cpp"
 
     "Events.h"
 

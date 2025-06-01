@@ -1,3 +1,4 @@
+#include "SDL.h"
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Rendering/TextRendererComponent.h"
@@ -16,13 +17,14 @@ namespace BubbleBobble
 		m_pHealthComponent{ player.GetComponent<HealthComponent>() },
 		m_pScoreComponent{ player.GetComponent<ScoreComponent>() }
 	{
+		SDL_Color color = SDL_Color{ 255, 255, 255, 255 };
 		m_pHealthComponent->OnDamageEvent.AddObserver(this);
 		auto livesObject = std::make_unique<JRE::GameObject>();
-		m_pLivesText = livesObject->AddComponent<JRE::TextRendererComponent>("", softFontRef);
+		m_pLivesText = livesObject->AddComponent<JRE::TextRendererComponent>("", softFontRef, color);
 
 		m_pScoreComponent->OnIncreasedScoreEvent.AddObserver(this);
 		auto scoreObject = std::make_unique<JRE::GameObject>();
-		m_pScoreText = scoreObject->AddComponent<JRE::TextRendererComponent>("", softFontRef);
+		m_pScoreText = scoreObject->AddComponent<JRE::TextRendererComponent>("", softFontRef, color);
 
 		scoreObject->SetLocalPosition(0.f, 25.f);
 		livesObject->SetParent(&UIGameObject);

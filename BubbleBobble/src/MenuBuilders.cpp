@@ -11,10 +11,20 @@
 #include "JREngine/Rendering/SpriteRendererComponent.h"
 #include "JREngine/Rendering/TextRendererComponent.h"
 
-#include "MainMenuBuilder.h"
+#include "MenuBuilders.h"
 
 namespace BubbleBobble
 {
+	void BuilderHelpers::AddCenteredTxt(JRE::Scene& scene, const std::string& text, JRE::SoftAssetRef<JRE::Font> font, float centerX, float y, SDL_Color color)
+	{
+		auto go = std::make_unique<JRE::GameObject>(text);
+		auto cmp = go->AddComponent<JRE::TextRendererComponent>(text, font, color);
+		const JRE::Region& region = cmp->GetSprite().GetSrcRegion();
+		float x = centerX - region.width / 2;
+		go->SetWorldPosition(x, y);
+		scene.Add(std::move(go));
+	}
+
 	MainMenuBuilder::MainMenuBuilder(JRE::Scene& scene)
 		: m_Scene{ scene }
 	{
@@ -41,21 +51,32 @@ namespace BubbleBobble
 		auto fontHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(fontImporter));
 		auto fontSoftRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
 
-		AddTextAtPos("<- FOR SINGLEPLAYER", fontSoftRef, 520.f);
-		AddTextAtPos("^ FOR MULTIPLAYER", fontSoftRef, 560.f);
-		AddTextAtPos("-> FOR VERSUS", fontSoftRef, 600.f);
+		const int centerX = 384;
+		SDL_Color color = { 255, 255, 255, 255 };
+		BuilderHelpers::AddCenteredTxt(m_Scene, "<- FOR SINGLEPLAYER", fontSoftRef, centerX, 520.f, color);
+		BuilderHelpers::AddCenteredTxt(m_Scene, "<- FOR MULTIPLAYER", fontSoftRef, centerX, 560.f, color);
+		BuilderHelpers::AddCenteredTxt(m_Scene, "<- FOR VERSUS", fontSoftRef, centerX, 600.f, color);
 
 		m_Scene.Add(std::move(logo));
 	}
-	void MainMenuBuilder::AddTextAtPos(const std::string& text, JRE::SoftAssetRef<JRE::Font> font, float y)
-	{
-		const int centerX = 384;
 
-		auto go = std::make_unique<JRE::GameObject>(text);
-		auto cmp = go->AddComponent<JRE::TextRendererComponent>(text, font);
-		const JRE::Region& region = cmp->GetSprite().GetSrcRegion();
-		int x = centerX - region.width / 2;
-		go->SetWorldPosition(static_cast<float>(x), y);
-		m_Scene.Add(std::move(go));
+	LoadingMenuBuilder::LoadingMenuBuilder(JRE::Scene& scene)
+		: m_Scene{ scene }
+	{
+	}
+	void LoadingMenuBuilder::Build()
+	{
+		//load font
+		auto fontImporter = JRE::FontImporter("Fonts/Pixel_NES.otf");
+		fontImporter.SetSize(20);
+		auto fontHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(fontImporter));
+		auto fontSoftRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
+
+		const int centerX = 384;
+		SDL_Color color = { 255, 0, 0, 255 };
+		BuilderHelpers::AddCenteredTxt(m_Scene, "NOW IT IS BEGINNING OF A", fontSoftRef, centerX, 140.f, color);
+		BuilderHelpers::AddCenteredTxt(m_Scene, "FANTASTIC STORY!! LETS MAKE A", fontSoftRef, centerX, 200.f, color);
+		BuilderHelpers::AddCenteredTxt(m_Scene, "JOURNEY TO THE CAVE OF MONSTERS!", fontSoftRef, centerX, 260.f, color);
+		BuilderHelpers::AddCenteredTxt(m_Scene, "GOOD LUCK!", fontSoftRef, centerX, 320.f, color);
 	}
 }

@@ -18,7 +18,7 @@ namespace JRE
 		void Cleanup();
 
 		void LoadScene(const std::string& name);
-		Scene& GetCurrentScene() { return *(m_Scenes[0].get()); };
+		Scene& GetCurrentScene() const;
 	private:
 		friend class Singleton<SceneManager>;
 		SceneManager();

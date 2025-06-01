@@ -1,5 +1,6 @@
 #include <format>
 #include <sstream>
+#include "SDL.h"
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Asset/Font.h"
 #include "FPSComponent.h"
@@ -11,7 +12,7 @@ namespace BubbleBobble
 		,m_UpdateRate{ updateRate }
 		,m_AccTime{ m_UpdateRate }
 	{
-		m_pTextRendererComponent = GetGameObject().AddComponent<JRE::TextRendererComponent>("", JRE::SoftAssetRef<JRE::Font>(fontHandle));
+		m_pTextRendererComponent = GetGameObject().AddComponent<JRE::TextRendererComponent>("", JRE::SoftAssetRef<JRE::Font>(fontHandle), SDL_Color{255, 255, 255, 255});
 	}
 
 	void FPSComponent::Update()

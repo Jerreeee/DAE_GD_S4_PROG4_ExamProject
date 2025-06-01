@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
+#include "SDL.h"
 #include "JREngine/Rendering/RendererComponentBase.h"
 #include "JREngine/Asset/Asset.h"
 #include "JREngine/Asset/SoftAssetRef.h"
@@ -13,7 +14,7 @@ namespace JRE
 	class TextRendererComponent final : public RendererComponentBase
 	{
 	public:
-		TextRendererComponent(GameObject& gameObject, const std::string& text, const SoftAssetRef<Font>& softFontRef);
+		TextRendererComponent(GameObject& gameObject, const std::string& text, const SoftAssetRef<Font>& softFontRef, SDL_Color color);
 
 		TextRendererComponent(const TextRendererComponent& other) = delete;
 		TextRendererComponent(TextRendererComponent&& other) = delete;
@@ -30,6 +31,7 @@ namespace JRE
 
 		mutable bool m_NeedsUpdate{};
 		std::string m_Text{};
+		SDL_Color m_Color{};
 		SoftAssetRef<Font> m_SoftFontRef{};
 		mutable AssetRef<Sprite> m_Sprite{ nullptr };
 	};

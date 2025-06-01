@@ -1,7 +1,6 @@
 #include <stdexcept>
 #include <memory>
 #include <sstream>
-#include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include "Rendering/SDLRenderer.h"
@@ -21,7 +20,7 @@ namespace JRE
 			throw std::runtime_error(std::string("Failed to load texture: ") + SDL_GetError());
 	}
 
-	Texture2D::Texture2D(const std::string& text, AssetRef<Asset> fontAsset)
+	Texture2D::Texture2D(const std::string& text, AssetRef<Asset> fontAsset, SDL_Color color)
 	{
 		if (!fontAsset)
 			throw std::runtime_error("Texture2D::Texture2D() | Ref<Asset> fontAsset was nullptr");
@@ -29,7 +28,6 @@ namespace JRE
 		auto font = std::static_pointer_cast<Font>(fontAsset);
 
 		std::cout << "Creating texture from font: " << text << "\n";
-		const SDL_Color color = { 255,255,255,255 }; // only white text is supported now
 		const auto surf = TTF_RenderText_Blended(font->GetFont(), text.c_str(), color);
 		if (surf == nullptr)
 			throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());

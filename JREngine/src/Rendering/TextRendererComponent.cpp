@@ -8,9 +8,10 @@
 
 namespace JRE
 {
-	TextRendererComponent::TextRendererComponent(GameObject& gameObject, const std::string& text, const SoftAssetRef<Font>& softFontRef) :
+	TextRendererComponent::TextRendererComponent(GameObject& gameObject, const std::string& text, const SoftAssetRef<Font>& softFontRef, SDL_Color color) :
 		RendererComponentBase(gameObject),
 		m_Text(text),
+		m_Color{ color },
 		m_SoftFontRef(softFontRef)
 	{
 		m_NeedsUpdate = text != "";
@@ -46,7 +47,7 @@ namespace JRE
 
 		if (!m_SoftFontRef.IsLoaded())
 			m_SoftFontRef.Get();
-		auto textureRef = CreateAssetRef<Texture2D>(m_Text, m_SoftFontRef.Get());
+		auto textureRef = CreateAssetRef<Texture2D>(m_Text, m_SoftFontRef.Get(), m_Color);
 		m_Sprite = CreateAssetRef<Sprite>(SoftAssetRef<Texture2D>(textureRef));
 		m_NeedsUpdate = false;
 	}

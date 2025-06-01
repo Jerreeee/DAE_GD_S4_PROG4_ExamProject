@@ -1,10 +1,12 @@
 ﻿#pragma once
+#include "SDL.h"
 #include <vec2.hpp>
 #include <string>
 #include <filesystem>
 #include "JREngine/Asset/Asset.h"
 
 struct SDL_Texture;
+struct SDL_Color;
 namespace JRE
 {
 	class Font;
@@ -13,7 +15,7 @@ namespace JRE
 	class Texture2D final : public Asset
 	{
 	public:
-		explicit Texture2D(const std::string& text, AssetRef<Asset> fontAsset);
+		explicit Texture2D(const std::string& text, AssetRef<Asset> fontAsset, SDL_Color color);
 		explicit Texture2D(const std::filesystem::path& path);
 		~Texture2D();
 		Texture2D(const Texture2D &) = delete;

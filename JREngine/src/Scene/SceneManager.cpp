@@ -1,4 +1,5 @@
 #include <cassert>
+#include <stdexcept>
 #include "Scene/Scene.h"
 #include "Scene/SceneManager.h"
 
@@ -36,6 +37,14 @@ namespace JRE
 		m_CurrentSceneName = name;
 		m_Scenes[m_CurrentSceneName]->Start();
 		m_SceneLoaded = true;
+	}
+
+	Scene& SceneManager::GetCurrentScene() const
+	{
+		auto it = m_Scenes.find(m_CurrentSceneName);
+		if (it == m_Scenes.end())
+			throw std::runtime_error("No Current Scene");
+		return *(it->second);
 	}
 
 	SceneManager::SceneManager() : m_Scenes() {}
