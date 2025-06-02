@@ -6,6 +6,8 @@ set(SOURCE_FILES
     "Main.cpp"
     "GameInstance.h"
     "GameInstance.cpp"
+    "GameStates.h"
+    "GameStates.cpp"
 
     "FileIO.h"
     "FileIO.cpp"
@@ -38,14 +40,14 @@ set(SOURCE_FILES
     "Level/TileMapImporter.h"
     "Level/TileMapImporter.cpp"
 
-    "Player/PlayerBuilder.h"
-    "Player/PlayerBuilder.cpp"
-    "Player/PlayerScriptComponent.h"
-    "Player/PlayerScriptComponent.cpp"
-    "Player/PlayerState.h"
-    "Player/PlayerState.cpp"
-    "Player/PlayerCommands.h"
-    "Player/PlayerCommands.cpp"
+    #"Player/PlayerBuilder.h"
+    #"Player/PlayerBuilder.cpp"
+   #"Player/PlayerScriptComponent.h"
+   #"Player/PlayerScriptComponent.cpp"
+    #"Player/PlayerState.h"
+    #"Player/PlayerState.cpp"
+    #"Player/PlayerCommands.h"
+    #"Player/PlayerCommands.cpp"
     "Player/PlayerUtils.h"
 )
 AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")

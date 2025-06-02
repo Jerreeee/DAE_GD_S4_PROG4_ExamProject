@@ -14,44 +14,36 @@ namespace Input
 	class IController;
 	class IKeyboard;
 
-	struct KeyboardBindingInfo
+	struct PlayerInput
 	{
-		KeyboardKey key;
-		KeyState keyState;
+	public:
+		std::vector<size_t> actionMapIndices; //Indices into m_ActionMaps
+	private:
+		friend class InputManager;
+
+		IInputDevice* pDevice{};
 	};
 
-	struct ControllerBindingInfo
+	class InputManager;
+	struct ActionMap final
 	{
-		ControllerButton button;
-		ButtonState buttonState;
-	};
+	public:
+		ActionMap();
+		~ActionMap();
+		ActionMap(const ActionMap&) = delete;
+		ActionMap& operator=(const ActionMap&) = delete;
+		ActionMap(ActionMap&&) noexcept = default;
+		ActionMap& operator=(ActionMap&&) noexcept = default;
 
-	//enum class ControlType
-	//{
-	//	Key, Button, Axis
-	//};
+		ActionMap& BindCommand(std::unique_ptr<Command> command, std::unique_ptr<IBindingInfo> pBindingInfo);
 
-	//class IInputControl
-	//{
-	//	virtual ~IInputControl() = default;
-	//	virtual ControlType GetType() const = 0;
-	//};
+		bool enabled{ true };
+	private:
+		friend class InputManager;
 
-	struct PlayerInputBindingsInfo final
-	{
-		PlayerInputBindingsInfo();
-		~PlayerInputBindingsInfo();
-		PlayerInputBindingsInfo(const PlayerInputBindingsInfo&) = delete;
-		PlayerInputBindingsInfo& operator=(const PlayerInputBindingsInfo&) = delete;
-		PlayerInputBindingsInfo(PlayerInputBindingsInfo&&) noexcept = default;
-		PlayerInputBindingsInfo& operator=(PlayerInputBindingsInfo&&) noexcept = default;
-
+		IInputDevice* pDevice{};
 		std::vector<std::unique_ptr<Command>> commands{};
-		std::map<Command*, KeyboardBindingInfo> keyboardBindings{};
-		std::map<Command*, ControllerBindingInfo> controllerBindings{};
-
-		std::unique_ptr<IKeyboard> pKeyboard{};
-		std::unique_ptr<IController> pController{};
+		std::map<Command*, std::unique_ptr<IBindingInfo>> bindings{};
 	};
 
 	class InputManager final : public Singleton<InputManager>
@@ -62,13 +54,19 @@ namespace Input
 
 		bool ProcessInput();
 
-		//returns the next valid playerIdx
-		size_t AddPlayer();
-		InputManager& BindCommand(size_t playerIdx, std::unique_ptr<Command> command, KeyboardBindingInfo bindInfo);
-		InputManager& BindCommand(size_t playerIdx, std::unique_ptr<Command> command, ControllerBindingInfo bindInfo);
-	private:
-		bool IsValidPlayerIdx(size_t playerIdx);
+		bool IsBindingActive(size_t actionMapIdx, const IBindingInfo& bindInfo);
 
-		std::vector<PlayerInputBindingsInfo> m_PlayerInputBindings{};
+		size_t AddKeyboard();
+		size_t AddController();
+		size_t AddPlayer(size_t deviceIdx);
+		size_t AddActionMap(size_t playerIdx);
+	private:
+		bool IsValidActionMapIdx(size_t idx);
+		bool IsValidDeviceIdx(size_t idx);
+		bool IsValidPlayerIdx(size_t idx);
+
+		std::vector<std::unique_ptr<IInputDevice>> m_Devices{};
+		std::vector<PlayerInput> m_Players{};
+		std::vector<ActionMap> m_ActionMaps{};
 	};
 }}

@@ -26,19 +26,14 @@ namespace BubbleBobble::Player
 		virtual void Update() override;
 
 		void SetAnimation(const std::string& animName, JRE::AssetRef<JRE::SpriteAnimationClip> clip);
-	private:
-		friend class MoveCommand;
-		friend class JumpCommand;
-		friend class ShootCommand;
-
-		friend class MovingState;
-		friend class JumpState;
-		friend class ShootState;
-		friend class DiedState;
 
 		void Move(int direction);
 		void Jump();
 		void ChangeAnimation(Animation anim);
+	private:
+		friend class MovingState;
+		friend class ShootState;
+		friend class DiedState;
 
 		JRE::GameObject& m_Player;
 		JRE::SpriteAnimatorComponent* m_pSpriteAnimatiorComponent{ nullptr };
@@ -48,9 +43,6 @@ namespace BubbleBobble::Player
 		std::vector<std::unique_ptr<IState>> m_States{};
 
 		std::vector<JRE::AssetRef<JRE::SpriteAnimationClip>> m_Animations{};
-
-		Input m_Input{};
 		float m_Speed{ 30.f };
-		float m_JumpForce{ 20.f };
 	};
 }

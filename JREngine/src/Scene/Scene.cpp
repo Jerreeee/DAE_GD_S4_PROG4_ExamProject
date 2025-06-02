@@ -1,6 +1,7 @@
 #include <algorithm>
+#include "Rendering/RendererComponentBase.h"
 #include "Scene/GameObject.h"
-#include "JREngine/Scene/SceneManager.h"
+#include "Scene/SceneManager.h"
 #include "Scene/Scene.h"
 
 namespace JRE
@@ -17,6 +18,10 @@ namespace JRE
 
 	void Scene::Add(std::unique_ptr<GameObject> object)
 	{
+		//Check if the gameObject has a RenderComponent
+		if (auto pComponent = object->GetComponent<RendererComponentBase>(); pComponent)
+			m_RendererComponents.emplace_back(pComponent);
+
 		m_objects.emplace_back(std::move(object));
 	}
 
@@ -66,5 +71,15 @@ namespace JRE
 		{
 			object->Cleanup();
 		}
+	}
+
+	void JRE::Scene::RegisterRendererComponent(RendererComponentBase* pRendererComponent)
+	{
+		m_RendererComponents.emplace_back(pRendererComponent);
+	}
+
+	void JRE::Scene::UnRegisterRendererComponent(RendererComponentBase* pRendererComponent)
+	{
+		m_RendererComponents.erase(std::find(m_RendererComponents.begin(), m_RendererComponents.end(), pRendererComponent));
 	}
 }

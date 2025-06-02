@@ -50,6 +50,7 @@ namespace BubbleBobble::Player
 		virtual State Update() override;
 	private:
 		ScriptComponent& m_Player;
+		float m_JumpForce{ 20.f };
 	};
 
 	class ShootState : public IState, public JRE::IObserver

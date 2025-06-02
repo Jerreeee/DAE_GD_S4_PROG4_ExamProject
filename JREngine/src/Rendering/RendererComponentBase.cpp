@@ -6,12 +6,7 @@ namespace JRE
 	RendererComponentBase::RendererComponentBase(GameObject& gameObject)
 		: ComponentBase(gameObject)
 	{
-		SDLRenderer::GetInstance().RegisterRendererComponent(this);
-	}
-
-	RendererComponentBase::~RendererComponentBase()
-	{
-		SDLRenderer::GetInstance().UnRegisterRendererComponent(this);
+		//scene.Add(gameObject) will track all RendererComponents
 	}
 
 	void RendererComponentBase::SetActive(bool active)

@@ -28,63 +28,85 @@ namespace JRE::Input
 			ImGui_ImplSDL2_ProcessEvent(&e);
 		}
 
-		int controllerIdx{};
-		for (size_t playerIdx{}; playerIdx < m_PlayerInputBindings.size(); ++playerIdx)
+		for (size_t actionMapIdx{}; actionMapIdx < m_ActionMaps.size(); ++actionMapIdx)
 		{
-			const auto& playerInputBinding = m_PlayerInputBindings[playerIdx];
-			if (playerInputBinding.pController.get())
-			{
-				playerInputBinding.pController->PollState(static_cast<int>(controllerIdx));
-				for (const auto& [pCommand, bindInfo] : playerInputBinding.controllerBindings)
-					if (playerInputBinding.pController->HasButtonState(bindInfo.button, bindInfo.buttonState))
-						pCommand->Execute();
-				++controllerIdx;
-			}
-			if (playerInputBinding.pKeyboard.get())
-			{
-				playerInputBinding.pKeyboard->PollState();
-				for (const auto& [pCommand, bindInfo] : playerInputBinding.keyboardBindings)
-					if (playerInputBinding.pKeyboard->HasKeyState(bindInfo.key, bindInfo.keyState))
-						pCommand->Execute();
-			}
+			const auto& actionMap = m_ActionMaps[actionMapIdx];
+			if (!actionMap.enabled)
+				continue;
+
+			for (const auto& [pCommand, bindInfo] : actionMap.bindings)
+				if (actionMap.pDevice->IsBindingActive(*bindInfo))
+					pCommand->Execute();
 		}
 
 		return true;
 	}
-	size_t InputManager::AddPlayer()
+	bool InputManager::IsBindingActive(size_t actionMapIdx, const IBindingInfo& bindInfo)
 	{
-		m_PlayerInputBindings.emplace_back(PlayerInputBindingsInfo{});
-		return m_PlayerInputBindings.size() - 1;
+		if (!IsValidActionMapIdx(actionMapIdx))
+			return false;
+		return m_ActionMaps[actionMapIdx].pDevice->IsBindingActive(bindInfo);
 	}
-	InputManager& InputManager::BindCommand(size_t playerIdx, std::unique_ptr<Command> command, KeyboardBindingInfo bindInfo)
+	size_t InputManager::AddKeyboard()
+	{
+		m_Devices.emplace_back(std::make_unique<SDLKeyboard>());
+		return m_Devices.size() - 1;
+	}
+	size_t InputManager::AddController()
+	{
+		m_Devices.emplace_back(std::make_unique<XBoxController>());
+		return m_Devices.size() - 1;
+	}
+	size_t InputManager::AddPlayer(size_t deviceIdx)
+	{
+		if (!IsValidDeviceIdx(deviceIdx))
+			throw std::runtime_error("Invalid deviceIdx");
+		m_Players.emplace_back(PlayerInput{});
+		size_t idx = m_Players.size() - 1;
+		m_Players[idx].pDevice = m_Devices[deviceIdx].get();
+		return idx;
+	}
+	size_t InputManager::AddActionMap(size_t playerIdx)
 	{
 		if (!IsValidPlayerIdx(playerIdx))
-			return *this;
-		PlayerInputBindingsInfo& info = m_PlayerInputBindings[playerIdx];
-		info.commands.emplace_back(std::move(command));
-		Command* pCommand = info.commands[info.commands.size() - 1].get();
-		info.keyboardBindings.insert({ pCommand, bindInfo });
-		if (!m_PlayerInputBindings[playerIdx].pKeyboard.get())
-			m_PlayerInputBindings[playerIdx].pKeyboard = std::make_unique<SDLKeyboard>();
-		m_PlayerInputBindings[playerIdx].pKeyboard->AddKeysToTrack({ bindInfo.key });
+			throw std::runtime_error("Invalid playerIdx");
+		m_ActionMaps.emplace_back(ActionMap{});
+		size_t idx = m_ActionMaps.size() - 1;
+		m_ActionMaps[idx].pDevice = m_Players[playerIdx].pDevice;
+		return idx;
+	}
+	bool InputManager::IsValidActionMapIdx(size_t idx)
+	{
+		return idx >= 0 && idx < m_ActionMaps.size();
+	}
+	bool InputManager::IsValidDeviceIdx(size_t idx)
+	{
+		return idx >= 0 && idx < m_Devices.size();
+	}
+
+	bool InputManager::IsValidPlayerIdx(size_t idx)
+	{
+		return idx >= 0 && idx < m_Players.size();
+	}
+
+	ActionMap::ActionMap() = default;
+	ActionMap::~ActionMap() = default;
+	ActionMap& ActionMap::BindCommand(std::unique_ptr<Command> command, std::unique_ptr<IBindingInfo> pBindingInfo)
+	{
+		assert(pBindingInfo->GetType() == pDevice->GetType() && "BindingInfo DeviceType doesnt match ActionMap DeviceType");
+
+		commands.emplace_back(std::move(command));
+		Command* pCommand = commands[commands.size() - 1].get();
+		bindings.insert({ pCommand, std::move(pBindingInfo) });
+
+		//If its a keyboard add the key to track
+		if (pBindingInfo->GetType() == DeviceType::Keyboard)
+		{
+			auto pKeyboard = static_cast<IKeyboard*>(pDevice);
+			auto pKeyboardBindingInfo = static_cast<KeyboardBindingInfo*>(pBindingInfo.get());
+			pKeyboard->AddKeysToTrack({ pKeyboardBindingInfo->key });
+		}
+
 		return *this;
 	}
-	InputManager& InputManager::BindCommand(size_t playerIdx, std::unique_ptr<Command> command, ControllerBindingInfo bindInfo)
-	{
-		if (!IsValidPlayerIdx(playerIdx))
-			return *this;
-		PlayerInputBindingsInfo& info = m_PlayerInputBindings[playerIdx];
-		info.commands.emplace_back(std::move(command));
-		Command* pCommand = info.commands[info.commands.size() - 1].get();
-		info.controllerBindings.insert({ pCommand, bindInfo });
-		if (!m_PlayerInputBindings[playerIdx].pController.get())
-			m_PlayerInputBindings[playerIdx].pController = std::make_unique<XBoxController>();
-		return *this;
-	}
-	bool InputManager::IsValidPlayerIdx(size_t playerIdx)
-	{
-		return playerIdx >= 0 && playerIdx < m_PlayerInputBindings.size();
-	}
-	PlayerInputBindingsInfo::PlayerInputBindingsInfo() = default;
-	PlayerInputBindingsInfo::~PlayerInputBindingsInfo() = default;
 }

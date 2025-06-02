@@ -54,7 +54,8 @@ void JRE::SDLRenderer::Render()
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-	for (const auto pRendererComponent : m_RendererComponents)
+	const auto& renderComponents = SceneManager::GetInstance().GetCurrentScene().GetRenderComponents();
+	for (const auto pRendererComponent : renderComponents)
 		if (pRendererComponent->IsActive())
 			pRendererComponent->Render();
 
@@ -120,13 +121,3 @@ void JRE::SDLRenderer::RenderSprite(AssetRef<Sprite> sprite, const float x, cons
 }
 
 SDL_Renderer* JRE::SDLRenderer::GetSDLRenderer() const { return m_renderer; }
-
-void JRE::SDLRenderer::RegisterRendererComponent(RendererComponentBase* pRendererComponent)
-{
-	m_RendererComponents.emplace_back(pRendererComponent);
-}
-
-void JRE::SDLRenderer::UnRegisterRendererComponent(RendererComponentBase* pRendererComponent)
-{
-	m_RendererComponents.erase(std::find(m_RendererComponents.begin(), m_RendererComponents.end(), pRendererComponent));
-}

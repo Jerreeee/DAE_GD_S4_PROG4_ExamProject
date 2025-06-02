@@ -3,8 +3,24 @@
 
 namespace JRE::Input
 {
-	class IKeyboard;
-	class IController;
+	enum class DeviceType
+	{
+		Keyboard, Controller
+	};
+
+	struct IBindingInfo
+	{
+		virtual ~IBindingInfo() = default;
+		virtual DeviceType GetType() const = 0;
+	};
+
+	class IInputDevice
+	{
+	public:
+		virtual ~IInputDevice() = default;
+		virtual DeviceType GetType() const = 0;
+		virtual bool IsBindingActive(const IBindingInfo& bindInfo) const = 0;
+	};
 
 	enum class Direction
 	{

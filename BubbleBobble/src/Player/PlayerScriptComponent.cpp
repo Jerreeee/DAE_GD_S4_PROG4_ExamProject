@@ -30,10 +30,7 @@ namespace BubbleBobble::Player
 		m_States.emplace_back(std::make_unique<DiedState>(*this));
 		//Set MovingState by default
 		m_pState = m_States[0].get();
-	}
 
-	void ScriptComponent::Start()
-	{
 		//Setup commands to collect input from the InputManager (could also poll inside the state itself)
 		auto pMoveLeftCommand = std::make_unique<MoveCommand>(*this, -1);
 		auto pMoveRightCommand = std::make_unique<MoveCommand>(*this, 1);
@@ -41,12 +38,16 @@ namespace BubbleBobble::Player
 		auto pShootCommand = std::make_unique<ShootCommand>(*this);
 
 		JRE::Input::InputManager& inputManager = JRE::Input::InputManager::GetInstance();
-		size_t playerIdx = inputManager.AddPlayer();
+		size_t playerIdx = inputManager.AddActionMap();
 		inputManager.BindCommand(playerIdx, std::move(pMoveLeftCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::DPAD_LEFT, JRE::Input::ButtonState::Pressed })
 			.BindCommand(playerIdx, std::move(pMoveRightCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::DPAD_RIGHT, JRE::Input::ButtonState::Pressed })
 			.BindCommand(playerIdx, std::move(pJumpCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::FACE_DOWN, JRE::Input::ButtonState::DownThisFrame })
 			.BindCommand(playerIdx, std::move(pShootCommand), JRE::Input::ControllerBindingInfo{ JRE::Input::ControllerButton::FACE_UP, JRE::Input::ButtonState::DownThisFrame });
 
+	}
+
+	void ScriptComponent::Start()
+	{
 		m_pState->OnEnter();
 	}
 

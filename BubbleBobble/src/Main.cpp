@@ -30,7 +30,7 @@
 	#include "JREngine/Asset/TextureImporter.h"
 	#include "JREngine/Asset/FontImporter.h"
 
-	#include "Player/PlayerBuilder.h"
+	//#include "Player/PlayerBuilder.h"
 	#include "GameInstance.h"
 	#include "MenuBuilders.h"
 
@@ -59,13 +59,17 @@
 			//auto fontHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::FontImporter("Lingua.otf").SetSize(20)));
 			//auto softFontRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
 
-			auto& scene = JRE::SceneManager::GetInstance().CreateScene("MainMenu");
-			LoadingMenuBuilder(scene).Build();
+			auto& mainMenuScene = JRE::SceneManager::GetInstance().CreateScene("MainMenu");
+			MainMenuBuilder(mainMenuScene).Build();
+			auto& loadingMenuScene = JRE::SceneManager::GetInstance().CreateScene("LoadingScreen");
+			LoadingMenuBuilder(loadingMenuScene).Build();
 
-			JRE::SceneManager::GetInstance().LoadScene("MainMenu");
+			JRE::SceneManager::GetInstance().LoadScene("LoadingScreen");
+
+			GameInstance::GetInstance().Init();
+
 
 			//JRE::Input::InputManager& inputManager = JRE::Input::InputManager::GetInstance();
-
 
 			/*
 			Loading a sceen:
@@ -102,7 +106,7 @@
 			//auto p2MoveDownCommand = std::make_unique<MoveCommand>(*player2.get(), 200.f, glm::vec2{ 0.f, 1.f });
 			//auto p2MoveLeftCommand = std::make_unique<MoveCommand>(*player2.get(), 200.f, glm::vec2{ -1.f, 0.f });
 			//auto p2MoveRightCommand = std::make_unique<MoveCommand>(*player2.get(), 200.f, glm::vec2{ 1.f, 0.f });
-			//size_t player1Idx = inputManager.AddPlayer();
+			//size_t player1Idx = inputManager.AddActionMap();
 			//inputManager.BindCommand(player1Idx, std::move(p2MoveUpCommand), JRE::Input::KeyboardBindingInfo{ JRE::Input::KeyboardKey::W, JRE::Input::KeyState::Pressed })
 			//			.BindCommand(player1Idx, std::move(p2MoveDownCommand), JRE::Input::KeyboardBindingInfo{ JRE::Input::KeyboardKey::S, JRE::Input::KeyState::Pressed })
 			//			.BindCommand(player1Idx, std::move(p2MoveLeftCommand), JRE::Input::KeyboardBindingInfo{ JRE::Input::KeyboardKey::A, JRE::Input::KeyState::Pressed })

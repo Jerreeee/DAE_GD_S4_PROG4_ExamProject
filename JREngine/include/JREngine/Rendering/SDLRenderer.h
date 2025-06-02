@@ -7,7 +7,6 @@
 
 namespace JRE
 {
-	class RendererComponentBase;
 	class UIComponentBase;
 	class Sprite;
 	/**
@@ -27,15 +26,10 @@ namespace JRE
 
 		const SDL_Color& GetBackgroundColor() const { return m_clearColor; }
 		void SetBackgroundColor(const SDL_Color& color) { m_clearColor = color; }
-
-		void RegisterRendererComponent(RendererComponentBase* pRendererComponent);
-		void UnRegisterRendererComponent(RendererComponentBase* pRendererComponent);
 	private:
 		SDL_Renderer* m_renderer{};
 		SDL_Window* m_window{};
 		SDL_Color m_clearColor{};
-
-		std::vector<RendererComponentBase*> m_RendererComponents{};
 	};
 }
 
