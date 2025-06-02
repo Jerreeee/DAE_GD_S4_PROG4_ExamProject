@@ -7,11 +7,9 @@ namespace JRE
 {
 	void SceneManager::Start()
 	{
-		if (!m_SceneLoaded)
-		{
-			auto it = m_Scenes.begin();
-			LoadScene(it->first);
-		}
+		auto it = m_Scenes.find(m_StartSceneName);
+		assert(it != m_Scenes.end() && "Invalid start scene name");
+		LoadScene(it->first);
 	}
 
 	void SceneManager::Update()
@@ -22,6 +20,11 @@ namespace JRE
 	void SceneManager::Cleanup()
 	{
 		m_Scenes[m_CurrentSceneName]->Cleanup();
+	}
+
+	void SceneManager::SetStartSceneName(const std::string& name)
+	{
+		m_StartSceneName = name;
 	}
 
 	void SceneManager::LoadScene(const std::string& name)

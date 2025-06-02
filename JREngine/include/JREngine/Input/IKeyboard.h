@@ -10,6 +10,10 @@ namespace JRE::Input
 		virtual DeviceType GetType() const { return GetStaticType(); };
 		static DeviceType GetStaticType() { return DeviceType::Keyboard; };
 
+		KeyboardBindingInfo(KeyboardKey _key, KeyState _keyState)
+			: key{ _key }, keyState{ _keyState }
+		{}
+
 		KeyboardKey key;
 		KeyState keyState;
 	};

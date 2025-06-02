@@ -31,7 +31,7 @@
 	#include "JREngine/Asset/FontImporter.h"
 
 	//#include "Player/PlayerBuilder.h"
-	#include "GameInstance.h"
+	#include "GameManager/GameManagerComponent.h"
 	#include "MenuBuilders.h"
 
 	namespace BubbleBobble
@@ -50,6 +50,8 @@
 		return 0;
 	}
 
+	using namespace JRE;
+
 	namespace BubbleBobble
 	{
 		void load()
@@ -59,15 +61,18 @@
 			//auto fontHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::FontImporter("Lingua.otf").SetSize(20)));
 			//auto softFontRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
 
-			auto& mainMenuScene = JRE::SceneManager::GetInstance().CreateScene("MainMenu");
+			auto gameManager = std::make_unique<JRE::GameObject>("GameManager");
+			gameManager->AddComponent<GameManagerComponent>(GameState::MainMenu);
+
+			auto& sm = SceneManager::GetInstance();
+			auto& mainMenuScene = sm.CreateScene(GameManagerComponent::GetStateName(GameState::MainMenu));
 			MainMenuBuilder(mainMenuScene).Build();
-			auto& loadingMenuScene = JRE::SceneManager::GetInstance().CreateScene("LoadingScreen");
+			mainMenuScene.Add(std::move(gameManager));
+
+			auto& loadingMenuScene = sm.CreateScene(GameManagerComponent::GetStateName(GameState::LoadingScreen));
 			LoadingMenuBuilder(loadingMenuScene).Build();
 
-			JRE::SceneManager::GetInstance().LoadScene("LoadingScreen");
-
-			GameInstance::GetInstance().Init();
-
+			sm.SetStartSceneName(GameManagerComponent::GetStateName(GameState::MainMenu));
 
 			//JRE::Input::InputManager& inputManager = JRE::Input::InputManager::GetInstance();
 

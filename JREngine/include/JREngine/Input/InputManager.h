@@ -4,6 +4,8 @@
 #include <memory>
 #include "JREngine/Core/Singleton.h"
 #include "JREngine/Input/InputUtils.h"
+#include "JREngine/Input/IKeyboard.h"
+#include "JREngine/Input/IController.h"
 #include "JREngine/Core/Command.h"
 
 namespace JRE
@@ -11,9 +13,6 @@ namespace JRE
 	class Command;
 namespace Input
 {
-	class IController;
-	class IKeyboard;
-
 	struct PlayerInput
 	{
 	public:
@@ -60,6 +59,7 @@ namespace Input
 		size_t AddController();
 		size_t AddPlayer(size_t deviceIdx);
 		size_t AddActionMap(size_t playerIdx);
+		ActionMap& GetActionMap(size_t actionMapIdx);
 	private:
 		bool IsValidActionMapIdx(size_t idx);
 		bool IsValidDeviceIdx(size_t idx);

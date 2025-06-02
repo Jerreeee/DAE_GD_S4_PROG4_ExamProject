@@ -17,6 +17,7 @@ namespace JRE
 		void Update();
 		void Cleanup();
 
+		void SetStartSceneName(const std::string& name);
 		void LoadScene(const std::string& name);
 		Scene& GetCurrentScene() const;
 	private:
@@ -27,5 +28,6 @@ namespace JRE
 		bool m_SceneLoaded{ false };
 		std::string m_CurrentSceneName{};
 		std::map<std::string, std::unique_ptr<Scene>> m_Scenes;
+		std::string m_StartSceneName{};
 	};
 }

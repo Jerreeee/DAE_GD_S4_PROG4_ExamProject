@@ -4,10 +4,11 @@ set(SOURCE_DIR src)
 
 set(SOURCE_FILES
     "Main.cpp"
-    "GameInstance.h"
-    "GameInstance.cpp"
-    "GameStates.h"
-    "GameStates.cpp"
+    "GameManager/GameManagerComponent.h"
+    "GameManager/GameManagerComponent.cpp"
+    "GameManager/IGameState.h"
+    "GameManager/MainMenuState.h"
+    "GameManager/MainMenuState.cpp"
 
     "FileIO.h"
     "FileIO.cpp"

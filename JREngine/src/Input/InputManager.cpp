@@ -75,6 +75,11 @@ namespace JRE::Input
 		m_ActionMaps[idx].pDevice = m_Players[playerIdx].pDevice;
 		return idx;
 	}
+	ActionMap& InputManager::GetActionMap(size_t actionMapIdx)
+	{
+		assert(IsValidActionMapIdx(actionMapIdx) && "Invalid actionMapIdx");
+		return m_ActionMaps[actionMapIdx];
+	}
 	bool InputManager::IsValidActionMapIdx(size_t idx)
 	{
 		return idx >= 0 && idx < m_ActionMaps.size();
