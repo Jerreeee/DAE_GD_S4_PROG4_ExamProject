@@ -3,6 +3,7 @@
 #undef main
 #include "JREngine/Scene/Scene.h"
 #include "JREngine/Asset/SoftAssetRef.h"
+#include "JREngine/Asset/Font.h"
 
 namespace BubbleBobble
 {
