@@ -3,11 +3,11 @@
 #include <string>
 #include <memory>
 #include <map>
-#include "JREngine/Scene/Scene.h"
 #include "JREngine/Core/Singleton.h"
 
 namespace JRE
 {
+	class Scene;
 	class SceneManager final : public Singleton<SceneManager>
 	{
 	public:
@@ -24,6 +24,8 @@ namespace JRE
 		friend class Singleton<SceneManager>;
 		SceneManager();
 		~SceneManager(); //suppress error: use of undefined type 'Scene'
+
+		void TransferPersistantObjects(Scene& srcScene, Scene& dstScene);
 
 		bool m_SceneLoaded{ false };
 		std::string m_CurrentSceneName{};

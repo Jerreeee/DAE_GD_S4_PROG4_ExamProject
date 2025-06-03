@@ -1,5 +1,6 @@
 #include <cassert>
 #include <stdexcept>
+#include "Scene/GameObject.h"
 #include "Scene/Scene.h"
 #include "Scene/SceneManager.h"
 
@@ -33,11 +34,16 @@ namespace JRE
 
 		auto it = m_Scenes.find(name);
 		assert(it != m_Scenes.end() && "Invalid scene name");
-		auto& pNewScene = it->second;
+		auto& oldScene = *m_Scenes[m_CurrentSceneName];
+		auto& newScene = *it->second;
+
 		if (m_SceneLoaded)
-			m_Scenes[m_CurrentSceneName]->Cleanup();
+		{
+			TransferPersistantObjects(oldScene, newScene);
+			oldScene.Cleanup();
+		}
 		m_CurrentSceneName = name;
-		pNewScene->Start();
+		newScene.Start();
 		m_SceneLoaded = true;
 	}
 
@@ -51,6 +57,19 @@ namespace JRE
 
 	SceneManager::SceneManager() : m_Scenes() {}
 	SceneManager::~SceneManager() = default;
+
+	void SceneManager::TransferPersistantObjects(Scene& srcScene, Scene& dstScene)
+	{
+		auto& objects = srcScene.m_objects;
+		auto it = std::remove_if(objects.begin(), objects.end(),
+			[&](std::unique_ptr<GameObject>& go) {
+				bool remove = go->m_Persistant;
+				if (remove)
+					dstScene.Add(std::move(go));
+				return remove;
+			});
+		objects.erase(it, objects.end());
+	}
 
 	Scene& JRE::SceneManager::CreateScene(const std::string& name)
 	{

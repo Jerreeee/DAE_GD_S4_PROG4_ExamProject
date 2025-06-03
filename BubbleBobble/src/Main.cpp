@@ -45,6 +45,7 @@
 
 			auto gameManager = std::make_unique<JRE::GameObject>("GameManager");
 			auto gameManagerCmp = gameManager->AddComponent<GameManagerComponent>(GameState::MainMenu);
+			gameManager->m_Persistant = true;
 
 			auto& sm = SceneManager::GetInstance();
 			auto& mainMenuScene = sm.CreateScene(gameManagerCmp->GetStateName(GameState::MainMenu));

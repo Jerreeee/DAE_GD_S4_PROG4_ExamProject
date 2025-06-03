@@ -2,11 +2,11 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include "JREngine/Scene/SceneManager.h"
 
 namespace JRE
 {
 	class RendererComponentBase;
-	class SceneManager;
 	class GameObject;
 	class Scene final
 	{
@@ -30,6 +30,8 @@ namespace JRE
 		void UnRegisterRendererComponent(RendererComponentBase* pRendererComponent);
 		const std::vector<RendererComponentBase*>& GetRenderComponents() const { return m_RendererComponents; };
 	private:
+		friend class SceneManager;
+
 		std::string m_name;
 		std::vector<std::unique_ptr<GameObject>> m_objects;
 		static unsigned int m_idCounter; 

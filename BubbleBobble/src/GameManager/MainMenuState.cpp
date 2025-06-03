@@ -19,13 +19,17 @@ namespace BubbleBobble
     }
     void MainMenuState::OnEnter()
     {
+        m_StartSinglePlayer = false;
         InputManager::GetInstance().SetEnableActionMap(m_ActionMapIdx, true);
         SceneManager::GetInstance().LoadScene(m_Name);
     }
     GameState MainMenuState::Update()
     {
         if (m_StartSinglePlayer)
+        {
+            m_GameManagerComponent.SetGameMode(GameMode::SinglePlayer);
             return GameState::LoadingScreen;
+        }
         return GameState::None;
     }
     void MainMenuState::OnExit()

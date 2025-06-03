@@ -6,6 +6,7 @@
 #include "backends/imgui_impl_sdlrenderer2.h"
 
 #include "Scene/SceneManager.h"
+#include "Scene/Scene.h"
 #include "Rendering/SDLRenderer.h"
 #include "Asset/Texture2D.h"
 #include "Asset/Sprite.h"
