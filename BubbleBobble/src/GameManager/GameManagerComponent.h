@@ -14,11 +14,10 @@ namespace BubbleBobble
 		virtual void Start() override;
 		virtual void Update() override;
 
-		static std::string GetStateName(GameState state);
+		std::string GetStateName(GameState state);
 	private:
 		IGameState* m_pCurrentState{};
 		std::vector<std::unique_ptr<IGameState>> m_States{};
 		GameState m_GameState{ GameState::MainMenu };
-		static const std::vector<std::string> s_StateNames;
 	};
 }

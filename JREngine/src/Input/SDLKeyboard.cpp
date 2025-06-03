@@ -54,6 +54,12 @@ namespace JRE::Input
 		m_ButtonChanges = m_PreviousState ^ m_CurrentState;
 		m_ButtonsPressedThisFrame = m_ButtonChanges & m_CurrentState;
 		m_ButtonsReleasedThisFrame = m_ButtonChanges & (~m_CurrentState);
+
+		if (m_ButtonsPressedThisFrame.any())
+		{
+			int i = 0;
+			i;
+		}
 	}
 
 	bool SDLKeyboard::Impl::HasKeyState(KeyboardKey key, KeyState keyState) const

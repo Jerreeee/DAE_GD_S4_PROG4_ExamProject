@@ -44,17 +44,17 @@
 			//auto softFontRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
 
 			auto gameManager = std::make_unique<JRE::GameObject>("GameManager");
-			gameManager->AddComponent<GameManagerComponent>(GameState::MainMenu);
+			auto gameManagerCmp = gameManager->AddComponent<GameManagerComponent>(GameState::MainMenu);
 
 			auto& sm = SceneManager::GetInstance();
-			auto& mainMenuScene = sm.CreateScene(GameManagerComponent::GetStateName(GameState::MainMenu));
+			auto& mainMenuScene = sm.CreateScene(gameManagerCmp->GetStateName(GameState::MainMenu));
 			MainMenuBuilder(mainMenuScene).Build();
 			mainMenuScene.Add(std::move(gameManager));
 
-			auto& loadingMenuScene = sm.CreateScene(GameManagerComponent::GetStateName(GameState::LoadingScreen));
+			auto& loadingMenuScene = sm.CreateScene(gameManagerCmp->GetStateName(GameState::LoadingScreen));
 			LoadingMenuBuilder(loadingMenuScene).Build();
 
-			sm.SetStartSceneName(GameManagerComponent::GetStateName(GameState::MainMenu));
+			sm.SetStartSceneName(gameManagerCmp->GetStateName(GameState::MainMenu));
 
 			//JRE::Input::InputManager& inputManager = JRE::Input::InputManager::GetInstance();
 

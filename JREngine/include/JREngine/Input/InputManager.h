@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <array>
 #include <map>
 #include <memory>
 #include "JREngine/Core/Singleton.h"
@@ -13,20 +14,14 @@ namespace JRE
 	class Command;
 namespace Input
 {
-	struct PlayerInput
+	struct DeviceInfo
 	{
-	public:
-		std::vector<size_t> actionMapIndices; //Indices into m_ActionMaps
-	private:
-		friend class InputManager;
-
-		IInputDevice* pDevice{};
+		std::unique_ptr<IInputDevice> pDevice;
+		bool polledThisTick;
 	};
 
-	class InputManager;
-	struct ActionMap final
+	struct ActionMap
 	{
-	public:
 		ActionMap();
 		~ActionMap();
 		ActionMap(const ActionMap&) = delete;
@@ -34,15 +29,10 @@ namespace Input
 		ActionMap(ActionMap&&) noexcept = default;
 		ActionMap& operator=(ActionMap&&) noexcept = default;
 
-		ActionMap& BindCommand(std::unique_ptr<Command> command, std::unique_ptr<IBindingInfo> pBindingInfo);
-
 		bool enabled{ true };
-	private:
-		friend class InputManager;
-
-		IInputDevice* pDevice{};
-		std::vector<std::unique_ptr<Command>> commands{};
-		std::map<Command*, std::unique_ptr<IBindingInfo>> bindings{};
+		std::array<DeviceInfo*, 2> devicesInfo{}; //1 possible device per DeviceType
+		std::vector<std::unique_ptr<Command>> m_Commands{};
+		std::map<Command*, std::unique_ptr<IBindingInfo>> m_Bindings{};
 	};
 
 	class InputManager final : public Singleton<InputManager>
@@ -57,16 +47,16 @@ namespace Input
 
 		size_t AddKeyboard();
 		size_t AddController();
-		size_t AddPlayer(size_t deviceIdx);
-		size_t AddActionMap(size_t playerIdx);
-		ActionMap& GetActionMap(size_t actionMapIdx);
+		size_t AddActionMap(const std::vector<size_t>& deviceIndices);
+		InputManager& BindCommand(size_t actionMapIdx, std::unique_ptr<Command> command, std::unique_ptr<IBindingInfo> pBindingInfo);
+		void SetEnableActionMap(size_t actionMapIdx, bool enable);
 	private:
 		bool IsValidActionMapIdx(size_t idx);
 		bool IsValidDeviceIdx(size_t idx);
-		bool IsValidPlayerIdx(size_t idx);
 
-		std::vector<std::unique_ptr<IInputDevice>> m_Devices{};
-		std::vector<PlayerInput> m_Players{};
+		int m_NrControllers{};
+		std::vector<bool> m_PolledDevices{};
+		std::vector<DeviceInfo> m_Devices{};
 		std::vector<ActionMap> m_ActionMaps{};
 	};
 }}

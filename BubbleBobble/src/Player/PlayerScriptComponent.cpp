@@ -31,7 +31,7 @@ namespace BubbleBobble::Player
 		//Set MovingState by default
 		m_pState = m_States[0].get();
 
-		//Setup commands to collect input from the InputManager (could also poll inside the state itself)
+		//Setup m_Commands to collect input from the InputManager (could also poll inside the state itself)
 		auto pMoveLeftCommand = std::make_unique<MoveCommand>(*this, -1);
 		auto pMoveRightCommand = std::make_unique<MoveCommand>(*this, 1);
 		auto pJumpCommand = std::make_unique<JumpCommand>(*this);

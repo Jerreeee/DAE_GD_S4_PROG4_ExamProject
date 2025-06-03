@@ -18,6 +18,7 @@ namespace JRE::Input
 	{
 	public:
 		virtual ~IInputDevice() = default;
+		virtual void PollState() = 0;
 		virtual DeviceType GetType() const = 0;
 		virtual bool IsBindingActive(const IBindingInfo& bindInfo) const = 0;
 	};

@@ -9,6 +9,8 @@ set(SOURCE_FILES
     "GameManager/IGameState.h"
     "GameManager/MainMenuState.h"
     "GameManager/MainMenuState.cpp"
+    "GameManager/LoadingScreenState.h"
+    "GameManager/LoadingScreenState.cpp"
 
     "FileIO.h"
     "FileIO.cpp"

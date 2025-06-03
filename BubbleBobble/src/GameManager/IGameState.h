@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace BubbleBobble
 {
@@ -11,12 +12,17 @@ namespace BubbleBobble
 	class IGameState
 	{
 	public:
-		IGameState(GameManagerComponent& gameManagerComponent) : m_GameManagerComponent{ gameManagerComponent } {}
+		IGameState(GameManagerComponent& gameManagerComponent, const std::string& name)
+			: m_GameManagerComponent{ gameManagerComponent }, m_Name{ name }
+		{}
 		virtual ~IGameState() = default;
 		virtual void OnEnter() {};
 		virtual GameState Update() = 0;
 		virtual void OnExit() {};
+
+		const std::string GetName() const { return m_Name; };
 	protected:
 		GameManagerComponent& m_GameManagerComponent;
+		std::string m_Name{};
 	};
 }

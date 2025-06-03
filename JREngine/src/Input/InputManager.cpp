@@ -3,9 +3,9 @@
 #include "imgui.h"
 #include "backends/imgui_impl_sdl2.h"
 #include "backends/imgui_impl_sdlrenderer2.h"
-#include "Input/InputManager.h"
 #include "Input/XBoxController.h"
 #include "Input/SDLKeyboard.h"
+#include "Input/InputManager.h"
 
 namespace JRE::Input
 {
@@ -28,15 +28,25 @@ namespace JRE::Input
 			ImGui_ImplSDL2_ProcessEvent(&e);
 		}
 
-		for (size_t actionMapIdx{}; actionMapIdx < m_ActionMaps.size(); ++actionMapIdx)
+		//Reset all devices polled state
+		std::fill(m_PolledDevices.begin(), m_PolledDevices.end(), false);
+
+		for (const ActionMap& actionMap : m_ActionMaps)
 		{
-			const auto& actionMap = m_ActionMaps[actionMapIdx];
 			if (!actionMap.enabled)
 				continue;
 
-			for (const auto& [pCommand, bindInfo] : actionMap.bindings)
-				if (actionMap.pDevice->IsBindingActive(*bindInfo))
+			//Check if the devices for this acionMap were already Polled this Update tick
+			for (DeviceInfo* pDeviceInfo : actionMap.devicesInfo)
+				if (pDeviceInfo && !pDeviceInfo->polledThisTick)
+					pDeviceInfo->pDevice->PollState();
+
+			for (const auto& [pCommand, pBindInfo] : actionMap.m_Bindings)
+			{
+				auto& pDevice = actionMap.devicesInfo[static_cast<size_t>(pBindInfo->GetType())]->pDevice;
+				if (pDevice->IsBindingActive(*pBindInfo))
 					pCommand->Execute();
+			}
 		}
 
 		return true;
@@ -45,7 +55,35 @@ namespace JRE::Input
 	{
 		if (!IsValidActionMapIdx(actionMapIdx))
 			return false;
-		return m_ActionMaps[actionMapIdx].pDevice->IsBindingActive(bindInfo);
+		auto& pDevice = m_ActionMaps[actionMapIdx].devicesInfo[static_cast<size_t>(bindInfo.GetType())]->pDevice;
+		return pDevice->IsBindingActive(bindInfo);
+	}
+	InputManager& InputManager::BindCommand(size_t actionMapIdx, std::unique_ptr<Command> command, std::unique_ptr<IBindingInfo> pBindingInfo)
+	{
+		assert(IsValidActionMapIdx(actionMapIdx) && "Invalid actionMapIdx");
+		ActionMap& actionMap = m_ActionMaps[actionMapIdx];
+		actionMap.m_Commands.emplace_back(std::move(command));
+		Command* pCommand = actionMap.m_Commands[actionMap.m_Commands.size() - 1].get();
+
+		//Add keys to track
+		if (pBindingInfo->GetType() == DeviceType::Keyboard)
+		{
+			DeviceInfo* pDeviceInfo = actionMap.devicesInfo[static_cast<size_t>(DeviceType::Keyboard)];
+			if (pDeviceInfo)
+			{
+				auto pKeyboard = static_cast<IKeyboard*>(pDeviceInfo->pDevice.get());
+				auto pKeyboardBindingInfo = static_cast<KeyboardBindingInfo*>(pBindingInfo.get());
+				pKeyboard->AddKeysToTrack({ pKeyboardBindingInfo->key });
+			}
+		}
+
+		actionMap.m_Bindings.insert({ pCommand, std::move(pBindingInfo) });
+		return *this;
+	}
+	void InputManager::SetEnableActionMap(size_t actionMapIdx, bool enable)
+	{
+		assert(IsValidActionMapIdx(actionMapIdx) && "Invalid actionMapIdx");
+		m_ActionMaps[actionMapIdx].enabled = enable;
 	}
 	size_t InputManager::AddKeyboard()
 	{
@@ -54,31 +92,25 @@ namespace JRE::Input
 	}
 	size_t InputManager::AddController()
 	{
-		m_Devices.emplace_back(std::make_unique<XBoxController>());
+		++m_NrControllers;
+		m_Devices.emplace_back(std::make_unique<XBoxController>(m_NrControllers));
 		return m_Devices.size() - 1;
 	}
-	size_t InputManager::AddPlayer(size_t deviceIdx)
+	size_t InputManager::AddActionMap(const std::vector<size_t>& deviceIndices)
 	{
-		if (!IsValidDeviceIdx(deviceIdx))
-			throw std::runtime_error("Invalid deviceIdx");
-		m_Players.emplace_back(PlayerInput{});
-		size_t idx = m_Players.size() - 1;
-		m_Players[idx].pDevice = m_Devices[deviceIdx].get();
-		return idx;
-	}
-	size_t InputManager::AddActionMap(size_t playerIdx)
-	{
-		if (!IsValidPlayerIdx(playerIdx))
-			throw std::runtime_error("Invalid playerIdx");
 		m_ActionMaps.emplace_back(ActionMap{});
 		size_t idx = m_ActionMaps.size() - 1;
-		m_ActionMaps[idx].pDevice = m_Players[playerIdx].pDevice;
+		ActionMap& actionMap = m_ActionMaps[idx];
+
+		//Assign devices to actionMap
+		for (int i{}; i < deviceIndices.size() && i < actionMap.devicesInfo.size(); ++i)
+		{
+			DeviceInfo& deviceInfo = m_Devices[deviceIndices[i]];
+			size_t typeIdx = static_cast<size_t>(deviceInfo.pDevice->GetType());
+			actionMap.devicesInfo[typeIdx] = &deviceInfo;
+		}
+
 		return idx;
-	}
-	ActionMap& InputManager::GetActionMap(size_t actionMapIdx)
-	{
-		assert(IsValidActionMapIdx(actionMapIdx) && "Invalid actionMapIdx");
-		return m_ActionMaps[actionMapIdx];
 	}
 	bool InputManager::IsValidActionMapIdx(size_t idx)
 	{
@@ -89,29 +121,6 @@ namespace JRE::Input
 		return idx >= 0 && idx < m_Devices.size();
 	}
 
-	bool InputManager::IsValidPlayerIdx(size_t idx)
-	{
-		return idx >= 0 && idx < m_Players.size();
-	}
-
 	ActionMap::ActionMap() = default;
 	ActionMap::~ActionMap() = default;
-	ActionMap& ActionMap::BindCommand(std::unique_ptr<Command> command, std::unique_ptr<IBindingInfo> pBindingInfo)
-	{
-		assert(pBindingInfo->GetType() == pDevice->GetType() && "BindingInfo DeviceType doesnt match ActionMap DeviceType");
-
-		commands.emplace_back(std::move(command));
-		Command* pCommand = commands[commands.size() - 1].get();
-		bindings.insert({ pCommand, std::move(pBindingInfo) });
-
-		//If its a keyboard add the key to track
-		if (pBindingInfo->GetType() == DeviceType::Keyboard)
-		{
-			auto pKeyboard = static_cast<IKeyboard*>(pDevice);
-			auto pKeyboardBindingInfo = static_cast<KeyboardBindingInfo*>(pBindingInfo.get());
-			pKeyboard->AddKeysToTrack({ pKeyboardBindingInfo->key });
-		}
-
-		return *this;
-	}
 }

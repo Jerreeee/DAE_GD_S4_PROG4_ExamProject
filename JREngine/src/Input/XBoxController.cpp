@@ -9,7 +9,9 @@ namespace JRE::Input
 	class XBoxController::Impl final
 	{
 	public:
-		void PollState(int controllerIdx);
+		Impl(int idx) : m_Idx{ idx } {}
+
+		void PollState();
 		bool HasButtonState(ControllerButton button, ButtonState buttonState) const;
 		bool IsDownThisFrame(ControllerButton button) const;
 		bool IsUpThisFrame(ControllerButton button) const;
@@ -17,6 +19,7 @@ namespace JRE::Input
 		uint32_t MapToInternalButton(ControllerButton button) const;
 
 	private:
+		int m_Idx{};
 		static const std::vector<uint32_t> m_MapToInternalButtons;
 		XINPUT_STATE m_PreviousState{};
 		XINPUT_STATE m_CurrentState{};
@@ -41,11 +44,12 @@ namespace JRE::Input
 		XINPUT_GAMEPAD_X,
 		XINPUT_GAMEPAD_Y
 	};
-	void XBoxController::Impl::PollState(int controllerIdx)
+
+	void XBoxController::Impl::PollState()
 	{
 		CopyMemory(&m_PreviousState, &m_CurrentState, sizeof(XINPUT_STATE));
 		ZeroMemory(&m_CurrentState, sizeof(XINPUT_STATE));
-		DWORD result = XInputGetState(controllerIdx, &m_CurrentState);
+		DWORD result = XInputGetState(m_Idx, &m_CurrentState);
 
 		if (result == ERROR_SUCCESS)
 		{
@@ -82,9 +86,9 @@ namespace JRE::Input
 		return m_MapToInternalButtons[static_cast<uint32_t>(button)];
 	}
 
-	XBoxController::XBoxController() : m_pImpl{ std::make_unique<Impl>() } {}
+	XBoxController::XBoxController(int idx) : m_pImpl{ std::make_unique<Impl>(idx) } {}
 	XBoxController::~XBoxController() = default;
-	void XBoxController::PollState(int controllerIdx) { m_pImpl->PollState(controllerIdx); }
+	void XBoxController::PollState() { m_pImpl->PollState(); }
 	bool XBoxController::HasButtonState(ControllerButton button, ButtonState buttonState) const { return m_pImpl->HasButtonState(button, buttonState); }
 	bool XBoxController::IsDownThisFrame(ControllerButton button) const { return m_pImpl->IsDownThisFrame(button); }
 	bool XBoxController::IsUpThisFrame(ControllerButton button) const { return m_pImpl->IsUpThisFrame(button); }

@@ -7,10 +7,10 @@ namespace JRE::Input
 	class XBoxController final : public IController
 	{
 	public:
-		XBoxController();
+		XBoxController(int idx);
 		~XBoxController();
 
-		virtual void PollState(int controllerIdx = 0) override;
+		virtual void PollState() override;
 		virtual bool HasButtonState(ControllerButton button, ButtonState buttonState) const override;
 		virtual bool IsDownThisFrame(ControllerButton button) const override;
 		virtual bool IsUpThisFrame(ControllerButton button) const override;

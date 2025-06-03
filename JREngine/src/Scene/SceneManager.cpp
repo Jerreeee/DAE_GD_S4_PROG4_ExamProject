@@ -29,16 +29,15 @@ namespace JRE
 
 	void SceneManager::LoadScene(const std::string& name)
 	{
-		if (m_SceneLoaded && name == m_CurrentSceneName)
-			return;
+		if (name == m_CurrentSceneName) return;
 
-		m_CurrentSceneName = name;
 		auto it = m_Scenes.find(name);
-		if (it == m_Scenes.end())
-			return;
-		m_Scenes[m_CurrentSceneName]->Cleanup();
+		assert(it != m_Scenes.end() && "Invalid scene name");
+		auto& pNewScene = it->second;
+		if (m_SceneLoaded)
+			m_Scenes[m_CurrentSceneName]->Cleanup();
 		m_CurrentSceneName = name;
-		m_Scenes[m_CurrentSceneName]->Start();
+		pNewScene->Start();
 		m_SceneLoaded = true;
 	}
 

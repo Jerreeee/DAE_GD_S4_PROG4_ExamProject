@@ -10,18 +10,17 @@ using namespace JRE::Input;
 namespace BubbleBobble
 {
     MainMenuState::MainMenuState(GameManagerComponent& gameManagerComponent)
-        : IGameState(gameManagerComponent)
+        : IGameState(gameManagerComponent, "MainMenu")
     {
         //Setup controls
         auto& im = InputManager::GetInstance();
-        m_ActionMapIdx = im.AddActionMap(0);
-        ActionMap& actionMap = im.GetActionMap(m_ActionMapIdx);
-        actionMap.BindCommand(std::make_unique<StartSinglePlayerCommand>(*this), std::make_unique<KeyboardBindingInfo>(KeyboardKey::Q, KeyState::DownThisFrame));
+        m_ActionMapIdx = im.AddActionMap({ 0 });
+        im.BindCommand(m_ActionMapIdx, std::make_unique<StartSinglePlayerCommand>(*this), std::make_unique<KeyboardBindingInfo>(KeyboardKey::Q, KeyState::DownThisFrame));
     }
     void MainMenuState::OnEnter()
     {
-        InputManager::GetInstance().GetActionMap(m_ActionMapIdx).enabled = true;
-        SceneManager::GetInstance().LoadScene("MainMenu");
+        InputManager::GetInstance().SetEnableActionMap(m_ActionMapIdx, true);
+        SceneManager::GetInstance().LoadScene(m_Name);
     }
     GameState MainMenuState::Update()
     {
@@ -31,7 +30,7 @@ namespace BubbleBobble
     }
     void MainMenuState::OnExit()
     {
-        InputManager::GetInstance().GetActionMap(m_ActionMapIdx).enabled = false;
+        InputManager::GetInstance().SetEnableActionMap(m_ActionMapIdx, false);
     }
     void MainMenuState::Reset()
     {
