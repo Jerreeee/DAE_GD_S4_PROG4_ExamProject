@@ -2,6 +2,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include "JREngine/Scene/GameObject.h"
 #include "JREngine/Scene/SceneManager.h"
 
 namespace JRE
@@ -18,13 +19,23 @@ namespace JRE
 		Scene& operator=(const Scene& other) = delete;
 		Scene& operator=(Scene&& other) = delete;
 
-		void Add(std::unique_ptr<GameObject> object);
-		void Remove(GameObject* object);
-		void RemoveAll();
 
 		void Start();
 		void Update();
 		void Cleanup();
+
+		void Add(std::unique_ptr<GameObject> object);
+		void Remove(GameObject* object);
+		void RemoveAll();
+
+		template<typename T>
+		GameObject* GetGameObjectByComponentType()
+		{
+			for (auto& obj : m_Objects)
+				if (obj->GetComponent<T>())
+					return obj.get();
+			return nullptr;
+		}
 
 		void RegisterRendererComponent(RendererComponentBase* pRendererComponent);
 		void UnRegisterRendererComponent(RendererComponentBase* pRendererComponent);
@@ -32,9 +43,9 @@ namespace JRE
 	private:
 		friend class SceneManager;
 
-		std::string m_name;
-		std::vector<std::unique_ptr<GameObject>> m_objects;
-		static unsigned int m_idCounter; 
+		std::string m_Name;
+		std::vector<std::unique_ptr<GameObject>> m_Objects;
+		static unsigned int m_IdCounter; 
 		std::vector<RendererComponentBase*> m_RendererComponents{};
 	};
 }

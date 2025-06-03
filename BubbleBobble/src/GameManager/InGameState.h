@@ -12,7 +12,9 @@ namespace BubbleBobble
 		virtual GameState Update() override;
 		virtual void OnExit() override;
 	private:
+		void GoToNextLevel();
+		
 		int m_NrLevels{ 3 };
-		int m_LevelIdx{ 1 };
+		int m_LevelIdx{ 0 };
 	};
 }

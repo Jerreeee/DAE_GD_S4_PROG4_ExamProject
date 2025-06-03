@@ -2,6 +2,8 @@
 #include "JREngine/Asset/SpriteEditor.h"
 #include "JREngine/Asset/AssetImporter.h"
 #include "JREngine/Asset/TextureImporter.h"
+
+#include "Assets/AnimsDataImporter.h"
 #include "Utils.h"
 
 namespace BubbleBobble::Utils

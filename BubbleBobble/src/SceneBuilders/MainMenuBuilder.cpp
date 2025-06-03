@@ -11,10 +11,12 @@
 #include "JREngine/Rendering/SpriteRendererComponent.h"
 #include "JREngine/Rendering/TextRendererComponent.h"
 
-#include "FileIO.h"
+#include "Assets/AnimsDataImporter.h"
 #include "Utils.h"
 #include "SceneBuilders/BuilderHelpers.h"
 #include "MainMenuBuilder.h"
+
+using namespace JRE;
 
 namespace BubbleBobble
 {
@@ -24,8 +26,10 @@ namespace BubbleBobble
 	}
 	void MainMenuBuilder::Build()
 	{
-		std::vector<AnimData> animDataVec = FileIO::GetAnimData("Data/Anims/Logo.txt");
-		const AnimData& animData = animDataVec[0];
+		auto animsDataImporter = AnimDataImporter("Anims/Logo.txt");
+		AssetHandle animsDataHandle = AssetImporter::GetInstance().ImportAsset(std::move(animsDataImporter));
+		AssetRef<AnimsData> animsDataRef = ResourceManager::GetAsset<AnimsData>(animsDataHandle);
+		const AnimData& animData = animsDataRef->dataVec[0];
 		auto logo = std::make_unique<JRE::GameObject>("Logo");
 		logo->AddComponent<JRE::SpriteRendererComponent>();
 		auto spriteAnimCmp = logo->AddComponent<JRE::SpriteAnimatorComponent>();

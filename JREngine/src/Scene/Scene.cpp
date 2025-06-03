@@ -9,8 +9,8 @@ namespace JRE
 	unsigned int m_idCounter = 0;
 
 	Scene::Scene(const std::string& name) :
-		m_name(name),
-		m_objects()
+		m_Name(name),
+		m_Objects()
 	{
 	}
 
@@ -22,27 +22,27 @@ namespace JRE
 		if (auto pComponent = object->GetComponent<RendererComponentBase>(); pComponent)
 			m_RendererComponents.emplace_back(pComponent);
 
-		m_objects.emplace_back(std::move(object));
+		m_Objects.emplace_back(std::move(object));
 	}
 
 	void Scene::Remove(GameObject* object)
 	{
-		m_objects.erase(std::remove_if(m_objects.begin(), m_objects.end(),
+		m_Objects.erase(std::remove_if(m_Objects.begin(), m_Objects.end(),
 			[&](const auto& pGameObject)
 			{
 				return pGameObject.get() == object;
 			}
-		), m_objects.end());
+		), m_Objects.end());
 	}
 
 	void Scene::RemoveAll()
 	{
-		m_objects.clear();
+		m_Objects.clear();
 	}
 
 	void Scene::Start()
 	{
-		for (auto& object : m_objects)
+		for (auto& object : m_Objects)
 		{
 			object->Start();
 		}
@@ -50,7 +50,7 @@ namespace JRE
 
 	void Scene::Update()
 	{
-		for (auto& object : m_objects)
+		for (auto& object : m_Objects)
 		{
 			object->Update();
 		}
@@ -59,15 +59,15 @@ namespace JRE
 	void JRE::Scene::Cleanup()
 	{
 		//Scene is responsible for removing ALL gameobjects, also child gameobjects
-		m_objects.erase(std::remove_if(m_objects.begin(), m_objects.end(),
+		m_Objects.erase(std::remove_if(m_Objects.begin(), m_Objects.end(),
 			[](const auto& object)
 			{
 				return object->IsDestroyed();
 			}
-		), m_objects.end());
+		), m_Objects.end());
 
 		//Extra Cleanup loop over the leftover gameobjects as they might need to remove components marked for destroying
-		for (const auto& object : m_objects)
+		for (const auto& object : m_Objects)
 		{
 			object->Cleanup();
 		}

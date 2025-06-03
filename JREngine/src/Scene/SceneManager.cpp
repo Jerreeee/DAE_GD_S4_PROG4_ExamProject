@@ -61,7 +61,7 @@ namespace JRE
 
 	void SceneManager::TransferPersistantObjects(Scene& srcScene, Scene& dstScene)
 	{
-		auto& objects = srcScene.m_objects;
+		auto& objects = srcScene.m_Objects;
 		auto it = std::remove_if(objects.begin(), objects.end(),
 			[&](std::unique_ptr<GameObject>& go) {
 				bool remove = go->m_Persistant;

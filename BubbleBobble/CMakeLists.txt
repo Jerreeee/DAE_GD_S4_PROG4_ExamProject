@@ -4,6 +4,11 @@ set(SOURCE_DIR src)
 
 set(SOURCE_FILES
     "Main.cpp"
+
+    "Events.h"
+    "Utils.h"
+    "Utils.cpp"
+
     "GameManager/GameManagerComponent.h"
     "GameManager/GameManagerComponent.cpp"
     "GameManager/IGameState.h"
@@ -14,11 +19,6 @@ set(SOURCE_FILES
     "GameManager/InGameState.h"
     "GameManager/InGameState.cpp"
 
-    "FileIO.h"
-    "FileIO.cpp"
-    "Utils.h"
-    "Utils.cpp"
-
     "SceneBuilders/BuilderHelpers.h"
     "SceneBuilders/BuilderHelpers.cpp"
     "SceneBuilders/MainMenuBuilder.h"
@@ -28,7 +28,29 @@ set(SOURCE_FILES
     "SceneBuilders/LevelBuilder.h"
     "SceneBuilders/LevelBuilder.cpp"
 
-    "Events.h"
+    "Level/TileMapComponent.h"
+    "Level/TileMapComponent.cpp"
+    "Level/TileMap.h"
+    "Level/TileMap.cpp"
+    "Level/TileMapImporter.h"
+    "Level/TileMapImporter.cpp"
+
+    "Assets/AnimsData.h"
+    "Assets/AnimsDataImporter.h"
+    "Assets/AnimsDataImporter.cpp"
+    "Assets/LevelData.h"
+    "Assets/LevelDataImporter.h"
+    "Assets/LevelDataImporter.cpp"
+
+    #"Player/PlayerBuilder.h"
+    #"Player/PlayerBuilder.cpp"
+   #"Player/PlayerScriptComponent.h"
+   #"Player/PlayerScriptComponent.cpp"
+    #"Player/PlayerState.h"
+    #"Player/PlayerState.cpp"
+    #"Player/PlayerCommands.h"
+    #"Player/PlayerCommands.cpp"
+    "Player/PlayerUtils.h"
 
     "Components/PlayerUIComponent.h"
     "Components/PlayerUIComponent.cpp"
@@ -40,30 +62,13 @@ set(SOURCE_FILES
     "Components/RotateParentComponent.h"
     "Components/FPSComponent.cpp"
     "Components/RotateParentComponent.cpp"
-
-    "Level/TileMapComponent.h"
-    "Level/TileMapComponent.cpp"
-    "Level/TileMap.h"
-    "Level/TileMap.cpp"
-    "Level/TileMapImporter.h"
-    "Level/TileMapImporter.cpp"
-
-    #"Player/PlayerBuilder.h"
-    #"Player/PlayerBuilder.cpp"
-   #"Player/PlayerScriptComponent.h"
-   #"Player/PlayerScriptComponent.cpp"
-    #"Player/PlayerState.h"
-    #"Player/PlayerState.cpp"
-    #"Player/PlayerCommands.h"
-    #"Player/PlayerCommands.cpp"
-    "Player/PlayerUtils.h"
 )
 AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
 
 find_package(VLD CONFIG)
 
 # Create executable
-add_executable(${TARGET_NAME} ${SOURCE_FILES})
+add_executable(${TARGET_NAME} ${SOURCE_FILES} "src/Assets/AnimsDataImporter.cpp")
 target_link_libraries(${TARGET_NAME} PRIVATE
     ${VLD_LIBRARY}
     JREngine

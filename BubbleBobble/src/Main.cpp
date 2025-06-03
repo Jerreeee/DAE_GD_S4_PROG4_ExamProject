@@ -57,20 +57,6 @@
 			auto& loadingMenuScene = sm.CreateScene(gameManagerCmp->GetStateName(GameState::LoadingScreen));
 			LoadingMenuBuilder(loadingMenuScene).Build();
 
-			//Create level scenes
-			std::filesystem::path targetDir{ "Data/Levels" };
-			for (const auto& entry : fs::directory_iterator(targetDir))
-			{
-				if (!entry.is_directory()) continue;
-				
-				auto path = entry.path();
-				std::string levelName = path.filename().string();
-				if (levelName != "1") continue;
-				auto& levelScene = sm.CreateScene("Level_" + levelName);
-				LevelBuilder(levelScene, path).Build();
-				break;
-			}
-
 			sm.SetStartSceneName(gameManagerCmp->GetStateName(GameState::MainMenu));
 
 			//JRE::Input::InputManager& inputManager = JRE::Input::InputManager::GetInstance();

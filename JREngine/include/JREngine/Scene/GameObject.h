@@ -81,19 +81,6 @@ namespace JRE
 		bool m_Persistant = false;
 	private:
 		//-----------------------
-		//Variables
-		//-----------------------
-
-		bool m_IsDestroyed{ false };	
-		std::string m_Name{};
-		Transform m_LocalTransform{};
-		Transform m_WorldTransform{};
-		bool m_PositionIsDirty{ false };
-		std::vector<std::unique_ptr<ComponentBase>> m_Components{};
-		GameObject* m_pParent{};
-		std::vector<GameObject*> m_Children{};
-		 
-		//-----------------------
 		//Functions
 		//-----------------------
 
@@ -111,6 +98,21 @@ namespace JRE
 		void SetPositionDirty();
 		void UpdateWorldPosition();
 		void AddChild(GameObject* pChild);
+
+		//-----------------------
+		//Variables
+		//-----------------------
+
+		bool m_IsDestroyed{ false };
+		std::string m_Name{};
+		Transform m_LocalTransform{};
+		Transform m_WorldTransform{};
+		bool m_PositionIsDirty{ false };
+		std::vector<std::unique_ptr<ComponentBase>> m_Components{};
+		GameObject* m_pParent{};
+		std::vector<GameObject*> m_Children{};
+
+		bool m_ExecutedStart = false; //Helps ensure Start() is only called once on persistent gameObjects
 		void RemoveChild(GameObject* pChild);
 	};
 }
