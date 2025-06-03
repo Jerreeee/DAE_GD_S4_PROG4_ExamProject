@@ -4,6 +4,7 @@
 
 #include "GameManager/MainMenuState.h"
 #include "GameManager/LoadingScreenState.h"
+#include "GameManager/InGameState.h"
 #include "GameManager/GameManagerComponent.h"
 
 using namespace JRE::Input;
@@ -20,6 +21,7 @@ namespace BubbleBobble
 		//Create all the states
 		m_States.emplace_back(std::make_unique<MainMenuState>(*this));
 		m_States.emplace_back(std::make_unique<LoadingScreenState>(*this));
+		m_States.emplace_back(std::make_unique<InGameState>(*this));
 		//Set active state
 		m_pCurrentState = m_States[static_cast<size_t>(startState)].get();
 	}

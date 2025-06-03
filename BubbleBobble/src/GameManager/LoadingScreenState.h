@@ -3,7 +3,6 @@
 
 namespace BubbleBobble
 {
-	class GameManagerComponent;
 	class LoadingScreenState final : public IGameState
 	{
 	public:
@@ -13,5 +12,7 @@ namespace BubbleBobble
 		virtual GameState Update() override;
 		virtual void OnExit() override;
 	private:
+		float m_MaxTime{ 2.f };
+		float m_Timer{};
 	};
 }

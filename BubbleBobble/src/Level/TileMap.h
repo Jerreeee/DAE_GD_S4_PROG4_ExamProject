@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
 #include <filesystem>
-#include <glm.hpp>
 #include "JREngine/Asset/Asset.h"
+#include "JREngine/Math/Rect.h"
 
 namespace JRE
 {
@@ -26,7 +26,7 @@ namespace BubbleBobble
 
 		void SetSprites(const std::vector<JRE::AssetRef<JRE::Sprite>>& sprites);
 		void SetSpritePositions(const std::vector<TileMap::SpritePos>& spritePositions);
-		void SetCollisionRects(const std::vector<glm::vec4>& rects);
+		void SetCollisionRects(const std::vector<JRE::Region>& rects);
 
 		const std::vector<SpritePos>& GetDrawInfo() const;
 
@@ -35,7 +35,6 @@ namespace BubbleBobble
 	private:
 		std::vector<SpritePos> m_SpritePositions{};
 		std::vector<JRE::AssetRef<JRE::Sprite>> m_Sprites{};
-		std::vector<std::string> m_SpriteNames{};
-		std::vector<glm::vec4> m_CollisionRects{};
+		std::vector<JRE::Region> m_CollisionRects{};
 	};
 }

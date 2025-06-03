@@ -4,7 +4,6 @@
 
 namespace BubbleBobble
 {
-	class GameManagerComponent;
 	class MainMenuState final : public IGameState
 	{
 	public:

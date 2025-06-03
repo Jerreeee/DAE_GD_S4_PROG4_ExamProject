@@ -29,9 +29,9 @@ int GetOpenGLDriverIndex()
 
 void JRE::SDLRenderer::Init(SDL_Window* window)
 {
-	m_window = window;
-	m_renderer = SDL_CreateRenderer(window, GetOpenGLDriverIndex(), SDL_RENDERER_ACCELERATED);
-	if (m_renderer == nullptr) 
+	m_Window = window;
+	m_Renderer = SDL_CreateRenderer(window, GetOpenGLDriverIndex(), SDL_RENDERER_ACCELERATED);
+	if (m_Renderer == nullptr) 
 	{
 		throw std::runtime_error(std::string("SDL_CreateRenderer Error: ") + SDL_GetError());
 	}
@@ -41,15 +41,15 @@ void JRE::SDLRenderer::Init(SDL_Window* window)
 	ImGui::StyleColorsDark();
 
 	// Initialize SDL2 ImGui backend
-	ImGui_ImplSDL2_InitForSDLRenderer(window, m_renderer);
-	ImGui_ImplSDLRenderer2_Init(m_renderer);
+	ImGui_ImplSDL2_InitForSDLRenderer(window, m_Renderer);
+	ImGui_ImplSDLRenderer2_Init(m_Renderer);
 }
 
 void JRE::SDLRenderer::Render()
 {
 	const auto& color = GetBackgroundColor();
-	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
-	SDL_RenderClear(m_renderer);
+	SDL_SetRenderDrawColor(m_Renderer, color.r, color.g, color.b, color.a);
+	SDL_RenderClear(m_Renderer);
 
 	ImGui_ImplSDLRenderer2_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
@@ -61,21 +61,21 @@ void JRE::SDLRenderer::Render()
 			pRendererComponent->Render();
 
 	ImGui::Render();
-	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), m_renderer);
+	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), m_Renderer);
 
-	SDL_RenderPresent(m_renderer);
+	SDL_RenderPresent(m_Renderer);
 }
 
 void JRE::SDLRenderer::Destroy()
 {
-	if (m_renderer != nullptr)
+	if (m_Renderer != nullptr)
 	{
 		ImGui_ImplSDLRenderer2_Shutdown();
 		ImGui_ImplSDL2_Shutdown();
 		ImGui::DestroyContext();
 
-		SDL_DestroyRenderer(m_renderer);
-		m_renderer = nullptr;
+		SDL_DestroyRenderer(m_Renderer);
+		m_Renderer = nullptr;
 	}
 }
 
@@ -121,4 +121,11 @@ void JRE::SDLRenderer::RenderSprite(AssetRef<Sprite> sprite, const float x, cons
 	SDL_RenderCopy(GetSDLRenderer(), pSDLTexture, &src, &dst);
 }
 
-SDL_Renderer* JRE::SDLRenderer::GetSDLRenderer() const { return m_renderer; }
+void JRE::SDLRenderer::DrawRectangle(int x, int y, int w, int h, const SDL_Color& color)
+{
+	SDL_SetRenderDrawColor(m_Renderer, color.r, color.g, color.b, color.a);
+	SDL_Rect rect = { x, y, w, h };
+	SDL_RenderDrawRect(m_Renderer, &rect);
+}
+
+SDL_Renderer* JRE::SDLRenderer::GetSDLRenderer() const { return m_Renderer; }

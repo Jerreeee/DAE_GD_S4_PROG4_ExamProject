@@ -1,0 +1,14 @@
+//Scene Description file
+//General line format: type arg0,arg1,... (the type of line followed by a space followed by the arguments)
+//P = Player, format: x,y
+//Z = Zenchan, format: x,y
+
+//Players
+P 92,620,true
+P 676,620,false
+
+//ZenChans
+Z 550,200
+Z 475,200
+Z 400,200
+Z 325,200

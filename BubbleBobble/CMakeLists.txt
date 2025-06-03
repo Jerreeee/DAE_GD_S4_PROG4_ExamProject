@@ -19,8 +19,14 @@ set(SOURCE_FILES
     "Utils.h"
     "Utils.cpp"
 
-    "MenuBuilders.h"
-    "MenuBuilders.cpp"
+    "SceneBuilders/BuilderHelpers.h"
+    "SceneBuilders/BuilderHelpers.cpp"
+    "SceneBuilders/MainMenuBuilder.h"
+    "SceneBuilders/MainMenuBuilder.cpp"
+    "SceneBuilders/LoadingScreenBuilder.h"
+    "SceneBuilders/LoadingScreenBuilder.cpp"
+    "SceneBuilders/LevelBuilder.h"
+    "SceneBuilders/LevelBuilder.cpp"
 
     "Events.h"
 
@@ -34,9 +40,6 @@ set(SOURCE_FILES
     "Components/RotateParentComponent.h"
     "Components/FPSComponent.cpp"
     "Components/RotateParentComponent.cpp"
-
-    "SceneBuilder.h"
-    "SceneBuilder.cpp"
 
     "Level/TileMapComponent.h"
     "Level/TileMapComponent.cpp"

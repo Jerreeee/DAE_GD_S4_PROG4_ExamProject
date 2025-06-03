@@ -14,7 +14,9 @@
 
 	//#include "Player/PlayerBuilder.h"
 	#include "GameManager/GameManagerComponent.h"
-	#include "MenuBuilders.h"
+	#include "SceneBuilders/MainMenuBuilder.h"
+	#include "SceneBuilders/LoadingScreenBuilder.h"
+	#include "SceneBuilders/LevelBuilder.h"
 
 	namespace BubbleBobble
 	{
@@ -54,6 +56,19 @@
 
 			auto& loadingMenuScene = sm.CreateScene(gameManagerCmp->GetStateName(GameState::LoadingScreen));
 			LoadingMenuBuilder(loadingMenuScene).Build();
+
+			//Create level scenes
+			std::filesystem::path targetDir{ "Data/Levels" };
+			for (const auto& entry : fs::directory_iterator(targetDir))
+			{
+				if (!entry.is_directory()) continue;
+				
+				auto path = entry.path();
+				std::string levelName = path.filename().string();
+				auto& levelScene = sm.CreateScene("Level_" + levelName);
+				LevelBuilder(levelScene, path).Build();
+				break;
+			}
 
 			sm.SetStartSceneName(gameManagerCmp->GetStateName(GameState::MainMenu));
 

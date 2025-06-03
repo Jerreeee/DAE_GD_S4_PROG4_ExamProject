@@ -8,10 +8,10 @@ namespace BubbleBobble
     }
     void TileMapComponent::Render() const
     {
-        m_Level->Render();
+        m_TileMap->Render();
     }
-    void TileMapComponent::SetLevel(JRE::AssetRef<TileMap> level)
+    void TileMapComponent::SetTileMap(JRE::AssetRef<TileMap> tileMap)
     {
-        m_Level = level;
+        m_TileMap = tileMap;
     }
 }

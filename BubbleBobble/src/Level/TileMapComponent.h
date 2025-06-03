@@ -17,8 +17,8 @@ namespace BubbleBobble
 
 		virtual void Render() const;
 
-		void SetLevel(JRE::AssetRef<TileMap> level);
+		void SetTileMap(JRE::AssetRef<TileMap> tileMap);
 	private:
-		JRE::AssetRef<TileMap> m_Level = nullptr;
+		JRE::AssetRef<TileMap> m_TileMap = nullptr;
 	};
 }

@@ -5,7 +5,7 @@
 //Z = Zenchan, format: x,y
 
 //Big tiles left
-C 0,48,0,674
+C 0,48,48,672
 T Big,0,624,1,1
 T Big,0,576,1,1
 T Big,0,528,1,1
@@ -21,7 +21,7 @@ T Big,0,96,1,1
 T Big,0,48,1,0
 
 //Big tiles right
-C 0,48,0,674
+C 720,48,768,672
 T Big,720,624,1,1
 T Big,720,576,1,1
 T Big,720,528,1,1

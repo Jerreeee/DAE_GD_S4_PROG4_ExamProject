@@ -34,14 +34,15 @@ namespace JRE
 
 		auto it = m_Scenes.find(name);
 		assert(it != m_Scenes.end() && "Invalid scene name");
-		auto& oldScene = *m_Scenes[m_CurrentSceneName];
 		auto& newScene = *it->second;
 
 		if (m_SceneLoaded)
 		{
+			auto& oldScene = *m_Scenes[m_CurrentSceneName];
 			TransferPersistantObjects(oldScene, newScene);
 			oldScene.Cleanup();
 		}
+
 		m_CurrentSceneName = name;
 		newScene.Start();
 		m_SceneLoaded = true;

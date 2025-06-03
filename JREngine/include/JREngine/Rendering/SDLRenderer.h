@@ -21,15 +21,16 @@ namespace JRE
 
 		void RenderSprite(AssetRef<Sprite> sprite, float x, float y) const;
 		void RenderSprite(AssetRef<Sprite> sprite, float x, float y, float width, float height) const;
+		void DrawRectangle(int x, int y, int w, int h, const SDL_Color& color);
 
 		SDL_Renderer* GetSDLRenderer() const;
 
-		const SDL_Color& GetBackgroundColor() const { return m_clearColor; }
-		void SetBackgroundColor(const SDL_Color& color) { m_clearColor = color; }
+		const SDL_Color& GetBackgroundColor() const { return m_ClearColor; }
+		void SetBackgroundColor(const SDL_Color& color) { m_ClearColor = color; }
 	private:
-		SDL_Renderer* m_renderer{};
-		SDL_Window* m_window{};
-		SDL_Color m_clearColor{};
+		SDL_Renderer* m_Renderer{};
+		SDL_Window* m_Window{};
+		SDL_Color m_ClearColor{};
 	};
 }
 
