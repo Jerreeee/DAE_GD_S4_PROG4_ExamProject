@@ -14,6 +14,12 @@ namespace BubbleBobble
 	class TileMap final : public JRE::Asset
 	{
 	public:
+		struct CollisionInfo
+		{
+			JRE::Region region;
+			bool isPlatform;
+		};
+
 		struct SpritePos
 		{
 			size_t spriteIdx;
@@ -26,7 +32,7 @@ namespace BubbleBobble
 
 		void SetSprites(const std::vector<JRE::AssetRef<JRE::Sprite>>& sprites);
 		void SetSpritePositions(const std::vector<TileMap::SpritePos>& spritePositions);
-		void SetCollisionRects(const std::vector<JRE::Region>& rects);
+		void SetCollisionRects(const std::vector<CollisionInfo>& rects);
 
 		const std::vector<SpritePos>& GetDrawInfo() const;
 
@@ -35,6 +41,6 @@ namespace BubbleBobble
 	private:
 		std::vector<SpritePos> m_SpritePositions{};
 		std::vector<JRE::AssetRef<JRE::Sprite>> m_Sprites{};
-		std::vector<JRE::Region> m_CollisionRects{};
+		std::vector<CollisionInfo> m_CollisionRects{};
 	};
 }

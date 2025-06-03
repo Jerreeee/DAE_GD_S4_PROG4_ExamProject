@@ -65,6 +65,7 @@
 				
 				auto path = entry.path();
 				std::string levelName = path.filename().string();
+				if (levelName != "1") continue;
 				auto& levelScene = sm.CreateScene("Level_" + levelName);
 				LevelBuilder(levelScene, path).Build();
 				break;

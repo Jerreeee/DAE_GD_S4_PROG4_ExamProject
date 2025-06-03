@@ -23,9 +23,11 @@ namespace BubbleBobble
 			SDLRenderer::GetInstance().RenderSprite(m_Sprites[spritePos.spriteIdx], spritePos.pos.x, spritePos.pos.y);
 		}
 
-		for (const Region& rect : m_CollisionRects)
+		for (const CollisionInfo& info : m_CollisionRects)
 		{
-			SDLRenderer::GetInstance().DrawRectangle(rect.x, rect.y, rect.width, rect.height, SDL_Color{ 255, 255, 255, 255 });
+			SDL_Color color = info.isPlatform ? SDL_Color{255, 0, 0, 255} : SDL_Color{255, 255, 255, 255};
+			const JRE::Region& rect = info.region;
+			SDLRenderer::GetInstance().DrawRectangle(rect.x, rect.y, rect.width, rect.height, color);
 		}
 	}
 	void TileMap::SetSprites(const std::vector<JRE::AssetRef<JRE::Sprite>>& sprites)
@@ -36,7 +38,7 @@ namespace BubbleBobble
 	{
 		m_SpritePositions = spritePositions;
 	}
-	void TileMap::SetCollisionRects(const std::vector<JRE::Region>& rects)
+	void TileMap::SetCollisionRects(const std::vector<CollisionInfo>& rects)
 	{
 		m_CollisionRects = rects;
 	}
