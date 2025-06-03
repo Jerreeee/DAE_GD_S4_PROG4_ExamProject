@@ -4,6 +4,7 @@
 #include "Player/PlayerScriptComponent.h"
 #include "SceneBuilders/LevelBuilder.h"
 #include "GameManagerComponent.h"
+#include "Assets/LevelDataComponent.h"
 #include "InGameState.h"
 
 using namespace JRE;
@@ -44,10 +45,14 @@ namespace BubbleBobble
 		Scene& scene = sm.GetCurrentScene();
 
 		// 1) Find player in gameObjects (with tag, or PlayerScriptComponent)
-		auto pPlayerGameObject = scene.GetGameObjectByComponentType<Player::ScriptComponent>();
-		pPlayerGameObject;
-		// 2) Load player spawn pos from file
-		// 3) Set player pos to spawn pos in file
+		auto pPlayer = scene.GetGameObjectByComponentType<Player::ScriptComponent>();
+		assert(pPlayer && "Couldn't find the player gameObject in the scene");
+		// 2) Find LevelData
+		auto pLevelDataCmp = scene.GetComponent<LevelDataComponent>();
+		// 3) Set player pos to spawn pos
+		assert(pLevelDataCmp->m_LevelData->players.size() > 0 && "No player pos defined in the levelData");
+		glm::vec2 spawnPos = pLevelDataCmp->m_LevelData->players[0];
+		pPlayer->SetWorldPosition(spawnPos.x, spawnPos.y);
 
 		// 4) Load enemy spawn positions form file
 		// 5) spawn enemies at positions

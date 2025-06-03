@@ -6,6 +6,7 @@
 #include "GameManager/LoadingScreenState.h"
 #include "GameManager/InGameState.h"
 #include "GameManager/GameManagerComponent.h"
+#include "Player/PlayerBuilder.h"
 
 using namespace JRE::Input;
 
@@ -43,5 +44,24 @@ namespace BubbleBobble
 	{
 		int idx = static_cast<int>(state);
 		return m_States[idx]->GetName();
+	}
+	void GameManagerComponent::SetGameMode(GameMode mode)
+	{
+		m_GameMode = mode;
+
+		switch (m_GameMode)
+		{
+		case GameMode::SinglePlayer:
+		{
+			//##################
+			//Player 1
+			//##################
+			//auto player1 = std::make_unique<JRE::GameObject>("Player1");
+			//Player::Builder()
+			//	.SetAnimationPath("Data/Anims/P1.txt")
+			//	.Build(player1);
+			//scene.Add(std::move(player1));
+		}
+		}
 	}
 }

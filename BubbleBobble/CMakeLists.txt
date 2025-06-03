@@ -41,6 +41,7 @@ set(SOURCE_FILES
     "Assets/LevelData.h"
     "Assets/LevelDataImporter.h"
     "Assets/LevelDataImporter.cpp"
+    "Assets/LevelDataComponent.h"
 
     #"Player/PlayerBuilder.h"
     #"Player/PlayerBuilder.cpp"

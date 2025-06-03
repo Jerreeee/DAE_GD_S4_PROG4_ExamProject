@@ -11,6 +11,7 @@ namespace BubbleBobble
 		void Build();
 	private:
 		void AddTileMap();
+		void AddLevelData();
 		
 		JRE::Scene& m_Scene;
 		std::filesystem::path m_Path{};

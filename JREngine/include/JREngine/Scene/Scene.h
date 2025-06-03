@@ -28,12 +28,21 @@ namespace JRE
 		void Remove(GameObject* object);
 		void RemoveAll();
 
-		template<typename T>
+		template<DerivedFromComponentBase ComponentType>
 		GameObject* GetGameObjectByComponentType()
 		{
 			for (auto& obj : m_Objects)
-				if (obj->GetComponent<T>())
+				if (obj->GetComponent<ComponentType>())
 					return obj.get();
+			return nullptr;
+		}
+
+		template<DerivedFromComponentBase ComponentType>
+		ComponentType* GetComponent()
+		{
+			for (auto& obj : m_Objects)
+				if (auto pCmp = obj->GetComponent<ComponentType>(); pCmp)
+					return pCmp;
 			return nullptr;
 		}
 

@@ -20,7 +20,7 @@ namespace BubbleBobble
 		virtual void Update() override;
 
 		std::string GetStateName(GameState state);
-		void SetGameMode(GameMode mode) { m_GameMode = mode; };
+		void SetGameMode(GameMode mode);
 		GameMode GetGameMode() const { return m_GameMode; };
 	private:
 		IGameState* m_pCurrentState{};

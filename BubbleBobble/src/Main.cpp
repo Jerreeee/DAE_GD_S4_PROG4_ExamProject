@@ -12,7 +12,6 @@
 	#include "JREngine/Scene/SceneManager.h"
 	#include "JREngine/Scene/GameObject.h"
 
-	//#include "Player/PlayerBuilder.h"
 	#include "GameManager/GameManagerComponent.h"
 	#include "SceneBuilders/MainMenuBuilder.h"
 	#include "SceneBuilders/LoadingScreenBuilder.h"
@@ -58,23 +57,5 @@
 			LoadingMenuBuilder(loadingMenuScene).Build();
 
 			sm.SetStartSceneName(gameManagerCmp->GetStateName(GameState::MainMenu));
-
-			//JRE::Input::InputManager& inputManager = JRE::Input::InputManager::GetInstance();
-
-			/*
-			Loading a sceen:
-			1) game obejct + tilemap
-			2) add player (from previous level)
-			*/
-
-
-			//##################
-			//Player 1
-			//##################
-			//auto player1 = std::make_unique<JRE::GameObject>("Player1");
-			//Player::Builder()
-			//	.SetAnimationPath("Data/Anims/P1.txt")
-			//	.Build(player1);
-			//scene.Add(std::move(player1));
 		}
 	}

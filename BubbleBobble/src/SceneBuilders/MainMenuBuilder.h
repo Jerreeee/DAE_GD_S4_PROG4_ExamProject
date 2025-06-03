@@ -5,8 +5,6 @@
 
 namespace BubbleBobble
 {
-
-
 	class MainMenuBuilder final
 	{
 	public:

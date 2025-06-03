@@ -63,7 +63,7 @@ namespace BubbleBobble
 	void LevelDataImporter::AddPlayer(const std::vector<std::string>& tokens,
 		std::vector<glm::vec2>& players)
 	{
-		assert(tokens.size() == 2 && "Ill-formatted player line");
+		assert(tokens.size() == 3 && "Ill-formatted player line");
 		glm::vec2 pos{ std::stof(tokens[0]), std::stof(tokens[1]) };
 		players.emplace_back(pos);
 	}
