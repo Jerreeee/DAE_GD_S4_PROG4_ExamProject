@@ -1,10 +1,10 @@
 #pragma once
 #include <vector>
 #include <map>
+#include "JREngine/Input/InputManager.h"
 #include "JREngine/Scene/ComponentBase.h"
 #include "JREngine/Asset/Asset.h"
 #include "Player/PlayerState.h"
-#include "Player/PlayerCommands.h"
 
 namespace JRE
 {
@@ -20,25 +20,25 @@ namespace BubbleBobble::Player
 	class ScriptComponent : public JRE::ComponentBase
 	{
 	public:
-		ScriptComponent(JRE::GameObject& gameObject);
+		ScriptComponent(JRE::GameObject& gameObject, const JRE::Input::ActionMap& actionMap);
 
 		virtual void Start() override;
 		virtual void Update() override;
 
+		void SetActionMapToUse(const JRE::Input::ActionMap& actionMap);
 		void SetAnimation(const std::string& animName, JRE::AssetRef<JRE::SpriteAnimationClip> clip);
 
 		void Move(int direction);
-		void Jump();
+		void Jump(float force);
 		void ChangeAnimation(Animation anim);
 	private:
-		friend class MovingState;
-		friend class ShootState;
-		friend class DiedState;
-
 		JRE::GameObject& m_Player;
+
 		JRE::SpriteAnimatorComponent* m_pSpriteAnimatiorComponent{ nullptr };
 		JRE::RigidBody2DComponent* m_pRigidBody2DComponent{ nullptr };
 
+		const JRE::Input::ActionMap* m_pActionMap{ nullptr };
+		int m_ActionMapIdx{ -1 };
 		IState* m_pState{};
 		std::vector<std::unique_ptr<IState>> m_States{};
 

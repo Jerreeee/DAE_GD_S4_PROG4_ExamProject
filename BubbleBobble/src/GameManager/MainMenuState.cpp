@@ -15,11 +15,11 @@ namespace BubbleBobble
         //Setup controls
         auto& im = InputManager::GetInstance();
         m_ActionMapIdx = im.AddActionMap({ 0 });
-        im.BindCommand(m_ActionMapIdx, std::make_unique<StartSinglePlayerCommand>(*this), std::make_unique<KeyboardBindingInfo>(KeyboardKey::Q, KeyState::DownThisFrame));
+        im.BindCommand(m_ActionMapIdx, "StartSinglePlayer", std::make_unique<StartSinglePlayerCommand>(*this), std::make_unique<KeyboardBindingInfo>(KeyboardKey::Q, KeyState::DownThisFrame));
     }
     void MainMenuState::OnEnter()
-    {
-        m_StartSinglePlayer = false;
+    {   
+        Reset();
         InputManager::GetInstance().SetEnableActionMap(m_ActionMapIdx, true);
         SceneManager::GetInstance().LoadScene(m_Name);
     }

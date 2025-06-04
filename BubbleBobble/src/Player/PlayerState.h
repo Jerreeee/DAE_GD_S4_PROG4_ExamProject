@@ -5,6 +5,7 @@
 #include <string>
 #include "JREngine/Asset/Asset.h"
 #include "JREngine/Core/Event.h"
+#include "JREngine/Input/InputManager.h"
 #include "Player/PlayerUtils.h"
 
 namespace JRE
@@ -35,45 +36,50 @@ namespace BubbleBobble::Player
 	class MovingState : public IState
 	{
 	public:
-		MovingState(ScriptComponent& player) : m_Player{ player } {};
+		MovingState(ScriptComponent& player, const JRE::Input::ActionMap*& pActionMap)
+			: m_Player{ player }
+			, m_pActionMap{ pActionMap } {};
 		virtual void OnEnter() override;
 		virtual State Update() override;
 	private:
 		ScriptComponent& m_Player;
+		const JRE::Input::ActionMap*& m_pActionMap;
 	};
 
 	class JumpState : public IState
 	{
 	public:
-		JumpState(ScriptComponent& player) :m_Player{ player } {};
+		JumpState(ScriptComponent& player, const JRE::Input::ActionMap*& pActionMap, float force)
+			: m_Player{ player }
+			, m_pActionMap{ pActionMap }
+			, m_Force{ force }
+		{};
 		virtual void OnEnter() override;
-		virtual State Update() override;
+		virtual State Update() override { return State::Moving; };
 	private:
 		ScriptComponent& m_Player;
-		float m_JumpForce{ 20.f };
+		const JRE::Input::ActionMap*& m_pActionMap;
+		float m_Force{ 20.f };
 	};
 
-	class ShootState : public IState, public JRE::IObserver
+	class ShootState : public IState
 	{
 	public:
-		ShootState(ScriptComponent& player) : m_Player{ player } {};
+		ShootState(ScriptComponent& player, const JRE::Input::ActionMap*& pActionMap) : m_Player{ player }, m_pActionMap{ pActionMap } {};
 		virtual void OnEnter() override;
-		virtual State Update() override;
-
-		void SetAnimationClip(JRE::AssetRef<JRE::SpriteAnimationClip> animClip);
-		virtual void OnNotify(JRE::EventInfo& event) override;
+		virtual State Update() override { return State::Moving; };
 	private:
 		ScriptComponent& m_Player;
-		JRE::AssetRef<JRE::SpriteAnimationClip> m_AnimClip{ nullptr };
-		bool m_AnimClipEnded{ false };
+		const JRE::Input::ActionMap*& m_pActionMap;
 	};
 
 	class DiedState : public IState
 	{
 	public:
-		DiedState(ScriptComponent& player) : m_Player{ player } {};
+		DiedState(ScriptComponent& player, const JRE::Input::ActionMap*& pActionMap) : m_Player{ player }, m_pActionMap{ pActionMap } {};
 		virtual void OnEnter() override;
 	private:
 		ScriptComponent& m_Player;
+		const JRE::Input::ActionMap*& m_pActionMap;
 	};
 }

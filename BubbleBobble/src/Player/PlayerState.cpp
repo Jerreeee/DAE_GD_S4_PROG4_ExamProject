@@ -1,6 +1,11 @@
 #include "JREngine/Animation/SpriteAnimationClip.h"
+#include "JREngine/Input/InputManager.h"
+
 #include "Player/PlayerScriptComponent.h"
 #include "Player/PlayerState.h"
+
+using namespace JRE;
+using namespace JRE::Input;
 
 namespace BubbleBobble::Player
 {
@@ -10,57 +15,28 @@ namespace BubbleBobble::Player
 	}
 	State MovingState::Update()
 	{
-		const Input& input = m_Player.m_Input;
+		auto& im = InputManager::GetInstance();
 
-		m_Player.Move(input.moveDir);
+		bool moveLeft = im.IsBindingActive(*m_pActionMap, "MoveLeft");
+		bool moveRight = im.IsBindingActive(*m_pActionMap, "MoveRight");
+		if (moveLeft)
+			m_Player.Move(-1);
+		if (moveRight)
+			m_Player.Move(1);
 
-		if (input.moveDir == 0)
+		if (moveLeft || moveRight)
 			m_Player.ChangeAnimation(Animation::Idle);
 		else
 			m_Player.ChangeAnimation(Animation::Run);
 		//TODO Flip running animation depending on going left or right
 
-		if (input.pressedShoot)
+		bool jump = im.IsBindingActive(*m_pActionMap, "Jump");
+		bool shoot = im.IsBindingActive(*m_pActionMap, "Shoot");
+		if (shoot)
 			return State::Shooting;
-		else if (input.pressedJump) //TODO only if on the ground
+		else if (jump)
 			return State::Jumping;
 		return State::None;
-	}
-
-	void ShootState::OnEnter()
-	{
-		m_AnimClipEnded = false;
-		m_Player.ChangeAnimation(Animation::Shoot);
-	}
-	State ShootState::Update()
-	{
-		const Input& input = m_Player.m_Input;
-
-		m_Player.Move(input.moveDir);
-
-		if (!m_AnimClip || m_AnimClipEnded)
-			return State::Moving;
-		else if (input.pressedJump)
-			return State::Jumping;
-		return State::None;
-	}
-	void ShootState::SetAnimationClip(JRE::AssetRef<JRE::SpriteAnimationClip> animClip)
-	{
-		if (m_AnimClip)
-			m_AnimClip->OnEndOfClipEvent.RemoveObserver(this);
-
-		m_AnimClip = animClip;
-		if (m_AnimClip)
-			m_AnimClip->OnEndOfClipEvent.AddObserver(this);
-	}
-	void ShootState::OnNotify(JRE::EventInfo& event)
-	{
-		switch (event.GetID())
-		{
-		case JRE::Events::EndOfClipEvent::ID:
-			m_AnimClipEnded = true;
-			break;
-		}
 	}
 
 
@@ -72,10 +48,10 @@ namespace BubbleBobble::Player
 
 	void JumpState::OnEnter()
 	{
-		m_Player.Jump();
+		m_Player.Jump(m_Force);
 	}
-	State JumpState::Update()
+	void ShootState::OnEnter()
 	{
-		return State::Moving; //immediatly return to move state
+		m_Player.ChangeAnimation(Animation::Shoot);
 	}
 }

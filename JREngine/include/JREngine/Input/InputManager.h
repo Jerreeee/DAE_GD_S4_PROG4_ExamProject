@@ -3,6 +3,7 @@
 #include <array>
 #include <map>
 #include <memory>
+#include <string>
 #include "JREngine/Core/Singleton.h"
 #include "JREngine/Input/InputUtils.h"
 #include "JREngine/Input/IKeyboard.h"
@@ -20,6 +21,12 @@ namespace Input
 		bool polledThisTick;
 	};
 
+	struct Binding
+	{
+		std::unique_ptr<IBindingInfo> pBindInfo;
+		std::unique_ptr<Command> pCommand;
+	};
+
 	struct ActionMap
 	{
 		ActionMap();
@@ -30,9 +37,12 @@ namespace Input
 		ActionMap& operator=(ActionMap&&) noexcept = default;
 
 		bool enabled{ true };
+		const std::map<std::string, Binding>& GetBindings() const { return m_Bindings; };
+	private:
+		friend class InputManager;
+
 		std::array<DeviceInfo*, 2> devicesInfo{}; //1 possible device per DeviceType
-		std::vector<std::unique_ptr<Command>> m_Commands{};
-		std::map<Command*, std::unique_ptr<IBindingInfo>> m_Bindings{};
+		std::map<std::string, Binding>  m_Bindings;
 	};
 
 	class InputManager final : public Singleton<InputManager>
@@ -43,12 +53,13 @@ namespace Input
 
 		bool ProcessInput();
 
-		bool IsBindingActive(size_t actionMapIdx, const IBindingInfo& bindInfo);
 
 		size_t AddKeyboard();
 		size_t AddController();
 		size_t AddActionMap(const std::vector<size_t>& deviceIndices);
-		InputManager& BindCommand(size_t actionMapIdx, std::unique_ptr<Command> command, std::unique_ptr<IBindingInfo> pBindingInfo);
+		const ActionMap& GetActionMap(size_t actionMapIdx);
+		InputManager& BindCommand(size_t actionMapIdx, const std::string& name, std::unique_ptr<Command> pCommand, std::unique_ptr<IBindingInfo> pBindingInfo);
+		bool IsBindingActive(const ActionMap& actionMap, const std::string& name);
 		void SetEnableActionMap(size_t actionMapIdx, bool enable);
 	private:
 		bool IsValidActionMapIdx(size_t idx);
