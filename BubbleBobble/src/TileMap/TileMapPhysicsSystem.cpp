@@ -24,24 +24,53 @@ namespace BubbleBobble
 
 			for (const auto& collisionRect : collisionRects)
 			{
-				if (worldBounds.Intersects(collisionRect.region))
+				if (!worldBounds.Intersects(collisionRect.region))
+					continue;
+
+				const float aLeft = worldBounds.Left();
+				const float aRight = worldBounds.Right();
+				const float aTop = worldBounds.Top();
+				const float aBottom = worldBounds.Bottom();
+
+				const float bLeft = collisionRect.region.Left();
+				const float bRight = collisionRect.region.Right();
+				const float bTop = collisionRect.region.Top();
+				const float bBottom = collisionRect.region.Bottom();
+
+				const float overlapX = std::min(aRight, bRight) - std::max(aLeft, bLeft);
+				const float overlapY = std::min(aBottom, bBottom) - std::max(aTop, bTop);
+
+				if (overlapX > 0.0f)
 				{
-					// Simple vertical collision response: push collider up so it rests on the tile
-					const float colliderBottom = worldBounds.Top() + worldBounds.Height();
-					const float tileTop = collisionRect.region.Top();
-
-					// If the collider is falling into the tile from above
-					if (colliderBottom > tileTop)
-					{
-						position.y = tileTop - worldBounds.Height();
-						collider->GetGameObject().SetWorldPosition(position);
-
-						// Update bounding box for further checks if needed
-						worldBounds = collider->GetWorldBounds();
-					}
+					if (aRight > bLeft && aLeft < bLeft)
+						position.x -= overlapX; // from left
+					else if (aLeft < bRight && aRight > bRight)
+						position.x += overlapX; // from right
 				}
+
+				if (overlapY > 0.0f)
+				{
+					if (aBottom > bTop && aTop < bTop)
+						position.y -= overlapY; // from top
+					else if (aTop < bBottom && aBottom > bBottom)
+						position.y += overlapY; // from bottom
+				}
+
+				//Set fixed position and recalculate bounds
+				collider->GetGameObject().SetWorldPosition(position);
+				worldBounds = collider->GetWorldBounds();
 			}
 		}
+	}
+	bool TileMapPhysicsSystem::IsRectOverlappingCollider(const JRE::Region& rect) const
+	{
+		if (!m_pTileMap)
+			return false;
+
+		for (const auto& tile : m_pTileMap->GetCollisionRects())
+			if (rect.Intersects(tile.region))
+				return true;
+		return false;
 	}
 	void TileMapPhysicsSystem::RegisterCollider(TileMapColliderComponent* comp)
 	{

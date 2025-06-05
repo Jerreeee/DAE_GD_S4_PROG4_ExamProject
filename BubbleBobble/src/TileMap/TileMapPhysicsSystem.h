@@ -3,6 +3,11 @@
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Scene/Scene.h"
 
+namespace JRE
+{
+	struct Region;
+}
+
 namespace BubbleBobble
 {
 	class TileMapColliderComponent;
@@ -13,6 +18,8 @@ namespace BubbleBobble
 		TileMapPhysicsSystem(const TileMap& tileMap);
 
 		virtual void Update(JRE::Scene& scene) override;
+
+		bool IsRectOverlappingCollider(const JRE::Region& rect) const;
 
 		void RegisterCollider(TileMapColliderComponent* comp);
 		void UnregisterCollider(TileMapColliderComponent* comp);

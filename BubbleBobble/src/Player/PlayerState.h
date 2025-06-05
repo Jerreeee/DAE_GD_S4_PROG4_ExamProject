@@ -6,11 +6,18 @@
 #include "JREngine/Asset/Asset.h"
 #include "JREngine/Core/Event.h"
 #include "JREngine/Input/InputManager.h"
+
 #include "Player/PlayerUtils.h"
 
 namespace JRE
 {
 	class SpriteAnimationClip;
+	class RigidBody2DComponent;
+}
+
+namespace BubbleBobble
+{
+	class TileMapPhysicsSystem;
 }
 
 namespace BubbleBobble::Player
@@ -36,17 +43,15 @@ namespace BubbleBobble::Player
 	class MovingState : public IState
 	{
 	public:
-		MovingState(ScriptComponent& player, const JRE::Input::ActionMap*& pActionMap, float speed)
-			: m_Player{ player }
-			, m_pActionMap{ pActionMap }
-			, m_Speed{ speed }
-		{};
+		MovingState(ScriptComponent& player, const JRE::Input::ActionMap*& pActionMap, float speed);
 		virtual void OnEnter() override;
 		virtual State Update() override;
 	private:
 		ScriptComponent& m_Player;
 		const JRE::Input::ActionMap*& m_pActionMap;
+		JRE::RigidBody2DComponent* m_pRigidBody;
 		float m_Speed{ 30.f };
+		TileMapPhysicsSystem* m_pPhysicsSystem{ nullptr };
 	};
 
 	class JumpState : public IState

@@ -20,6 +20,10 @@ namespace JRE
 		pos.y += m_Vel.y * pixPerM * Timer::GetInstance().GetDeltaTime();
 		obj.SetWorldPosition(pos);
 	}
+	void RigidBody2DComponent::SetVelocity(glm::vec2 vel)
+	{
+		m_Vel = vel;
+	}
 	void RigidBody2DComponent::Launch(glm::vec2 dirAndStrength)
 	{
 		dirAndStrength.y *= -1;
