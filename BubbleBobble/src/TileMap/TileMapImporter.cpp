@@ -7,8 +7,8 @@
 #include "JREngine/Asset/Texture2D.h"
 #include "JREngine/Asset/ResourceManager.h"
 #include "JREngine/Asset/Sprite.h"
-#include "Level/TileMap.h"
-#include "Level/TileMapImporter.h"
+#include "TileMap/TileMap.h"
+#include "TileMap/TileMapImporter.h"
 
 namespace BubbleBobble
 {
@@ -115,10 +115,10 @@ namespace BubbleBobble
 		std::vector<TileMap::CollisionInfo>& collisionRect)
 	{
 		bool isPlatform = (tokens[0] == "1");
-		int leftTopX = std::stoi(tokens[1]);
-		int leftTopY = std::stoi(tokens[2]);
-		int rightBottomX = std::stoi(tokens[3]);
-		int rightBottomY = std::stoi(tokens[4]);
+		float leftTopX = static_cast<float>(std::stoi(tokens[1]));
+		float leftTopY = static_cast<float>(std::stoi(tokens[2]));
+		float rightBottomX = static_cast<float>(std::stoi(tokens[3]));
+		float rightBottomY = static_cast<float>(std::stoi(tokens[4]));
 		JRE::Region rect{ leftTopX, leftTopY, rightBottomX - leftTopX, rightBottomY - leftTopY };
 		collisionRect.emplace_back(TileMap::CollisionInfo{ rect, isPlatform });
 	}

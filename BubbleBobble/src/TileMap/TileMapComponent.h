@@ -1,7 +1,7 @@
 #pragma once
 #include "JREngine/Rendering/RendererComponentBase.h"
 #include "JREngine/Asset/Asset.h"
-#include "Level/TileMap.h"
+#include "TileMap/TileMap.h"
 
 namespace JRE
 {
@@ -18,6 +18,7 @@ namespace BubbleBobble
 		virtual void Render() const;
 
 		void SetTileMap(JRE::AssetRef<TileMap> tileMap);
+		const TileMap& GetTileMap() const { return *m_TileMap; };
 	private:
 		JRE::AssetRef<TileMap> m_TileMap = nullptr;
 	};

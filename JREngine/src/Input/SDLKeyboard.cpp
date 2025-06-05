@@ -55,7 +55,7 @@ namespace JRE::Input
 		m_ButtonsPressedThisFrame = m_ButtonChanges & m_CurrentState;
 		m_ButtonsReleasedThisFrame = m_ButtonChanges & (~m_CurrentState);
 
-		if (m_ButtonsPressedThisFrame.any())
+		if (IsDownThisFrame(KeyboardKey::A) || IsDownThisFrame(KeyboardKey::D))
 		{
 			int i = 0;
 			i;

@@ -10,7 +10,7 @@
 #include "JREngine/Asset/Texture2D.h"
 #include "JREngine/Asset/Sprite.h"
 #include "JREngine/Rendering/SDLRenderer.h"
-#include "Level/TileMap.h"
+#include "TileMap/TileMap.h"
 
 using namespace JRE;
 
@@ -27,7 +27,7 @@ namespace BubbleBobble
 		{
 			SDL_Color color = info.isPlatform ? SDL_Color{255, 0, 0, 255} : SDL_Color{255, 255, 255, 255};
 			const JRE::Region& rect = info.region;
-			SDLRenderer::GetInstance().DrawRectangle(rect.x, rect.y, rect.width, rect.height, color);
+			SDLRenderer::GetInstance().DrawRectangle(static_cast<int>(rect.x), static_cast<int>(rect.y), static_cast<int>(rect.width), static_cast<int>(rect.height), color);
 		}
 	}
 	void TileMap::SetSprites(const std::vector<JRE::AssetRef<JRE::Sprite>>& sprites)

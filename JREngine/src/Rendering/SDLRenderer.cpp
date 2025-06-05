@@ -90,7 +90,7 @@ void JRE::SDLRenderer::RenderSprite(AssetRef<Sprite> sprite, const float x, cons
 	const AssetRef<Texture2D>& pTexture = sprite->GetTexture();
 	SDL_Texture* pSDLTexture = pTexture->GetSDLTexture();
 	const Region& region = sprite->GetSrcRegion();
-	SDL_Rect src{ region.x, region.y, region.width, region.height };
+	SDL_Rect src{ static_cast<int>(region.x), static_cast<int>(region.y), static_cast<int>(region.width), static_cast<int>(region.height) };
 
 	SDL_Rect dst{};
 	dst.x = static_cast<int>(x);
@@ -111,7 +111,7 @@ void JRE::SDLRenderer::RenderSprite(AssetRef<Sprite> sprite, const float x, cons
 	const AssetRef<Texture2D>& pTexture = sprite->GetTexture();
 	SDL_Texture* pSDLTexture = pTexture->GetSDLTexture();
 	const Region& region = sprite->GetSrcRegion();
-	SDL_Rect src{ region.x, region.y, region.width, region.height };
+	SDL_Rect src{ static_cast<int>(region.x), static_cast<int>(region.y), static_cast<int>(region.width), static_cast<int>(region.height) };
 
 	SDL_Rect dst{};
 	dst.x = static_cast<int>(x);

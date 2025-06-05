@@ -20,9 +20,9 @@ namespace BubbleBobble::Player
 		bool moveLeft = im.IsBindingActive(*m_pActionMap, "MoveLeft");
 		bool moveRight = im.IsBindingActive(*m_pActionMap, "MoveRight");
 		if (moveLeft)
-			m_Player.Move(-1);
+			m_Player.Move(-1, m_Speed);
 		if (moveRight)
-			m_Player.Move(1);
+			m_Player.Move(1, m_Speed);
 
 		if (moveLeft || moveRight)
 			m_Player.ChangeAnimation(Animation::Idle);

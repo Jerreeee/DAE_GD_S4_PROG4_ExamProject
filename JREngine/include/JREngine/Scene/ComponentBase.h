@@ -20,11 +20,12 @@ namespace JRE
 
 		void Destroy();
 		bool IsDestroyed() const;
-	protected:
-		ComponentBase(GameObject& gameObject);
+
 		GameObject& GetGameObject() const;
 		Transform& GetWorldTransform() const;
 		Transform& GetLocalTransform() const;
+	protected:
+		ComponentBase(GameObject& gameObject);
 	private:
 		GameObject& m_GameObject;
 		bool m_IsDestroyed{ false };

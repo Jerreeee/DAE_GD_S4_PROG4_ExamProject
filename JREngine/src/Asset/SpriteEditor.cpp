@@ -20,9 +20,9 @@ namespace JRE
         {
             int r = static_cast<int>(spriteIdx / cols);
             int c = spriteIdx % cols;
-            int x = c * spriteWidth;
-            int y = r * spriteHeight;
-            Region region{ x, y, spriteWidth, spriteHeight };
+            float x = static_cast<float>(c * spriteWidth);
+            float y = static_cast<float>(r * spriteHeight);
+            Region region{ x, y, static_cast<float>(spriteWidth), static_cast<float>(spriteHeight) };
             SoftAssetRef<Texture2D> softTextureRef{ textureRef };
             sprites.emplace_back(CreateAssetRef<Sprite>(softTextureRef, region));
         }

@@ -3,9 +3,9 @@
 #include "JREngine/Asset/TextureImporter.h"
 #include "JREngine/Asset/ResourceManager.h"
 
-#include "Level/TileMap.h"
-#include "Level/TileMapImporter.h"
-#include "Level/TileMapComponent.h"
+#include "TileMap/TileMap.h"
+#include "TileMap/TileMapImporter.h"
+#include "TileMap/TileMapComponent.h"
 #include "Assets/LevelDataImporter.h"
 #include "Assets/LevelDataComponent.h"
 #include "LevelBuilder.h"

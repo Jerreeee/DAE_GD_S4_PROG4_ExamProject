@@ -28,21 +28,19 @@ namespace BubbleBobble::Player
 		void SetActionMapToUse(const JRE::Input::ActionMap& actionMap);
 		void SetAnimation(const std::string& animName, JRE::AssetRef<JRE::SpriteAnimationClip> clip);
 
-		void Move(int direction);
+		void Move(int direction, float speed);
 		void Jump(float force);
 		void ChangeAnimation(Animation anim);
 	private:
 		JRE::GameObject& m_Player;
 
+		const JRE::Input::ActionMap* m_pActionMap{ nullptr };
 		JRE::SpriteAnimatorComponent* m_pSpriteAnimatiorComponent{ nullptr };
 		JRE::RigidBody2DComponent* m_pRigidBody2DComponent{ nullptr };
 
-		const JRE::Input::ActionMap* m_pActionMap{ nullptr };
-		int m_ActionMapIdx{ -1 };
 		IState* m_pState{};
 		std::vector<std::unique_ptr<IState>> m_States{};
 
 		std::vector<JRE::AssetRef<JRE::SpriteAnimationClip>> m_Animations{};
-		float m_Speed{ 30.f };
 	};
 }

@@ -36,14 +36,17 @@ namespace BubbleBobble::Player
 	class MovingState : public IState
 	{
 	public:
-		MovingState(ScriptComponent& player, const JRE::Input::ActionMap*& pActionMap)
+		MovingState(ScriptComponent& player, const JRE::Input::ActionMap*& pActionMap, float speed)
 			: m_Player{ player }
-			, m_pActionMap{ pActionMap } {};
+			, m_pActionMap{ pActionMap }
+			, m_Speed{ speed }
+		{};
 		virtual void OnEnter() override;
 		virtual State Update() override;
 	private:
 		ScriptComponent& m_Player;
 		const JRE::Input::ActionMap*& m_pActionMap;
+		float m_Speed{ 30.f };
 	};
 
 	class JumpState : public IState

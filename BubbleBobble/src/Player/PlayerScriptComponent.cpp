@@ -25,7 +25,7 @@ namespace BubbleBobble::Player
 		m_Animations.resize(AnimationName::s_Names.size());
 		
 		//Create all the different states
-		m_States.emplace_back(std::make_unique<MovingState>(*this, m_pActionMap));
+		m_States.emplace_back(std::make_unique<MovingState>(*this, m_pActionMap, 30.f));
 		m_States.emplace_back(std::make_unique<ShootState>(*this, m_pActionMap));
 		m_States.emplace_back(std::make_unique<JumpState>(*this, m_pActionMap, 20.f));
 		m_States.emplace_back(std::make_unique<DiedState>(*this, m_pActionMap));
@@ -51,13 +51,13 @@ namespace BubbleBobble::Player
 		m_pState->OnEnter();
 	}
 
-	void ScriptComponent::Move(int direction)
+	void ScriptComponent::Move(int direction, float speed)
 	{
 		direction = std::clamp(direction, -1, 1);
 
 		glm::vec3 pos = m_Player.GetWorldPosition();
 		const int pixelsPerM{ 10 };
-		float offset = m_Speed * pixelsPerM * JRE::Timer::GetInstance().GetDeltaTime();
+		float offset = speed * pixelsPerM * JRE::Timer::GetInstance().GetDeltaTime();
 		pos.x += offset * direction;
 		m_Player.SetWorldPosition(pos);
 	}

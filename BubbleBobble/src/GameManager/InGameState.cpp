@@ -7,6 +7,8 @@
 #include "GameManagerComponent.h"
 #include "Assets/LevelDataComponent.h"
 #include "Player/PlayerBuilder.h"
+#include "TileMap/TileMapPhysicsSystem.h"
+#include "TileMap/TileMapComponent.h"
 #include "InGameState.h"
 
 using namespace JRE;
@@ -28,10 +30,15 @@ namespace BubbleBobble
 		//Create actionMap for the player and set bindings
 		size_t actionMapIdx = im.AddActionMap({ 0 });
 		const ActionMap& actionMap = im.GetActionMap(actionMapIdx);
-		im.BindCommand(actionMapIdx, "MoveLeft", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::Q, KeyState::DownThisFrame));
-		im.BindCommand(actionMapIdx, "MoveRight", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::D, KeyState::DownThisFrame));
+		im.BindCommand(actionMapIdx, "MoveLeft", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::A, KeyState::Pressed));
+		im.BindCommand(actionMapIdx, "MoveRight", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::D, KeyState::Pressed));
 		im.BindCommand(actionMapIdx, "Jump", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::W, KeyState::DownThisFrame));
 		im.BindCommand(actionMapIdx, "Shoot", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::F, KeyState::DownThisFrame));
+
+		//Load 1st level
+		GoToNextLevel();
+
+		AddTileMapPhysicsSystem();
 
 		//Create player(s) for gameMode
 		auto player = std::make_unique<GameObject>();
@@ -40,8 +47,6 @@ namespace BubbleBobble
 			.SetActionMap(actionMap)
 			.Build(player);
 
-		//Load 1st level
-		GoToNextLevel();
 		//Add player to the current level
 		SceneManager::GetInstance().GetCurrentScene().Add(std::move(player));
 		SetPlayerToSpawnPos();
@@ -69,6 +74,15 @@ namespace BubbleBobble
 		LevelBuilder(levelScene, path).Build();
 
 		sm.LoadScene(levelName);
+	}
+	void InGameState::AddTileMapPhysicsSystem()
+	{
+		auto& sm = SceneManager::GetInstance();
+		Scene& scene = sm.GetCurrentScene();
+		auto* pCmp = scene.GetComponent<TileMapComponent>();
+		if (!pCmp)
+			return;
+		scene.AddSystem(std::move(std::make_unique<TileMapPhysicsSystem>(pCmp->GetTileMap())));
 	}
 	void InGameState::SetPlayerToSpawnPos()
 	{

@@ -1,5 +1,6 @@
 #pragma once
 #include "JREngine/Scene/ComponentBase.h"
+#include "JREngine/Math/Rect.h"
 
 namespace JRE
 {

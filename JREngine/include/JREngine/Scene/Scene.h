@@ -1,9 +1,25 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <map>
+#include <typeindex>
 #include <vector>
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Scene/SceneManager.h"
+
+namespace JRE
+{
+	class Scene;
+	class ISceneSystem
+	{
+	public:
+		virtual ~ISceneSystem() = default;
+		virtual void Update(Scene& scene) = 0;
+	};
+}
+
+template<typename T>
+concept DerivedFromISceneSystem = std::is_base_of_v<JRE::ISceneSystem, T>;
 
 namespace JRE
 {
@@ -46,6 +62,23 @@ namespace JRE
 			return nullptr;
 		}
 
+		template<DerivedFromISceneSystem T>
+		void AddSystem(std::unique_ptr<T> system)
+		{
+			std::type_index type = typeid(T);
+			m_SystemMap[type] = std::move(system);
+		}
+
+		template<DerivedFromISceneSystem T>
+		T* GetSystem()
+		{
+			std::type_index type = typeid(T);
+			auto it = m_SystemMap.find(type);
+			if (it != m_SystemMap.end())
+				return static_cast<T*>(it->second.get());
+			return nullptr;
+		}
+
 		void RegisterRendererComponent(RendererComponentBase* pRendererComponent);
 		void UnRegisterRendererComponent(RendererComponentBase* pRendererComponent);
 		const std::vector<RendererComponentBase*>& GetRenderComponents() const { return m_RendererComponents; };
@@ -56,5 +89,6 @@ namespace JRE
 		std::vector<std::unique_ptr<GameObject>> m_Objects;
 		static unsigned int m_IdCounter; 
 		std::vector<RendererComponentBase*> m_RendererComponents{};
+		std::map<std::type_index, std::unique_ptr<ISceneSystem>> m_SystemMap;
 	};
 }

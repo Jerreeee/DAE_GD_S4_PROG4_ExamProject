@@ -18,14 +18,6 @@ namespace JRE
 		const int pixPerM{ 20 };
 		pos.x += m_Vel.x * pixPerM * Timer::GetInstance().GetDeltaTime();
 		pos.y += m_Vel.y * pixPerM * Timer::GetInstance().GetDeltaTime();
-
-		float floorY = 300.f;
-		if (pos.y > floorY)
-		{
-			pos.y = floorY;
-			m_Vel.y = 0.f;
-		}
-
 		obj.SetWorldPosition(pos);
 	}
 	void RigidBody2DComponent::Launch(glm::vec2 dirAndStrength)

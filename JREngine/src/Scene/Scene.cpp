@@ -50,10 +50,11 @@ namespace JRE
 
 	void Scene::Update()
 	{
+		for (auto& system : m_SystemMap)
+			system.second->Update(*this);
+
 		for (auto& object : m_Objects)
-		{
 			object->Update();
-		}
 	}
 
 	void JRE::Scene::Cleanup()

@@ -41,7 +41,7 @@ namespace JRE
         if (m_UsesWholeTextureRegion)
         {
             glm::ivec2 size = m_SoftTextureRef.Get()->GetSize();
-            m_SrcRegion = Region{ 0, 0, size.x, size.y };
+            m_SrcRegion = Region{ 0.f, 0.f, static_cast<float>(size.x), static_cast<float>(size.y) };
         }
         m_IsInitialized = true;
     }
