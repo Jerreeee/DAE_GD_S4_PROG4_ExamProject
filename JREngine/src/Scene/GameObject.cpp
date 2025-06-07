@@ -24,9 +24,13 @@ namespace JRE
 	void GameObject::Update()
 	{
 		for (const auto& component : m_Components)
-		{
 			component->Update();
-		}
+	}
+
+	void GameObject::FixedUpdate()
+	{
+		for (const auto& component : m_Components)
+			component->FixedUpdate();
 	}
 
 	void GameObject::Cleanup()

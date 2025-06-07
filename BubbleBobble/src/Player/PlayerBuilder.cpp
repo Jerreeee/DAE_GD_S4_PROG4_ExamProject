@@ -17,7 +17,6 @@
 #include "JREngine/Animation/SpriteAnimatorComponent.h"
 
 #include "Assets/AnimsDataImporter.h"
-#include "TileMap/TileMapColliderComponent.h"
 #include "Player/PlayerScriptComponent.h"
 #include "Player/PlayerBuilder.h"
 
@@ -38,16 +37,13 @@ namespace BubbleBobble::Player
     }
 	void Builder::Build(std::unique_ptr<JRE::GameObject>& player)
 	{
-        player->SetLocalPosition(216, 180);
         player->AddComponent<JRE::SpriteRendererComponent>();
-        player->AddComponent<JRE::RigidBody2DComponent>();
+        //player->AddComponent<JRE::RigidBody2DComponent>();
         player->AddComponent<JRE::SpriteAnimatorComponent>();
         auto pScriptCmp = player->AddComponent<Player::ScriptComponent>(*m_pActionMap);
         assert(pScriptCmp && "pScriptCmp wass nullptr");
 		SetAnimations(pScriptCmp);
-
-       auto pTileMapCollilderComp = player->AddComponent<TileMapColliderComponent>();
-       pTileMapCollilderComp->SetLocalBounds(Region{ 0.f, 0.f, 48.f, 48.f });
+        player->m_Persistant = true;
 	}
 	void Builder::SetAnimations(ScriptComponent* pScriptCmp)
 	{

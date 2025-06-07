@@ -7,7 +7,6 @@
 #include "GameManagerComponent.h"
 #include "Assets/LevelDataComponent.h"
 #include "Player/PlayerBuilder.h"
-#include "TileMap/TileMapPhysicsSystem.h"
 #include "TileMap/TileMapComponent.h"
 #include "InGameState.h"
 
@@ -38,10 +37,8 @@ namespace BubbleBobble
 		//Load 1st level
 		GoToNextLevel();
 
-		AddTileMapPhysicsSystem();
-
 		//Create player(s) for gameMode
-		auto player = std::make_unique<GameObject>();
+		auto player = std::make_unique<GameObject>("Player");
 		Player::Builder()
 			.SetAnimationPath("Anims/P1.txt")
 			.SetActionMap(actionMap)
@@ -75,15 +72,6 @@ namespace BubbleBobble
 
 		sm.LoadScene(levelName);
 	}
-	void InGameState::AddTileMapPhysicsSystem()
-	{
-		auto& sm = SceneManager::GetInstance();
-		Scene& scene = sm.GetCurrentScene();
-		auto* pCmp = scene.GetComponent<TileMapComponent>();
-		if (!pCmp)
-			return;
-		scene.AddSystem(std::move(std::make_unique<TileMapPhysicsSystem>(pCmp->GetTileMap())));
-	}
 	void InGameState::SetPlayerToSpawnPos()
 	{
 		auto& sm = SceneManager::GetInstance();
@@ -98,7 +86,7 @@ namespace BubbleBobble
 		assert(pLevelDataCmp->m_LevelData->players.size() > 0 && "No player pos defined in the levelData");
 		glm::vec2 spawnPos = pLevelDataCmp->m_LevelData->players[0];
 		pPlayer->SetWorldPosition(spawnPos.x, spawnPos.y);
-
+		glm::vec3 worldPos = pPlayer->GetWorldPosition();
 		// 4) Load enemy spawn positions from file
 		// 5) spawn enemies at positions
 	}

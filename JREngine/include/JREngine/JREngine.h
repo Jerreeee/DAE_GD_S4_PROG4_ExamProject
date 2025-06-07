@@ -11,6 +11,7 @@ namespace JRE
 		bool m_Quit{};
 		float m_FixedTimeStep{ 1.f / 60.f };
 		std::chrono::steady_clock::time_point m_LastTime;
+		float m_Lag{};
 	public:
 		explicit JREngine(const std::filesystem::path& dataPath);
 		~JREngine();

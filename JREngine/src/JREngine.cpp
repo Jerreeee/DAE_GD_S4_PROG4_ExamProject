@@ -141,8 +141,15 @@ void JRE::JREngine::RunOneFrame()
 	const float deltaTime = std::chrono::duration<float>(currentTime - m_LastTime).count();
 	Timer::GetInstance().SetDeltaTime(deltaTime);
 	m_LastTime = currentTime;
+	m_Lag += deltaTime;
 
 	m_Quit = !Input::InputManager::GetInstance().ProcessInput();
+	while (m_Lag >= m_FixedTimeStep)
+	{
+		SceneManager::GetInstance().FixedUpdate();
+		m_Lag -= m_FixedTimeStep;
+	}
+
 	SceneManager::GetInstance().Update();
 	SceneManager::GetInstance().Cleanup();
 	SDLRenderer::GetInstance().Render();

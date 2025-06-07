@@ -13,7 +13,6 @@ namespace BubbleBobble
 		virtual void OnExit() override;
 	private:
 		void GoToNextLevel();
-		void AddTileMapPhysicsSystem();
 		void SetPlayerToSpawnPos();
 		
 		int m_NrLevels{ 3 };

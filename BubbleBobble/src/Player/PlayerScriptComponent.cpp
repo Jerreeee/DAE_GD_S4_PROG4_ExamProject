@@ -1,10 +1,16 @@
+#include <iostream>
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Animation/SpriteAnimatorComponent.h"
 #include "JREngine/Physics/RigidBody2DComponent.h"
+#include "JREngine/Input/InputManager.h"
+#include "JREngine/Scene/SceneManager.h"
+#include "JREngine/Scene/Scene.h"
 
+#include "TileMap/TileMapComponent.h"
 #include "Player/PlayerScriptComponent.h"
 
-#include <iostream>
+using namespace JRE;
+using namespace JRE::Input;
 
 namespace BubbleBobble::Player
 {
@@ -15,56 +21,64 @@ namespace BubbleBobble::Player
 		SetActionMapToUse(actionMap);
 
 		m_pSpriteAnimatiorComponent = m_Player.GetComponent<JRE::SpriteAnimatorComponent>();
-		if (!m_pSpriteAnimatiorComponent)
-			m_pSpriteAnimatiorComponent = m_Player.AddComponent<JRE::SpriteAnimatorComponent>();
-
-		m_pRigidBody2DComponent = m_Player.GetComponent<JRE::RigidBody2DComponent>();
-		if (!m_pRigidBody2DComponent)
-			m_pRigidBody2DComponent = m_Player.AddComponent<JRE::RigidBody2DComponent>();
+		assert(m_pSpriteAnimatiorComponent && "m_pSpriteAnimatiorComponent was nullptr");
+		m_pTileMapComponent = SceneManager::GetInstance().GetCurrentScene().GetComponent<TileMapComponent>();
+		assert(m_pTileMapComponent && "m_pTileMapComponent was nullptr");
 
 		m_Animations.resize(AnimationName::s_Names.size());
-		
-		//Create all the different states
-		m_States.emplace_back(std::make_unique<MovingState>(*this, m_pActionMap, 30.f));
-		m_States.emplace_back(std::make_unique<ShootState>(*this, m_pActionMap));
-		m_States.emplace_back(std::make_unique<JumpState>(*this, m_pActionMap, 20.f));
-		m_States.emplace_back(std::make_unique<DiedState>(*this, m_pActionMap));
-		//Set MovingState by default
-		m_pState = m_States[0].get();
-	}
-
-	void ScriptComponent::Start()
-	{
-		m_pState->OnEnter();
 	}
 
 	void ScriptComponent::Update()
 	{
-		auto newState = m_pState->Update();
-		if (newState == State::None)
-			return;
-
-		m_pState->OnExit();
-		size_t idx = static_cast<size_t>(newState);
-		std::cout << "Changed to: " << s_StateNames[idx] << "\n";
-		m_pState = m_States[idx].get();
-		m_pState->OnEnter();
+		auto& im = InputManager::GetInstance();
+		if (!m_Input.pressedJump && im.IsBindingActive(*m_pActionMap, "Jump"))
+			m_Input.pressedJump = true;
+		if (!m_Input.movingLeft && im.IsBindingActive(*m_pActionMap, "MoveLeft"))
+			m_Input.movingLeft = true;
+		if (!m_Input.movingRight && im.IsBindingActive(*m_pActionMap, "MoveRight"))
+			m_Input.movingRight = true;
 	}
 
-	void ScriptComponent::Move(int direction, float speed)
+	void ScriptComponent::FixedUpdate()
 	{
-		direction = std::clamp(direction, -1, 1);
+		float dt = Timer::GetInstance().GetFixedTimeStep();
 
-		glm::vec3 pos = m_Player.GetWorldPosition();
-		const int pixelsPerM{ 10 };
-		float offset = speed * pixelsPerM * JRE::Timer::GetInstance().GetDeltaTime();
-		pos.x += offset * direction;
-		m_Player.SetWorldPosition(pos);
-	}
-	void ScriptComponent::Jump(float force)
-	{
-		if (m_pRigidBody2DComponent)
-			m_pRigidBody2DComponent->Launch(glm::vec2{ 0.f, force });
+		int direction = 0;
+		if (m_Input.movingLeft)
+			--direction;
+		if (m_Input.movingRight)
+			++direction;
+
+		glm::vec3 oldPos = GetGameObject().GetWorldPosition();
+
+		//Calc vel
+		m_Vel.x = m_Speed * direction;
+
+		//TODO atm when colloding with for example only a wall on the right of the player
+		//both right and down collision will be true but down should be false
+		//otherwise onGround bool will be wrong
+
+		//Check TileMap collision
+		CollisionInfo m_CollInfo{};
+		m_pTileMapComponent->GetTileMap().MovePosition(Region{ oldPos.x, oldPos.y, 48.f, 48.f }, m_Vel, dt, true, m_CollInfo);
+		GetGameObject().SetWorldPosition(m_CollInfo.newPos.x, m_CollInfo.newPos.y);
+		m_Vel = m_CollInfo.velOut;
+
+		std::cout << "x: " << m_CollInfo.newPos.x << ", y: " << m_CollInfo.newPos.y << "\n";
+		if (m_Input.movingLeft || m_Input.movingRight)
+			ChangeAnimation(Animation::Idle);
+		else
+			ChangeAnimation(Animation::Run);
+		//TODO Flip running animation depending on going left or right
+
+		//bool shoot = im.IsBindingActive(*m_pActionMap, "Shoot");
+		//if (shoot);
+		//	return State::Shooting;
+		bool onGround = m_CollInfo.collDir.down;
+		if (onGround && m_Input.pressedJump)
+			m_Vel.y = -m_JumpForce;
+
+		m_Input = Input{}; //Consume all input
 	}
 	void ScriptComponent::SetActionMapToUse(const JRE::Input::ActionMap& actionMap)
 	{

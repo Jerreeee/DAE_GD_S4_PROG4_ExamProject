@@ -32,12 +32,8 @@ set(SOURCE_FILES
     "TileMap/TileMapComponent.cpp"
     "TileMap/TileMap.h"
     "TileMap/TileMap.cpp"
-    "TileMap/TileMapColliderComponent.h"
-    "TileMap/TileMapColliderComponent.cpp"
     "TileMap/TileMapImporter.h"
     "TileMap/TileMapImporter.cpp"
-    "TileMap/TileMapPhysicsSystem.h"
-    "TileMap/TileMapPhysicsSystem.cpp"
 
     "Assets/AnimsData.h"
     "Assets/AnimsDataImporter.h"
@@ -51,8 +47,6 @@ set(SOURCE_FILES
     "Player/PlayerBuilder.cpp"
     "Player/PlayerScriptComponent.h"
     "Player/PlayerScriptComponent.cpp"
-    "Player/PlayerState.h"
-    "Player/PlayerState.cpp"
     "Player/PlayerUtils.h"
 
     "Components/PlayerUIComponent.h"

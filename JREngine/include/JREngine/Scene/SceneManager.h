@@ -15,6 +15,7 @@ namespace JRE
 
 		void Start();
 		void Update();
+		void FixedUpdate();
 		void Cleanup();
 
 		void SetStartSceneName(const std::string& name);

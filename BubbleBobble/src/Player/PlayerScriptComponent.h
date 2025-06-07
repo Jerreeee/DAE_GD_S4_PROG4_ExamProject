@@ -4,7 +4,7 @@
 #include "JREngine/Input/InputManager.h"
 #include "JREngine/Scene/ComponentBase.h"
 #include "JREngine/Asset/Asset.h"
-#include "Player/PlayerState.h"
+#include "Player/PlayerUtils.h"
 
 namespace JRE
 {
@@ -15,6 +15,11 @@ namespace JRE
 	class RigidBody2DComponent;
 }
 
+namespace BubbleBobble
+{
+	class TileMapComponent;
+}
+
 namespace BubbleBobble::Player
 {
 	class ScriptComponent : public JRE::ComponentBase
@@ -22,25 +27,32 @@ namespace BubbleBobble::Player
 	public:
 		ScriptComponent(JRE::GameObject& gameObject, const JRE::Input::ActionMap& actionMap);
 
-		virtual void Start() override;
 		virtual void Update() override;
+		virtual void FixedUpdate() override;
 
 		void SetActionMapToUse(const JRE::Input::ActionMap& actionMap);
 		void SetAnimation(const std::string& animName, JRE::AssetRef<JRE::SpriteAnimationClip> clip);
-
-		void Move(int direction, float speed);
-		void Jump(float force);
-		void ChangeAnimation(Animation anim);
 	private:
+		struct Input
+		{
+			bool pressedJump;
+			bool movingLeft;
+			bool movingRight;
+		};
+
+		void ChangeAnimation(Animation anim);
+
 		JRE::GameObject& m_Player;
 
 		const JRE::Input::ActionMap* m_pActionMap{ nullptr };
 		JRE::SpriteAnimatorComponent* m_pSpriteAnimatiorComponent{ nullptr };
-		JRE::RigidBody2DComponent* m_pRigidBody2DComponent{ nullptr };
-
-		IState* m_pState{};
-		std::vector<std::unique_ptr<IState>> m_States{};
+		TileMapComponent* m_pTileMapComponent{ nullptr };
 
 		std::vector<JRE::AssetRef<JRE::SpriteAnimationClip>> m_Animations{};
+
+		float m_Speed{ 20.f };
+		float m_JumpForce{ 40.f };
+		glm::vec2 m_Vel{};
+		Input m_Input{};
 	};
 }

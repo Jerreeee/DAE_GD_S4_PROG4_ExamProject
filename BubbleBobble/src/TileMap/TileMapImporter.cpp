@@ -57,7 +57,7 @@ namespace BubbleBobble
 			throw std::runtime_error("LevelImporter::ImportAsset | Couldnt open file: " + metadata.filepath.string());
 
 		std::vector<TileMap::SpritePos> spritePositions{};
-		std::vector<TileMap::CollisionInfo> collisionRects{};
+		std::vector<TileMap::ColliderInfo> collisionRects{};
 
 		std::string line{};
 		while (std::getline(fStream, line))
@@ -112,7 +112,7 @@ namespace BubbleBobble
 		spritePositions.emplace_back(TileMap::SpritePos{ spriteIdx, glm::vec2{x, y} });
 	}
 	void TileMapImporter::AddCollisionRect(const std::vector<std::string>& tokens,
-		std::vector<TileMap::CollisionInfo>& collisionRect)
+		std::vector<TileMap::ColliderInfo>& collisionRect)
 	{
 		bool isPlatform = (tokens[0] == "1");
 		float leftTopX = static_cast<float>(std::stoi(tokens[1]));
@@ -120,6 +120,6 @@ namespace BubbleBobble
 		float rightBottomX = static_cast<float>(std::stoi(tokens[3]));
 		float rightBottomY = static_cast<float>(std::stoi(tokens[4]));
 		JRE::Region rect{ leftTopX, leftTopY, rightBottomX - leftTopX, rightBottomY - leftTopY };
-		collisionRect.emplace_back(TileMap::CollisionInfo{ rect, isPlatform });
+		collisionRect.emplace_back(TileMap::ColliderInfo{ rect, isPlatform });
 	}
 }

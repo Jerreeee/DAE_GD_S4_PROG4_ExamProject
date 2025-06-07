@@ -18,6 +18,11 @@ namespace JRE
 		m_Scenes[m_CurrentSceneName]->Update();
 	}
 
+	void SceneManager::FixedUpdate()
+	{
+		m_Scenes[m_CurrentSceneName]->FixedUpdate();
+	}
+
 	void SceneManager::Cleanup()
 	{
 		m_Scenes[m_CurrentSceneName]->Cleanup();

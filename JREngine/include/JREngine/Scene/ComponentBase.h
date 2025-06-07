@@ -17,6 +17,7 @@ namespace JRE
 
 		virtual void Start() {};
 		virtual void Update() = 0;
+		virtual void FixedUpdate() {};
 
 		void Destroy();
 		bool IsDestroyed() const;

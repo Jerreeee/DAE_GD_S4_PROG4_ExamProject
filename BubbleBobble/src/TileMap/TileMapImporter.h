@@ -18,7 +18,7 @@ namespace BubbleBobble
 			std::vector<std::filesystem::path>& spriteNames,
 			std::vector<TileMap::SpritePos>& spritePositions);
 		static void AddCollisionRect(const std::vector<std::string>& tokens,
-			std::vector<TileMap::CollisionInfo>& collisionRect);
+			std::vector<TileMap::ColliderInfo>& collisionRect);
 
 		std::filesystem::path m_Path{};
 	};
