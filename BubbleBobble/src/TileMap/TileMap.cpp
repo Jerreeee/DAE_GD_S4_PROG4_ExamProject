@@ -65,8 +65,11 @@ namespace BubbleBobble
 		{
 			const Region& collRegion = collider.region;
 
-			//Check X collision, but only if the regions overlap in Y
-			if (vi.InX() && newRegionX.OverlapInX(collRegion) && newRegionX.OverlapInY(collRegion) && absOffset.x > 0.f)
+			bool alreadyCollidingY = oldRegion.OverlapInY(collRegion);
+			bool skipPlatFormDownColl = collider.isPlatform && alreadyCollidingY;
+
+			//Check X collision
+			if (!collider.isPlatform && vi.InX() && newRegionX.Intersects(collRegion))
 			{
 				if (vi.left && newRegionX.Left() < collRegion.Right()) //Colliding left
 				{
@@ -92,10 +95,10 @@ namespace BubbleBobble
 				}
 			}
 
-			//Check Y collision, but only if the regions overlap in X
-			if (vi.InY() && newRegionY.OverlapInY(collRegion) && newRegionY.OverlapInX(collRegion) && absOffset.y > 0.f)
+			//Check Y collision
+			if (vi.InY() && newRegionY.Intersects(collRegion))
 			{
-				if (vi.up && newRegionY.Top() < collRegion.Bottom()) //Colliding up
+				if (!collider.isPlatform && vi.up && newRegionY.Top() < collRegion.Bottom()) //Colliding up
 				{
 					float lambda = (oldRegion.Top() - collRegion.Bottom()) / absOffset.y;
 					if (lambda < ci.up.lambda)
@@ -106,7 +109,7 @@ namespace BubbleBobble
 						ci.up.entryDist = collRegion.Bottom() - newRegionY.Top();
 					}
 				}
-				else if (vi.down && collRegion.Top() < newRegionY.Bottom()) //Colliding down
+				else if (vi.down && collRegion.Top() < newRegionY.Bottom() && !skipPlatFormDownColl) //Colliding down
 				{
 					float lambda = (collRegion.Top() - oldRegion.Bottom()) / absOffset.y;
 					if (lambda < ci.down.lambda)
@@ -120,39 +123,38 @@ namespace BubbleBobble
 			}
 		}	
 
-		glm::vec2 newPos{};
 		if (!ci.Collided())
-			newPos = endPos;
+			ci.newPos = endPos;
 		else if (ci.collDir.X() && !ci.collDir.Y()) //Collided in X only
 		{
 			float x = ci.collDir.right ? ci.right.collPos - oldRegion.width : ci.left.collPos;
-			newPos = glm::vec2{ x, endPos.y };
+			ci.newPos = glm::vec2{ x, endPos.y };
 			ci.velOut.x = 0.f;
 		}
 		else if (ci.collDir.Y() && !ci.collDir.X()) //Collided in Y only
 		{
 			float y = ci.collDir.up ? ci.up.collPos : ci.down.collPos - oldRegion.height;
-			newPos = glm::vec2{ endPos.x, y };
+			ci.newPos = glm::vec2{ endPos.x, y };
 			ci.velOut.y = 0.f;
 		}
 		else if (vi.LeftDown() && ci.collDir.LeftBottom()) //LeftBottom concave collision
 		{
-			newPos = glm::vec2{ ci.left.collPos, ci.down.collPos - oldRegion.height };
+			ci.newPos = glm::vec2{ ci.left.collPos, ci.down.collPos - oldRegion.height };
 			ci.velOut = glm::vec2{};
 		}
 		else if (vi.LeftUp() && ci.collDir.LeftTop()) //LeftTop concave collision
 		{
-			newPos = glm::vec2{ ci.left.collPos, ci.up.collPos };
+			ci.newPos = glm::vec2{ ci.left.collPos, ci.up.collPos };
 			ci.velOut = glm::vec2{};
 		}
 		else if (vi.RightUp() && ci.collDir.RightTop()) //RightTop concave collision
 		{
-			newPos = glm::vec2{ ci.right.collPos - oldRegion.width, ci.up.collPos };
+			ci.newPos = glm::vec2{ ci.right.collPos - oldRegion.width, ci.up.collPos };
 			ci.velOut = glm::vec2{};
 		}
 		else if (vi.RightDown() && ci.collDir.RightBottom()) //RightBottom concave collision
 		{
-			newPos = glm::vec2{ ci.right.collPos - oldRegion.width, ci.down.collPos - oldRegion.height };
+			ci.newPos = glm::vec2{ ci.right.collPos - oldRegion.width, ci.down.collPos - oldRegion.height };
 			ci.velOut = glm::vec2{};
 		}
 		else //convex corner collision
@@ -163,7 +165,7 @@ namespace BubbleBobble
 			if (lambdaY <= lambdaX) //Y wins when equal to X
 			{
 				float y = ci.collDir.up ? ci.up.collPos : ci.down.collPos - oldRegion.height;
-				newPos = glm::vec2{ endPos.x, y };
+				ci.newPos = glm::vec2{ endPos.x, y };
 				ci.collDir.left = false;
 				ci.collDir.right = false;
 				ci.velOut.y = 0.f;
@@ -171,13 +173,12 @@ namespace BubbleBobble
 			else //lambdaX > lambdaY
 			{
 				float x = ci.collDir.right ? ci.right.collPos - oldRegion.width : ci.left.collPos;
-				newPos = glm::vec2{ x, endPos.y };
+				ci.newPos = glm::vec2{ x, endPos.y };
 				ci.collDir.up = false;
 				ci.collDir.down = false;
 				ci.velOut.x = 0.f;
 			}
 		}
-		ci.newPos = newPos;
 
 		return ci.Collided();
 	}

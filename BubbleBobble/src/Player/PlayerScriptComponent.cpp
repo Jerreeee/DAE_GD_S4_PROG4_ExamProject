@@ -54,17 +54,13 @@ namespace BubbleBobble::Player
 		//Calc vel
 		m_Vel.x = m_Speed * direction;
 
-		//TODO atm when colloding with for example only a wall on the right of the player
-		//both right and down collision will be true but down should be false
-		//otherwise onGround bool will be wrong
-
 		//Check TileMap collision
 		CollisionInfo m_CollInfo{};
-		m_pTileMapComponent->GetTileMap().MovePosition(Region{ oldPos.x, oldPos.y, 48.f, 48.f }, m_Vel, dt, true, m_CollInfo);
+		Region collider{ oldPos.x, oldPos.y, 48.f, 48.f };
+		m_pTileMapComponent->GetTileMap().MovePosition(collider, m_Vel, dt, true, m_CollInfo);
 		GetGameObject().SetWorldPosition(m_CollInfo.newPos.x, m_CollInfo.newPos.y);
 		m_Vel = m_CollInfo.velOut;
 
-		std::cout << "x: " << m_CollInfo.newPos.x << ", y: " << m_CollInfo.newPos.y << "\n";
 		if (m_Input.movingLeft || m_Input.movingRight)
 			ChangeAnimation(Animation::Idle);
 		else

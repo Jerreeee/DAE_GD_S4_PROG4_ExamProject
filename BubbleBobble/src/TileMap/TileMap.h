@@ -88,10 +88,15 @@ namespace BubbleBobble
 		void SetSpritePositions(const std::vector<TileMap::SpritePos>& spritePositions);
 		void SetCollisionRects(const std::vector<ColliderInfo>& rects);
 
+		//Moves the give region with given velocity and deltaTime through the TileMap
+		//and fills in a CollisionInfo output struct with
 		bool MovePosition(const JRE::Region& oldRegion, glm::vec2 vel, float dt, bool applyGravity, CollisionInfo& ci) const;
 
 		const std::vector<ColliderInfo>& GetCollisionRects() const { return m_CollisionRects; };
 		const std::vector<SpritePos>& GetDrawInfo() const;
+
+		void SetGravity(float gravity) { m_Gravity = gravity; };
+		void SetPixelsPerMeter(int pixPerM) { m_PixPerM = pixPerM; };
 
 		static constexpr std::string_view GetStaticType() { return "BubbleBobble::TileMap"; };
 		virtual std::string_view GetType() const override { return GetStaticType(); };
@@ -102,6 +107,6 @@ namespace BubbleBobble
 		std::vector<JRE::AssetRef<JRE::Sprite>> m_Sprites{};
 		std::vector<ColliderInfo> m_CollisionRects{};
 		int m_PixPerM{ 10 };
-		float m_Gravity{ 50.f };
+		float m_Gravity{ 200.f };
 	};
 }

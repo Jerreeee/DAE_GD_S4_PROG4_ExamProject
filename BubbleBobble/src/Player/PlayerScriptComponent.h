@@ -43,7 +43,6 @@ namespace BubbleBobble::Player
 		void ChangeAnimation(Animation anim);
 
 		JRE::GameObject& m_Player;
-
 		const JRE::Input::ActionMap* m_pActionMap{ nullptr };
 		JRE::SpriteAnimatorComponent* m_pSpriteAnimatiorComponent{ nullptr };
 		TileMapComponent* m_pTileMapComponent{ nullptr };
@@ -51,7 +50,7 @@ namespace BubbleBobble::Player
 		std::vector<JRE::AssetRef<JRE::SpriteAnimationClip>> m_Animations{};
 
 		float m_Speed{ 20.f };
-		float m_JumpForce{ 40.f };
+		float m_JumpForce{ 75.f };
 		glm::vec2 m_Vel{};
 		Input m_Input{};
 	};
