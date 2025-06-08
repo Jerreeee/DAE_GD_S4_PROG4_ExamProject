@@ -56,9 +56,11 @@ namespace BubbleBobble::Player
 
 		//Check TileMap collision
 		CollisionInfo m_CollInfo{};
-		Region collider{ oldPos.x, oldPos.y, 48.f, 48.f };
+		glm::vec2 colliderPos{ oldPos.x + m_ColliderOffset.x, oldPos.y + m_ColliderOffset.y };
+		Region collider{ colliderPos.x, colliderPos.y, m_ColliderSize.x, m_ColliderSize.y };
+
 		m_pTileMapComponent->GetTileMap().MovePosition(collider, m_Vel, dt, true, m_CollInfo);
-		GetGameObject().SetWorldPosition(m_CollInfo.newPos.x, m_CollInfo.newPos.y);
+		GetGameObject().SetWorldPosition(m_CollInfo.newPos.x - m_ColliderOffset.x, m_CollInfo.newPos.y - m_ColliderOffset.y);
 		m_Vel = m_CollInfo.velOut;
 
 		if (m_Input.movingLeft || m_Input.movingRight)

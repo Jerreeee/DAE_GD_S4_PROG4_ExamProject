@@ -53,5 +53,7 @@ namespace BubbleBobble::Player
 		float m_JumpForce{ 75.f };
 		glm::vec2 m_Vel{};
 		Input m_Input{};
+		glm::vec2 m_ColliderOffset{ 4.f, 2.f };
+		glm::vec2 m_ColliderSize{ 40.f, 46.f };
 	};
 }
