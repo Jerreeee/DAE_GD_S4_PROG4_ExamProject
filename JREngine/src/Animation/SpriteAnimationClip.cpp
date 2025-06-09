@@ -3,36 +3,56 @@
 
 namespace JRE
 {
-    SpriteAnimationClip::SpriteAnimationClip(const std::vector<JRE::SoftAssetRef<Sprite>>& sprites, int framesPerSec)
+    SpriteAnimationClip::SpriteAnimationClip(const std::vector<JRE::SoftAssetRef<Sprite>>& sprites, int framesPerSec, bool isPong)
+        : m_Sprites{ sprites }
+        , m_FramesPerSec{ framesPerSec }
+        , m_TimePerFrame{ 1.f / m_FramesPerSec }
+        , m_IsPong{ isPong }
     {
-        SetSprites(sprites, framesPerSec);
+        ResetToStart();
     }
     void SpriteAnimationClip::Update()
     {
-        auto dt = Timer::GetInstance().GetDeltaTime();
-        m_AccTime += dt;
-        if (m_AccTime > m_TimePerFrame)
-        {
-            m_AccTime -= m_TimePerFrame;
-            ++m_CurFrameIdx;
-            if (m_CurFrameIdx > m_Sprites.size() - 1) //reset to start
-            {
-                EventInfo e = CreateEvent<Events::EndOfClipEvent>();
-                OnEndOfClipEvent.Notify(e);
-                ResetToStart();
-            }
-        }
+		auto dt = Timer::GetInstance().GetDeltaTime();
+		m_AccTime += dt;
+
+		if (m_AccTime > m_TimePerFrame)
+		{
+			m_AccTime -= m_TimePerFrame;
+			m_CurFrameIdx += m_PlaybackDirection;
+
+			if (m_IsPong) //reverse direction at ends
+			{
+				if (m_CurFrameIdx >= m_Sprites.size())
+				{
+					m_CurFrameIdx = m_Sprites.size() - 2;
+					m_PlaybackDirection = -1;
+					EventInfo e = CreateEvent<Events::EndOfClipEvent>();
+					OnEndOfClipEvent.Notify(e);
+				}
+				else if (m_CurFrameIdx < 0)
+				{
+					m_CurFrameIdx = 1;
+					m_PlaybackDirection = 1;
+					EventInfo e = CreateEvent<Events::EndOfClipEvent>();
+					OnEndOfClipEvent.Notify(e);
+				}
+			}
+			else //loop around
+			{
+				if (m_CurFrameIdx >= m_Sprites.size())
+				{
+					EventInfo e = CreateEvent<Events::EndOfClipEvent>();
+					OnEndOfClipEvent.Notify(e);
+					ResetToStart();
+				}
+			}
+		}
     }
     void SpriteAnimationClip::ResetToStart()
     {
         m_CurFrameIdx = 0;
-    }
-    void SpriteAnimationClip::SetSprites(const std::vector<SoftAssetRef<Sprite>>& sprites, int framesPerSec)
-    {
-        m_Sprites = sprites;
-        m_FramesPerSec = framesPerSec;
-        m_TimePerFrame = 1.f / m_FramesPerSec;
-        ResetToStart();
+        m_PlaybackDirection = 1;
     }
     AssetRef<Sprite> SpriteAnimationClip::GetCurrentSprite() const
     {

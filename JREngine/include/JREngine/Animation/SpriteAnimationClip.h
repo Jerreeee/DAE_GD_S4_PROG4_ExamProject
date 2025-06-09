@@ -21,12 +21,11 @@ namespace JRE
 	class SpriteAnimationClip final : public Asset
 	{
 	public:
-		SpriteAnimationClip(const std::vector<SoftAssetRef<Sprite>>& sprites, int framesPerSec);
+		SpriteAnimationClip(const std::vector<SoftAssetRef<Sprite>>& sprites, int framesPerSec, bool isPong = false);
 
 		void Update();
 		void ResetToStart();
 
-		void SetSprites(const std::vector<SoftAssetRef<Sprite>>& sprites, int framesPerSec);
 		AssetRef<Sprite> GetCurrentSprite() const;
 
 		static constexpr std::string_view GetStaticType() { return "SpriteAnimationClip"; };
@@ -35,9 +34,11 @@ namespace JRE
 		Event OnEndOfClipEvent{};
 	private:
 		std::vector<SoftAssetRef<Sprite>> m_Sprites{};
-		int m_CurFrameIdx{};
+		size_t m_CurFrameIdx{};
 		int m_FramesPerSec{};
 		float m_TimePerFrame{};
 		float m_AccTime{};
+		bool m_IsPong{};
+		int m_PlaybackDirection{ 1 };
 	};
 }

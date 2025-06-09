@@ -19,7 +19,7 @@ namespace BubbleBobble::Utils
 		std::vector<SoftAssetRef<Sprite>> spriteSoftRefs{};
 		for (auto& spriteRef : spritesRef)
 			spriteSoftRefs.emplace_back(SoftAssetRef<Sprite>(spriteRef));
-		return JRE::CreateAssetRef<SpriteAnimationClip>(spriteSoftRefs, data.fps);
+		return JRE::CreateAssetRef<SpriteAnimationClip>(spriteSoftRefs, data.fps, data.isPong);
 	}
 	void AddAnimsToSpriteAnimatorComponent(const std::filesystem::path& animPath, JRE::SpriteAnimatorComponent& comp)
 	{
