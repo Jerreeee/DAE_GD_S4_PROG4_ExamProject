@@ -12,47 +12,29 @@
 using namespace JRE;
 using namespace JRE::Input;
 
-namespace BubbleBobble::Player
+namespace BubbleBobble
 {
-	ScriptComponent::ScriptComponent(JRE::GameObject& gameObject, const JRE::Input::ActionMap& actionMap) :
-		ComponentBase(gameObject),
-		m_Player{ gameObject }
+	PlayerScriptComponent::PlayerScriptComponent(JRE::GameObject& gameObject)
+		: ComponentBase(gameObject)
 	{
-		SetActionMapToUse(actionMap);
-
-		m_pSpriteAnimatiorComponent = m_Player.GetComponent<JRE::SpriteAnimatorComponent>();
-		assert(m_pSpriteAnimatiorComponent && "m_pSpriteAnimatiorComponent was nullptr");
+		m_pSpriteAnimator = GetGameObject().GetComponent<SpriteAnimatorComponent>();
+		assert(m_pSpriteAnimator && "Player doesnt have SpriteAnimatorComponent");
 		m_pTileMapComponent = SceneManager::GetInstance().GetCurrentScene().GetComponent<TileMapComponent>();
 		assert(m_pTileMapComponent && "m_pTileMapComponent was nullptr");
-
-		m_Animations.resize(AnimationName::s_Names.size());
 	}
 
-	void ScriptComponent::Update()
+	void PlayerScriptComponent::Update()
 	{
-		auto& im = InputManager::GetInstance();
-		if (!m_Input.pressedJump && im.IsBindingActive(*m_pActionMap, "Jump"))
-			m_Input.pressedJump = true;
-		if (!m_Input.movingLeft && im.IsBindingActive(*m_pActionMap, "MoveLeft"))
-			m_Input.movingLeft = true;
-		if (!m_Input.movingRight && im.IsBindingActive(*m_pActionMap, "MoveRight"))
-			m_Input.movingRight = true;
 	}
 
-	void ScriptComponent::FixedUpdate()
+	void PlayerScriptComponent::FixedUpdate()
 	{
 		float dt = Timer::GetInstance().GetFixedTimeStep();
-
-		int direction = 0;
-		if (m_Input.movingLeft)
-			--direction;
-		if (m_Input.movingRight)
-			++direction;
 
 		glm::vec3 oldPos = GetGameObject().GetWorldPosition();
 
 		//Calc vel
-		m_Vel.x = m_Speed * direction;
+		m_Vel.x = m_Speed * m_Input.moveDir;
 
 		//Check TileMap collision
 		CollisionInfo m_CollInfo{};
@@ -63,10 +45,10 @@ namespace BubbleBobble::Player
 		GetGameObject().SetWorldPosition(m_CollInfo.newPos.x - m_ColliderOffset.x, m_CollInfo.newPos.y - m_ColliderOffset.y);
 		m_Vel = m_CollInfo.velOut;
 
-		if (m_Input.movingLeft || m_Input.movingRight)
-			ChangeAnimation(Animation::Idle);
+		if (m_Input.moveDir)
+			m_pSpriteAnimator->SetActiveClip("Run");
 		else
-			ChangeAnimation(Animation::Run);
+			m_pSpriteAnimator->SetActiveClip("Idle");
 		//TODO Flip running animation depending on going left or right
 
 		//bool shoot = im.IsBindingActive(*m_pActionMap, "Shoot");
@@ -78,24 +60,13 @@ namespace BubbleBobble::Player
 
 		m_Input = Input{}; //Consume all input
 	}
-	void ScriptComponent::SetActionMapToUse(const JRE::Input::ActionMap& actionMap)
+	void PlayerScriptComponent::Move(int direction)
 	{
-		m_pActionMap = &actionMap;
+		m_Input.moveDir = std::clamp(direction, -1, 1);
 	}
-	void ScriptComponent::SetAnimation(const std::string& animName, JRE::AssetRef<JRE::SpriteAnimationClip> clip)
+	void PlayerScriptComponent::Jump()
 	{
-		Animation anim = AnimationName::GetAnimation(animName);
-		switch (anim)
-		{
-		case Animation::Shoot:
-			//auto pShootState = static_cast<ShootState*>(m_States[static_cast<size_t>(State::Shooting)].get());
-			//pShootState->SetAnimationClip(clip);
-			break;
-		}
-		m_Animations[static_cast<size_t>(anim)] = clip;
-	}
-	void ScriptComponent::ChangeAnimation(Animation anim)
-	{
-		m_pSpriteAnimatiorComponent->SetSpriteAnimationClip(m_Animations[static_cast<size_t>(anim)]);
+		if (!m_Input.pressedJump)
+			m_Input.pressedJump = true;
 	}
 }

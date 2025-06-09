@@ -14,6 +14,7 @@ namespace BubbleBobble
 	private:
 		void GoToNextLevel();
 		void SetPlayerToSpawnPos();
+		void CreateEnemies();
 		
 		int m_NrLevels{ 3 };
 		int m_LevelIdx{ 0 };

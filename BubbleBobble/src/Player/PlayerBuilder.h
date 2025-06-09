@@ -5,26 +5,22 @@
 namespace JRE
 {
 	class GameObject;
-
-	namespace Input
-	{
-		struct ActionMap;
-	}
+	struct Input::ActionMap;
+	class SpriteAnimatorComponent;
 }
 
-namespace BubbleBobble::Player
+namespace BubbleBobble
 {
-	class ScriptComponent;
-	class Builder final
+	class PlayerBuilder final
 	{
 	public:
-		Builder& SetAnimationPath(const std::filesystem::path& path);
-		Builder& SetActionMap(const JRE::Input::ActionMap& actionMap);
+		PlayerBuilder& SetAnimationPath(const std::filesystem::path& path);
+		PlayerBuilder& SetActionMapIdx(size_t actionMapIdx);
 		void Build(std::unique_ptr<JRE::GameObject>& player);
 	private:
-		void SetAnimations(ScriptComponent* pScriptCmp);
+		void SetAnimations(JRE::SpriteAnimatorComponent* pCmp);
 
 		std::filesystem::path m_AnimPath{};
-		const JRE::Input::ActionMap* m_pActionMap{ nullptr };
+		int m_ActionMapIdx{ -1 };
 	};
 }

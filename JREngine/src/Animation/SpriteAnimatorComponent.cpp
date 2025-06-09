@@ -12,14 +12,22 @@ namespace JRE
 	}
 	void SpriteAnimatorComponent::Update()
 	{
-		if (!m_SpriteAnimationclip) return;
+		if (!m_pActiveClip)
+			return;
 
-		m_SpriteAnimationclip->Update();
+		(*m_pActiveClip)->Update();
 		if (m_pSpriteRendererComponent)
-			m_pSpriteRendererComponent->SetSprite(m_SpriteAnimationclip->GetCurrentSprite());
+			m_pSpriteRendererComponent->SetSprite((*m_pActiveClip)->GetCurrentSprite());
 	}
-	void SpriteAnimatorComponent::SetSpriteAnimationClip(AssetRef<SpriteAnimationClip> clip)
+	void SpriteAnimatorComponent::AddClip(const std::string& name, AssetRef<SpriteAnimationClip> clip, bool setActive)
 	{
-		m_SpriteAnimationclip = clip;
+		m_Clips.emplace(name, clip);
+		if (setActive)
+			SetActiveClip(name);
+	}
+	void SpriteAnimatorComponent::SetActiveClip(const std::string& name)
+	{
+		auto it = m_Clips.find(name);
+		m_pActiveClip = it != m_Clips.end() ? &it->second : nullptr;
 	}
 }

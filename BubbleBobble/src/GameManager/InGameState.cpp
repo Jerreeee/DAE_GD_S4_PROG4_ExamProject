@@ -7,6 +7,7 @@
 #include "GameManagerComponent.h"
 #include "Assets/LevelDataComponent.h"
 #include "Player/PlayerBuilder.h"
+#include "Enemies/Zenchan/ZenchanBuilder.h"
 #include "TileMap/TileMapComponent.h"
 #include "InGameState.h"
 
@@ -21,6 +22,7 @@ namespace BubbleBobble
 	}
 	void InGameState::OnEnter()
 	{
+		auto& sm = SceneManager::GetInstance();
 		auto& im = InputManager::GetInstance();
 
 		GameMode mode = m_GameManagerComponent.GetGameMode();
@@ -28,7 +30,6 @@ namespace BubbleBobble
 		mode;
 		//Create actionMap for the player and set bindings
 		size_t actionMapIdx = im.AddActionMap({ 0 });
-		const ActionMap& actionMap = im.GetActionMap(actionMapIdx);
 		im.BindCommand(actionMapIdx, "MoveLeft", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::A, KeyState::Pressed));
 		im.BindCommand(actionMapIdx, "MoveRight", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::D, KeyState::Pressed));
 		im.BindCommand(actionMapIdx, "Jump", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::W, KeyState::DownThisFrame));
@@ -38,15 +39,15 @@ namespace BubbleBobble
 		GoToNextLevel();
 
 		//Create player(s) for gameMode
-		auto player = std::make_unique<GameObject>("Player");
-		Player::Builder()
+		auto pPlayer = std::make_unique<GameObject>("Player");
+		PlayerBuilder()
 			.SetAnimationPath("Anims/P1.txt")
-			.SetActionMap(actionMap)
-			.Build(player);
-
-		//Add player to the current level
-		SceneManager::GetInstance().GetCurrentScene().Add(std::move(player));
+			.SetActionMapIdx(actionMapIdx)
+			.Build(pPlayer);
+		sm.GetCurrentScene().Add(std::move(pPlayer));
 		SetPlayerToSpawnPos();
+
+		CreateEnemies();
 	}
 	GameState InGameState::Update()
 	{
@@ -77,17 +78,40 @@ namespace BubbleBobble
 		auto& sm = SceneManager::GetInstance();
 		Scene& scene = sm.GetCurrentScene();
 
-		// 1) Find player in gameObjects (with tag, or PlayerScriptComponent)
-		auto pPlayer = scene.GetGameObjectByComponentType<Player::ScriptComponent>();
+		//1) Find player in gameObjects (with tag, or PlayerScriptComponent)
+		auto pPlayer = scene.GetGameObjectByComponentType<PlayerScriptComponent>();
 		assert(pPlayer && "Couldn't find the player gameObject in the scene");
-		// 2) Find LevelData
+		//2) Find LevelData
 		auto pLevelDataCmp = scene.GetComponent<LevelDataComponent>();
-		// 3) Set player pos to spawn pos
+		//3) Set player spawnPos
 		assert(pLevelDataCmp->m_LevelData->players.size() > 0 && "No player pos defined in the levelData");
 		glm::vec2 spawnPos = pLevelDataCmp->m_LevelData->players[0];
 		pPlayer->SetWorldPosition(spawnPos.x, spawnPos.y);
-		glm::vec3 worldPos = pPlayer->GetWorldPosition();
-		// 4) Load enemy spawn positions from file
-		// 5) spawn enemies at positions
+	}
+	void InGameState::CreateEnemies()
+	{
+		auto& sm = SceneManager::GetInstance();
+		Scene& scene = sm.GetCurrentScene();
+
+		//1) Find LevelData
+		auto pLevelDataCmp = scene.GetComponent<LevelDataComponent>();
+		const auto& enemies = pLevelDataCmp->m_LevelData->enemies;
+
+		//2) Create and add all enemies to the scene and set their spawnPos
+		for (const auto& enemy : enemies)
+		{
+			switch (enemy.type)
+			{
+			case EnemyType::Zenchan:
+			{
+				auto pZenchan = std::make_unique<GameObject>("Zenchan");
+				ZenchanBuilder()
+					.Build(pZenchan);
+				pZenchan->SetWorldPosition(enemy.pos.x, enemy.pos.y);
+				scene.Add(std::move(pZenchan));
+				break;
+			}
+			}
+		}
 	}
 }

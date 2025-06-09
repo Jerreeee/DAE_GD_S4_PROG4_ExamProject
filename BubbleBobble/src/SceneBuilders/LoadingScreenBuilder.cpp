@@ -55,7 +55,7 @@ namespace BubbleBobble
 			go->AddComponent<SpriteRendererComponent>();
 			auto spriteAnimCmp = go->AddComponent<JRE::SpriteAnimatorComponent>();
 			auto clipRef = Utils::CreateAnimationClipFromAnimData(animData);
-			spriteAnimCmp->SetSpriteAnimationClip(clipRef);
+			spriteAnimCmp->AddClip(animData.animName, clipRef, true);
 			go->SetWorldPosition(positions[i].x, positions[i].y);
 			m_Scene.Add(std::move(go));
 		}

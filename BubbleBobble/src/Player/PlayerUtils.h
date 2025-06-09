@@ -1,8 +1,8 @@
 #pragma once
 
-namespace BubbleBobble::Player
+namespace BubbleBobble
 {
-	enum class Animation
+	enum class PlayerAnimation
 	{
 		Idle,
 		Run,
@@ -10,21 +10,21 @@ namespace BubbleBobble::Player
 		Death
 	};
 
-	struct AnimationName
+	struct PlayerAnimationName
 	{
-		static constexpr Animation GetAnimation(std::string_view animName)
+		static constexpr PlayerAnimation GetAnimation(std::string_view animName)
 		{
 			for (size_t i = 0; i < s_Names.size(); ++i)
 			{
 				if (s_Names[i] == animName)
-					return static_cast<Animation>(i);
+					return static_cast<PlayerAnimation>(i);
 			}
 
 			assert(false && "Invalid animName");
-			return Animation::Idle; // fallback for non-constexpr builds
+			return PlayerAnimation::Idle; // fallback for non-constexpr builds
 		}
 
-		static constexpr std::string_view ToString(Animation anim)
+		static constexpr std::string_view ToString(PlayerAnimation anim)
 		{
 			return s_Names[static_cast<size_t>(anim)];
 		}
@@ -32,12 +32,5 @@ namespace BubbleBobble::Player
 		inline static constexpr std::array<std::string_view, 4> s_Names{
 			"Idle", "Run", "Shoot", "Death"
 		};
-	};
-
-	struct Input
-	{
-		int moveDir;
-		bool pressedJump;
-		bool pressedShoot;
 	};
 }

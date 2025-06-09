@@ -13,39 +13,40 @@
 #include "JREngine/Asset/Sprite.h"
 #include "JREngine/Animation/SpriteAnimationClip.h"
 #include "JREngine/Rendering/SpriteRendererComponent.h"
-#include "JREngine/Physics/RigidBody2DComponent.h"
 #include "JREngine/Animation/SpriteAnimatorComponent.h"
 
 #include "Assets/AnimsDataImporter.h"
 #include "Player/PlayerScriptComponent.h"
+#include "Player/PlayerController.h"
 #include "Player/PlayerBuilder.h"
 
 using namespace JRE;
 using namespace JRE::Input;
 
-namespace BubbleBobble::Player
+namespace BubbleBobble
 {
-	Builder& Builder::SetAnimationPath(const std::filesystem::path& path)
+	PlayerBuilder& PlayerBuilder::SetAnimationPath(const std::filesystem::path& path)
 	{
 		m_AnimPath = path;
         return *this;
 	}
-    Builder& Builder::SetActionMap(const ActionMap& actionMap)
+    PlayerBuilder& PlayerBuilder::SetActionMapIdx(size_t actionMapIdx)
     {
-        m_pActionMap = &actionMap;
+        m_ActionMapIdx = static_cast<int>(actionMapIdx);
         return *this;
     }
-	void Builder::Build(std::unique_ptr<JRE::GameObject>& player)
+	void PlayerBuilder::Build(std::unique_ptr<JRE::GameObject>& player)
 	{
-        player->AddComponent<JRE::SpriteRendererComponent>();
-        //player->AddComponent<JRE::RigidBody2DComponent>();
-        player->AddComponent<JRE::SpriteAnimatorComponent>();
-        auto pScriptCmp = player->AddComponent<Player::ScriptComponent>(*m_pActionMap);
-        assert(pScriptCmp && "pScriptCmp wass nullptr");
-		SetAnimations(pScriptCmp);
+        assert(m_ActionMapIdx != -1 && "Invalid actionMapIdx");
+
         player->m_Persistant = true;
+        player->AddComponent<JRE::SpriteRendererComponent>();
+        auto pSpriteAnimatorCmp = player->AddComponent<JRE::SpriteAnimatorComponent>();
+        player->AddComponent<PlayerScriptComponent>();
+        player->AddComponent<PlayerControllerComponent>(static_cast<size_t>(m_ActionMapIdx));
+		SetAnimations(pSpriteAnimatorCmp);
 	}
-	void Builder::SetAnimations(ScriptComponent* pScriptCmp)
+	void PlayerBuilder::SetAnimations(JRE::SpriteAnimatorComponent* pCmp)
 	{
         auto animsDataImporter = AnimDataImporter(m_AnimPath);
         AssetHandle animsDataHandle = AssetImporter::GetInstance().ImportAsset(std::move(animsDataImporter));
@@ -62,8 +63,8 @@ namespace BubbleBobble::Player
             for (const auto& sprite : sprites)
                 softSprites.emplace_back(sprite);
 
-            auto animRef = JRE::CreateAssetRef<JRE::SpriteAnimationClip>(softSprites, animData.fps);
-            pScriptCmp->SetAnimation(animData.animName, animRef);
+            auto clipRef = JRE::CreateAssetRef<JRE::SpriteAnimationClip>(softSprites, animData.fps);
+            pCmp->AddClip(animData.animName, clipRef);
         }
 	}
 }

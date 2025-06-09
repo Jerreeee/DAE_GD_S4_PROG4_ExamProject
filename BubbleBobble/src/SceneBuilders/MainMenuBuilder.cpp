@@ -34,7 +34,7 @@ namespace BubbleBobble
 		logo->AddComponent<JRE::SpriteRendererComponent>();
 		auto spriteAnimCmp = logo->AddComponent<JRE::SpriteAnimatorComponent>();
 		auto clipRef = Utils::CreateAnimationClipFromAnimData(animData);
-		spriteAnimCmp->SetSpriteAnimationClip(clipRef);
+		spriteAnimCmp->AddClip(animData.animName, clipRef, true);
 		logo->SetWorldPosition(117.f, 50.f);
 
 		//load font
