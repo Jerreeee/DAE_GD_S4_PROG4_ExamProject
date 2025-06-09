@@ -25,9 +25,8 @@ namespace BubbleBobble
 		auto& sm = SceneManager::GetInstance();
 		auto& im = InputManager::GetInstance();
 
-		GameMode mode = m_GameManagerComponent.GetGameMode();
+		//GameMode mode = m_GameManagerComponent.GetGameMode();
 
-		mode;
 		//Create actionMap for the player and set bindings
 		size_t actionMapIdx = im.AddActionMap({ 0 });
 		im.BindCommand(actionMapIdx, "MoveLeft", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::A, KeyState::Pressed));

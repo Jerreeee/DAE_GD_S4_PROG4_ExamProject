@@ -18,8 +18,6 @@ namespace BubbleBobble
 		PlayerBuilder& SetActionMapIdx(size_t actionMapIdx);
 		void Build(std::unique_ptr<JRE::GameObject>& player);
 	private:
-		void SetAnimations(JRE::SpriteAnimatorComponent* pCmp);
-
 		std::filesystem::path m_AnimPath{};
 		int m_ActionMapIdx{ -1 };
 	};

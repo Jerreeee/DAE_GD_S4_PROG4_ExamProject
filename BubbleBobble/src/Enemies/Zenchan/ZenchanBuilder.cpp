@@ -3,6 +3,7 @@
 #include "JREngine/Rendering/SpriteRendererComponent.h"
 #include "JREngine/Animation/SpriteAnimatorComponent.h"
 
+#include "Utils.h"
 #include "Enemies/Zenchan/ZenchanBuilder.h"
 
 using namespace JRE;
@@ -13,7 +14,8 @@ namespace BubbleBobble
 	{
         pZenchan->m_Persistant = true;
         pZenchan->AddComponent<JRE::SpriteRendererComponent>();
-        pZenchan->AddComponent<JRE::SpriteAnimatorComponent>();
-        //SetAnimations(pScriptCmp);
+        auto pSpriteAnimatorCmp = pZenchan->AddComponent<JRE::SpriteAnimatorComponent>();
+        Utils::AddAnimsToSpriteAnimatorComponent("Anims/ZenChan.txt", *pSpriteAnimatorCmp);
+        pSpriteAnimatorCmp->SetActiveClip("Run");
 	}
 }
