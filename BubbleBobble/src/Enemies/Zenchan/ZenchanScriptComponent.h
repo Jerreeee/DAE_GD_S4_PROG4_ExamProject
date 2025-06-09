@@ -1,10 +1,7 @@
 #pragma once
-#include <vector>
-#include <map>
-#include "JREngine/Input/InputManager.h"
 #include "JREngine/Scene/ComponentBase.h"
-#include "JREngine/Asset/Asset.h"
-#include "Player/PlayerUtils.h"
+
+#include "TileMap/TileMapComponent.h"
 
 namespace JRE
 {
@@ -14,17 +11,18 @@ namespace JRE
 
 namespace BubbleBobble
 {
-	class TileMapComponent;
-	class PlayerScriptComponent final : public JRE::ComponentBase
+	class ZenchanScriptComponent final: public JRE::ComponentBase
 	{
 	public:
-		PlayerScriptComponent(JRE::GameObject& gameObject);
+		ZenchanScriptComponent(JRE::GameObject& gameObject);
 
 		virtual void Update() override {};
-		virtual void FixedUpdate() override;
-
+		void FixedUpdate() override;
+		
 		void Move(int direction);
 		void Jump();
+
+		const CollisionInfo& GetCollInfo() const { return m_CollInfo; };
 	private:
 		struct Input
 		{
@@ -39,8 +37,9 @@ namespace BubbleBobble
 		float m_JumpForce{ 75.f };
 		glm::vec2 m_Vel{};
 		Input m_Input{};
+		CollisionInfo m_CollInfo{};
 
-		glm::vec2 m_ColliderOffset{ 4.f, 2.f };
-		glm::vec2 m_ColliderSize{ 40.f, 46.f };
+		glm::vec2 m_ColliderOffset{ 0.f, 0.f };
+		glm::vec2 m_ColliderSize{ 48.f, 48.f };
 	};
 }

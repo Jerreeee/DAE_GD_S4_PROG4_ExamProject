@@ -96,7 +96,11 @@ namespace BubbleBobble
 		auto pLevelDataCmp = scene.GetComponent<LevelDataComponent>();
 		const auto& enemies = pLevelDataCmp->m_LevelData->enemies;
 
-		//2) Create and add all enemies to the scene and set their spawnPos
+		//2) Find player to set as the enemy target
+		auto pPlayer = scene.GetGameObjectByComponentType<PlayerScriptComponent>();
+		assert(pPlayer && "Couldn't find the player gameObject in the scene");
+
+		//3) Create and add all enemies to the scene and set their spawnPos
 		for (const auto& enemy : enemies)
 		{
 			switch (enemy.type)
@@ -105,6 +109,7 @@ namespace BubbleBobble
 			{
 				auto pZenchan = std::make_unique<GameObject>("Zenchan");
 				ZenchanBuilder()
+					.SetupAIController(pPlayer)
 					.Build(pZenchan);
 				pZenchan->SetWorldPosition(enemy.pos.x, enemy.pos.y);
 				scene.Add(std::move(pZenchan));

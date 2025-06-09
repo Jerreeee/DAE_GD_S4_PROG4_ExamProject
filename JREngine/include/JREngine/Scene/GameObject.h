@@ -72,8 +72,8 @@ namespace JRE
 
 		Transform& GetWorldTransform();
 		Transform& GetLocalTransform();
-		const glm::vec3& GetWorldPosition();
-		const glm::vec3& GetLocalPosition();
+		const glm::vec3& GetWorldPosition() const ;
+		const glm::vec3& GetLocalPosition() const ;
 		void SetWorldPosition(float x, float y);
 		void SetWorldPosition(const glm::vec3& pos);
 		void SetLocalPosition(float x, float y);
@@ -97,7 +97,7 @@ namespace JRE
 		}
 
 		void SetPositionDirty();
-		void UpdateWorldPosition();
+		void UpdateWorldPosition() const;
 		void AddChild(GameObject* pChild);
 
 		//-----------------------
@@ -107,8 +107,8 @@ namespace JRE
 		bool m_IsDestroyed{ false };
 		std::string m_Name{};
 		Transform m_LocalTransform{};
-		Transform m_WorldTransform{};
-		bool m_PositionIsDirty{ false };
+		mutable Transform m_WorldTransform{};
+		mutable bool m_PositionIsDirty{ false };
 		std::vector<std::unique_ptr<ComponentBase>> m_Components{};
 		GameObject* m_pParent{};
 		std::vector<GameObject*> m_Children{};

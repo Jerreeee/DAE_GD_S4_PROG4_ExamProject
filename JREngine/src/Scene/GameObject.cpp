@@ -116,13 +116,13 @@ namespace JRE
 		m_LocalTransform.SetPosition(position);
 		SetPositionDirty();
 	}
-	const glm::vec3& GameObject::GetWorldPosition()
+	const glm::vec3& GameObject::GetWorldPosition() const
 	{
 		if (m_PositionIsDirty)
 			UpdateWorldPosition();
 		return m_WorldTransform.GetPosition();
 	}
-	const glm::vec3& GameObject::GetLocalPosition()
+	const glm::vec3& GameObject::GetLocalPosition() const
 	{
 		return m_LocalTransform.GetPosition();
 	}
@@ -134,7 +134,7 @@ namespace JRE
 	{
 		m_WorldTransform.SetPosition(pos);
 	}
-	void GameObject::UpdateWorldPosition()
+	void GameObject::UpdateWorldPosition() const
 	{
 		if (!m_PositionIsDirty)
 			return;

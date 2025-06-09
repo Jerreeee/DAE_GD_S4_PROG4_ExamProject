@@ -44,6 +44,8 @@ namespace BubbleBobble
 	}
 	bool TileMap::MovePosition(const JRE::Region& oldRegion, glm::vec2 vel, float dt, bool applyGravity, CollisionInfo& ci) const
 	{
+		ci = CollisionInfo{}; //ensure no existing data
+
 		glm::vec2 oldPos{ oldRegion.x, oldRegion.y };
 
 		if (applyGravity)
