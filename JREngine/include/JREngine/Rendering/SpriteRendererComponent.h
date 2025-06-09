@@ -19,8 +19,10 @@ namespace JRE
 		virtual void Render() const override;
 
 		void SetSprite(const AssetRef<Sprite>& sprite);
+		void SetFlipX(bool flipX) { m_FlipX = flipX; };
 	private:
 		AssetRef<Sprite> m_Sprite{};
+		bool m_FlipX{};
 	};
 }
 

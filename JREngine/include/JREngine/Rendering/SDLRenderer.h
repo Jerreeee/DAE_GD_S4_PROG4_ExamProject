@@ -19,8 +19,8 @@ namespace JRE
 		void Render();
 		void Destroy();
 
-		void RenderSprite(AssetRef<Sprite> sprite, float x, float y) const;
-		void RenderSprite(AssetRef<Sprite> sprite, float x, float y, float width, float height) const;
+		void RenderSprite(AssetRef<Sprite> sprite, float x, float y, bool flipX = false) const;
+		void RenderSprite(AssetRef<Sprite> sprite, float x, float y, float width, float height, bool flipX = false) const;
 		void DrawRectangle(int x, int y, int w, int h, const SDL_Color& color);
 
 		SDL_Renderer* GetSDLRenderer() const;

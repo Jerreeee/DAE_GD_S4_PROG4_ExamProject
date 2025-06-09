@@ -10,6 +10,7 @@ namespace JRE
 {
 	class GameObject;
 	class SpriteAnimatorComponent;
+	class SpriteRendererComponent;
 }
 
 namespace BubbleBobble
@@ -32,6 +33,7 @@ namespace BubbleBobble
 			int moveDir;
 		};
 
+		JRE::SpriteRendererComponent* m_pSpriteRenderer{ nullptr };
 		JRE::SpriteAnimatorComponent* m_pSpriteAnimator{ nullptr };
 		TileMapComponent* m_pTileMapComponent{ nullptr };
 
@@ -39,6 +41,7 @@ namespace BubbleBobble
 		float m_JumpForce{ 75.f };
 		glm::vec2 m_Vel{};
 		Input m_Input{};
+		int m_FacingDir{};
 
 		glm::vec2 m_ColliderOffset{ 4.f, 2.f };
 		glm::vec2 m_ColliderSize{ 40.f, 46.f };

@@ -79,7 +79,7 @@ void JRE::SDLRenderer::Destroy()
 	}
 }
 
-void JRE::SDLRenderer::RenderSprite(AssetRef<Sprite> sprite, const float x, const float y) const
+void JRE::SDLRenderer::RenderSprite(AssetRef<Sprite> sprite, const float x, const float y, bool flipX) const
 {
 	if (!sprite)
 	{
@@ -97,10 +97,11 @@ void JRE::SDLRenderer::RenderSprite(AssetRef<Sprite> sprite, const float x, cons
 	dst.y = static_cast<int>(y);
 	dst.w = src.w;
 	dst.h = src.h;
-	SDL_RenderCopy(GetSDLRenderer(), pSDLTexture, &src, &dst);
+	SDL_RendererFlip flip = flipX ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;;
+	SDL_RenderCopyEx(GetSDLRenderer(), pSDLTexture, &src, &dst, 0.0, nullptr, flip);
 }
 
-void JRE::SDLRenderer::RenderSprite(AssetRef<Sprite> sprite, const float x, const float y, const float width, const float height) const
+void JRE::SDLRenderer::RenderSprite(AssetRef<Sprite> sprite, const float x, const float y, const float width, const float height, bool flipX) const
 {
 	if (!sprite)
 	{
@@ -118,7 +119,8 @@ void JRE::SDLRenderer::RenderSprite(AssetRef<Sprite> sprite, const float x, cons
 	dst.y = static_cast<int>(y);
 	dst.w = static_cast<int>(width);
 	dst.h = static_cast<int>(height);
-	SDL_RenderCopy(GetSDLRenderer(), pSDLTexture, &src, &dst);
+	SDL_RendererFlip flip = flipX ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;;
+	SDL_RenderCopyEx(GetSDLRenderer(), pSDLTexture, &src, &dst, 0.0, nullptr, flip);
 }
 
 void JRE::SDLRenderer::DrawRectangle(int x, int y, int w, int h, const SDL_Color& color)

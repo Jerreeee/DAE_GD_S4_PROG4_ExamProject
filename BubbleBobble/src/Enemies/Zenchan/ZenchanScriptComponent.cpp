@@ -1,5 +1,6 @@
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Animation/SpriteAnimatorComponent.h"
+#include "JREngine/Rendering/SpriteRendererComponent.h"
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Scene/Scene.h"
 
@@ -12,6 +13,8 @@ namespace BubbleBobble
 	ZenchanScriptComponent::ZenchanScriptComponent(JRE::GameObject& gameObject)
 		: ComponentBase(gameObject)
 	{
+		m_pSpriteRenderer = GetGameObject().GetComponent<SpriteRendererComponent>();
+		assert(m_pSpriteRenderer && "Player doesnt have SpriteRendererComponent");
 		m_pSpriteAnimator = GetGameObject().GetComponent<SpriteAnimatorComponent>();
 		assert(m_pSpriteAnimator && "Player doesnt have SpriteAnimatorComponent");
 		m_pTileMapComponent = SceneManager::GetInstance().GetCurrentScene().GetComponent<TileMapComponent>();
@@ -35,11 +38,10 @@ namespace BubbleBobble
 		GetGameObject().SetWorldPosition(m_CollInfo.newPos.x - m_ColliderOffset.x, m_CollInfo.newPos.y - m_ColliderOffset.y);
 		m_Vel = m_CollInfo.velOut;
 
-		//if (m_Input.moveDir)
-		//	m_pSpriteAnimator->SetActiveClip("Run");
-		//else
-		//	m_pSpriteAnimator->SetActiveClip("RunAgry");
-		//TODO Flip running animation depending on going left or right
+		//Flip sprites based on movement direction
+		if (m_FacingDir == m_Input.moveDir * -1)
+			m_FacingDir *= -1;
+		m_pSpriteRenderer->SetFlipX(m_FacingDir == -1);
 
 		//bool shoot = im.IsBindingActive(*m_pActionMap, "Shoot");
 		//if (shoot);
@@ -48,6 +50,8 @@ namespace BubbleBobble
 		if (onGround && m_Input.pressedJump)
 			m_Vel.y = -m_JumpForce;
 
+		if (m_Input.moveDir != 0)
+			m_FacingDir = m_Input.moveDir;
 		m_Input = Input{}; //Consume all input
 	}
 
