@@ -44,11 +44,10 @@ namespace BubbleBobble
 
 		BoxPhysicsSystem::CollisionSettings collisionSettings{};
 
-		CollisionInfo m_CollInfo{};
-		physicsSystem.MoveCollider(oldPos, *m_pBox2DColliderCmp, moveSettings, collisionSettings, m_CollInfo);
-
-		GetGameObject().SetWorldPosition(m_CollInfo.newPos.x - m_pBox2DColliderCmp->m_Shape.offset.x, m_CollInfo.newPos.y - m_pBox2DColliderCmp->m_Shape.offset.y);
-		m_Vel = m_CollInfo.velOut;
+		CollisionInfo collInfo{};
+		physicsSystem.MoveCollider(oldPos, *m_pBox2DColliderCmp, moveSettings, collisionSettings, collInfo);
+		GetGameObject().SetWorldPosition(collInfo.newPos.x, collInfo.newPos.y);
+		m_Vel = collInfo.velOut;
 
 		if (m_Input.moveDir)
 			m_pSpriteAnimatorCmp->SetActiveClip("Run");
@@ -63,7 +62,7 @@ namespace BubbleBobble
 		//bool shoot = im.IsBindingActive(*m_pActionMap, "Shoot");
 		//if (shoot);
 		//	return State::Shooting;
-		bool onGround = m_CollInfo.collDir.down;
+		bool onGround = collInfo.collDir.down;
 		if (onGround && m_Input.pressedJump)
 			m_Vel.y = -m_JumpForce;
 

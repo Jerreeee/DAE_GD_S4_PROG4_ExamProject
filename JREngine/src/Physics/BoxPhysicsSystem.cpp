@@ -90,22 +90,22 @@ namespace JRE
 		const BoxShape& boxA = static_cast<const BoxShape&>(shapeA);
 		BoxShape worldBoxA = boxA.Translated(oldPos);
 		const auto& propsA = a.GetProperties();
+		const Region& regionA = worldBoxA.GetRegion();
+		glm::vec2 worldLeftTopA = glm::vec2(regionA.x, regionA.y); //leftTop pos of the collider in worldSpace
 
 		const float dt = ms.dt;
 		glm::vec2 vel = ms.vel;
 
-		const Region& regionA = worldBoxA.GetRegion();
-
 		if (ms.applyGravity)
 			vel.y += m_Gravity * dt;
 
-		glm::vec2 endPos{
-			oldPos.x + vel.x * m_VelScale * dt,
-			oldPos.y + vel.y * m_VelScale * dt,
-		};
-
 		VelInfo vi{ GetVelInfo(vel) };
 		ci.velOut = vel;
+
+		glm::vec2 endPos{
+			worldLeftTopA.x + vel.x * m_VelScale * dt,
+			worldLeftTopA.y + vel.y * m_VelScale * dt,
+		};
 
 		glm::vec2 offset{ endPos.x - oldPos.x, endPos.y - oldPos.y };
 		glm::vec2 absOffset{ std::abs(offset.x), std::abs(offset.y) };
@@ -237,6 +237,11 @@ namespace JRE
 				ci.velOut.x = 0.f;
 			}
 		}
+
+		//Currently ci.newPos is the worldLeftTop pos of the collider
+		//Subtract the collider offset to get the worldLeftTop pos
+		//of the object that has the collider
+		ci.newPos -= boxA.offset;
 
 		return ci.Collided();
 	}

@@ -44,8 +44,7 @@ namespace BubbleBobble
 		BoxPhysicsSystem::CollisionSettings collisionSettings{};
 
 		physicsSystem.MoveCollider(oldPos, *m_pBox2DColliderCmp, moveSettings, collisionSettings, m_CollInfo);
-
-		GetGameObject().SetWorldPosition(m_CollInfo.newPos.x - m_pBox2DColliderCmp->m_Shape.offset.x, m_CollInfo.newPos.y - m_pBox2DColliderCmp->m_Shape.offset.y);
+		GetGameObject().SetWorldPosition(m_CollInfo.newPos.x, m_CollInfo.newPos.y);
 		m_Vel = m_CollInfo.velOut;
 
 		//Flip sprites based on movement direction
