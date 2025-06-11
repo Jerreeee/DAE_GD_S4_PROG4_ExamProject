@@ -1,5 +1,7 @@
 #include "JREngine/Input/InputManager.h"
 #include "JREngine/Scene/SceneManager.h"
+#include "JREngine/Core/ServiceLocator.h"
+#include "JREngine/Physics/BoxPhysicsSystem.h"
 
 #include "GameManagerComponent.h"
 #include "MainMenuState.h"
@@ -16,6 +18,10 @@ namespace BubbleBobble
         auto& im = InputManager::GetInstance();
         m_ActionMapIdx = im.AddActionMap({ 0 });
         im.BindCommand(m_ActionMapIdx, "StartSinglePlayer", std::make_unique<StartSinglePlayerCommand>(*this), std::make_unique<KeyboardBindingInfo>(KeyboardKey::Q, KeyState::DownThisFrame));
+    
+        BoxPhysicsSystem& physicsSystem = static_cast<BoxPhysicsSystem&>(ServiceLocator::GetPhysicsSystem());
+        physicsSystem.SetGravity(200.f);
+        physicsSystem.SetWorldScale(0.1f);
     }
     void MainMenuState::OnEnter()
     {   

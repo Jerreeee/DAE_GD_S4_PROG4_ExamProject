@@ -51,7 +51,9 @@ set(SOURCE_FILES
     "Scene/Transform.cpp"
     "Scene/ComponentBase.cpp"
 
+    "Physics/BoxPhysicsSystem.cpp"
     "Physics/RigidBody2DComponent.cpp"
+    "Physics/Box2DColliderComponent.cpp"
 )
 AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
 
@@ -108,7 +110,11 @@ set(INCLUDE_FILES
     "Scene/Transform.h"
     "Scene/ComponentBase.h"
 
+    "Physics/IPhysicsSystem.h"
+    "Physics/ICollider.h"
+    "Physics/BoxPhysicsSystem.h"
     "Physics/RigidBody2DComponent.h"
+    "Physics/Box2DColliderComponent.h"
 )
 AddPrefix(INCLUDE_FILES "${INTERNAL_INCLUDE_DIR}/")
 

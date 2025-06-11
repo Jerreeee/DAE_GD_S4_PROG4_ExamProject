@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "JREngine/Core/Event.h"
 #include "Core/Observer.h"
 

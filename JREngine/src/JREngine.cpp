@@ -19,6 +19,8 @@
 #include "Asset/AssetImporter.h"
 #include "Core/Timer.h"
 #include "Core/ServiceLocator.h"
+#include "Physics/IPhysicsSystem.h"
+#include "Physics/BoxPhysicsSystem.h"
 
 SDL_Window* g_window{};
 
@@ -103,6 +105,7 @@ JRE::JREngine::JREngine(const std::filesystem::path& dataPath)
 
 	ServiceLocator::RegisterSoundSystem(std::make_unique<SDLSoundSystem>());
 	ServiceLocator::RegisterResourceManager(std::make_unique<EditorResourceManager>());
+	ServiceLocator::RegisterPhysicsSystem(std::make_unique<BoxPhysicsSystem>());
 	auto erm = static_cast<EditorResourceManager*>(&ServiceLocator::GetResourceManager());
 	erm->Init();
 
@@ -147,6 +150,7 @@ void JRE::JREngine::RunOneFrame()
 	while (m_Lag >= m_FixedTimeStep)
 	{
 		SceneManager::GetInstance().FixedUpdate();
+		ServiceLocator::GetPhysicsSystem().Update();
 		m_Lag -= m_FixedTimeStep;
 	}
 

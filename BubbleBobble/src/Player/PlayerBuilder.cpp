@@ -4,8 +4,10 @@
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Rendering/SpriteRendererComponent.h"
 #include "JREngine/Animation/SpriteAnimatorComponent.h"
+#include "JREngine/Physics/Box2DColliderComponent.h"
 
 #include "Utils.h"
+#include "CollisionLayers.h"
 #include "Player/PlayerScriptComponent.h"
 #include "Player/PlayerController.h"
 #include "Player/PlayerBuilder.h"
@@ -33,6 +35,12 @@ namespace BubbleBobble
         player->AddComponent<JRE::SpriteRendererComponent>();
         auto pSpriteAnimatorCmp = player->AddComponent<JRE::SpriteAnimatorComponent>();
         Utils::AddAnimsToSpriteAnimatorComponent(m_AnimPath, *pSpriteAnimatorCmp);
+        auto box2DColliderCmp = player->AddComponent<JRE::Box2DColliderComponent>();
+        box2DColliderCmp->m_Shape.offset = glm::vec2(4.f, 2.f);
+        box2DColliderCmp->m_Shape.width = 40.f;
+        box2DColliderCmp->m_Shape.height = 46.f;
+        box2DColliderCmp->m_Properties.layer = CollisionLayer::Friendly;
+        box2DColliderCmp->m_Properties.mask = CollisionMask::Friendly;
         player->AddComponent<PlayerScriptComponent>();
         player->AddComponent<PlayerControllerComponent>(static_cast<size_t>(m_ActionMapIdx));
 	}

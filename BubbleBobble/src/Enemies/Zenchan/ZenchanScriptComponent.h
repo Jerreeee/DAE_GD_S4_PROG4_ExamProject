@@ -1,5 +1,6 @@
 #pragma once
 #include "JREngine/Scene/ComponentBase.h"
+#include "JREngine/Physics/BoxPhysicsSystem.h"
 
 #include "TileMap/TileMapComponent.h"
 
@@ -8,6 +9,7 @@ namespace JRE
 	class GameObject;
 	class SpriteAnimatorComponent;
 	class SpriteRendererComponent;
+	class Box2DColliderComponent;
 }
 
 namespace BubbleBobble
@@ -23,7 +25,7 @@ namespace BubbleBobble
 		void Move(int direction);
 		void Jump();
 
-		const CollisionInfo& GetCollInfo() const { return m_CollInfo; };
+		const JRE::CollisionInfo& GetCollInfo() const { return m_CollInfo; };
 	private:
 		struct Input
 		{
@@ -31,18 +33,15 @@ namespace BubbleBobble
 			int moveDir;
 		};
 
-		JRE::SpriteRendererComponent* m_pSpriteRenderer{ nullptr };
-		JRE::SpriteAnimatorComponent* m_pSpriteAnimator{ nullptr };
-		TileMapComponent* m_pTileMapComponent{ nullptr };
+		JRE::SpriteRendererComponent* m_pSpriteRendererCmp{ nullptr };
+		JRE::SpriteAnimatorComponent* m_pSpriteAnimatorCmp{ nullptr };
+		JRE::Box2DColliderComponent* m_pBox2DColliderCmp{ nullptr };
 
 		float m_Speed{ 20.f };
 		float m_JumpForce{ 75.f };
 		glm::vec2 m_Vel{};
 		Input m_Input{};
-		CollisionInfo m_CollInfo{};
+		JRE::CollisionInfo m_CollInfo{};
 		int m_FacingDir{};
-
-		glm::vec2 m_ColliderOffset{ 0.f, 0.f };
-		glm::vec2 m_ColliderSize{ 48.f, 48.f };
 	};
 }

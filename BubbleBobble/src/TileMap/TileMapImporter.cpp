@@ -119,7 +119,10 @@ namespace BubbleBobble
 		float leftTopY = static_cast<float>(std::stoi(tokens[2]));
 		float rightBottomX = static_cast<float>(std::stoi(tokens[3]));
 		float rightBottomY = static_cast<float>(std::stoi(tokens[4]));
-		JRE::Region rect{ leftTopX, leftTopY, rightBottomX - leftTopX, rightBottomY - leftTopY };
-		collisionRect.emplace_back(TileMap::ColliderInfo{ rect, isPlatform });
+		JRE::BoxShape boxShape{};
+		boxShape.offset = glm::vec2(leftTopX, leftTopY);
+		boxShape.width = rightBottomX - leftTopX;
+		boxShape.height = rightBottomY - leftTopY;
+		collisionRect.emplace_back(TileMap::ColliderInfo{ boxShape, isPlatform });
 	}
 }

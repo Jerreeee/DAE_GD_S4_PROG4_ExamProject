@@ -34,6 +34,8 @@ namespace BubbleBobble
 		float horizontalDist = std::abs(dx);
 		float verticalDist = std::abs(dy);
 
+		//TODO improve checking when zenchan reached player
+		//Maybe with bounding box AABB collision test
 		float xThreshold = 40.0f;
 		float yThreshold = 20.0f;
 

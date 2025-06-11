@@ -5,7 +5,7 @@
 namespace JRE
 {
 	class GameObject;
-	class RigidBody2DComponent : public JRE::ComponentBase
+	class RigidBody2DComponent : public ComponentBase
 	{
 	public:
 		RigidBody2DComponent(JRE::GameObject& gameObject);

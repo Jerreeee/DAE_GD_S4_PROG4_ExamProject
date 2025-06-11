@@ -1,12 +1,12 @@
 #pragma once
 #include <vector>
-#include <algorithm>
-#include "JREngine/Core/EventInfo.h"
 
 namespace JRE
 {
 	class GameObject;
 	class Observable;
+	class EventInfo;
+
 	class IObserver
 	{
 	public:
