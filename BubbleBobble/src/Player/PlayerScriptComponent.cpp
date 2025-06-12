@@ -42,11 +42,8 @@ namespace BubbleBobble
 		//Check collision
 		BoxPhysicsSystem& physicsSystem = static_cast<BoxPhysicsSystem&>(ServiceLocator::GetPhysicsSystem());
 		CollisionInfo collInfo{};
-
 		physicsSystem.MoveCollider(cs, collInfo);
 		GetGameObject().SetWorldPosition(collInfo.newPos.x, collInfo.newPos.y);
-
-		std::cout << "NewPos X: " << collInfo.newPos.x << ", Y: " << collInfo.newPos.y << "\n";
 		m_Vel = collInfo.velOut;
 
 		if (m_Input.moveDir)

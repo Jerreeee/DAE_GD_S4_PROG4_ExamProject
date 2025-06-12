@@ -40,10 +40,9 @@ namespace BubbleBobble
 
 		//Check collision
 		BoxPhysicsSystem& physicsSystem = static_cast<BoxPhysicsSystem&>(ServiceLocator::GetPhysicsSystem());
-		CollisionInfo collInfo{};
-		physicsSystem.MoveCollider(cs, collInfo);
-		GetGameObject().SetWorldPosition(collInfo.newPos.x, collInfo.newPos.y);
-		m_Vel = collInfo.velOut;
+		physicsSystem.MoveCollider(cs, m_CollInfo);
+		GetGameObject().SetWorldPosition(m_CollInfo.newPos.x, m_CollInfo.newPos.y);
+		m_Vel = m_CollInfo.velOut;
 
 		//Flip sprites based on movement direction
 		if (m_FacingDir == m_Input.moveDir * -1)
