@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_set>
+#include <functional>
 #include "JREngine/Physics/IPhysicsSystem.h"
 #include "JREngine/Physics/ICollider.h"
 #include "glm.hpp"
@@ -70,26 +71,21 @@ namespace JRE
 		virtual void RegisterCollider(ICollider* const collider) override;
 		virtual void UnregisterCollider(ICollider* const collider) override;
 
-		struct MoveSettings
+		struct CollisionSettings
 		{
+			glm::vec2 oldPos;
+			const ICollider& collider;
 			float dt;
 			glm::vec2 vel;
 			bool applyGravity{ true };
+
+			using CollisionFilterFunc = std::function<CollisionDir(const StaticCollider& collider, const CollisionSettings& cs)>;
+			CollisionFilterFunc filterFunc;
 		};
 
-		struct CollisionSettings
-		{
-			bool checkLeft = true;
-			bool checkRight = true;
-			bool checkUp = true;
-			bool checkDown = true;
-
-			bool CheckX() const { return checkLeft || checkRight; };
-			bool CheckY() const { return checkUp || checkDown; };
-		};
 		//Moves the give region with given velocity and deltaTime and check for collision
 		//Fills in a CollisionInfo output struct
-		bool MoveCollider(glm::vec2 oldPos, const ICollider& collider, const MoveSettings& ms, const CollisionSettings& cs, CollisionInfo& ci) const;
+		bool MoveCollider(const CollisionSettings& cs, CollisionInfo& ci) const;
 
 		virtual void SetGravity(float gravity) override { m_Gravity = gravity; };
 		virtual void SetWorldScale(float scale) override;

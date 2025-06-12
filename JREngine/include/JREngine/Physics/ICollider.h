@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <cstdint>
+#include <type_traits>
 #include "JREngine/Math/Rect.h"
 #include "glm.hpp"
 
@@ -114,5 +115,14 @@ namespace JRE
 		virtual const ICollisionShape& GetShape() const = 0;
 		virtual const ColliderProperties& GetProperties() const = 0;
 		virtual void OnCollisionWith(const ICollider&) {};
+
+		template<typename T>
+		requires std::is_base_of_v<ICollisionShape, T>
+		const T& GetShapeByType()
+		{
+			const ICollisionShape& shape = GetShape();
+			assert(T::GetStaticType() == shape.GetType() && "ICollider::GetShapeByType() type mismatch");
+			return static_cast<const T&>(shape);
+		}
 	};
 }

@@ -6,6 +6,7 @@
 #include "JREngine/Scene/Scene.h"
 #include "JREngine/Core/ServiceLocator.h"
 
+#include "CollisionLayers.h"
 #include "Enemies/Zenchan/ZenchanScriptComponent.h"
 
 using namespace JRE;
@@ -25,27 +26,30 @@ namespace BubbleBobble
 
 	void ZenchanScriptComponent::FixedUpdate()
 	{
-		float dt = Timer::GetInstance().GetFixedTimeStep();
-
 		glm::vec3 oldPos = GetGameObject().GetWorldPosition();
+
+		BoxPhysicsSystem::CollisionSettings cs{ oldPos, *m_pBox2DColliderCmp };
+		cs.dt = Timer::GetInstance().GetFixedTimeStep();
+		cs.applyGravity = true;
+		cs.filterFunc = [](const StaticCollider& collider, const BoxPhysicsSystem::CollisionSettings& cs) -> CollisionDir {
+			const BoxShape& colliderBox = static_cast<const BoxShape&>(*collider.shape);
+			const BoxShape& box = static_cast<const BoxShape&>(cs.collider.GetShape());
+			bool isPlatform = collider.properties.layer & CollisionLayer::Platform;
+			bool alreadyCollidingY = box.OverlapInY(colliderBox);
+			bool checkCollision = isPlatform && alreadyCollidingY;
+			return checkCollision ? JRE::CollisionDir{ false, false, true, false } : JRE::CollisionDir{ true, true, true, true };
+			};
 
 		//Calc vel
 		m_Vel.x = m_Speed * m_Input.moveDir;
+		cs.vel = m_Vel;
 
-		//Check TileMap collision
+		//Check collision
 		BoxPhysicsSystem& physicsSystem = static_cast<BoxPhysicsSystem&>(ServiceLocator::GetPhysicsSystem());
-
-		BoxPhysicsSystem::MoveSettings moveSettings{};
-
-		moveSettings.vel = m_Vel;
-		moveSettings.dt = dt;
-		moveSettings.applyGravity = true;
-
-		BoxPhysicsSystem::CollisionSettings collisionSettings{};
-
-		physicsSystem.MoveCollider(oldPos, *m_pBox2DColliderCmp, moveSettings, collisionSettings, m_CollInfo);
-		GetGameObject().SetWorldPosition(m_CollInfo.newPos.x, m_CollInfo.newPos.y);
-		m_Vel = m_CollInfo.velOut;
+		CollisionInfo collInfo{};
+		physicsSystem.MoveCollider(cs, collInfo);
+		GetGameObject().SetWorldPosition(collInfo.newPos.x, collInfo.newPos.y);
+		m_Vel = collInfo.velOut;
 
 		//Flip sprites based on movement direction
 		if (m_FacingDir == m_Input.moveDir * -1)

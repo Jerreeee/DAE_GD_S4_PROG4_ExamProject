@@ -79,125 +79,135 @@ namespace JRE
 			return;
 		std::erase(m_DynamicColliders, collider);
 	}
-	bool BoxPhysicsSystem::MoveCollider(glm::vec2 oldPos, const ICollider& a, const MoveSettings& ms, const CollisionSettings& cs, CollisionInfo& ci) const
+	bool BoxPhysicsSystem::MoveCollider(const CollisionSettings& cs, CollisionInfo& ci) const
 	{
+		//Important to keep in mind is that the collider can be at an offset from cs.oldPos
+		//All calcuations are done with the collider in WorldSpace!
+
 		ci = CollisionInfo{}; //ensure no existing data
 
-		const ICollisionShape& shapeA = a.GetShape();
+		//Shape must be of type Box
+		const ICollisionShape& shapeA = cs.collider.GetShape();
 		if (shapeA.GetType() != ColliderShapeType::Box)
-			return false; //only BoxShape supported
+			return false;
 
+		//Calculate WorldSpace collider box and region
 		const BoxShape& boxA = static_cast<const BoxShape&>(shapeA);
-		BoxShape worldBoxA = boxA.Translated(oldPos);
-		const auto& propsA = a.GetProperties();
-		const Region& regionA = worldBoxA.GetRegion();
-		glm::vec2 worldLeftTopA = glm::vec2(regionA.x, regionA.y); //leftTop pos of the collider in worldSpace
+		BoxShape worldBoxA = boxA.Translated(cs.oldPos);
+		const auto& propsA = cs.collider.GetProperties();
+		const Region& worldCollRegionA = worldBoxA.GetRegion();
+		glm::vec2 worldCollOldLeftTopA = glm::vec2(worldCollRegionA.x, worldCollRegionA.y); //leftTop pos of the collider in worldSpace
 
-		const float dt = ms.dt;
-		glm::vec2 vel = ms.vel;
+		const float dt = cs.dt;
+		glm::vec2 vel = cs.vel;
 
-		if (ms.applyGravity)
+		if (cs.applyGravity)
 			vel.y += m_Gravity * dt;
 
 		VelInfo vi{ GetVelInfo(vel) };
 		ci.velOut = vel;
 
-		glm::vec2 endPos{
-			worldLeftTopA.x + vel.x * m_VelScale * dt,
-			worldLeftTopA.y + vel.y * m_VelScale * dt,
+		//Integrate the final leftTop WorldSpace position of the collider
+		glm::vec2 worldCollNewLeftTopA{
+			worldCollOldLeftTopA.x + vel.x * m_VelScale * dt,
+			worldCollOldLeftTopA.y + vel.y * m_VelScale * dt,
 		};
 
-		glm::vec2 offset{ endPos.x - oldPos.x, endPos.y - oldPos.y };
+		glm::vec2 offset{ worldCollNewLeftTopA.x - worldCollOldLeftTopA.x, worldCollNewLeftTopA.y - worldCollOldLeftTopA.y };
 		glm::vec2 absOffset{ std::abs(offset.x), std::abs(offset.y) };
 
+		//Calculate the collder when only moved on the X and only moved on the Y
+		//Collision in X and Y is split up based on these BoxShapes
 		BoxShape newBoxShapeX{ worldBoxA.Translated(glm::vec2(offset.x, 0.f)) };
 		BoxShape newBoxShapeY{ worldBoxA.Translated(glm::vec2(0.f, offset.y)) };
 		Region newRegionX{ newBoxShapeX.GetRegion() };
 		Region newRegionY{ newBoxShapeY.GetRegion() };
 
-		for (const StaticCollider& b : m_StaticColliders)
+		for (const StaticCollider& staticB : m_StaticColliders)
 		{
 			//Only check collision if layers and masks match
-			const auto& propsB = b.properties;
+			const auto& propsB = staticB.properties;
 			if (!((propsA.layer & propsB.mask) && (propsB.layer & propsA.mask)))
 				continue;
 
-			const ICollisionShape& shapeB = *b.shape;
-			const BoxShape& boxB = static_cast<const BoxShape&>(shapeB);
-			const Region& regionB = boxB.GetRegion();
+			//User can provide a function to filter collision directions based the current static collider
+			CollisionDir allowedCollDirs = cs.filterFunc(staticB, cs);
+
+			const BoxShape& worldBoxB = static_cast<const BoxShape&>(*staticB.shape);
+			const Region& worldCollRegionB = worldBoxB.GetRegion();
 
 			//Check X collision
-			if (cs.CheckX() && vi.InX() && newBoxShapeX.Intersects(boxB))
+			if (allowedCollDirs.X() && vi.InX() && newBoxShapeX.Intersects(worldBoxB))
 			{
-				if (cs.checkLeft && vi.left && newRegionX.Left() < regionB.Right()) //Colliding left
+				if (allowedCollDirs.left && vi.left && newRegionX.Left() < worldCollRegionB.Right()) //Colliding left
 				{
-					float lambda = (regionA.Left() - regionB.Right()) / absOffset.x;
+					float lambda = (worldCollRegionA.Left() - worldCollRegionB.Right()) / absOffset.x;
 					if (lambda < ci.left.lambda)
 					{
 						ci.collDir.left = true;
 						ci.left.lambda = lambda;
-						ci.left.collPos = regionB.Right();
-						ci.left.entryDist = regionB.Right() - newRegionX.Left();
+						ci.left.collPos = worldCollRegionB.Right();
+						ci.left.entryDist = worldCollRegionB.Right() - newRegionX.Left();
 					}
 				}
-				else if (cs.checkRight && vi.right && regionB.Left() < newRegionX.Right()) //Colliding Right
+				else if (allowedCollDirs.right && vi.right && worldCollRegionB.Left() < newRegionX.Right()) //Colliding Right
 				{
-					float lambda = (regionB.Left() - regionA.Right()) / absOffset.x;
+					float lambda = (worldCollRegionB.Left() - worldCollRegionA.Right()) / absOffset.x;
 					if (lambda < ci.right.lambda)
 					{
 						ci.collDir.right = true;
 						ci.right.lambda = lambda;
-						ci.right.collPos = regionB.Left();
-						ci.right.entryDist = newRegionX.Right() - regionB.Left();
+						ci.right.collPos = worldCollRegionB.Left();
+						ci.right.entryDist = newRegionX.Right() - worldCollRegionB.Left();
 					}
 				}
 			}
 
 			//Check Y collision
-			if (cs.CheckY() && vi.InY() && newBoxShapeY.Intersects(boxB))
+			if (allowedCollDirs.Y() && vi.InY() && newBoxShapeY.Intersects(worldBoxB))
 			{
-				if (cs.checkUp && vi.up && newRegionY.Top() < regionB.Bottom()) //Colliding up
+				if (allowedCollDirs.up && vi.up && newRegionY.Top() < worldCollRegionB.Bottom()) //Colliding up
 				{
-					float lambda = (regionA.Top() - regionB.Bottom()) / absOffset.y;
+					float lambda = (worldCollRegionA.Top() - worldCollRegionB.Bottom()) / absOffset.y;
 					if (lambda < ci.up.lambda)
 					{
 						ci.collDir.up = true;
 						ci.up.lambda = lambda;
-						ci.up.collPos = regionB.Bottom();
-						ci.up.entryDist = regionB.Bottom() - newRegionY.Top();
+						ci.up.collPos = worldCollRegionB.Bottom();
+						ci.up.entryDist = worldCollRegionB.Bottom() - newRegionY.Top();
 					}
 				}
-				else if (cs.checkDown && vi.down && regionB.Top() < newRegionY.Bottom()) //Colliding down
+				else if (allowedCollDirs.down && vi.down && worldCollRegionB.Top() < newRegionY.Bottom()) //Colliding down
 				{
-					float lambda = (regionB.Top() - regionA.Bottom()) / absOffset.y;
+					float lambda = (worldCollRegionB.Top() - worldCollRegionA.Bottom()) / absOffset.y;
 					if (lambda < ci.down.lambda)
 					{
 						ci.collDir.down = true;
 						ci.down.lambda = lambda;
-						ci.down.collPos = regionB.Top();
-						ci.down.entryDist = newRegionY.Bottom() - regionB.Top();
+						ci.down.collPos = worldCollRegionB.Top();
+						ci.down.entryDist = newRegionY.Bottom() - worldCollRegionB.Top();
 					}
 				}
 			}
 		}
 
 		if (!ci.Collided())
-			ci.newPos = endPos;
+			ci.newPos = worldCollNewLeftTopA;
 		else if (ci.collDir.X() && !ci.collDir.Y()) //Collided in X only
 		{
-			float x = ci.collDir.right ? ci.right.collPos - regionA.width : ci.left.collPos;
-			ci.newPos = glm::vec2{ x, endPos.y };
+			float x = ci.collDir.right ? ci.right.collPos - worldCollRegionA.width : ci.left.collPos;
+			ci.newPos = glm::vec2{ x, worldCollNewLeftTopA.y };
 			ci.velOut.x = 0.f;
 		}
 		else if (ci.collDir.Y() && !ci.collDir.X()) //Collided in Y only
 		{
-			float y = ci.collDir.up ? ci.up.collPos : ci.down.collPos - regionA.height;
-			ci.newPos = glm::vec2{ endPos.x, y };
+			float y = ci.collDir.up ? ci.up.collPos : ci.down.collPos - worldCollRegionA.height;
+			ci.newPos = glm::vec2{ worldCollNewLeftTopA.x, y };
 			ci.velOut.y = 0.f;
 		}
 		else if (vi.LeftDown() && ci.collDir.LeftBottom()) //LeftBottom concave collision
 		{
-			ci.newPos = glm::vec2{ ci.left.collPos, ci.down.collPos - regionA.height };
+			ci.newPos = glm::vec2{ ci.left.collPos, ci.down.collPos - worldCollRegionA.height };
 			ci.velOut = glm::vec2{};
 		}
 		else if (vi.LeftUp() && ci.collDir.LeftTop()) //LeftTop concave collision
@@ -207,12 +217,12 @@ namespace JRE
 		}
 		else if (vi.RightUp() && ci.collDir.RightTop()) //RightTop concave collision
 		{
-			ci.newPos = glm::vec2{ ci.right.collPos - regionA.width, ci.up.collPos };
+			ci.newPos = glm::vec2{ ci.right.collPos - worldCollRegionA.width, ci.up.collPos };
 			ci.velOut = glm::vec2{};
 		}
 		else if (vi.RightDown() && ci.collDir.RightBottom()) //RightBottom concave collision
 		{
-			ci.newPos = glm::vec2{ ci.right.collPos - regionA.width, ci.down.collPos - regionA.height };
+			ci.newPos = glm::vec2{ ci.right.collPos - worldCollRegionA.width, ci.down.collPos - worldCollRegionA.height };
 			ci.velOut = glm::vec2{};
 		}
 		else //convex corner collision
@@ -222,16 +232,16 @@ namespace JRE
 			float lambdaY{ (vi.up) ? ci.up.lambda : ci.down.lambda };
 			if (lambdaY <= lambdaX) //Y wins when equal to X
 			{
-				float y = ci.collDir.up ? ci.up.collPos : ci.down.collPos - regionA.height;
-				ci.newPos = glm::vec2{ endPos.x, y };
+				float y = ci.collDir.up ? ci.up.collPos : ci.down.collPos - worldCollRegionA.height;
+				ci.newPos = glm::vec2{ worldCollNewLeftTopA.x, y };
 				ci.collDir.left = false;
 				ci.collDir.right = false;
 				ci.velOut.y = 0.f;
 			}
 			else //lambdaX > lambdaY
 			{
-				float x = ci.collDir.right ? ci.right.collPos - regionA.width : ci.left.collPos;
-				ci.newPos = glm::vec2{ x, endPos.y };
+				float x = ci.collDir.right ? ci.right.collPos - worldCollRegionA.width : ci.left.collPos;
+				ci.newPos = glm::vec2{ x, worldCollNewLeftTopA.y };
 				ci.collDir.up = false;
 				ci.collDir.down = false;
 				ci.velOut.x = 0.f;

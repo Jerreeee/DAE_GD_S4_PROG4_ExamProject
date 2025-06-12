@@ -45,6 +45,7 @@ namespace BubbleBobble
 		std::vector<SpritePos> m_SpritePositions{};
 		std::vector<JRE::AssetRef<JRE::Sprite>> m_Sprites{};
 		uint32_t m_StaticCollisionGruop{};
+		uint32_t m_PlatformCollisionGroup{};
 		std::vector<ColliderInfo> m_CollisionRects{};
 	};
 }

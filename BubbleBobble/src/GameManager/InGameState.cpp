@@ -46,7 +46,7 @@ namespace BubbleBobble
 		sm.GetCurrentScene().Add(std::move(pPlayer));
 		SetPlayerToSpawnPos();
 
-		CreateEnemies();
+		//CreateEnemies();
 	}
 	GameState InGameState::Update()
 	{
