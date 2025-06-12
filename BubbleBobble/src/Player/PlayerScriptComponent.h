@@ -6,6 +6,7 @@
 #include "JREngine/Asset/Asset.h"
 #include "JREngine/Physics/BoxPhysicsSystem.h"
 #include "JREngine/Core/Event.h"
+#include "JREngine/Physics/Box2DColliderComponent.h"
 
 #include "Components/HealthComponent.h"
 #include "Player/PlayerUtils.h"
@@ -16,23 +17,35 @@ namespace JRE
 	class SpriteAnimatorComponent;
 	class SpriteRendererComponent;
 	class Box2DColliderComponent;
+	class SpriteAnimationClip;
 }
 
 namespace BubbleBobble
 {
+	namespace Events
+	{
+		struct PlayerDied
+		{
+			static const JRE::EventID ID{ JRE::HashEventID("PlayerDied") };
+			struct Args : public JRE::EventArgs {};
+		};
+	}
+
 	class TileMapComponent;
 	class PlayerScriptComponent final : public JRE::ComponentBase, public JRE::IObserver
 	{
 	public:
 		PlayerScriptComponent(JRE::GameObject& gameObject);
 
-		virtual void Update() override {};
+		virtual void Update() override;
 		virtual void FixedUpdate() override;
 
 		virtual void OnNotify(JRE::EventInfo& event) override;
 
 		void Move(int direction);
 		void Jump();
+
+		JRE::Event OnPlayerDied{};
 	private:
 		struct Input
 		{
@@ -40,15 +53,35 @@ namespace BubbleBobble
 			int moveDir;
 		};
 
+		enum class State
+		{
+			Mortal, Immortal, Stunned, Death
+		};
+
+		enum class AnimState
+		{
+			Moving, Shoot, Death
+		};
+
+		void MoveCollider();
+
 		JRE::SpriteRendererComponent* m_pSpriteRendererCmp{ nullptr };
 		JRE::SpriteAnimatorComponent* m_pSpriteAnimatorCmp{ nullptr };
 		JRE::Box2DColliderComponent* m_pBox2DColliderCmp{ nullptr };
 		HealthComponent* m_pHealthCmp{ nullptr };
+		JRE::AssetRef<JRE::SpriteAnimationClip> m_pShootClipRef{ nullptr };
+		JRE::AssetRef<JRE::SpriteAnimationClip> m_pDeathClipRef{ nullptr };
 
+		float m_ImmortalTimer{};
+		float m_ImmortalTimerDefault{ 3.f };
+
+		State m_State{ State::Mortal };
+		AnimState m_AnimState{ AnimState::Moving };
 		float m_Speed{ 15.f };
 		float m_JumpForce{ 75.f };
 		glm::vec2 m_Vel{};
 		Input m_Input{};
 		int m_FacingDir{};
+		JRE::CollisionInfo m_CollInfo{};
 	};
 }

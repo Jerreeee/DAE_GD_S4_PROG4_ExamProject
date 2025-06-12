@@ -30,4 +30,9 @@ namespace JRE
 		auto it = m_Clips.find(name);
 		m_pActiveClip = it != m_Clips.end() ? &it->second : nullptr;
 	}
+	AssetRef<SpriteAnimationClip> SpriteAnimatorComponent::GetClip(const std::string& name)
+	{
+		auto it = m_Clips.find(name);
+		return it != m_Clips.end() ? it->second : nullptr;
+	}
 }

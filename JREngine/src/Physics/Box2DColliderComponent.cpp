@@ -21,7 +21,7 @@ namespace JRE
 	}
 	void Box2DColliderComponent::OnCollisionWith(const ICollider& other)
 	{
-		EventInfo e{ CreateEvent<Box2DCollisionEvent>(*this, other) };
+		EventInfo e{ CreateEvent<Events::Box2DCollisionEvent>(*this, other) };
 		OnCollisionEvent.Notify(e);
 	}
 }

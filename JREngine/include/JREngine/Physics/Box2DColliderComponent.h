@@ -7,17 +7,20 @@
 namespace JRE
 {
 	class Box2DColliderComponent;
-	struct Box2DCollisionEvent
+	namespace Events
 	{
-		static constexpr EventID ID = HashEventID("Box2DCollision");
-
-		struct Args : EventArgs
+		struct Box2DCollisionEvent
 		{
-			Args(const Box2DColliderComponent& _box2d, const ICollider& _other) : box2D{ _box2d }, other { _other } {}
-			const Box2DColliderComponent& box2D;
-			const ICollider& other;
+			static constexpr EventID ID = HashEventID("Box2DCollision");
+
+			struct Args : EventArgs
+			{
+				Args(const Box2DColliderComponent& _box2d, const ICollider& _other) : box2D{ _box2d }, other{ _other } {}
+				const Box2DColliderComponent& box2D;
+				const ICollider& other;
+			};
 		};
-	};
+	}
 
 	class Box2DColliderComponent final : public ComponentBase, public ICollider
 	{

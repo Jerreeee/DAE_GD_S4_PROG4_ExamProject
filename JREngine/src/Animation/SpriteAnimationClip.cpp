@@ -21,28 +21,28 @@ namespace JRE
 			m_AccTime -= m_TimePerFrame;
 			m_CurFrameIdx += m_PlaybackDirection;
 
-			if (m_IsPong) //reverse direction at ends
+			if (m_IsPong) //Reverse direction at end
 			{
 				if (m_CurFrameIdx >= m_Sprites.size())
 				{
 					m_CurFrameIdx = m_Sprites.size() - 2;
 					m_PlaybackDirection = -1;
-					EventInfo e = CreateEvent<Events::EndOfClipEvent>();
+					EventInfo e = CreateEvent<Events::EndOfClipEvent>(this);
 					OnEndOfClipEvent.Notify(e);
 				}
 				else if (m_CurFrameIdx < 0)
 				{
 					m_CurFrameIdx = 1;
 					m_PlaybackDirection = 1;
-					EventInfo e = CreateEvent<Events::EndOfClipEvent>();
+					EventInfo e = CreateEvent<Events::EndOfClipEvent>(this);
 					OnEndOfClipEvent.Notify(e);
 				}
 			}
-			else //loop around
+			else //Loop around
 			{
 				if (m_CurFrameIdx >= m_Sprites.size())
 				{
-					EventInfo e = CreateEvent<Events::EndOfClipEvent>();
+					EventInfo e = CreateEvent<Events::EndOfClipEvent>(this);
 					OnEndOfClipEvent.Notify(e);
 					ResetToStart();
 				}

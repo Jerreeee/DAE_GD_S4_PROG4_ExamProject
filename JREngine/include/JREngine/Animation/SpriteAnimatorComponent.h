@@ -16,6 +16,7 @@ namespace JRE
 
 		void AddClip(const std::string& name, AssetRef<SpriteAnimationClip> clip, bool setActive = false);
 		void SetActiveClip(const std::string& name);
+		AssetRef<SpriteAnimationClip> GetClip(const std::string& name);
 	private:
 		SpriteRendererComponent* m_pSpriteRendererComponent{ nullptr };
 		AssetRef<SpriteAnimationClip>* m_pActiveClip{ nullptr };

@@ -45,8 +45,8 @@ namespace BubbleBobble
 		m_Vel = m_CollInfo.velOut;
 
 		//Flip sprites based on movement direction
-		if (m_FacingDir == m_Input.moveDir * -1)
-			m_FacingDir *= -1;
+		if (m_Input.moveDir != 0)
+			m_FacingDir = m_Input.moveDir;
 		m_pSpriteRendererCmp->SetFlipX(m_FacingDir == -1);
 
 		//bool shoot = im.IsBindingActive(*m_pActionMap, "Shoot");
@@ -56,8 +56,6 @@ namespace BubbleBobble
 		if (onGround && m_Input.pressedJump)
 			m_Vel.y = -m_JumpForce;
 
-		if (m_Input.moveDir != 0)
-			m_FacingDir = m_Input.moveDir;
 		m_Input = Input{}; //Consume all input
 	}
 

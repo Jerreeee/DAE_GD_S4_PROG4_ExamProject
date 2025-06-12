@@ -6,6 +6,7 @@
 
 namespace JRE
 {
+	class SpriteAnimationClip;
 	namespace Events
 	{
 		struct EndOfClipEvent
@@ -13,7 +14,8 @@ namespace JRE
 			static const EventID ID{ HashEventID("EndOfClip") };
 			struct Args : public EventArgs
 			{
-				Args() = default;
+				Args(SpriteAnimationClip* _clip) : clip{ _clip } {}
+				SpriteAnimationClip* clip;
 			};
 		};
 	}

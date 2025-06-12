@@ -46,8 +46,8 @@ namespace BubbleBobble
 			.SetActionMapIdx(actionMapIdx)
 			.Build(pPlayer);
 
-		auto p1HealthCmp = pPlayer->GetComponent<HealthComponent>();
-		p1HealthCmp->OnHealthChanged.AddObserver(this);
+		auto playerScriptCmp = pPlayer->GetComponent<PlayerScriptComponent>();
+		playerScriptCmp->OnPlayerDied.AddObserver(this);
 
 		UIBuilder(scene)
 			.SetPlayer1(*pPlayer)
@@ -69,8 +69,7 @@ namespace BubbleBobble
 	{
 		switch (event.GetID())
 		{
-		case HealthChanged::ID:
-
+		case Events::PlayerDied::ID:
 		{
 			SetPlayerToSpawnPos();
 			break;

@@ -28,7 +28,7 @@ namespace BubbleBobble
 		if (m_Health <= 0) return;
 
 		m_Health -= amount;
-		JRE::EventInfo e{ JRE::CreateEvent<HealthChanged>(amount, m_Health) };
+		JRE::EventInfo e{ JRE::CreateEvent<Events::HealthChanged>(amount, m_Health) };
 		OnHealthChanged.Notify(e);
 	}
 
@@ -55,9 +55,9 @@ namespace BubbleBobble
 	{
 		switch (event.GetID())
 		{
-		case HealthChanged::ID:
+		case Events::HealthChanged::ID:
 		{
-			auto& args = event.GetArgs<HealthChanged>();
+			auto& args = event.GetArgs<Events::HealthChanged>();
 			m_Nr = args.newHealth;
 			break;
 		}

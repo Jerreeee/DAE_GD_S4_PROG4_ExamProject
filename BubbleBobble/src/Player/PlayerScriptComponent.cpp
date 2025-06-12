@@ -2,7 +2,6 @@
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Animation/SpriteAnimatorComponent.h"
 #include "JREngine/Rendering/SpriteRendererComponent.h"
-#include "JREngine/Physics/Box2DColliderComponent.h"
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Scene/Scene.h"
 
@@ -26,11 +25,86 @@ namespace BubbleBobble
 		assert(m_pBox2DColliderCmp && "Player doesnt have Box2DColliderComponent");
 		m_pHealthCmp = GetGameObject().GetComponent<HealthComponent>();
 		assert(m_pHealthCmp && "Player doesnt have HealthComponent");
-
+		m_pHealthCmp->OnHealthChanged.AddObserver(this);
 		m_pBox2DColliderCmp->OnCollisionEvent.AddObserver(this);
+
+		m_pShootClipRef = m_pSpriteAnimatorCmp->GetClip("Shoot");
+		m_pShootClipRef->OnEndOfClipEvent.AddObserver(this);
+		m_pDeathClipRef = m_pSpriteAnimatorCmp->GetClip("Death");
+		m_pDeathClipRef->OnEndOfClipEvent.AddObserver(this);
+	}
+
+	void PlayerScriptComponent::Update()
+	{
+		float dt = Timer::GetInstance().GetDeltaTime();
+
+		switch (m_State)
+		{
+		case State::Immortal:
+			m_ImmortalTimer -= dt;
+			if (m_ImmortalTimer < 0.f)
+				m_State = State::Mortal;
+			break;
+		}
 	}
 
 	void PlayerScriptComponent::FixedUpdate()
+	{
+		switch (m_State)
+		{
+		case State::Mortal:
+		case State::Immortal:
+			MoveCollider();
+			break;
+		}
+
+		m_Input = Input{}; //Consume all input
+	}
+	void PlayerScriptComponent::OnNotify(JRE::EventInfo& event)
+	{
+		switch (event.GetID())
+		{
+		case JRE::Events::Box2DCollisionEvent::ID:
+		{
+			if (m_State != State::Mortal)
+				break;
+			auto& args = event.GetArgs<JRE::Events::Box2DCollisionEvent>();
+			if (args.other.GetProperties().layer & CollisionLayer::Enemy)
+			{
+				m_pHealthCmp->TakeDamage(1);
+				m_State = State::Death;
+				m_AnimState = AnimState::Death;
+				m_pSpriteAnimatorCmp->SetActiveClip("Death");
+			}
+			break;
+		}
+		case JRE::Events::EndOfClipEvent::ID:
+		{
+			auto& args = event.GetArgs<JRE::Events::EndOfClipEvent>();
+			if (args.clip == m_pDeathClipRef.get() && m_State == State::Death)
+			{
+				EventInfo e = CreateEvent<Events::PlayerDied>();
+				OnPlayerDied.Notify(e);
+				m_State = State::Immortal;
+				m_AnimState = AnimState::Moving;
+				m_ImmortalTimer = m_ImmortalTimerDefault;
+			}
+			else if (args.clip == m_pShootClipRef.get())
+				m_AnimState = AnimState::Moving;
+			break;
+		}
+		}
+	}
+	void PlayerScriptComponent::Move(int direction)
+	{
+		m_Input.moveDir = std::clamp(direction, -1, 1);
+	}
+	void PlayerScriptComponent::Jump()
+	{
+		if (!m_Input.pressedJump)
+			m_Input.pressedJump = true;
+	}
+	void PlayerScriptComponent::MoveCollider()
 	{
 		glm::vec3 oldPos = GetGameObject().GetWorldPosition();
 
@@ -45,53 +119,26 @@ namespace BubbleBobble
 
 		//Check collision
 		BoxPhysicsSystem& physicsSystem = static_cast<BoxPhysicsSystem&>(ServiceLocator::GetPhysicsSystem());
-		CollisionInfo collInfo{};
-		physicsSystem.MoveCollider(cs, collInfo);
-		GetGameObject().SetWorldPosition(collInfo.newPos.x, collInfo.newPos.y);
-		m_Vel = collInfo.velOut;
-
-		if (m_Input.moveDir)
-			m_pSpriteAnimatorCmp->SetActiveClip("Run");
-		else
-			m_pSpriteAnimatorCmp->SetActiveClip("Idle");
-
-		//Flip sprites based on movement direction
-		if (m_FacingDir == m_Input.moveDir * -1)
-			m_FacingDir *= -1;
-		m_pSpriteRendererCmp->SetFlipX(m_FacingDir == -1);
-
-		//bool shoot = im.IsBindingActive(*m_pActionMap, "Shoot");
-		//if (shoot);
-		//	return State::Shooting;
-
-		bool onGround = collInfo.collDir.down;
-		if (onGround && m_Input.pressedJump)
-			m_Vel.y = -m_JumpForce;
+		physicsSystem.MoveCollider(cs, m_CollInfo);
+		GetGameObject().SetWorldPosition(m_CollInfo.newPos.x, m_CollInfo.newPos.y);
+		m_Vel = m_CollInfo.velOut;
 
 		if (m_Input.moveDir != 0)
 			m_FacingDir = m_Input.moveDir;
-		m_Input = Input{}; //Consume all input
-	}
-	void PlayerScriptComponent::OnNotify(JRE::EventInfo& event)
-	{
-		switch (event.GetID())
+
+		if (m_AnimState == AnimState::Moving)
 		{
-		case Box2DCollisionEvent::ID:
-		{
-			auto& args = event.GetArgs<Box2DCollisionEvent>();
-			if (args.other.GetProperties().layer & CollisionLayer::Enemy)
-				m_pHealthCmp->TakeDamage(1);
-			break;
+			if (m_Input.moveDir)
+				m_pSpriteAnimatorCmp->SetActiveClip("Run");
+			else
+				m_pSpriteAnimatorCmp->SetActiveClip("Idle");
+
+			//Flip sprites based on movement direction
+			m_pSpriteRendererCmp->SetFlipX(m_FacingDir == -1);
 		}
-		}
-	}
-	void PlayerScriptComponent::Move(int direction)
-	{
-		m_Input.moveDir = std::clamp(direction, -1, 1);
-	}
-	void PlayerScriptComponent::Jump()
-	{
-		if (!m_Input.pressedJump)
-			m_Input.pressedJump = true;
+
+		bool onGround = m_CollInfo.collDir.down;
+		if (onGround && m_Input.pressedJump)
+			m_Vel.y = -m_JumpForce;
 	}
 }

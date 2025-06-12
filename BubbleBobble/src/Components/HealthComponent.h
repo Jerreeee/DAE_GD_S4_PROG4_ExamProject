@@ -12,18 +12,22 @@ namespace JRE
 
 namespace BubbleBobble
 {
-	struct HealthChanged
+	namespace Events
 	{
-		static const JRE::EventID ID{ JRE::HashEventID("PlayerDied") };
-		struct Args : public JRE::EventArgs
+		struct HealthChanged
 		{
-			Args(int _amount, int _newHealth)
-				: amount{_amount }, newHealth{_newHealth}
-			{}
-			int amount;
-			int newHealth;
+			static const JRE::EventID ID{ JRE::HashEventID("HealthChanged") };
+			struct Args : public JRE::EventArgs
+			{
+				Args(int _amount, int _newHealth)
+					: amount{ _amount }, newHealth{ _newHealth }
+				{
+				}
+				int amount;
+				int newHealth;
+			};
 		};
-	};
+	}
 
 	class HealthComponent final : public JRE::ComponentBase
 	{
