@@ -10,6 +10,8 @@
 #include "JREngine/Animation/SpriteAnimatorComponent.h"
 #include "JREngine/Rendering/SpriteRendererComponent.h"
 #include "JREngine/Rendering/TextRendererComponent.h"
+#include "JREngine/Asset/SoftAssetRef.h"
+#include "JREngine/Asset/Font.h"
 
 #include "Assets/AnimsDataImporter.h"
 #include "Utils.h"

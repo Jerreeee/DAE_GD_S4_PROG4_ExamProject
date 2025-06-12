@@ -7,6 +7,7 @@
 #include "JREngine/Physics/BoxPhysicsSystem.h"
 #include "JREngine/Core/Event.h"
 
+#include "Components/HealthComponent.h"
 #include "Player/PlayerUtils.h"
 
 namespace JRE
@@ -19,12 +20,6 @@ namespace JRE
 
 namespace BubbleBobble
 {
-	struct PlayerDied
-	{
-		static const JRE::EventID ID{ JRE::HashEventID("PlayerDied") };
-		struct Args : public JRE::EventArgs {};
-	};
-
 	class TileMapComponent;
 	class PlayerScriptComponent final : public JRE::ComponentBase, public JRE::IObserver
 	{
@@ -38,8 +33,6 @@ namespace BubbleBobble
 
 		void Move(int direction);
 		void Jump();
-
-		JRE::Event OnPlayerDiedEvent{};
 	private:
 		struct Input
 		{
@@ -50,6 +43,7 @@ namespace BubbleBobble
 		JRE::SpriteRendererComponent* m_pSpriteRendererCmp{ nullptr };
 		JRE::SpriteAnimatorComponent* m_pSpriteAnimatorCmp{ nullptr };
 		JRE::Box2DColliderComponent* m_pBox2DColliderCmp{ nullptr };
+		HealthComponent* m_pHealthCmp{ nullptr };
 
 		float m_Speed{ 15.f };
 		float m_JumpForce{ 75.f };

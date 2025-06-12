@@ -34,7 +34,7 @@ namespace BubbleBobble
 
 		const int centerX = 384;
 		SDL_Color color = { 255, 0, 0, 255 };
-		BuilderHelpers::AddCenteredTxt(m_Scene, "NOW IT IS BEGINNING OF A", fontSoftRef, centerX, 140.f, color);
+		BuilderHelpers::AddCenteredTxt(m_Scene, "NOW IT IS THE BEGINNING OF A", fontSoftRef, centerX, 140.f, color);
 		BuilderHelpers::AddCenteredTxt(m_Scene, "FANTASTIC STORY!! LETS MAKE A", fontSoftRef, centerX, 200.f, color);
 		BuilderHelpers::AddCenteredTxt(m_Scene, "JOURNEY TO THE CAVE OF MONSTERS!", fontSoftRef, centerX, 260.f, color);
 		BuilderHelpers::AddCenteredTxt(m_Scene, "GOOD LUCK!", fontSoftRef, centerX, 320.f, color);

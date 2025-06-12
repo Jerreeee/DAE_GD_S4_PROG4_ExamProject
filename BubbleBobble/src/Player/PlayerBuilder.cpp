@@ -8,6 +8,7 @@
 
 #include "Utils.h"
 #include "CollisionLayers.h"
+#include "Components/HealthComponent.h"
 #include "Player/PlayerScriptComponent.h"
 #include "Player/PlayerController.h"
 #include "Player/PlayerBuilder.h"
@@ -41,6 +42,9 @@ namespace BubbleBobble
         box2DColliderCmp->m_Shape.height = 46.f;
         box2DColliderCmp->m_Properties.layer = CollisionLayer::Friendly;
         box2DColliderCmp->m_Properties.mask = CollisionMask::Friendly;
+        auto healthCmp = player->AddComponent<HealthComponent>();
+        healthCmp->SetMaxHealth(4);
+        healthCmp->SetHealth(4);
         player->AddComponent<PlayerScriptComponent>();
         player->AddComponent<PlayerControllerComponent>(static_cast<size_t>(m_ActionMapIdx));
 	}

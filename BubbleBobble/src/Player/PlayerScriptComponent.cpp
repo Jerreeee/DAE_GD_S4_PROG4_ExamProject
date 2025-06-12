@@ -24,6 +24,8 @@ namespace BubbleBobble
 		assert(m_pSpriteAnimatorCmp && "Player doesnt have SpriteAnimatorComponent");
 		m_pBox2DColliderCmp = GetGameObject().GetComponent<Box2DColliderComponent>();
 		assert(m_pBox2DColliderCmp && "Player doesnt have Box2DColliderComponent");
+		m_pHealthCmp = GetGameObject().GetComponent<HealthComponent>();
+		assert(m_pHealthCmp && "Player doesnt have HealthComponent");
 
 		m_pBox2DColliderCmp->OnCollisionEvent.AddObserver(this);
 	}
@@ -78,10 +80,7 @@ namespace BubbleBobble
 		{
 			auto& args = event.GetArgs<Box2DCollisionEvent>();
 			if (args.other.GetProperties().layer & CollisionLayer::Enemy)
-			{
-				EventInfo e{ CreateEvent<PlayerDied>() };
-				OnPlayerDiedEvent.Notify(e);
-			}
+				m_pHealthCmp->TakeDamage(1);
 			break;
 		}
 		}

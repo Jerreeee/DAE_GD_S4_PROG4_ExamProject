@@ -47,7 +47,7 @@ namespace JRE
             return m_Asset;
         }
 
-        // smart pointer style API
+        //Smart pointer style API
         explicit operator bool() const { return Get() != nullptr; }
 
         T* operator->() { return Get().get(); }

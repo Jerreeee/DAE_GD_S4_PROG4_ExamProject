@@ -1,22 +1,17 @@
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Asset/ResourceManager.h"
 #include "JREngine/Audio/ISoundSystem.h"
-#include "Events.h"
+#include "JREngine/Rendering/SDLRenderer.h"
+
 #include "Components/HealthComponent.h"
+
+using namespace JRE;
 
 namespace BubbleBobble
 {
-	HealthComponent::HealthComponent(JRE::GameObject& gameObject, int maxHealth) :
-		JRE::ComponentBase(gameObject),
-		m_Health{ maxHealth },
-		m_MaxHealth{ maxHealth }
+	HealthComponent::HealthComponent(JRE::GameObject& gameObjeect)
+		: ComponentBase(gameObjeect)
 	{
-	}
-	HealthComponent::~HealthComponent() = default;
-
-	void HealthComponent::SetHitSound(const JRE::SoftAssetRef<JRE::ISoundClip>& hitSound)
-	{
-		m_HitSound = hitSound;
 	}
 	void HealthComponent::SetHealth(int health)
 	{
@@ -30,13 +25,46 @@ namespace BubbleBobble
 	}
 	void HealthComponent::TakeDamage(int amount)
 	{
+		if (m_Health <= 0) return;
+
 		m_Health -= amount;
-		//JRE::EventInfo e{ JRE::CreateEvent<Event::PlayerDamaged>(amount, m_Health) };
-		//OnDamageEvent.Notify(e);
+		JRE::EventInfo e{ JRE::CreateEvent<HealthChanged>(amount, m_Health) };
+		OnHealthChanged.Notify(e);
+	}
 
-		if (!m_HitSound.IsLoaded())
-			m_HitSound.Get();
+	HealthUIComponent::HealthUIComponent(JRE::GameObject& gameObject, const HealthComponent& healthCmp)
+		: RendererComponentBase(gameObject)
+		, m_pHealthCmp{ &healthCmp }
+		, m_Nr{ m_pHealthCmp->GetHealth() }
+	{
+		m_pHealthCmp->OnHealthChanged.AddObserver(this);
+	}
+	void HealthUIComponent::Render() const
+	{
+		if (!m_Sprite) return;
 
-		JRE::ServiceLocator::GetSoundSystem().Play(m_HitSound.Get());
+		const Region& region = m_Sprite->GetSrcRegion();
+		glm::vec2 pos = glm::vec2(GetGameObject().GetWorldPosition());
+		for (int i{}; i < m_Nr; ++i)
+		{
+			float x = pos.x + i * region.width;
+			SDLRenderer::GetInstance().RenderSprite(m_Sprite.Get(), x, pos.y);
+		}
+	}
+	void HealthUIComponent::OnNotify(JRE::EventInfo& event)
+	{
+		switch (event.GetID())
+		{
+		case HealthChanged::ID:
+		{
+			auto& args = event.GetArgs<HealthChanged>();
+			m_Nr = args.newHealth;
+			break;
+		}
+		}
+	}
+	void HealthUIComponent::SetSprite(JRE::SoftAssetRef<JRE::Sprite> sprite)
+	{
+		m_Sprite = sprite;
 	}
 }

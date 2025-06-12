@@ -28,6 +28,8 @@ set(SOURCE_FILES
     "SceneBuilders/LoadingScreenBuilder.cpp"
     "SceneBuilders/LevelBuilder.h"
     "SceneBuilders/LevelBuilder.cpp"
+    "SceneBuilders/UIBuilder.h"
+    "SceneBuilders/UIBuilder.cpp"
 
     "TileMap/TileMapComponent.h"
     "TileMap/TileMapComponent.cpp"
@@ -59,8 +61,6 @@ set(SOURCE_FILES
     "Enemies/Zenchan/ZenchanAIController.h"
     "Enemies/Zenchan/ZenchanAIController.cpp"
 
-    "Components/PlayerUIComponent.h"
-    "Components/PlayerUIComponent.cpp"
     "Components/ScoreComponent.h"
     "Components/ScoreComponent.cpp"
     "Components/HealthComponent.h"

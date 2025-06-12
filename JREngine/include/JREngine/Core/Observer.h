@@ -17,10 +17,10 @@ namespace JRE
 	class Observable final
 	{
 	public:
-		void AddObserver(IObserver* pObserver);
-		void RemoveObserver(IObserver* pObserver);
-		void NotifyObservers(EventInfo& event);
+		void AddObserver(IObserver* pObserver) const;
+		void RemoveObserver(IObserver* pObserver) const;
+		void NotifyObservers(EventInfo& event) const;
 	private:
-		std::vector<IObserver*> m_Observers{};
+		mutable std::vector<IObserver*> m_Observers{};
 	};
 }

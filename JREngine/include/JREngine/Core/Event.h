@@ -59,10 +59,10 @@ namespace JRE
 	class Event final
 	{
 	public:
-		void AddObserver(IObserver* pObserver);
-		void RemoveObserver(IObserver* pObserver);
-		void Notify(EventInfo& event);
+		void AddObserver(IObserver* pObserver) const;
+		void RemoveObserver(IObserver* pObserver) const;
+		void Notify(EventInfo& event) const;
 	private:
-		std::unique_ptr<Observable> m_Observable{ nullptr };
+		mutable std::unique_ptr<Observable> m_Observable{ nullptr };
 	};
 }

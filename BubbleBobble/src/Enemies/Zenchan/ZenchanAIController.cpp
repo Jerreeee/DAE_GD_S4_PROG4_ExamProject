@@ -39,7 +39,7 @@ namespace BubbleBobble
 
 		float horizontalDist = std::abs(dx);
 
-		float jumpXDistThreshold = 30.0f;
+		float jumpXDistThreshold = 20.0f;
 
 		const auto& coll = m_pZenchanScript->GetCollInfo();
 
@@ -59,8 +59,9 @@ namespace BubbleBobble
 		}
 		else
 		{
-			//move towards player in X
-			m_CurrentDirection = (dx > 0.0f) ? 1 : -1;
+			//move towards player in X, can only switch direction when on the ground
+			if (coll.collDir.down)
+				m_CurrentDirection = (dx > 0.0f) ? 1 : -1;
 			m_pZenchanScript->Move(m_CurrentDirection);
 
 			if (dy < 0.f && horizontalDist < jumpXDistThreshold && coll.collDir.down)

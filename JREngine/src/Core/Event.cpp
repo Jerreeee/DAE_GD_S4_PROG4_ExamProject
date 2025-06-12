@@ -20,18 +20,18 @@ namespace JRE
 		return *this;
 	}
 
-	void Event::AddObserver(IObserver* pObserver)
+	void Event::AddObserver(IObserver* pObserver) const
 	{
 		if (!m_Observable) //lazy heap allocation
 			m_Observable = std::make_unique<Observable>();
 		m_Observable->AddObserver(pObserver);
 	}
-	void Event::RemoveObserver(IObserver* pObserver)
+	void Event::RemoveObserver(IObserver* pObserver) const
 	{
 		if (m_Observable)
 			m_Observable->RemoveObserver(pObserver);
 	}
-	void Event::Notify(EventInfo& event)
+	void Event::Notify(EventInfo& event) const
 	{
 		if (m_Observable)
 			m_Observable->NotifyObservers(event);

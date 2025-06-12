@@ -2,6 +2,7 @@
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Input/InputManager.h"
 
+#include "SceneBuilders/UIBuilder.h"
 #include "Player/PlayerScriptComponent.h"
 #include "SceneBuilders/LevelBuilder.h"
 #include "GameManagerComponent.h"
@@ -36,6 +37,7 @@ namespace BubbleBobble
 
 		//Load 1st level
 		GoToNextLevel();
+		Scene& scene = sm.GetCurrentScene();
 
 		//Create player(s) for gameMode
 		auto pPlayer = std::make_unique<GameObject>("Player");
@@ -43,8 +45,14 @@ namespace BubbleBobble
 			.SetAnimationPath("Anims/P1.txt")
 			.SetActionMapIdx(actionMapIdx)
 			.Build(pPlayer);
-		auto playerScriptCmp = pPlayer->GetComponent<PlayerScriptComponent>();
-		playerScriptCmp->OnPlayerDiedEvent.AddObserver(this);
+
+		auto p1HealthCmp = pPlayer->GetComponent<HealthComponent>();
+		p1HealthCmp->OnHealthChanged.AddObserver(this);
+
+		UIBuilder(scene)
+			.SetPlayer1(*pPlayer)
+			.Build();
+
 		sm.GetCurrentScene().Add(std::move(pPlayer));
 		SetPlayerToSpawnPos();
 
@@ -61,7 +69,8 @@ namespace BubbleBobble
 	{
 		switch (event.GetID())
 		{
-		case PlayerDied::ID:
+		case HealthChanged::ID:
+
 		{
 			SetPlayerToSpawnPos();
 			break;
