@@ -37,8 +37,9 @@ namespace BubbleBobble
 
 				const BoxShape& colliderBox = static_cast<const BoxShape&>(*collider.shape);
 				const BoxShape& box = static_cast<const BoxShape&>(cs.collider.GetShape());
+				BoxShape worldBox = box.Translated(cs.oldPos);
 				bool isPlatform = collider.properties.layer & CollisionLayer::Platform;
-				bool alreadyCollidingY = box.Intersects(colliderBox);
+				bool alreadyCollidingY = worldBox.OverlapInY(colliderBox);
 				bool skipDownColl = isPlatform && alreadyCollidingY;
 
 				collDir.up = !isPlatform;

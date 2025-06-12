@@ -22,7 +22,6 @@ namespace BubbleBobble
 {
 	TileMap::TileMap()
 		: m_StaticCollisionGruop{ ServiceLocator::GetPhysicsSystem().GetFreeStaticGroup() }
-		, m_PlatformCollisionGroup{ ServiceLocator::GetPhysicsSystem().GetFreeStaticGroup() }
 	{
 	}
 	void TileMap::Render()
@@ -49,7 +48,6 @@ namespace BubbleBobble
 	}
 	void TileMap::SetCollisionRects(const std::vector<ColliderInfo>& rects)
 	{
-		ServiceLocator::GetPhysicsSystem().UnegisterStaticCollidersByGroup(m_PlatformCollisionGroup, false);
 		ServiceLocator::GetPhysicsSystem().UnegisterStaticCollidersByGroup(m_StaticCollisionGruop, false);
 
 		m_CollisionRects = rects;
@@ -57,7 +55,7 @@ namespace BubbleBobble
 		{
 			StaticCollider collider;
 			collider.shape = std::make_unique<BoxShape>(collisionRect.boxShape);
-			collider.group = collisionRect.isPlatform ? m_PlatformCollisionGroup : m_StaticCollisionGruop;
+			collider.group = m_StaticCollisionGruop;
 			collider.properties.layer = collisionRect.isPlatform ? CollisionLayer::Platform : CollisionLayer::StaticLevel;
 			collider.properties.mask = collisionRect.isPlatform ? CollisionMask::Platform : CollisionMask::StaticLevel;
 			collider.properties.isStatic = true;
