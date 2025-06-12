@@ -4,6 +4,7 @@
 #include "JREngine/Asset/TextureImporter.h"
 #include "JREngine/Animation/SpriteAnimatorComponent.h"
 
+#include "CollisionLayers.h"
 #include "Assets/AnimsDataImporter.h"
 #include "Utils.h"
 
@@ -32,5 +33,22 @@ namespace BubbleBobble::Utils
 			auto clipRef = CreateAnimationClipFromAnimData(animData);
 			comp.AddClip(animData.animName, clipRef);
 		}
+	}
+	JRE::CollisionDir PlatformCollisionDirFilterFunc(const StaticCollider& collider, const JRE::BoxPhysicsSystem::CollisionSettings& cs)
+	{
+		JRE::CollisionDir collDir{};
+
+		const BoxShape& colliderBox = static_cast<const BoxShape&>(*collider.shape);
+		const BoxShape& box = static_cast<const BoxShape&>(cs.collider.GetShape());
+		BoxShape worldBox = box.Translated(cs.oldPos);
+		bool isPlatform = collider.properties.layer & CollisionLayer::Platform;
+		bool alreadyCollidingY = worldBox.OverlapInY(colliderBox);
+		bool skipDownColl = isPlatform && alreadyCollidingY;
+
+		collDir.up = !isPlatform;
+		collDir.down = !skipDownColl;
+		collDir.left = !isPlatform;
+		collDir.right = !isPlatform;
+		return collDir;
 	}
 }

@@ -6,6 +6,7 @@
 #include "JREngine/Scene/Scene.h"
 #include "JREngine/Core/ServiceLocator.h"
 
+#include "Utils.h"
 #include "CollisionLayers.h"
 #include "Enemies/Zenchan/ZenchanScriptComponent.h"
 
@@ -31,14 +32,7 @@ namespace BubbleBobble
 		BoxPhysicsSystem::CollisionSettings cs{ oldPos, *m_pBox2DColliderCmp };
 		cs.dt = Timer::GetInstance().GetFixedTimeStep();
 		cs.applyGravity = true;
-		cs.filterFunc = [](const StaticCollider& collider, const BoxPhysicsSystem::CollisionSettings& cs) -> CollisionDir {
-			const BoxShape& colliderBox = static_cast<const BoxShape&>(*collider.shape);
-			const BoxShape& box = static_cast<const BoxShape&>(cs.collider.GetShape());
-			bool isPlatform = collider.properties.layer & CollisionLayer::Platform;
-			bool alreadyCollidingY = box.OverlapInY(colliderBox);
-			bool checkCollision = isPlatform && alreadyCollidingY;
-			return checkCollision ? JRE::CollisionDir{ false, false, true, false } : JRE::CollisionDir{ true, true, true, true };
-			};
+		cs.filterFunc = Utils::PlatformCollisionDirFilterFunc;
 
 		//Calc vel
 		m_Vel.x = m_Speed * m_Input.moveDir;
