@@ -40,7 +40,7 @@ namespace BubbleBobble
 		JRE::SpriteAnimatorComponent* m_pSpriteAnimatorCmp{ nullptr };
 		JRE::Box2DColliderComponent* m_pBox2DColliderCmp{ nullptr };
 
-		float m_Speed{ 20.f };
+		float m_Speed{ 15.f };
 		float m_JumpForce{ 75.f };
 		glm::vec2 m_Vel{};
 		Input m_Input{};

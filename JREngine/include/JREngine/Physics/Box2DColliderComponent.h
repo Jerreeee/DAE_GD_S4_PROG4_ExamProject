@@ -29,6 +29,7 @@ namespace JRE
 
 		virtual const GameObject& GetOwner() const { return GetGameObject(); };
 		virtual const ICollisionShape& GetShape() const override { return m_Shape; };
+		virtual BoxShape GetBounds() const override;
 		virtual const ColliderProperties& GetProperties() const override { return m_Properties; };
 		virtual void OnCollisionWith(const ICollider& other) override;
 

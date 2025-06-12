@@ -36,7 +36,7 @@ namespace BubbleBobble
         if (m_pTarget)
         {
             auto pAIControllerCmp = pZenchan->AddComponent<ZenchanAIController>();
-            pAIControllerCmp->m_pTarget = m_pTarget;
+            pAIControllerCmp->SetTarget(*m_pTarget);
         }
         pSpriteAnimatorCmp->SetActiveClip("Run");
 	}

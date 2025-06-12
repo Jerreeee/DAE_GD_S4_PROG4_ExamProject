@@ -87,6 +87,32 @@ namespace JRE
 			return a.Top() >= b.Top() - epsilon &&
 				a.Bottom() <= b.Bottom() + epsilon;
 		}
+
+		float GetXDist(const BoxShape& other, const glm::vec2& baseA = {}, const glm::vec2& baseB = {}) const
+		{
+			const Region a = GetRegion(baseA);
+			const Region b = other.GetRegion(baseB);
+
+			if (a.Right() <= b.Left())
+				return a.Right() - b.Left();
+			else if (a.Left() >= b.Right())
+				return a.Left() - b.Right();
+			//overlap
+			return 0.0f;
+		}
+
+		float GetYDist(const BoxShape& other, const glm::vec2& baseA = {}, const glm::vec2& baseB = {}) const
+		{
+			const Region a = GetRegion(baseA);
+			const Region b = other.GetRegion(baseB);
+
+			if (a.Bottom() <= b.Top())
+				return a.Bottom() - b.Top();
+			else if (a.Top() >= b.Bottom())
+				return a.Top() - b.Bottom();
+			//overlap
+			return 0.0f;
+		}
 	};
 
 	struct ColliderProperties
@@ -113,6 +139,7 @@ namespace JRE
 
 		virtual const GameObject& GetOwner() const = 0;
 		virtual const ICollisionShape& GetShape() const = 0;
+		virtual BoxShape GetBounds() const = 0;
 		virtual const ColliderProperties& GetProperties() const = 0;
 		virtual void OnCollisionWith(const ICollider&) {};
 

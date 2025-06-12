@@ -14,6 +14,11 @@ namespace JRE
 	{
 		ServiceLocator::GetPhysicsSystem().UnregisterCollider(this);
 	}
+	BoxShape Box2DColliderComponent::GetBounds() const
+	{
+		glm::vec2 worldPos = glm::vec2(GetGameObject().GetWorldPosition());
+		return m_Shape.Translated(worldPos);
+	}
 	void Box2DColliderComponent::OnCollisionWith(const ICollider& other)
 	{
 		EventInfo e{ CreateEvent<Box2DCollisionEvent>(*this, other) };

@@ -57,6 +57,13 @@ namespace JRE
 		}
 
 		template<DerivedFromComponentBase ComponentType>
+		const ComponentType* GetComponent() const
+		{
+			auto componentIt = FindComponent<ComponentType>();
+			return componentIt != m_Components.end() ? static_cast<const ComponentType*>((*componentIt).get()) : nullptr;
+		}
+
+		template<DerivedFromComponentBase ComponentType>
 		void RemoveComponent()
 		{
 			auto it = FindComponent<ComponentType>();
