@@ -31,8 +31,8 @@ namespace BubbleBobble
 	void HealthComponent::TakeDamage(int amount)
 	{
 		m_Health -= amount;
-		JRE::EventInfo e{ JRE::CreateEvent<Event::PlayerDamaged>(amount, m_Health) };
-		OnDamageEvent.Notify(e);
+		//JRE::EventInfo e{ JRE::CreateEvent<Event::PlayerDamaged>(amount, m_Health) };
+		//OnDamageEvent.Notify(e);
 
 		if (!m_HitSound.IsLoaded())
 			m_HitSound.Get();

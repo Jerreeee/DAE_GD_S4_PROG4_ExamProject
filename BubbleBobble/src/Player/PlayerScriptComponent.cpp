@@ -24,6 +24,8 @@ namespace BubbleBobble
 		assert(m_pSpriteAnimatorCmp && "Player doesnt have SpriteAnimatorComponent");
 		m_pBox2DColliderCmp = GetGameObject().GetComponent<Box2DColliderComponent>();
 		assert(m_pBox2DColliderCmp && "Player doesnt have Box2DColliderComponent");
+
+		m_pBox2DColliderCmp->OnCollisionEvent.AddObserver(this);
 	}
 
 	void PlayerScriptComponent::FixedUpdate()
@@ -59,6 +61,7 @@ namespace BubbleBobble
 		//bool shoot = im.IsBindingActive(*m_pActionMap, "Shoot");
 		//if (shoot);
 		//	return State::Shooting;
+
 		bool onGround = collInfo.collDir.down;
 		if (onGround && m_Input.pressedJump)
 			m_Vel.y = -m_JumpForce;
@@ -66,6 +69,22 @@ namespace BubbleBobble
 		if (m_Input.moveDir != 0)
 			m_FacingDir = m_Input.moveDir;
 		m_Input = Input{}; //Consume all input
+	}
+	void PlayerScriptComponent::OnNotify(JRE::EventInfo& event)
+	{
+		switch (event.GetID())
+		{
+		case Box2DCollisionEvent::ID:
+		{
+			auto& args = event.GetArgs<Box2DCollisionEvent>();
+			if (args.other.GetProperties().layer & CollisionLayer::Enemy)
+			{
+				EventInfo e{ CreateEvent<PlayerDied>() };
+				OnPlayerDiedEvent.Notify(e);
+			}
+			break;
+		}
+		}
 	}
 	void PlayerScriptComponent::Move(int direction)
 	{

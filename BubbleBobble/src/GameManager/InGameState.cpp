@@ -43,6 +43,8 @@ namespace BubbleBobble
 			.SetAnimationPath("Anims/P1.txt")
 			.SetActionMapIdx(actionMapIdx)
 			.Build(pPlayer);
+		auto playerScriptCmp = pPlayer->GetComponent<PlayerScriptComponent>();
+		playerScriptCmp->OnPlayerDiedEvent.AddObserver(this);
 		sm.GetCurrentScene().Add(std::move(pPlayer));
 		SetPlayerToSpawnPos();
 
@@ -54,6 +56,17 @@ namespace BubbleBobble
 	}
 	void InGameState::OnExit()
 	{
+	}
+	void InGameState::OnNotify(JRE::EventInfo& event)
+	{
+		switch (event.GetID())
+		{
+		case PlayerDied::ID:
+		{
+			SetPlayerToSpawnPos();
+			break;
+		}
+		}
 	}
 	void InGameState::GoToNextLevel()
 	{

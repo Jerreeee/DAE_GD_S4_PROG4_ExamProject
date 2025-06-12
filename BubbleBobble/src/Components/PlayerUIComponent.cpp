@@ -49,12 +49,12 @@ namespace BubbleBobble
 	{
 		switch (event.GetID())
 		{
-		case Event::PlayerDamaged::ID:
-		{
-			auto& args = event.GetArgs<Event::PlayerDamaged>();
-			SetTextComponentText(m_pLivesText, "Lives: ", std::to_string(args.newhealth));
-			break;
-		}
+		//case Event::PlayerDamaged::ID:
+		//{
+		//	auto& args = event.GetArgs<Event::PlayerDamaged>();
+		//	SetTextComponentText(m_pLivesText, "Lives: ", std::to_string(args.newhealth));
+		//	break;
+		//}
 		case Event::IncreasedScore::ID:
 		{
 			auto& args = event.GetArgs<Event::IncreasedScore>();

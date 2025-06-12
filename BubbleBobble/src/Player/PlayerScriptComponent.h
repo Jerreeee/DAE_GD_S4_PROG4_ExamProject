@@ -5,6 +5,7 @@
 #include "JREngine/Scene/ComponentBase.h"
 #include "JREngine/Asset/Asset.h"
 #include "JREngine/Physics/BoxPhysicsSystem.h"
+#include "JREngine/Core/Event.h"
 
 #include "Player/PlayerUtils.h"
 
@@ -18,8 +19,14 @@ namespace JRE
 
 namespace BubbleBobble
 {
+	struct PlayerDied
+	{
+		static const JRE::EventID ID{ JRE::HashEventID("PlayerDied") };
+		struct Args : public JRE::EventArgs {};
+	};
+
 	class TileMapComponent;
-	class PlayerScriptComponent final : public JRE::ComponentBase
+	class PlayerScriptComponent final : public JRE::ComponentBase, public JRE::IObserver
 	{
 	public:
 		PlayerScriptComponent(JRE::GameObject& gameObject);
@@ -27,8 +34,12 @@ namespace BubbleBobble
 		virtual void Update() override {};
 		virtual void FixedUpdate() override;
 
+		virtual void OnNotify(JRE::EventInfo& event) override;
+
 		void Move(int direction);
 		void Jump();
+
+		JRE::Event OnPlayerDiedEvent{};
 	private:
 		struct Input
 		{
