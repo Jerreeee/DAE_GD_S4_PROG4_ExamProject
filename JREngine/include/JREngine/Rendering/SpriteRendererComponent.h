@@ -20,9 +20,11 @@ namespace JRE
 
 		void SetSprite(const AssetRef<Sprite>& sprite);
 		void SetFlipX(bool flipX) { m_FlipX = flipX; };
+		void SetOffset(glm::vec2 offset = {}) { m_Offset = offset; };
 	private:
 		AssetRef<Sprite> m_Sprite{};
 		bool m_FlipX{};
+		glm::vec2 m_Offset{};
 	};
 }
 

@@ -75,6 +75,7 @@ namespace BubbleBobble
 				m_State = State::Death;
 				m_AnimState = AnimState::Death;
 				m_pSpriteAnimatorCmp->SetActiveClip("Death");
+				m_pSpriteRendererCmp->SetOffset(glm::vec2(0.f, -45.f));
 			}
 			break;
 		}
@@ -88,6 +89,7 @@ namespace BubbleBobble
 				m_State = State::Immortal;
 				m_AnimState = AnimState::Moving;
 				m_ImmortalTimer = m_ImmortalTimerDefault;
+				m_pSpriteRendererCmp->SetOffset();
 			}
 			else if (args.clip == m_pShootClipRef.get())
 				m_AnimState = AnimState::Moving;
