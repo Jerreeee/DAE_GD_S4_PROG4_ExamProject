@@ -15,7 +15,7 @@ namespace BubbleBobble
 
 	struct CollisionMask
 	{
-		static constexpr uint32_t Friendly = CollisionLayer::Enemy | CollisionLayer::StaticLevel | CollisionLayer::Platform;
+		static constexpr uint32_t Friendly = CollisionLayer::Enemy | CollisionLayer::StaticLevel | CollisionLayer::Platform | CollisionLayer::Bubble;
 		static constexpr uint32_t Enemy = CollisionLayer::Friendly | CollisionLayer::StaticLevel | CollisionLayer::Platform | CollisionLayer::Bubble;
 		static constexpr uint32_t DynamicGameObject = CollisionLayer::Friendly | CollisionLayer::Enemy;
 		static constexpr uint32_t StaticLevel = CollisionLayer::Friendly | CollisionLayer::Enemy;

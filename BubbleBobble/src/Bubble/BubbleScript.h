@@ -5,6 +5,8 @@
 namespace JRE
 {
 	class Box2DColliderComponent;
+	class SpriteAnimatorComponent;
+	class SpriteAnimationClip;
 }
 
 namespace BubbleBobble
@@ -25,6 +27,8 @@ namespace BubbleBobble
 		void SpawnFood();
 
 		JRE::Box2DColliderComponent* m_pBox2ColliderCmp{ nullptr };
+		JRE::SpriteAnimatorComponent* m_pSpriteAnimCmp{ nullptr };
+		JRE::SpriteAnimationClip* m_pPoofAnimClip{ nullptr };
 
 		int m_Direction{};
 		glm::vec2 m_Vel{ 0.f, -50.f };

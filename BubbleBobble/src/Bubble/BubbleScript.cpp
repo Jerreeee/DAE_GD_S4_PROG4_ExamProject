@@ -4,6 +4,8 @@
 #include "JREngine/Scene/Scene.h"
 #include "JREngine/Rendering/SDLRenderer.h"
 #include "JREngine/Physics/Box2DColliderComponent.h"
+#include "JREngine/Animation/SpriteAnimatorComponent.h"
+#include "JREngine/Animation/SpriteAnimationClip.h"
 
 #include "EngineSetup.h"
 #include "Enemies/Zenchan/ZenchanScriptComponent.h"
@@ -23,8 +25,13 @@ namespace BubbleBobble
 
 		m_pBox2ColliderCmp = GetGameObject().GetComponent<Box2DColliderComponent>();
 		assert(m_pBox2ColliderCmp && "BubbleScript doesnt ahve Box2DColliderComponent");
+		m_pSpriteAnimCmp = GetGameObject().GetComponent<SpriteAnimatorComponent>();
+		assert(m_pSpriteAnimCmp && "BubbleScript doesnt ahve SpriteAnimatorComponent");
 
 		m_pBox2ColliderCmp->OnCollisionEvent.AddObserver(this);
+
+		m_pPoofAnimClip = m_pSpriteAnimCmp->GetClip("Poof").get();
+		m_pPoofAnimClip->OnEndOfClipEvent.AddObserver(this);
 	}
 
 	void BubbleScript::Update()
@@ -32,9 +39,7 @@ namespace BubbleBobble
 		float dt = Timer::GetInstance().GetDeltaTime();
 		m_AliveTime += dt;
 		if (m_AliveTime > m_MaxLifeTime && !m_TrappedEnemy)
-		{
 			Burst();
-		}
 	}
 
 	void BubbleScript::FixedUpdate()
@@ -75,8 +80,15 @@ namespace BubbleBobble
 				auto pScript = enemy.GetComponent<ZenchanScriptComponent>();
 					Trap(pScript);
 			}
-			else if (args.other.GetProperties().layer & CollisionLayer::Friendly)
+			else if (args.other.GetProperties().layer & CollisionLayer::Friendly && m_AliveTime > 0.5f)
 				PopAndKill();
+			break;
+		}
+		case JRE::Events::EndOfClipEvent::ID:
+		{
+			auto& args = event.GetArgs<JRE::Events::EndOfClipEvent>();
+			if (args.clip == m_pPoofAnimClip)
+				GetGameObject().Destroy();
 			break;
 		}
 		}
@@ -91,20 +103,19 @@ namespace BubbleBobble
 
 	void BubbleScript::PopAndKill()
 	{
+		m_pSpriteAnimCmp->SetActiveClip("Poof");
 		if (m_TrappedEnemy)
 		{
 			//m_TrappedEnemy->Kill();
 			SpawnFood();
 		}
-		GetGameObject().Destroy();
 	}
 
 	void BubbleScript::Burst()
 	{
+		m_pSpriteAnimCmp->SetActiveClip("Poof");
 		//if (m_TrappedEnemy)
 		//	m_TrappedEnemy->SetTrapped(false);
-
-		GetGameObject().Destroy();
 	}
 
 	void BubbleScript::SpawnFood()
