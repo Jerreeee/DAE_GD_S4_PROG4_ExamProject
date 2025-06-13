@@ -8,9 +8,12 @@ namespace JRE
 	Box2DColliderComponent::Box2DColliderComponent(GameObject& gameObject)
 		: ComponentBase(gameObject)
 	{
+	}
+	void Box2DColliderComponent::OnEnable()
+	{
 		ServiceLocator::GetPhysicsSystem().RegisterCollider(this);
 	}
-	Box2DColliderComponent::~Box2DColliderComponent()
+	void Box2DColliderComponent::OnDisable()
 	{
 		ServiceLocator::GetPhysicsSystem().UnregisterCollider(this);
 	}
