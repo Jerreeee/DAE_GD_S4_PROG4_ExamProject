@@ -64,6 +64,7 @@ T Small,672,648
 T Small,696,648
 
 //Upper floor
+C 0,48,48,216,72
 T Small,48,48
 T Small,72,48
 T Small,96,48
@@ -72,6 +73,7 @@ T Small,144,48
 T Small,168,48
 T Small,192,48
 
+C 0,312,48,456,72
 T Small,312,48
 T Small,336,48
 T Small,360,48
@@ -79,6 +81,7 @@ T Small,384,48
 T Small,408,48
 T Small,432,48
 
+C 0,552,48,720,72
 T Small,552,48
 T Small,576,48
 T Small,600,48
