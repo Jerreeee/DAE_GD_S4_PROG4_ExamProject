@@ -31,7 +31,7 @@ namespace JRE
 		virtual void OnDisable() override;
 		virtual void Update() override {};
 
-		virtual const GameObject& GetOwner() const { return GetGameObject(); };
+		virtual GameObject& GetOwner() const { return GetGameObject(); };
 		virtual const ICollisionShape& GetShape() const override { return m_Shape; };
 		virtual BoxShape GetBounds() const override;
 		virtual const ColliderProperties& GetProperties() const override { return m_Properties; };

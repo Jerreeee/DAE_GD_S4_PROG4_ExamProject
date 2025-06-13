@@ -65,14 +65,17 @@ set(SOURCE_FILES
     "Enemies/Zenchan/ZenchanAIController.h"
     "Enemies/Zenchan/ZenchanAIController.cpp"
 
-    "Components/ScoreComponent.h"
-    "Components/ScoreComponent.cpp"
     "Components/HealthComponent.h"
     "Components/HealthComponent.cpp"
-    "Components/FPSComponent.h"
-    "Components/RotateParentComponent.h"
-    "Components/FPSComponent.cpp"
-    "Components/RotateParentComponent.cpp"
+    "Components/ScoreComponent.h"
+    "Components/ScoreComponent.cpp"
+    "Components/PortalScriptComponent.h"
+    "Components/PortalScriptComponent.cpp"
+
+    #"Components/FPSComponent.h"
+    #"Components/FPSComponent.cpp"
+    #"Components/RotateParentComponent.h"
+    #"Components/RotateParentComponent.cpp"
 )
 AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
 

@@ -2,12 +2,15 @@
 #include "JREngine/Asset/AssetImporter.h"
 #include "JREngine/Asset/TextureImporter.h"
 #include "JREngine/Asset/ResourceManager.h"
+#include "JREngine/Physics/Box2DColliderComponent.h"
 
+#include "Components/PortalScriptComponent.h"
 #include "TileMap/TileMap.h"
 #include "TileMap/TileMapImporter.h"
 #include "TileMap/TileMapComponent.h"
 #include "Assets/LevelDataImporter.h"
 #include "Assets/LevelDataComponent.h"
+#include "EngineSetup.h"
 #include "LevelBuilder.h"
 
 using namespace JRE;
@@ -23,6 +26,7 @@ namespace BubbleBobble
 	{
 		AddTileMap();
 		AddLevelData();
+		AddPortal();
 	}
 	void LevelBuilder::AddTileMap()
 	{
@@ -45,5 +49,17 @@ namespace BubbleBobble
 		auto* pComp = pLevelData->AddComponent<LevelDataComponent>();
 		pComp->m_LevelData = levelDataRef;
 		m_Scene.Add(std::move(pLevelData));
+	}
+	void LevelBuilder::AddPortal()
+	{
+		auto pPortal = std::make_unique<GameObject>("Portal");
+		auto box2DColliderCmp = pPortal->AddComponent<JRE::Box2DColliderComponent>();
+		box2DColliderCmp->m_Shape.width = 768.f;
+		box2DColliderCmp->m_Shape.height = 500.f;
+		box2DColliderCmp->m_Properties.layer = CollisionLayer::StaticLevel;
+		box2DColliderCmp->m_Properties.mask = CollisionMask::DynamicGameObject;
+		pPortal->SetWorldPosition(0.f, 672.f);
+		pPortal->AddComponent<PortalScriptComponent>();
+		m_Scene.Add(std::move(pPortal));
 	}
 }

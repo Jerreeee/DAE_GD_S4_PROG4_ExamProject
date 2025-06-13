@@ -12,6 +12,7 @@ namespace BubbleBobble
 	private:
 		void AddTileMap();
 		void AddLevelData();
+		void AddPortal();
 		
 		JRE::Scene& m_Scene;
 		std::filesystem::path m_Path{};

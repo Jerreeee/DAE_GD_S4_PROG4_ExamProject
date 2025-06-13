@@ -16,6 +16,7 @@ namespace BubbleBobble
 	{
 		static constexpr uint32_t Friendly = CollisionLayer::Enemy | CollisionLayer::StaticLevel | CollisionLayer::Platform;
 		static constexpr uint32_t Enemy = CollisionLayer::Friendly | CollisionLayer::StaticLevel | CollisionLayer::Platform;
+		static constexpr uint32_t DynamicGameObject = CollisionLayer::Friendly | CollisionLayer::Enemy;
 		static constexpr uint32_t StaticLevel = CollisionLayer::Friendly | CollisionLayer::Enemy;
 		static constexpr uint32_t Platform = CollisionLayer::Friendly | CollisionLayer::Enemy;
 	};

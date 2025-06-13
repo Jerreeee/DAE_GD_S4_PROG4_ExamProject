@@ -137,7 +137,7 @@ namespace JRE
 	public:
 		virtual ~ICollider() = default;
 
-		virtual const GameObject& GetOwner() const = 0;
+		virtual GameObject& GetOwner() const = 0;
 		virtual const ICollisionShape& GetShape() const = 0;
 		virtual BoxShape GetBounds() const = 0;
 		virtual const ColliderProperties& GetProperties() const = 0;
