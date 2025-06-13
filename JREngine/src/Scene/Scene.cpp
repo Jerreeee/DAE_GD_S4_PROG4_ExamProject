@@ -45,6 +45,7 @@ namespace JRE
 	{
 		if (m_IsActive == active) return;
 
+		m_IsActive = active;
 		for (auto& object : m_Objects)
 		{
 			//Only call on root objects, will trickle down from there
@@ -67,7 +68,7 @@ namespace JRE
 		for (auto& object : m_Objects)
 		{
 			if (object->IsActiveInHierarchy())
-				object->Update();
+				object->FixedUpdate();
 		}
 	}
 

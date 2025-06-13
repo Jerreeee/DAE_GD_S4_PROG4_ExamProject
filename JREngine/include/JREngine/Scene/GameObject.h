@@ -116,7 +116,7 @@ namespace JRE
 
 		bool m_ExecutedStart{};
 		bool m_IsActive{ true };
-		bool m_IsActiveInHierarchy{ true };
+		bool m_IsActiveInHierarchy{ false };
 		bool m_IsDestroyed{ false };
 		std::string m_Name{};
 		Transform m_LocalTransform{};

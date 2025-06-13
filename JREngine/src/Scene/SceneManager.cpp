@@ -80,15 +80,15 @@ namespace JRE
 			oldScene.SetActive(false);
 		}
 
-		newScene.SetActive(true);
-		m_CurrentSceneName = m_NewSceneName;
-		m_SceneLoaded = true;
-		m_LoadNewScene = false;
 		if (m_LoadCallback)
 		{
 			m_LoadCallback(newScene);
 			m_LoadCallback = nullptr;
 		}
+		newScene.SetActive(true);
+		m_CurrentSceneName = m_NewSceneName;
+		m_SceneLoaded = true;
+		m_LoadNewScene = false;
 	}
 
 	void SceneManager::TransferPersistantObjects(Scene& srcScene, Scene& dstScene)

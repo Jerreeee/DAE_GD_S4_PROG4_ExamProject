@@ -40,7 +40,7 @@ namespace JRE
 	}
 	uint32_t BoxPhysicsSystem::GetFreeStaticGroup()
 	{
-		uint32_t groupID;
+		uint32_t groupID{};
 		while (m_StaticColliderGroups.count(groupID))
 			++groupID;
 

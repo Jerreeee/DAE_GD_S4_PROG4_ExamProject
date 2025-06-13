@@ -54,11 +54,11 @@ namespace JRE
 
 	void GameObject::SetActive(bool active)
 	{
-		if (m_IsActive != active)
-		{
-			m_IsActive = active;
-			UpdateActiveInHierarchy();
-		}
+		if (m_IsActive == active && m_IsActiveInHierarchy)
+			return;
+
+		m_IsActive = active;
+		UpdateActiveInHierarchy();
 	}
 
 	void GameObject::SetLocalPosition(float x, float y)

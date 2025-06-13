@@ -11,10 +11,11 @@ namespace BubbleBobble
     TileMapComponent::TileMapComponent(JRE::GameObject& gameObject)
         : RendererComponentBase(gameObject)
     {
+        gameObject;
     }
     void TileMapComponent::OnEnable()
     {
-        if (!m_TileMap) return;
+        if (!m_TileMap || m_RegisteredColliders) return;
 
         m_StaticCollisionGruop = ServiceLocator::GetPhysicsSystem().GetFreeStaticGroup();
 
