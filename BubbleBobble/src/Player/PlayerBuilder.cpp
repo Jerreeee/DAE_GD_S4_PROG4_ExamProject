@@ -32,7 +32,7 @@ namespace BubbleBobble
 	{
         assert(m_ActionMapIdx != -1 && "Invalid actionMapIdx");
 
-        player->m_PersistenceScope = PersistenceLayer::AllLevels;
+        player->m_PersistenceScope = PersistenceMask::PlayerAndUI;
         player->AddComponent<JRE::SpriteRendererComponent>();
         auto pSpriteAnimatorCmp = player->AddComponent<JRE::SpriteAnimatorComponent>();
         Utils::AddAnimsToSpriteAnimatorComponent(m_AnimPath, *pSpriteAnimatorCmp);

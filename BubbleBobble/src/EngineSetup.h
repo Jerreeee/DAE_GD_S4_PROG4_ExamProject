@@ -24,15 +24,16 @@ namespace BubbleBobble
 	struct PersistenceLayer
 	{
 		static constexpr uint32_t SceneLocal = JRE::PersistenceLayer::SceneLocal;
-		static constexpr uint32_t None = JRE::PersistenceLayer::None;
-		static constexpr uint32_t AccrossScenes = JRE::PersistenceLayer::AcrossScenes;
+		static constexpr uint32_t SceneTemporary = JRE::PersistenceLayer::SceneTemporary;
 
-		static constexpr uint32_t AllLevels = 1 << 2;
+		static constexpr uint32_t Global = 1 << 2;
+		static constexpr uint32_t Levels = 1 << 3;
 	};
 
 	struct PersistenceMask
 	{
-		static constexpr uint32_t LevelScene = PersistenceLayer::AccrossScenes | PersistenceLayer::AllLevels;
-		static constexpr uint32_t MenuScene = PersistenceLayer::AccrossScenes | PersistenceLayer::SceneLocal;
+		static constexpr uint32_t PlayerAndUI = PersistenceLayer::Levels;
+		static constexpr uint32_t LevelScene = PersistenceLayer::Global | PersistenceLayer::Levels;
+		static constexpr uint32_t MenuScene = PersistenceLayer::Global | PersistenceLayer::SceneLocal;
 	};
 }

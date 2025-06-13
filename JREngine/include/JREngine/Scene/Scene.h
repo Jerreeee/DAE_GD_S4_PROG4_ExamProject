@@ -27,7 +27,7 @@ namespace JRE
 		void Cleanup();
 
 		void Add(std::unique_ptr<GameObject> object);
-		void Remove(GameObject* object);
+		std::unique_ptr<GameObject> Remove(GameObject* object);
 		void RemoveAll();
 		uint32_t GetPersistenceScope() const { return m_PersistenceScope; };
 
@@ -49,11 +49,12 @@ namespace JRE
 			return nullptr;
 		}
 
-		void RegisterRendererComponent(RendererComponentBase* pRendererComponent);
-		void UnRegisterRendererComponent(RendererComponentBase* pRendererComponent);
 		const std::vector<RendererComponentBase*>& GetRenderComponents() const { return m_RendererComponents; };
 	private:
 		friend class SceneManager;
+
+		void RegisterAllRendererComponents(const std::unique_ptr<GameObject>& gameObject);
+		void UnegisterAllRendererComponents(const std::unique_ptr<GameObject>& gameObject);
 
 		bool m_IsActive{};
 		std::string m_Name;

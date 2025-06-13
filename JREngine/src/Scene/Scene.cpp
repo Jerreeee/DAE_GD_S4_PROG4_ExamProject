@@ -19,21 +19,26 @@ namespace JRE
 
 	void Scene::Add(std::unique_ptr<GameObject> object)
 	{
-		//Check if the gameObject has a RenderComponent
-		if (auto pComponent = object->GetComponent<RendererComponentBase>(); pComponent)
-			m_RendererComponents.emplace_back(pComponent);
-
+		RegisterAllRendererComponents(object);
 		m_Objects.emplace_back(std::move(object));
 	}
 
-	void Scene::Remove(GameObject* object)
+	std::unique_ptr<GameObject> Scene::Remove(GameObject* object)
 	{
-		m_Objects.erase(std::remove_if(m_Objects.begin(), m_Objects.end(),
-			[&](const auto& pGameObject)
-			{
+		auto it = std::find_if(m_Objects.begin(), m_Objects.end(), [&](const auto& pGameObject) {
 				return pGameObject.get() == object;
-			}
-		), m_Objects.end());
+			});
+
+		if (it != m_Objects.end())
+		{
+			(*it)->SetActive(false);
+			UnegisterAllRendererComponents(*it);
+			std::unique_ptr<GameObject> result = std::move(*it);
+			m_Objects.erase(it);
+			return result; //Return ownership
+		}
+
+		return nullptr;
 	}
 
 	void Scene::RemoveAll()
@@ -74,17 +79,13 @@ namespace JRE
 
 	void JRE::Scene::Cleanup()
 	{
-		//Call OnDisable on all components of destroyed GameObjects
+		//Cleanup gameObjects that need to be removed
 		for (const auto& object : m_Objects)
 		{
 			if (object->IsDestroyed())
 			{
-				for (int i{}; i < object->GetComponentCount(); ++i)
-				{
-					auto pCmp = object->GetComponentAtIndex(i);
-					if (!pCmp->IsDestroyed())
-						pCmp->OnDisable();
-				}
+				object->SetActive(false);
+				UnegisterAllRendererComponents(object);
 			}
 		}
 
@@ -98,13 +99,29 @@ namespace JRE
 			object->Cleanup();
 	}
 
-	void JRE::Scene::RegisterRendererComponent(RendererComponentBase* pRendererComponent)
+	void Scene::RegisterAllRendererComponents(const std::unique_ptr<GameObject>& gameObject)
 	{
-		m_RendererComponents.emplace_back(pRendererComponent);
+		for (int i = 0; i < gameObject->GetComponentCount(); ++i)
+		{
+			auto pCmp = gameObject->GetComponentAtIndex(i);
+			RendererComponentBase* pRendererCmp = dynamic_cast<RendererComponentBase*>(pCmp);
+			if (pRendererCmp)
+				m_RendererComponents.emplace_back(pRendererCmp);
+		}
 	}
 
-	void JRE::Scene::UnRegisterRendererComponent(RendererComponentBase* pRendererComponent)
+	void Scene::UnegisterAllRendererComponents(const std::unique_ptr<GameObject>& gameObject)
 	{
-		m_RendererComponents.erase(std::find(m_RendererComponents.begin(), m_RendererComponents.end(), pRendererComponent));
+		for (int i = 0; i < gameObject->GetComponentCount(); ++i)
+		{
+			auto pCmp = gameObject->GetComponentAtIndex(i);
+			RendererComponentBase* pRendererCmp = dynamic_cast<RendererComponentBase*>(pCmp);
+			if (pRendererCmp)
+			{
+				auto it = std::find(m_RendererComponents.begin(), m_RendererComponents.end(), pRendererCmp);
+				if (it != m_RendererComponents.end())
+					m_RendererComponents.erase(it);
+			}
+		}
 	}
 }

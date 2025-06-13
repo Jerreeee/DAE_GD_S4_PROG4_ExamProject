@@ -74,10 +74,8 @@ namespace JRE
 	}
 	void BoxPhysicsSystem::UnregisterCollider(ICollider* const collider)
 	{
-		if (!collider ||
-			collider->GetProperties().isStatic)
-			return;
-		std::erase(m_DynamicColliders, collider);
+		if (collider)
+			std::erase(m_DynamicColliders, collider);
 	}
 	bool BoxPhysicsSystem::MoveCollider(const CollisionSettings& cs, CollisionInfo& ci) const
 	{

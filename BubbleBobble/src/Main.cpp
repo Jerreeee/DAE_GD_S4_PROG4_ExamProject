@@ -49,7 +49,7 @@ namespace BubbleBobble
 
 		auto gameManager = std::make_unique<JRE::GameObject>("GameManager");
 		auto gameManagerCmp = gameManager->AddComponent<GameManagerComponent>(GameState::MainMenu);
-		gameManager->m_PersistenceScope = PersistenceLayer::AccrossScenes;
+		gameManager->m_PersistenceScope = PersistenceLayer::Global;
 
 		auto& sm = SceneManager::GetInstance();
 		auto& mainMenuScene = sm.CreateScene(gameManagerCmp->GetStateName(GameState::MainMenu), PersistenceMask::MenuScene);

@@ -25,6 +25,7 @@ set(SOURCE_FILES
     "Rendering/SDLRenderer.cpp"
     "Rendering/SpriteRendererComponent.cpp"
     "Rendering/TextRendererComponent.cpp"
+    "Rendering/RendererComponentBase.cpp"
 
     "Asset/Texture2D.cpp"
     "Asset/Sprite.cpp"

@@ -6,7 +6,7 @@ namespace JRE
 	class RendererComponentBase : public ComponentBase
 	{
 	public:
-		RendererComponentBase(GameObject& gameObject) : ComponentBase(gameObject) {}
+		RendererComponentBase(GameObject& gameObject);
 		virtual ~RendererComponentBase() = default;
 
 		virtual void Update() override {};

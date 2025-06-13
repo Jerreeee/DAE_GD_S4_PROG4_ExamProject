@@ -20,9 +20,20 @@ namespace BubbleBobble
 	InGameState::InGameState(GameManagerComponent& gameManagerComponent)
 		: IGameState(gameManagerComponent, "InGame")
 	{
+		auto& im = InputManager::GetInstance();
+
+		//Create actionMap for the player and set bindings
+		m_P1ActionMapIdx = im.AddActionMap({ 0 });
+		im.BindCommand(m_P1ActionMapIdx, "MoveLeft", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::A, KeyState::Pressed));
+		im.BindCommand(m_P1ActionMapIdx, "MoveRight", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::D, KeyState::Pressed));
+		im.BindCommand(m_P1ActionMapIdx, "Jump", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::W, KeyState::DownThisFrame));
+		im.BindCommand(m_P1ActionMapIdx, "Shoot", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::F, KeyState::DownThisFrame));
+		InputManager::GetInstance().SetEnableActionMap(m_P1ActionMapIdx, false);
 	}
 	void InGameState::OnEnter()
 	{
+		m_LevelIdx = 0;
+		m_PlayerDied = false;
 		//GameMode mode = m_GameManagerComponent.GetGameMode();
 
 		//Callback exectued only when the 1st level is loaded
@@ -35,6 +46,8 @@ namespace BubbleBobble
 
 		//Load 1st level
 		GoToNextLevel(loadCallback);
+
+		InputManager::GetInstance().SetEnableActionMap(m_P1ActionMapIdx, true);
 	}
 	GameState InGameState::Update()
 	{
@@ -44,6 +57,7 @@ namespace BubbleBobble
 	}
 	void InGameState::OnExit()
 	{
+		InputManager::GetInstance().SetEnableActionMap(m_P1ActionMapIdx, false);
 	}
 	void InGameState::OnNotify(JRE::EventInfo& event)
 	{
@@ -102,20 +116,11 @@ namespace BubbleBobble
 	}
 	void InGameState::CreatePlayerAndUI(Scene& scene)
 	{
-		auto& im = InputManager::GetInstance();
-
-		//Create actionMap for the player and set bindings
-		size_t actionMapIdx = im.AddActionMap({ 0 });
-		im.BindCommand(actionMapIdx, "MoveLeft", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::A, KeyState::Pressed));
-		im.BindCommand(actionMapIdx, "MoveRight", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::D, KeyState::Pressed));
-		im.BindCommand(actionMapIdx, "Jump", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::W, KeyState::DownThisFrame));
-		im.BindCommand(actionMapIdx, "Shoot", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::F, KeyState::DownThisFrame));
-
 		//Create player(s) for gameMode
 		auto pPlayer = std::make_unique<GameObject>("Player");
 		PlayerBuilder()
 			.SetAnimationPath("Anims/P1.txt")
-			.SetActionMapIdx(actionMapIdx)
+			.SetActionMapIdx(m_P1ActionMapIdx)
 			.Build(pPlayer);
 
 		auto playerScriptCmp = pPlayer->GetComponent<PlayerScriptComponent>();

@@ -75,8 +75,7 @@ namespace JRE
 		if (m_SceneLoaded)
 		{
 			auto& oldScene = *m_Scenes[m_CurrentSceneName];
-			TransferPersistentObjects(oldScene, newScene);
-			MarkNonPersistentObjectsForDelete(oldScene);
+			EnsureObjectPersistence(oldScene, newScene);
 			oldScene.Cleanup();
 			oldScene.SetActive(false);
 		}
@@ -86,33 +85,37 @@ namespace JRE
 			m_LoadCallback(newScene);
 			m_LoadCallback = nullptr;
 		}
-		newScene.SetActive(true);
 		m_CurrentSceneName = m_NewSceneName;
+		newScene.SetActive(true);
 		m_SceneLoaded = true;
 		m_LoadNewScene = false;
 	}
 
-	void SceneManager::TransferPersistentObjects(Scene& srcScene, Scene& dstScene)
+	void SceneManager::EnsureObjectPersistence(Scene& srcScene, Scene& dstScene)
 	{
 		uint32_t dstPersistenceScope = dstScene.GetPersistenceScope();
-
 		auto& objects = srcScene.m_Objects;
-		auto it = std::remove_if(objects.begin(), objects.end(),
-			[&](std::unique_ptr<GameObject>& go) {
-				bool remove = go->m_PersistenceScope & dstPersistenceScope;
-				if (remove)
-					dstScene.Add(std::move(go));
-				return remove;
-			});
-		objects.erase(it, objects.end());
-	}
 
-	void SceneManager::MarkNonPersistentObjectsForDelete(Scene& scene)
-	{
-		std::for_each(scene.m_Objects.begin(), scene.m_Objects.end(), [](const std::unique_ptr<GameObject>& go) {
-				if (go->m_PersistenceScope & PersistenceLayer::None)
-					go->Destroy();
-			});
+		std::vector<GameObject*> toTransfer;
+
+		//Check which GameObjects need to be moved/destroyed
+		for (auto& go : objects)
+		{
+			uint32_t sharedScope = go->m_PersistenceScope & dstPersistenceScope;
+			bool moveToNewScene = sharedScope & ~PersistenceLayer::SceneLocal;
+
+			if (moveToNewScene)
+				toTransfer.emplace_back(go.get());
+			else if (!(go->m_PersistenceScope & PersistenceLayer::SceneLocal))
+				go->Destroy();
+		}
+
+		//Move GameObjects to new Scene
+		for (auto* go : toTransfer)
+		{
+			auto pOwnedGo = srcScene.Remove(go);
+			dstScene.Add(std::move(pOwnedGo));
+		}
 	}
 
 	Scene& JRE::SceneManager::CreateScene(const std::string& name, uint32_t persistenceScope)

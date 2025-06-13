@@ -22,7 +22,7 @@ namespace BubbleBobble
     void ZenchanBuilder::Build(std::unique_ptr<JRE::GameObject>& pZenchan)
 	{
         pZenchan->AddComponent<JRE::SpriteRendererComponent>();
-        pZenchan->m_PersistenceScope = PersistenceLayer::None;
+        pZenchan->m_PersistenceScope = PersistenceLayer::SceneTemporary;
         auto pSpriteAnimatorCmp = pZenchan->AddComponent<JRE::SpriteAnimatorComponent>();
         Utils::AddAnimsToSpriteAnimatorComponent("Anims/ZenChan.txt", *pSpriteAnimatorCmp);
         auto box2DColliderCmp = pZenchan->AddComponent<JRE::Box2DColliderComponent>();

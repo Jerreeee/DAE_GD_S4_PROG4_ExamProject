@@ -8,6 +8,7 @@
 #include <concepts>
 #include "JREngine/Scene/Transform.h"
 #include "JREngine/Scene/ComponentBase.h"
+#include "JREngine/Scene/PersistenceLayer.h"
 
 namespace JRE
 {
@@ -93,7 +94,7 @@ namespace JRE
 		size_t GetComponentCount() const;
 		ComponentBase* GetComponentAtIndex(size_t idx);
 
-		uint32_t m_PersistenceScope{0};
+		uint32_t m_PersistenceScope{ PersistenceLayer::SceneLocal };
 	private:
 		template<DerivedFromComponentBase ComponentType>
 		auto FindComponent() const

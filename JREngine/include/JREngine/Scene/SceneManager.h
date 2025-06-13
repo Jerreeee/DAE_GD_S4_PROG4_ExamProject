@@ -30,8 +30,7 @@ namespace JRE
 		~SceneManager(); //suppress error: use of undefined type 'Scene'
 
 		void LoadNewScene();
-		void TransferPersistentObjects(Scene& srcScene, Scene& dstScene);
-		void MarkNonPersistentObjectsForDelete(Scene& scene);
+		void EnsureObjectPersistence(Scene& srcScene, Scene& dstScene);
 
 		bool m_IsUpdating{};
 		bool m_SceneLoaded{ false };

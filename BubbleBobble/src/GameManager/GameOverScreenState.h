@@ -11,6 +11,7 @@ namespace BubbleBobble
 
 		virtual void OnEnter() override;
 		virtual GameState Update() override;
+		virtual void OnExit() override;
 	private:
 		class ReturnToMainMenuCommand final : public JRE::Command
 		{
@@ -22,5 +23,7 @@ namespace BubbleBobble
 		};
 
 		bool m_ReturnToMainMenu{};
+
+		size_t m_ActionMapIdx{};
 	};
 }
