@@ -14,7 +14,7 @@ namespace JRE
 	class Scene final
 	{
 	public:
-		explicit Scene(const std::string& name, uint32_t persistenceScope = 0);
+		explicit Scene(const std::string& name, uint32_t persistenceScope = PersistenceLayer::SceneLocal);
 		~Scene();
 		Scene(const Scene& other) = delete;
 		Scene(Scene&& other) = delete;

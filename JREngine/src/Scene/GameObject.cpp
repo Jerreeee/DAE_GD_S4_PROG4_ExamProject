@@ -32,12 +32,14 @@ namespace JRE
 
 	void GameObject::Cleanup()
 	{
-		m_Components.erase(std::remove_if(m_Components.begin(), m_Components.end(),
-			[](const std::unique_ptr<ComponentBase>& component)
+		for (auto& component : m_Components)
+			if (component->IsDestroyed())
+				component->OnDisable();
+
+		std::erase_if(m_Components, [](const std::unique_ptr<ComponentBase>& component)
 			{
 				return component->IsDestroyed();
-			}
-		), m_Components.end());
+			});
 	}
 
 	void GameObject::Destroy()
@@ -118,6 +120,14 @@ namespace JRE
 			}
 		);
 		return childIt != m_Children.end();
+	}
+	size_t GameObject::GetComponentCount() const
+	{
+		return m_Components.size();
+	}
+	ComponentBase* GameObject::GetComponentAtIndex(size_t idx)
+	{
+		return idx >= 0 && idx < m_Components.size() ? m_Components.at(idx).get() : nullptr;
 	}
 	void GameObject::SetLocalPosition(const glm::vec3& position)
 	{

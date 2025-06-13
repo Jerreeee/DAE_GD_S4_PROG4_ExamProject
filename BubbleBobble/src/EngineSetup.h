@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include "JREngine/Scene/PersistenceLayer.h"
 
 namespace BubbleBobble
 {
@@ -21,14 +22,16 @@ namespace BubbleBobble
 
 	struct PersistenceLayer
 	{
-		static constexpr uint32_t None = 1 << 0;
-		static constexpr uint32_t InGame = 1 << 1;
-		static constexpr uint32_t Global = 1 << 2;
+		static constexpr uint32_t SceneLocal = JRE::PersistenceLayer::SceneLocal;
+		static constexpr uint32_t None = JRE::PersistenceLayer::None;
+		static constexpr uint32_t AccrossScenes = JRE::PersistenceLayer::AcrossScenes;
+
+		static constexpr uint32_t AllLevels = 1 << 2;
 	};
 
 	struct PersistenceMask
 	{
-		static constexpr uint32_t InGameScene = PersistenceLayer::InGame | PersistenceLayer::Global;
-		static constexpr uint32_t MenuScene = PersistenceLayer::Global;
+		static constexpr uint32_t LevelScene = PersistenceLayer::AccrossScenes | PersistenceLayer::AllLevels;
+		static constexpr uint32_t MenuScene = PersistenceLayer::AccrossScenes | PersistenceLayer::SceneLocal;
 	};
 }

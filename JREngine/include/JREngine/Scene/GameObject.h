@@ -90,6 +90,8 @@ namespace JRE
 		size_t GetChildCount() const;
 		GameObject* GetChildAtIndex(size_t idx) const;
 		bool IsChild(GameObject* pChild, bool recursive = true) const;
+		size_t GetComponentCount() const;
+		ComponentBase* GetComponentAtIndex(size_t idx);
 
 		uint32_t m_PersistenceScope{0};
 	private:

@@ -57,7 +57,7 @@ void JRE::SDLRenderer::Render()
 
 	const auto& renderComponents = SceneManager::GetInstance().GetCurrentScene().GetRenderComponents();
 	for (const auto pRendererComponent : renderComponents)
-		if (pRendererComponent->IsActive())
+		if (pRendererComponent->GetGameObject().IsActiveInHierarchy())
 			pRendererComponent->Render();
 
 	ImGui::Render();

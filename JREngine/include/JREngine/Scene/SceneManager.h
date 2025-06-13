@@ -4,6 +4,7 @@
 #include <memory>
 #include <map>
 #include <functional>
+#include "JREngine/Scene/PersistenceLayer.h"
 #include "JREngine/Core/Singleton.h"
 
 namespace JRE
@@ -12,7 +13,7 @@ namespace JRE
 	class SceneManager final : public Singleton<SceneManager>
 	{
 	public:
-		Scene& CreateScene(const std::string& name, uint32_t persistenceScope = 0);
+		Scene& CreateScene(const std::string& name, uint32_t persistenceScope = PersistenceLayer::SceneLocal);
 
 		void Start();
 		void Update();
@@ -29,7 +30,8 @@ namespace JRE
 		~SceneManager(); //suppress error: use of undefined type 'Scene'
 
 		void LoadNewScene();
-		void TransferPersistantObjects(Scene& srcScene, Scene& dstScene);
+		void TransferPersistentObjects(Scene& srcScene, Scene& dstScene);
+		void MarkNonPersistentObjectsForDelete(Scene& scene);
 
 		bool m_IsUpdating{};
 		bool m_SceneLoaded{ false };

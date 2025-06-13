@@ -108,6 +108,7 @@ set(INCLUDE_FILES
     "Scene/SceneManager.h"
     "Scene/Transform.h"
     "Scene/ComponentBase.h"
+    "Scene/PersistenceLayer.h"
 
     "Physics/IPhysicsSystem.h"
     "Physics/ICollider.h"

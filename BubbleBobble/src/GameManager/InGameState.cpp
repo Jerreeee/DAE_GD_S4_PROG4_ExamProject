@@ -82,7 +82,7 @@ namespace BubbleBobble
 
 		if (!sm.HasScene(levelName))
 		{
-			auto& levelScene = sm.CreateScene(levelName, PersistenceMask::InGameScene);
+			auto& levelScene = sm.CreateScene(levelName, PersistenceMask::LevelScene);
 			LevelBuilder(levelScene, path).Build();
 		}
 

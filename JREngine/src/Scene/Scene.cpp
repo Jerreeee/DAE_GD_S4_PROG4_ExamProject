@@ -74,19 +74,28 @@ namespace JRE
 
 	void JRE::Scene::Cleanup()
 	{
-		//Scene is responsible for removing ALL gameobjects, also child gameobjects
-		m_Objects.erase(std::remove_if(m_Objects.begin(), m_Objects.end(),
-			[](const auto& object)
-			{
-				return object->IsDestroyed();
-			}
-		), m_Objects.end());
-
-		//Extra Cleanup loop over the leftover gameobjects as they might need to remove components marked for destroying
+		//Call OnDisable on all components of destroyed GameObjects
 		for (const auto& object : m_Objects)
 		{
-			object->Cleanup();
+			if (object->IsDestroyed())
+			{
+				for (int i{}; i < object->GetComponentCount(); ++i)
+				{
+					auto pCmp = object->GetComponentAtIndex(i);
+					if (!pCmp->IsDestroyed())
+						pCmp->OnDisable();
+				}
+			}
 		}
+
+		//Remove destroyed GameObjects
+		std::erase_if(m_Objects, [](const std::unique_ptr<GameObject>& object) {
+			return object->IsDestroyed();
+			});
+
+		//Clenaup all leftover gameObjects as they might still need to remove destroyed components
+		for (const auto& object : m_Objects)
+			object->Cleanup();
 	}
 
 	void JRE::Scene::RegisterRendererComponent(RendererComponentBase* pRendererComponent)

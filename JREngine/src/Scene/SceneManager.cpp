@@ -75,7 +75,8 @@ namespace JRE
 		if (m_SceneLoaded)
 		{
 			auto& oldScene = *m_Scenes[m_CurrentSceneName];
-			TransferPersistantObjects(oldScene, newScene);
+			TransferPersistentObjects(oldScene, newScene);
+			MarkNonPersistentObjectsForDelete(oldScene);
 			oldScene.Cleanup();
 			oldScene.SetActive(false);
 		}
@@ -91,10 +92,9 @@ namespace JRE
 		m_LoadNewScene = false;
 	}
 
-	void SceneManager::TransferPersistantObjects(Scene& srcScene, Scene& dstScene)
+	void SceneManager::TransferPersistentObjects(Scene& srcScene, Scene& dstScene)
 	{
 		uint32_t dstPersistenceScope = dstScene.GetPersistenceScope();
-		if (!dstPersistenceScope) return;
 
 		auto& objects = srcScene.m_Objects;
 		auto it = std::remove_if(objects.begin(), objects.end(),
@@ -105,6 +105,14 @@ namespace JRE
 				return remove;
 			});
 		objects.erase(it, objects.end());
+	}
+
+	void SceneManager::MarkNonPersistentObjectsForDelete(Scene& scene)
+	{
+		std::for_each(scene.m_Objects.begin(), scene.m_Objects.end(), [](const std::unique_ptr<GameObject>& go) {
+				if (go->m_PersistenceScope & PersistenceLayer::None)
+					go->Destroy();
+			});
 	}
 
 	Scene& JRE::SceneManager::CreateScene(const std::string& name, uint32_t persistenceScope)

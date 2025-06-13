@@ -22,12 +22,13 @@ namespace BubbleBobble
     void ZenchanBuilder::Build(std::unique_ptr<JRE::GameObject>& pZenchan)
 	{
         pZenchan->AddComponent<JRE::SpriteRendererComponent>();
+        pZenchan->m_PersistenceScope = PersistenceLayer::None;
         auto pSpriteAnimatorCmp = pZenchan->AddComponent<JRE::SpriteAnimatorComponent>();
         Utils::AddAnimsToSpriteAnimatorComponent("Anims/ZenChan.txt", *pSpriteAnimatorCmp);
         auto box2DColliderCmp = pZenchan->AddComponent<JRE::Box2DColliderComponent>();
-        box2DColliderCmp->m_Shape.offset = glm::vec2(0.f, 0.f);
-        box2DColliderCmp->m_Shape.width = 48.f;
-        box2DColliderCmp->m_Shape.height = 48.f;
+        box2DColliderCmp->m_Shape.offset = glm::vec2(4.f, 2.f);
+        box2DColliderCmp->m_Shape.width = 40.f;
+        box2DColliderCmp->m_Shape.height = 46.f;
         box2DColliderCmp->m_Properties.layer = CollisionLayer::Enemy;
         box2DColliderCmp->m_Properties.mask = CollisionMask::Enemy;
         pZenchan->AddComponent<ZenchanScriptComponent>();

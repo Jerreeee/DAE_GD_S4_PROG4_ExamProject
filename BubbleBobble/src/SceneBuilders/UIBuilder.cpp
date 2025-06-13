@@ -29,7 +29,7 @@ namespace BubbleBobble
 
 		auto p1HealthCmp = m_pPlayer1->GetComponent<HealthComponent>();
 		auto healthUIGO = std::make_unique<GameObject>("HealthUI");
-		healthUIGO->m_PersistenceScope = PersistenceLayer::InGame;
+		healthUIGO->m_PersistenceScope = PersistenceLayer::AllLevels;
 		auto p1HealthUICmp = healthUIGO->AddComponent<HealthUIComponent>(*p1HealthCmp);
 		p1HealthUICmp->SetSprite(SoftAssetRef<Sprite>(sprite));
 		healthUIGO->SetWorldPosition(0.f, 648.f);
