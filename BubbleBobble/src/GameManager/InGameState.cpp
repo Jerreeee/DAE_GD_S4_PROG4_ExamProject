@@ -117,7 +117,7 @@ namespace BubbleBobble
 	void InGameState::CreatePlayerAndUI(Scene& scene)
 	{
 		//Create player(s) for gameMode
-		auto pPlayer = std::make_unique<GameObject>("Player");
+		auto pPlayer = std::make_unique<GameObject>("Bubby");
 		PlayerBuilder()
 			.SetAnimationPath("Anims/P1.txt")
 			.SetActionMapIdx(m_P1ActionMapIdx)

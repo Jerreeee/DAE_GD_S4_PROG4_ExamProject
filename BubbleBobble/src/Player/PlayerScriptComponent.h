@@ -48,6 +48,7 @@ namespace BubbleBobble
 
 		void Move(int direction);
 		void Jump();
+		void Shoot();
 
 		JRE::Event OnPlayerLostLive{};
 	private:
@@ -55,6 +56,7 @@ namespace BubbleBobble
 		{
 			bool pressedJump;
 			int moveDir;
+			bool pressedShoot;
 		};
 
 		enum class State
@@ -68,6 +70,7 @@ namespace BubbleBobble
 		};
 
 		void MoveCollider();
+		void ShootBubble();
 
 		JRE::SpriteRendererComponent* m_pSpriteRendererCmp{ nullptr };
 		JRE::SpriteAnimatorComponent* m_pSpriteAnimatorCmp{ nullptr };
@@ -85,7 +88,7 @@ namespace BubbleBobble
 		float m_JumpForce{ 75.f };
 		glm::vec2 m_Vel{};
 		Input m_Input{};
-		int m_FacingDir{};
+		int m_FacingDir{ 1 };
 		JRE::CollisionInfo m_CollInfo{};
 	};
 }

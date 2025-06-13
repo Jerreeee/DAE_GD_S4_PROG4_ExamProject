@@ -5,6 +5,7 @@
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Scene/Scene.h"
 
+#include "Bubble/BubbleBuilder.h"
 #include "Utils.h"
 #include "EngineSetup.h"
 #include "Player/PlayerScriptComponent.h"
@@ -44,7 +45,31 @@ namespace BubbleBobble
 			m_ImmortalTimer -= dt;
 			if (m_ImmortalTimer < 0.f)
 				m_State = State::Mortal;
+		case State::Mortal:
+			if (m_Input.moveDir != 0)
+				m_FacingDir = m_Input.moveDir;
+
+			if (m_AnimState == AnimState::Moving)
+			{
+				if (m_Input.moveDir)
+					m_pSpriteAnimatorCmp->SetActiveClip("Run");
+				else
+					m_pSpriteAnimatorCmp->SetActiveClip("Idle");
+
+				//Flip sprites based on movement direction
+				m_pSpriteRendererCmp->SetFlipX(m_FacingDir == -1);
+			}
+
+			if (m_Input.pressedShoot)
+				ShootBubble(); //TODO add shoot animation
+
+			bool onGround = m_CollInfo.collDir.down;
+			if (onGround && m_Input.pressedJump)
+				m_Vel.y = -m_JumpForce;
+
+			m_Input = Input{}; //Consume all input
 			break;
+
 		}
 	}
 
@@ -57,8 +82,6 @@ namespace BubbleBobble
 			MoveCollider();
 			break;
 		}
-
-		m_Input = Input{}; //Consume all input
 	}
 	void PlayerScriptComponent::OnNotify(JRE::EventInfo& event)
 	{
@@ -106,10 +129,15 @@ namespace BubbleBobble
 		if (!m_Input.pressedJump)
 			m_Input.pressedJump = true;
 	}
+	void PlayerScriptComponent::Shoot()
+	{
+		if (!m_Input.pressedShoot)
+			m_Input.pressedShoot = true;
+	}
 	void PlayerScriptComponent::MoveCollider()
 	{
 		glm::vec3 oldPos = GetGameObject().GetWorldPosition();
-		std::cout << "OldPos x: " << oldPos.x << " , y: " << oldPos.y << "\n";
+
 		BoxPhysicsSystem::CollisionSettings cs{ oldPos, *m_pBox2DColliderCmp };
 		cs.dt = Timer::GetInstance().GetFixedTimeStep();
 		cs.applyGravity = true;
@@ -124,23 +152,11 @@ namespace BubbleBobble
 		physicsSystem.MoveCollider(cs, m_CollInfo);
 		GetGameObject().SetWorldPosition(m_CollInfo.newPos.x, m_CollInfo.newPos.y);
 		m_Vel = m_CollInfo.velOut;
-
-		if (m_Input.moveDir != 0)
-			m_FacingDir = m_Input.moveDir;
-
-		if (m_AnimState == AnimState::Moving)
-		{
-			if (m_Input.moveDir)
-				m_pSpriteAnimatorCmp->SetActiveClip("Run");
-			else
-				m_pSpriteAnimatorCmp->SetActiveClip("Idle");
-
-			//Flip sprites based on movement direction
-			m_pSpriteRendererCmp->SetFlipX(m_FacingDir == -1);
-		}
-
-		bool onGround = m_CollInfo.collDir.down;
-		if (onGround && m_Input.pressedJump)
-			m_Vel.y = -m_JumpForce;
+	}
+	void PlayerScriptComponent::ShootBubble()
+	{
+		glm::vec2 spawnPos = glm::vec2(GetGameObject().GetWorldPosition()) + glm::vec2(m_FacingDir == 1 ? 10.0f : -10.0f, 0.0f);
+		auto bubble = BubbleBuilder().Build(GetGameObject().GetName(), spawnPos, m_FacingDir);
+		SceneManager::GetInstance().GetCurrentScene().Add(std::move(bubble));
 	}
 }

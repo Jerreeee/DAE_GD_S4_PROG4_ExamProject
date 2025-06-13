@@ -55,11 +55,14 @@ namespace JRE
 
 		void RegisterAllRendererComponents(const std::unique_ptr<GameObject>& gameObject);
 		void UnegisterAllRendererComponents(const std::unique_ptr<GameObject>& gameObject);
+		void MergePendingObjects();
 
+		bool m_Updating{};
 		bool m_IsActive{};
 		std::string m_Name;
 		uint32_t m_PersistenceScope{};
 		std::vector<std::unique_ptr<GameObject>> m_Objects;
+		std::vector<std::unique_ptr<GameObject>> m_PendingObjects;
 		static unsigned int m_IdCounter; 
 		std::vector<RendererComponentBase*> m_RendererComponents{};
 	};

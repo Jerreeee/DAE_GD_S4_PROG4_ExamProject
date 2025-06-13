@@ -19,8 +19,13 @@ namespace JRE
 
 	void Scene::Add(std::unique_ptr<GameObject> object)
 	{
-		RegisterAllRendererComponents(object);
-		m_Objects.emplace_back(std::move(object));
+		if (!m_Updating)
+		{
+			RegisterAllRendererComponents(object);
+			m_Objects.emplace_back(std::move(object));
+		}
+		else
+			m_PendingObjects.emplace_back(std::move(object));
 	}
 
 	std::unique_ptr<GameObject> Scene::Remove(GameObject* object)
@@ -61,20 +66,26 @@ namespace JRE
 
 	void Scene::Update()
 	{
+		MergePendingObjects();
+
+		m_Updating = true;
 		for (auto& object : m_Objects)
 		{
 			if (object->IsActiveInHierarchy())
 				object->Update();
 		}
+		m_Updating = false;
 	}
 
 	void Scene::FixedUpdate()
 	{
+		m_Updating = true;
 		for (auto& object : m_Objects)
 		{
 			if (object->IsActiveInHierarchy())
 				object->FixedUpdate();
 		}
+		m_Updating = false;
 	}
 
 	void JRE::Scene::Cleanup()
@@ -123,5 +134,17 @@ namespace JRE
 					m_RendererComponents.erase(it);
 			}
 		}
+	}
+
+	void Scene::MergePendingObjects()
+	{
+		for (auto& object : m_PendingObjects)
+		{
+			RegisterAllRendererComponents(object);
+			if (m_IsActive && !object->GetParent())
+				object->SetActive(true);
+			m_Objects.emplace_back(std::move(object));
+		}
+		m_PendingObjects.clear();
 	}
 }

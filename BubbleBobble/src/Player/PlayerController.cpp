@@ -29,5 +29,7 @@ namespace BubbleBobble
 			m_pPlayerScript->Move(1);
 		if (input.IsBindingActive(*m_pActionMap, "Jump"))
 			m_pPlayerScript->Jump();
+		if (input.IsBindingActive(*m_pActionMap, "Shoot"))
+			m_pPlayerScript->Shoot();
 	}
 }

@@ -58,6 +58,11 @@ set(SOURCE_FILES
     "Player/PlayerController.h"
     "Player/PlayerController.cpp"
 
+    "Bubble/BubbleBuilder.h"
+    "Bubble/BubbleBuilder.cpp"
+    "Bubble/BubbleScript.h"
+    "Bubble/BubbleScript.cpp"
+
     "Enemies/Zenchan/ZenchanBuilder.h"
     "Enemies/Zenchan/ZenchanBuilder.cpp"
     "Enemies/Zenchan/ZenchanScriptComponent.h"

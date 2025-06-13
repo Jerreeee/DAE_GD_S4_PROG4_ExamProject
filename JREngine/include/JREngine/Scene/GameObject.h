@@ -40,6 +40,7 @@ namespace JRE
 		bool IsActive() const { return m_IsActive; }
 		bool IsActiveInHierarchy() const { return m_IsActiveInHierarchy; }
 
+		const std::string& GetName() const { return m_Name; };
 		Transform& GetWorldTransform();
 		Transform& GetLocalTransform();
 		const glm::vec3& GetWorldPosition() const;
