@@ -28,8 +28,6 @@ namespace BubbleBobble
 			glm::vec2 pos;
 		};
 
-		TileMap();
-
 		void Render();
 
 		void SetSprites(const std::vector<JRE::AssetRef<JRE::Sprite>>& sprites);
@@ -44,7 +42,6 @@ namespace BubbleBobble
 	private:
 		std::vector<SpritePos> m_SpritePositions{};
 		std::vector<JRE::AssetRef<JRE::Sprite>> m_Sprites{};
-		uint32_t m_StaticCollisionGruop{};
 		std::vector<ColliderInfo> m_CollisionRects{};
 	};
 }

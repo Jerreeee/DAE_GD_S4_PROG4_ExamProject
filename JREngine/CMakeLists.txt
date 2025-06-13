@@ -23,7 +23,6 @@ set(SOURCE_FILES
     "Input/XBoxController.h"
 
     "Rendering/SDLRenderer.cpp"
-    "Rendering/RendererComponentBase.cpp"
     "Rendering/SpriteRendererComponent.cpp"
     "Rendering/TextRendererComponent.cpp"
 

@@ -15,11 +15,15 @@ namespace BubbleBobble
 	public:
 		TileMapComponent(JRE::GameObject& gameObject);
 
+		virtual void OnEnable() override;
+		virtual void OnDisable() override;
 		virtual void Render() const;
 
 		void SetTileMap(JRE::AssetRef<TileMap> tileMap);
 		const TileMap& GetTileMap() const { return *m_TileMap; };
 	private:
-		JRE::AssetRef<TileMap> m_TileMap = nullptr;
+		bool m_RegisteredColliders{};
+		uint32_t m_StaticCollisionGruop{};
+		JRE::AssetRef<TileMap> m_TileMap{ nullptr };
 	};
 }

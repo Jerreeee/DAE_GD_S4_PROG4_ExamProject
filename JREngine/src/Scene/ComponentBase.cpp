@@ -11,6 +11,16 @@ namespace JRE
 	{
 		return m_GameObject;
 	}
+
+	void ComponentBase::SetActive(bool active)
+	{
+		m_Active = active;
+	}
+
+	bool ComponentBase::IsActive() const
+	{
+		return m_Active;
+	}
 	void ComponentBase::Destroy()
 	{
 		m_IsDestroyed = true;

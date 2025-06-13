@@ -31,8 +31,22 @@ namespace JRE
 		void Update();
 		void FixedUpdate();
 		void Cleanup();
+
+		bool HasExecutedStart() const { return m_ExecutedStart; };
 		void Destroy();
 		bool IsDestroyed() const;
+		void SetActive(bool active);
+		bool IsActive() const { return m_IsActive; }
+		bool IsActiveInHierarchy() const { return m_IsActiveInHierarchy; }
+
+		Transform& GetWorldTransform();
+		Transform& GetLocalTransform();
+		const glm::vec3& GetWorldPosition() const;
+		const glm::vec3& GetLocalPosition() const;
+		void SetWorldPosition(float x, float y);
+		void SetWorldPosition(const glm::vec3& pos);
+		void SetLocalPosition(float x, float y);
+		void SetLocalPosition(const glm::vec3& position);
 
 		template<DerivedFromComponentBase ComponentType, typename... Args>
 		ComponentType* AddComponent(Args&&... args)
@@ -77,21 +91,8 @@ namespace JRE
 		GameObject* GetChildAtIndex(size_t idx) const;
 		bool IsChild(GameObject* pChild, bool recursive = true) const;
 
-		Transform& GetWorldTransform();
-		Transform& GetLocalTransform();
-		const glm::vec3& GetWorldPosition() const ;
-		const glm::vec3& GetLocalPosition() const ;
-		void SetWorldPosition(float x, float y);
-		void SetWorldPosition(const glm::vec3& pos);
-		void SetLocalPosition(float x, float y);
-		void SetLocalPosition(const glm::vec3& position);
-
 		uint32_t m_PersistenceScope{0};
 	private:
-		//-----------------------
-		//Functions
-		//-----------------------
-
 		template<DerivedFromComponentBase ComponentType>
 		auto FindComponent() const
 		{
@@ -107,10 +108,15 @@ namespace JRE
 		void UpdateWorldPosition() const;
 		void AddChild(GameObject* pChild);
 
+		void UpdateActiveInHierarchy();
+
 		//-----------------------
 		//Variables
 		//-----------------------
 
+		bool m_ExecutedStart{};
+		bool m_IsActive{ true };
+		bool m_IsActiveInHierarchy{ true };
 		bool m_IsDestroyed{ false };
 		std::string m_Name{};
 		Transform m_LocalTransform{};
@@ -120,7 +126,6 @@ namespace JRE
 		GameObject* m_pParent{};
 		std::vector<GameObject*> m_Children{};
 
-		bool m_ExecutedStart = false; //Helps ensure Start() is only called once on persistent gameObjects
 		void RemoveChild(GameObject* pChild);
 	};
 }

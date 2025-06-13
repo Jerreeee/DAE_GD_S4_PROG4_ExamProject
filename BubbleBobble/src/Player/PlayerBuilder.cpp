@@ -43,7 +43,7 @@ namespace BubbleBobble
         box2DColliderCmp->m_Properties.layer = CollisionLayer::Friendly;
         box2DColliderCmp->m_Properties.mask = CollisionMask::Friendly;
         auto healthCmp = player->AddComponent<HealthComponent>();
-        healthCmp->SetMaxHealth(1);
+        healthCmp->SetMaxHealth(3);
         healthCmp->SetHealth(4);
         player->AddComponent<PlayerScriptComponent>();
         player->AddComponent<PlayerControllerComponent>(static_cast<size_t>(m_ActionMapIdx));

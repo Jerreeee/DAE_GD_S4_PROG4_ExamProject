@@ -41,24 +41,34 @@ namespace JRE
 		m_Objects.clear();
 	}
 
-	void Scene::Start()
+	void Scene::SetActive(bool active)
 	{
+		if (m_IsActive == active) return;
+
 		for (auto& object : m_Objects)
 		{
-			object->Start();
+			//Only call on root objects, will trickle down from there
+			if (!object->GetParent())
+				object->SetActive(active);
 		}
 	}
 
 	void Scene::Update()
 	{
 		for (auto& object : m_Objects)
-			object->Update();
+		{
+			if (object->IsActiveInHierarchy())
+				object->Update();
+		}
 	}
 
 	void Scene::FixedUpdate()
 	{
 		for (auto& object : m_Objects)
-			object->FixedUpdate();
+		{
+			if (object->IsActiveInHierarchy())
+				object->Update();
+		}
 	}
 
 	void JRE::Scene::Cleanup()

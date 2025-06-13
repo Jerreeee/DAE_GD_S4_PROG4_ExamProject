@@ -4,8 +4,8 @@
 //Z = Zenchan, format: x,y
 
 //Players
-P 92,620,true
-P 676,620,false
+P 92,600,true
+P 676,600,false
 
 //ZenChans
 Z 360,150

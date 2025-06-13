@@ -68,6 +68,8 @@ namespace JRE
 		if (m_IsUpdating) return;
 
 		auto it = m_Scenes.find(m_NewSceneName);
+		if (it == m_Scenes.end())
+			throw std::runtime_error("Scene not found: " + m_NewSceneName);
 		auto& newScene = *it->second;
 
 		if (m_SceneLoaded)
@@ -75,14 +77,18 @@ namespace JRE
 			auto& oldScene = *m_Scenes[m_CurrentSceneName];
 			TransferPersistantObjects(oldScene, newScene);
 			oldScene.Cleanup();
+			oldScene.SetActive(false);
 		}
 
+		newScene.SetActive(true);
 		m_CurrentSceneName = m_NewSceneName;
-		newScene.Start();
 		m_SceneLoaded = true;
 		m_LoadNewScene = false;
 		if (m_LoadCallback)
+		{
 			m_LoadCallback(newScene);
+			m_LoadCallback = nullptr;
+		}
 	}
 
 	void SceneManager::TransferPersistantObjects(Scene& srcScene, Scene& dstScene)

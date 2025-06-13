@@ -21,8 +21,7 @@ namespace JRE
 		Scene& operator=(const Scene& other) = delete;
 		Scene& operator=(Scene&& other) = delete;
 
-
-		void Start();
+		void SetActive(bool active);
 		void Update();
 		void FixedUpdate();
 		void Cleanup();
@@ -56,6 +55,7 @@ namespace JRE
 	private:
 		friend class SceneManager;
 
+		bool m_IsActive{};
 		std::string m_Name;
 		uint32_t m_PersistenceScope{};
 		std::vector<std::unique_ptr<GameObject>> m_Objects;

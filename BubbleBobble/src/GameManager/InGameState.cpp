@@ -10,7 +10,7 @@
 #include "Player/PlayerBuilder.h"
 #include "Enemies/Zenchan/ZenchanBuilder.h"
 #include "TileMap/TileMapComponent.h"
-#include "InGameState.h"
+#include "GameManager/InGameState.h"
 
 using namespace JRE;
 using namespace JRE::Input;
@@ -23,42 +23,18 @@ namespace BubbleBobble
 	}
 	void InGameState::OnEnter()
 	{
-		auto& im = InputManager::GetInstance();
-
 		//GameMode mode = m_GameManagerComponent.GetGameMode();
 
 		//Callback exectued only when the 1st level is loaded
 		//This creates the player,UI gameObjects's
-		m_LoadCallback = [&](Scene& scene) -> void {
-			//Create actionMap for the player and set bindings
-			size_t actionMapIdx = im.AddActionMap({ 0 });
-			im.BindCommand(actionMapIdx, "MoveLeft", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::A, KeyState::Pressed));
-			im.BindCommand(actionMapIdx, "MoveRight", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::D, KeyState::Pressed));
-			im.BindCommand(actionMapIdx, "Jump", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::W, KeyState::DownThisFrame));
-			im.BindCommand(actionMapIdx, "Shoot", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::F, KeyState::DownThisFrame));
-
-			//Create player(s) for gameMode
-			auto pPlayer = std::make_unique<GameObject>("Player");
-			PlayerBuilder()
-				.SetAnimationPath("Anims/P1.txt")
-				.SetActionMapIdx(actionMapIdx)
-				.Build(pPlayer);
-
-			auto playerScriptCmp = pPlayer->GetComponent<PlayerScriptComponent>();
-			playerScriptCmp->OnPlayerLostLive.AddObserver(this);
-
-			UIBuilder(scene)
-				.SetPlayer1(*pPlayer)
-				.Build();
-
-			scene.Add(std::move(pPlayer));
-			SetPlayerToSpawnPos();
-
-			CreateEnemies();
+		SceneManager::OnSceneLoadCallBack loadCallback = [&](Scene& scene) -> void {
+			CreatePlayerAndUI(scene);
+			SetPlayerToSpawnPos(scene);
+			CreateEnemies(scene);
 			};
 
 		//Load 1st level
-		GoToNextLevel(m_LoadCallback);
+		GoToNextLevel(loadCallback);
 	}
 	GameState InGameState::Update()
 	{
@@ -79,7 +55,14 @@ namespace BubbleBobble
 			if (args.health <= 0)
 				m_PlayerDied = true;
 			else
-				SetPlayerToSpawnPos();
+			{
+				SceneManager::OnSceneLoadCallBack loadCallback = [&](Scene& scene) -> void {
+					SetPlayerToSpawnPos(scene);
+					CreateEnemies(scene);
+					};
+				GoToNextLevel(loadCallback);
+				//SetPlayerToSpawnPos();
+			}
 			break;
 		}
 		}
@@ -105,11 +88,8 @@ namespace BubbleBobble
 
 		sm.SetNextScene(levelName, loadCallback);
 	}
-	void InGameState::SetPlayerToSpawnPos()
+	void InGameState::SetPlayerToSpawnPos(Scene& scene)
 	{
-		auto& sm = SceneManager::GetInstance();
-		Scene& scene = sm.GetCurrentScene();
-
 		//1) Find player in gameObjects (with tag, or PlayerScriptComponent)
 		auto pPlayer = scene.GetGameObjectByComponentType<PlayerScriptComponent>();
 		assert(pPlayer && "Couldn't find the player gameObject in the scene");
@@ -120,11 +100,35 @@ namespace BubbleBobble
 		glm::vec2 spawnPos = pLevelDataCmp->m_LevelData->players[0];
 		pPlayer->SetWorldPosition(spawnPos.x, spawnPos.y);
 	}
-	void InGameState::CreateEnemies()
+	void InGameState::CreatePlayerAndUI(Scene& scene)
 	{
-		auto& sm = SceneManager::GetInstance();
-		Scene& scene = sm.GetCurrentScene();
+		auto& im = InputManager::GetInstance();
 
+		//Create actionMap for the player and set bindings
+		size_t actionMapIdx = im.AddActionMap({ 0 });
+		im.BindCommand(actionMapIdx, "MoveLeft", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::A, KeyState::Pressed));
+		im.BindCommand(actionMapIdx, "MoveRight", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::D, KeyState::Pressed));
+		im.BindCommand(actionMapIdx, "Jump", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::W, KeyState::DownThisFrame));
+		im.BindCommand(actionMapIdx, "Shoot", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::F, KeyState::DownThisFrame));
+
+		//Create player(s) for gameMode
+		auto pPlayer = std::make_unique<GameObject>("Player");
+		PlayerBuilder()
+			.SetAnimationPath("Anims/P1.txt")
+			.SetActionMapIdx(actionMapIdx)
+			.Build(pPlayer);
+
+		auto playerScriptCmp = pPlayer->GetComponent<PlayerScriptComponent>();
+		playerScriptCmp->OnPlayerLostLive.AddObserver(this);
+
+		UIBuilder(scene)
+			.SetPlayer1(*pPlayer)
+			.Build();
+
+		scene.Add(std::move(pPlayer));
+	}
+	void InGameState::CreateEnemies(Scene& scene)
+	{
 		//1) Find LevelData
 		auto pLevelDataCmp = scene.GetComponent<LevelDataComponent>();
 		const auto& enemies = pLevelDataCmp->m_LevelData->enemies;

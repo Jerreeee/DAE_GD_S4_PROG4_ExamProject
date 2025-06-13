@@ -13,9 +13,6 @@ namespace JRE
 	void GameObject::Start()
 	{
 		if (m_ExecutedStart) return;
-
-		//TODO not ideal because Start() is only used by ScriptComponents
-		//but simple fix for now
 		for (const auto& component : m_Components)
 			component->Start();
 		m_ExecutedStart = true;
@@ -55,6 +52,15 @@ namespace JRE
 		return m_IsDestroyed;
 	}
 
+	void GameObject::SetActive(bool active)
+	{
+		if (m_IsActive != active)
+		{
+			m_IsActive = active;
+			UpdateActiveInHierarchy();
+		}
+	}
+
 	void GameObject::SetLocalPosition(float x, float y)
 	{
 		m_LocalTransform.SetPosition(x, y, 0.0f);
@@ -92,6 +98,8 @@ namespace JRE
 		m_pParent = pParent;
 		if (m_pParent)
 			m_pParent->AddChild(this);
+
+		UpdateActiveInHierarchy();
 	}
 	size_t GameObject::GetChildCount() const
 	{
@@ -154,6 +162,32 @@ namespace JRE
 	void GameObject::AddChild(GameObject* pChild)
 	{
 		m_Children.emplace_back(pChild);
+	}
+	void GameObject::UpdateActiveInHierarchy()
+	{
+		bool parentActive = m_pParent ? m_pParent->IsActiveInHierarchy() : true;
+		bool newActive = m_IsActive && parentActive;
+
+		if (newActive == m_IsActiveInHierarchy) return;
+
+		m_IsActiveInHierarchy = newActive;
+
+		if (m_IsActiveInHierarchy)
+		{
+			if (!m_ExecutedStart)
+				Start();
+
+			for (auto& comp : m_Components)
+				comp->OnEnable();
+		}
+		else
+		{
+			for (auto& comp : m_Components)
+				comp->OnDisable();
+		}
+
+		for (auto* child : m_Children)
+			child->UpdateActiveInHierarchy();
 	}
 	void GameObject::RemoveChild(GameObject* pChild)
 	{
