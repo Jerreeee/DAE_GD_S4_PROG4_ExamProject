@@ -109,7 +109,7 @@ namespace BubbleBobble
 	void PlayerScriptComponent::MoveCollider()
 	{
 		glm::vec3 oldPos = GetGameObject().GetWorldPosition();
-
+		std::cout << "OldPos x: " << oldPos.x << " , y: " << oldPos.y << "\n";
 		BoxPhysicsSystem::CollisionSettings cs{ oldPos, *m_pBox2DColliderCmp };
 		cs.dt = Timer::GetInstance().GetFixedTimeStep();
 		cs.applyGravity = true;

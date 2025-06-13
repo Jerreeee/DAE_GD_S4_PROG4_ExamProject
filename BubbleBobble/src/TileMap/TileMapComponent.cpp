@@ -35,6 +35,7 @@ namespace BubbleBobble
     {
         if (!m_RegisteredColliders) return;
         ServiceLocator::GetPhysicsSystem().UnegisterStaticCollidersByGroup(m_StaticCollisionGruop, true);
+        m_RegisteredColliders = false;
     }
     void TileMapComponent::Render() const
     {
