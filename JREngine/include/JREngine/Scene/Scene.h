@@ -14,7 +14,7 @@ namespace JRE
 	class Scene final
 	{
 	public:
-		explicit Scene(const std::string& name);
+		explicit Scene(const std::string& name, uint32_t persistenceScope = 0);
 		~Scene();
 		Scene(const Scene& other) = delete;
 		Scene(Scene&& other) = delete;
@@ -30,6 +30,7 @@ namespace JRE
 		void Add(std::unique_ptr<GameObject> object);
 		void Remove(GameObject* object);
 		void RemoveAll();
+		uint32_t GetPersistenceScope() const { return m_PersistenceScope; };
 
 		template<DerivedFromComponentBase ComponentType>
 		GameObject* GetGameObjectByComponentType()
@@ -56,6 +57,7 @@ namespace JRE
 		friend class SceneManager;
 
 		std::string m_Name;
+		uint32_t m_PersistenceScope{};
 		std::vector<std::unique_ptr<GameObject>> m_Objects;
 		static unsigned int m_IdCounter; 
 		std::vector<RendererComponentBase*> m_RendererComponents{};

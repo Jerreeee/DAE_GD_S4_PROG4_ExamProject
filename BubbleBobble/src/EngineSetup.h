@@ -18,4 +18,17 @@ namespace BubbleBobble
 		static constexpr uint32_t StaticLevel = CollisionLayer::Friendly | CollisionLayer::Enemy;
 		static constexpr uint32_t Platform = CollisionLayer::Friendly | CollisionLayer::Enemy;
 	};
+
+	struct PersistenceLayer
+	{
+		static constexpr uint32_t None = 1 << 0;
+		static constexpr uint32_t InGame = 1 << 1;
+		static constexpr uint32_t Global = 1 << 2;
+	};
+
+	struct PersistenceMask
+	{
+		static constexpr uint32_t InGameScene = PersistenceLayer::InGame | PersistenceLayer::Global;
+		static constexpr uint32_t MenuScene = PersistenceLayer::Global;
+	};
 }

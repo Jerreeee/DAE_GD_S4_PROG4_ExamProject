@@ -7,7 +7,7 @@
 #include "JREngine/Physics/Box2DColliderComponent.h"
 
 #include "Utils.h"
-#include "CollisionLayers.h"
+#include "EngineSetup.h"
 #include "Components/HealthComponent.h"
 #include "Player/PlayerScriptComponent.h"
 #include "Player/PlayerController.h"
@@ -32,7 +32,7 @@ namespace BubbleBobble
 	{
         assert(m_ActionMapIdx != -1 && "Invalid actionMapIdx");
 
-        player->m_Persistant = true;
+        player->m_PersistenceScope = PersistenceLayer::InGame;
         player->AddComponent<JRE::SpriteRendererComponent>();
         auto pSpriteAnimatorCmp = player->AddComponent<JRE::SpriteAnimatorComponent>();
         Utils::AddAnimsToSpriteAnimatorComponent(m_AnimPath, *pSpriteAnimatorCmp);

@@ -1,7 +1,7 @@
 #include <filesystem>
-#include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Input/InputManager.h"
 
+#include "EngineSetup.h"
 #include "SceneBuilders/UIBuilder.h"
 #include "Player/PlayerScriptComponent.h"
 #include "SceneBuilders/LevelBuilder.h"
@@ -23,40 +23,42 @@ namespace BubbleBobble
 	}
 	void InGameState::OnEnter()
 	{
-		auto& sm = SceneManager::GetInstance();
 		auto& im = InputManager::GetInstance();
 
 		//GameMode mode = m_GameManagerComponent.GetGameMode();
 
-		//Create actionMap for the player and set bindings
-		size_t actionMapIdx = im.AddActionMap({ 0 });
-		im.BindCommand(actionMapIdx, "MoveLeft", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::A, KeyState::Pressed));
-		im.BindCommand(actionMapIdx, "MoveRight", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::D, KeyState::Pressed));
-		im.BindCommand(actionMapIdx, "Jump", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::W, KeyState::DownThisFrame));
-		im.BindCommand(actionMapIdx, "Shoot", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::F, KeyState::DownThisFrame));
+		//Callback exectued only when the 1st level is loaded
+		//This creates the player,UI gameObjects's
+		m_LoadCallback = [&](Scene& scene) -> void {
+			//Create actionMap for the player and set bindings
+			size_t actionMapIdx = im.AddActionMap({ 0 });
+			im.BindCommand(actionMapIdx, "MoveLeft", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::A, KeyState::Pressed));
+			im.BindCommand(actionMapIdx, "MoveRight", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::D, KeyState::Pressed));
+			im.BindCommand(actionMapIdx, "Jump", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::W, KeyState::DownThisFrame));
+			im.BindCommand(actionMapIdx, "Shoot", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::F, KeyState::DownThisFrame));
+
+			//Create player(s) for gameMode
+			auto pPlayer = std::make_unique<GameObject>("Player");
+			PlayerBuilder()
+				.SetAnimationPath("Anims/P1.txt")
+				.SetActionMapIdx(actionMapIdx)
+				.Build(pPlayer);
+
+			auto playerScriptCmp = pPlayer->GetComponent<PlayerScriptComponent>();
+			playerScriptCmp->OnPlayerLostLive.AddObserver(this);
+
+			UIBuilder(scene)
+				.SetPlayer1(*pPlayer)
+				.Build();
+
+			scene.Add(std::move(pPlayer));
+			SetPlayerToSpawnPos();
+
+			CreateEnemies();
+			};
 
 		//Load 1st level
-		GoToNextLevel();
-		Scene& scene = sm.GetCurrentScene();
-
-		//Create player(s) for gameMode
-		auto pPlayer = std::make_unique<GameObject>("Player");
-		PlayerBuilder()
-			.SetAnimationPath("Anims/P1.txt")
-			.SetActionMapIdx(actionMapIdx)
-			.Build(pPlayer);
-
-		auto playerScriptCmp = pPlayer->GetComponent<PlayerScriptComponent>();
-		playerScriptCmp->OnPlayerLostLive.AddObserver(this);
-
-		UIBuilder(scene)
-			.SetPlayer1(*pPlayer)
-			.Build();
-
-		sm.GetCurrentScene().Add(std::move(pPlayer));
-		SetPlayerToSpawnPos();
-
-		CreateEnemies();
+		GoToNextLevel(m_LoadCallback);
 	}
 	GameState InGameState::Update()
 	{
@@ -82,7 +84,7 @@ namespace BubbleBobble
 		}
 		}
 	}
-	void InGameState::GoToNextLevel()
+	void InGameState::GoToNextLevel(JRE::SceneManager::OnSceneLoadCallBack loadCallback)
 	{
 		++m_LevelIdx;
 		if (m_LevelIdx > m_NrLevels)
@@ -94,10 +96,14 @@ namespace BubbleBobble
 		std::string sLevelIdx = std::to_string(m_LevelIdx);
 		std::string path{"Data/Levels/" + sLevelIdx };
 		std::string levelName{ "Level_" + sLevelIdx };
-		auto& levelScene = sm.CreateScene(levelName);
-		LevelBuilder(levelScene, path).Build();
 
-		sm.SetNextScene(levelName, true);
+		if (!sm.HasScene(levelName))
+		{
+			auto& levelScene = sm.CreateScene(levelName, PersistenceMask::InGameScene);
+			LevelBuilder(levelScene, path).Build();
+		}
+
+		sm.SetNextScene(levelName, loadCallback);
 	}
 	void InGameState::SetPlayerToSpawnPos()
 	{

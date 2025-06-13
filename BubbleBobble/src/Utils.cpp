@@ -4,7 +4,7 @@
 #include "JREngine/Asset/TextureImporter.h"
 #include "JREngine/Animation/SpriteAnimatorComponent.h"
 
-#include "CollisionLayers.h"
+#include "EngineSetup.h"
 #include "Assets/AnimsDataImporter.h"
 #include "Utils.h"
 

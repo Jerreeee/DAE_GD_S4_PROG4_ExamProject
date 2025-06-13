@@ -1,6 +1,7 @@
 #pragma once
 #include "JREngine/Core/Event.h"
 #include "GameManager/IGameState.h"
+#include "JREngine/Scene/SceneManager.h"
 
 namespace BubbleBobble
 {
@@ -15,12 +16,14 @@ namespace BubbleBobble
 
 		virtual void OnNotify(JRE::EventInfo& event) override;
 	private:
-		void GoToNextLevel();
+		void GoToNextLevel(JRE::SceneManager::OnSceneLoadCallBack loadCallback = {});
 		void SetPlayerToSpawnPos();
 		void CreateEnemies();
 		
 		int m_NrLevels{ 3 };
 		int m_LevelIdx{ 0 };
 		bool m_PlayerDied{};
+		
+		JRE::SceneManager::OnSceneLoadCallBack m_LoadCallback{};
 	};
 }

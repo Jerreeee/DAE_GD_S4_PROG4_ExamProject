@@ -6,7 +6,7 @@
 #include "JREngine/Scene/Scene.h"
 
 #include "Utils.h"
-#include "CollisionLayers.h"
+#include "EngineSetup.h"
 #include "Player/PlayerScriptComponent.h"
 
 using namespace JRE;

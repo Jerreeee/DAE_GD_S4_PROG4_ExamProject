@@ -8,7 +8,7 @@ set(SOURCE_FILES
     "Events.h"
     "Utils.h"
     "Utils.cpp"
-    "CollisionLayers.h"
+    "EngineSetup.h"
 
     "GameManager/GameManagerComponent.h"
     "GameManager/GameManagerComponent.cpp"

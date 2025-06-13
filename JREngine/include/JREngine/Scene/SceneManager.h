@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include <map>
+#include <functional>
 #include "JREngine/Core/Singleton.h"
 
 namespace JRE
@@ -11,14 +12,16 @@ namespace JRE
 	class SceneManager final : public Singleton<SceneManager>
 	{
 	public:
-		Scene& CreateScene(const std::string& name);
+		Scene& CreateScene(const std::string& name, uint32_t persistenceScope = 0);
 
 		void Start();
 		void Update();
 		void FixedUpdate();
 		void Cleanup();
 
-		void SetNextScene(const std::string& name, bool force = false);
+		bool HasScene(const std::string& name);
+		using OnSceneLoadCallBack = std::function<void(Scene& scene)>;
+		void SetNextScene(const std::string& name, OnSceneLoadCallBack loadCallback = {});
 		Scene& GetCurrentScene() const;
 	private:
 		friend class Singleton<SceneManager>;
@@ -33,6 +36,7 @@ namespace JRE
 		bool m_LoadNewScene{};
 		std::string m_CurrentSceneName{};
 		std::string m_NewSceneName{};
+		OnSceneLoadCallBack m_LoadCallback{};
 		std::map<std::string, std::unique_ptr<Scene>> m_Scenes;
 	};
 }

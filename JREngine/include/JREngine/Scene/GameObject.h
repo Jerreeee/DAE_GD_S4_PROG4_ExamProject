@@ -86,7 +86,7 @@ namespace JRE
 		void SetLocalPosition(float x, float y);
 		void SetLocalPosition(const glm::vec3& position);
 
-		bool m_Persistant = false;
+		uint32_t m_PersistenceScope{0};
 	private:
 		//-----------------------
 		//Functions

@@ -31,15 +31,22 @@ namespace JRE
 		m_Scenes[m_CurrentSceneName]->Cleanup();
 	}
 
-	void SceneManager::SetNextScene(const std::string& name, bool force)
+	bool SceneManager::HasScene(const std::string& name)
+	{
+		auto it = m_Scenes.find(name);
+		return it != m_Scenes.end();
+	}
+
+	void SceneManager::SetNextScene(const std::string& name, OnSceneLoadCallBack loadCallback)
 	{
 		if (name == m_CurrentSceneName) return;
 
 		auto it = m_Scenes.find(name);
 		assert(it != m_Scenes.end() && "Invalid scene name");
 		m_NewSceneName = name;
+		m_LoadCallback = loadCallback;
 
-		if (!force && m_IsUpdating) //defer scene loading to begin of next Update()
+		if (m_IsUpdating) //defer scene loading to begin of next Update()
 			m_LoadNewScene = true;
 		else //immediatly load new scene
 			LoadNewScene();
@@ -58,6 +65,8 @@ namespace JRE
 
 	void SceneManager::LoadNewScene()
 	{
+		if (m_IsUpdating) return;
+
 		auto it = m_Scenes.find(m_NewSceneName);
 		auto& newScene = *it->second;
 
@@ -72,14 +81,19 @@ namespace JRE
 		newScene.Start();
 		m_SceneLoaded = true;
 		m_LoadNewScene = false;
+		if (m_LoadCallback)
+			m_LoadCallback(newScene);
 	}
 
 	void SceneManager::TransferPersistantObjects(Scene& srcScene, Scene& dstScene)
 	{
+		uint32_t dstPersistenceScope = dstScene.GetPersistenceScope();
+		if (!dstPersistenceScope) return;
+
 		auto& objects = srcScene.m_Objects;
 		auto it = std::remove_if(objects.begin(), objects.end(),
 			[&](std::unique_ptr<GameObject>& go) {
-				bool remove = go->m_Persistant;
+				bool remove = go->m_PersistenceScope & dstPersistenceScope;
 				if (remove)
 					dstScene.Add(std::move(go));
 				return remove;
@@ -87,9 +101,9 @@ namespace JRE
 		objects.erase(it, objects.end());
 	}
 
-	Scene& JRE::SceneManager::CreateScene(const std::string& name)
+	Scene& JRE::SceneManager::CreateScene(const std::string& name, uint32_t persistenceScope)
 	{
-		auto scene = std::unique_ptr<Scene>(new Scene(name));
+		auto scene = std::unique_ptr<Scene>(new Scene(name, persistenceScope));
 		auto pScene = scene.get();
 		m_Scenes.emplace(name, std::move(scene));
 		return *pScene;

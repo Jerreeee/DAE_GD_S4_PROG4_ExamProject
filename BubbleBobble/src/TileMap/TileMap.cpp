@@ -13,7 +13,7 @@
 #include "JREngine/Core/ServiceLocator.h"
 #include "JREngine/Physics/IPhysicsSystem.h"
 
-#include "CollisionLayers.h"
+#include "EngineSetup.h"
 #include "TileMap/TileMap.h"
 
 using namespace JRE;

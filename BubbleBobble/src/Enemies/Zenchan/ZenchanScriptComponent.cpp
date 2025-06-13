@@ -7,7 +7,7 @@
 #include "JREngine/Core/ServiceLocator.h"
 
 #include "Utils.h"
-#include "CollisionLayers.h"
+#include "EngineSetup.h"
 #include "Enemies/Zenchan/ZenchanScriptComponent.h"
 
 using namespace JRE;

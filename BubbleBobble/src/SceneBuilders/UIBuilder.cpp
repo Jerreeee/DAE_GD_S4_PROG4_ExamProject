@@ -3,6 +3,7 @@
 #include "JREngine/Asset/AssetImporter.h"
 #include "JREngine/Asset/TextureImporter.h"
 
+#include "EngineSetup.h"
 #include "Components/HealthComponent.h"
 #include "JREngine/Rendering/TextRendererComponent.h"
 #include "SceneBuilders/UIBuilder.h"
@@ -28,7 +29,7 @@ namespace BubbleBobble
 
 		auto p1HealthCmp = m_pPlayer1->GetComponent<HealthComponent>();
 		auto healthUIGO = std::make_unique<GameObject>("HealthUI");
-		healthUIGO->m_Persistant = true;
+		healthUIGO->m_PersistenceScope = PersistenceLayer::InGame;
 		auto p1HealthUICmp = healthUIGO->AddComponent<HealthUIComponent>(*p1HealthCmp);
 		p1HealthUICmp->SetSprite(SoftAssetRef<Sprite>(sprite));
 		healthUIGO->SetWorldPosition(0.f, 648.f);

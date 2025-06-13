@@ -5,7 +5,7 @@
 #include "JREngine/Physics/Box2DColliderComponent.h"
 
 #include "Utils.h"
-#include "CollisionLayers.h"
+#include "EngineSetup.h"
 #include "Enemies/Zenchan/ZenchanScriptComponent.h"
 #include "Enemies/Zenchan/ZenchanAIController.h"
 #include "Enemies/Zenchan/ZenchanBuilder.h"

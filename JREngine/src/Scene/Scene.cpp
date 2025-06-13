@@ -8,9 +8,10 @@ namespace JRE
 {
 	unsigned int m_idCounter = 0;
 
-	Scene::Scene(const std::string& name) :
-		m_Name(name),
-		m_Objects()
+	Scene::Scene(const std::string& name, uint32_t persistenceScope)
+		: m_Name(name)
+		, m_Objects()
+		, m_PersistenceScope{ persistenceScope }
 	{
 	}
 
