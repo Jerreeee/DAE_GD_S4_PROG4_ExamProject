@@ -1,6 +1,6 @@
 #pragma once
 #include "JREngine/Core/Command.h"
-#include "IGameState.h"
+#include "GameManager/IGameState.h"
 
 namespace BubbleBobble
 {

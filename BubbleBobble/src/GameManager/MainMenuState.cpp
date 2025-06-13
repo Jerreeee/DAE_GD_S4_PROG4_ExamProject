@@ -27,7 +27,7 @@ namespace BubbleBobble
     {   
         Reset();
         InputManager::GetInstance().SetEnableActionMap(m_ActionMapIdx, true);
-        SceneManager::GetInstance().LoadScene(m_Name);
+        SceneManager::GetInstance().SetNextScene(m_Name);
     }
     GameState MainMenuState::Update()
     {

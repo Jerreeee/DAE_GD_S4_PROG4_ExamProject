@@ -48,8 +48,8 @@ namespace BubbleBobble
 		const int centerX = 384;
 		SDL_Color color = { 255, 255, 255, 255 };
 		BuilderHelpers::AddCenteredTxt(m_Scene, "<- FOR SINGLEPLAYER", fontSoftRef, centerX, 520.f, color);
-		BuilderHelpers::AddCenteredTxt(m_Scene, "<- FOR MULTIPLAYER", fontSoftRef, centerX, 560.f, color);
-		BuilderHelpers::AddCenteredTxt(m_Scene, "<- FOR VERSUS", fontSoftRef, centerX, 600.f, color);
+		BuilderHelpers::AddCenteredTxt(m_Scene, "^ FOR MULTIPLAYER", fontSoftRef, centerX, 560.f, color);
+		BuilderHelpers::AddCenteredTxt(m_Scene, "-> FOR VERSUS", fontSoftRef, centerX, 600.f, color);
 
 		m_Scene.Add(std::move(logo));
 	}

@@ -47,7 +47,7 @@ namespace BubbleBobble
 			.Build(pPlayer);
 
 		auto playerScriptCmp = pPlayer->GetComponent<PlayerScriptComponent>();
-		playerScriptCmp->OnPlayerDied.AddObserver(this);
+		playerScriptCmp->OnPlayerLostLive.AddObserver(this);
 
 		UIBuilder(scene)
 			.SetPlayer1(*pPlayer)
@@ -60,6 +60,8 @@ namespace BubbleBobble
 	}
 	GameState InGameState::Update()
 	{
+		if (m_PlayerDied)
+			return GameState::GameOverScreen;
 		return GameState::None;
 	}
 	void InGameState::OnExit()
@@ -69,9 +71,13 @@ namespace BubbleBobble
 	{
 		switch (event.GetID())
 		{
-		case Events::PlayerDied::ID:
+		case Events::PlayerLostLive::ID:
 		{
-			SetPlayerToSpawnPos();
+			auto& args = event.GetArgs<Events::PlayerLostLive>();
+			if (args.health <= 0)
+				m_PlayerDied = true;
+			else
+				SetPlayerToSpawnPos();
 			break;
 		}
 		}
@@ -91,7 +97,7 @@ namespace BubbleBobble
 		auto& levelScene = sm.CreateScene(levelName);
 		LevelBuilder(levelScene, path).Build();
 
-		sm.LoadScene(levelName);
+		sm.SetNextScene(levelName, true);
 	}
 	void InGameState::SetPlayerToSpawnPos()
 	{

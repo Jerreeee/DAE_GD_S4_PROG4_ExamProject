@@ -27,7 +27,8 @@ namespace BubbleBobble
 		auto sprite = CreateAssetRef<Sprite>(SoftAssetRef<Texture2D>(handle));
 
 		auto p1HealthCmp = m_pPlayer1->GetComponent<HealthComponent>();
-		auto healthUIGO = std::make_unique<GameObject>();
+		auto healthUIGO = std::make_unique<GameObject>("HealthUI");
+		healthUIGO->m_Persistant = true;
 		auto p1HealthUICmp = healthUIGO->AddComponent<HealthUIComponent>(*p1HealthCmp);
 		p1HealthUICmp->SetSprite(SoftAssetRef<Sprite>(sprite));
 		healthUIGO->SetWorldPosition(0.f, 648.f);

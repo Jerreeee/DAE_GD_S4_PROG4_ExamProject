@@ -19,6 +19,8 @@ set(SOURCE_FILES
     "GameManager/LoadingScreenState.cpp"
     "GameManager/InGameState.h"
     "GameManager/InGameState.cpp"
+    "GameManager/GameOverScreenState.h"
+    "GameManager/GameOverScreenState.cpp"
 
     "SceneBuilders/BuilderHelpers.h"
     "SceneBuilders/BuilderHelpers.cpp"
@@ -30,6 +32,8 @@ set(SOURCE_FILES
     "SceneBuilders/LevelBuilder.cpp"
     "SceneBuilders/UIBuilder.h"
     "SceneBuilders/UIBuilder.cpp"
+    "SceneBuilders/GameOverScreenBuilder.h"
+    "SceneBuilders/GameOverScreenBuilder.cpp"
 
     "TileMap/TileMapComponent.h"
     "TileMap/TileMapComponent.cpp"

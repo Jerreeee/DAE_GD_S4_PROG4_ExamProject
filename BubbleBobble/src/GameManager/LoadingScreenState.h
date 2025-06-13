@@ -1,5 +1,5 @@
 #pragma once
-#include "IGameState.h"
+#include "GameManager/IGameState.h"
 
 namespace BubbleBobble
 {

@@ -15,9 +15,7 @@ namespace BubbleBobble
 	}
 	void HealthComponent::SetHealth(int health)
 	{
-		if (health < 0 || health > m_MaxHealth)
-			return;
-		m_Health = health;
+		m_Health = std::clamp(health, 0, m_MaxHealth);
 	}
 	void HealthComponent::SetMaxHealth(int maxHealth)
 	{

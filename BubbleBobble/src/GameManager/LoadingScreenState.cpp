@@ -1,7 +1,6 @@
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Core/Timer.h"
 
-#include "GameManagerComponent.h"
 #include "LoadingScreenState.h"
 
 using namespace JRE;
@@ -16,7 +15,7 @@ namespace BubbleBobble
 	{
 		m_Timer = m_MaxTime;
 		auto& sm = SceneManager::GetInstance();
-		sm.LoadScene(m_Name);
+		sm.SetNextScene(m_Name);
 	}
 	GameState LoadingScreenState::Update()
 	{

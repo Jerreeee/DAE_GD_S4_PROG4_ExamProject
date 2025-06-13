@@ -24,10 +24,14 @@ namespace BubbleBobble
 {
 	namespace Events
 	{
-		struct PlayerDied
+		struct PlayerLostLive
 		{
-			static const JRE::EventID ID{ JRE::HashEventID("PlayerDied") };
-			struct Args : public JRE::EventArgs {};
+			static const JRE::EventID ID{ JRE::HashEventID("PlayerLostLive") };
+			struct Args : public JRE::EventArgs
+			{
+				Args(int _newHealth) : health{ _newHealth } {}
+				int health;
+			};
 		};
 	}
 
@@ -45,7 +49,7 @@ namespace BubbleBobble
 		void Move(int direction);
 		void Jump();
 
-		JRE::Event OnPlayerDied{};
+		JRE::Event OnPlayerLostLive{};
 	private:
 		struct Input
 		{

@@ -21,5 +21,6 @@ namespace BubbleBobble
 		
 		int m_NrLevels{ 3 };
 		int m_LevelIdx{ 0 };
+		bool m_PlayerDied{};
 	};
 }

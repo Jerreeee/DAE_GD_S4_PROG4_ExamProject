@@ -25,7 +25,7 @@ namespace BubbleBobble
 		assert(m_pBox2DColliderCmp && "Player doesnt have Box2DColliderComponent");
 		m_pHealthCmp = GetGameObject().GetComponent<HealthComponent>();
 		assert(m_pHealthCmp && "Player doesnt have HealthComponent");
-		m_pHealthCmp->OnHealthChanged.AddObserver(this);
+
 		m_pBox2DColliderCmp->OnCollisionEvent.AddObserver(this);
 
 		m_pShootClipRef = m_pSpriteAnimatorCmp->GetClip("Shoot");
@@ -71,7 +71,6 @@ namespace BubbleBobble
 			auto& args = event.GetArgs<JRE::Events::Box2DCollisionEvent>();
 			if (args.other.GetProperties().layer & CollisionLayer::Enemy)
 			{
-				m_pHealthCmp->TakeDamage(1);
 				m_State = State::Death;
 				m_AnimState = AnimState::Death;
 				m_pSpriteAnimatorCmp->SetActiveClip("Death");
@@ -84,8 +83,9 @@ namespace BubbleBobble
 			auto& args = event.GetArgs<JRE::Events::EndOfClipEvent>();
 			if (args.clip == m_pDeathClipRef.get() && m_State == State::Death)
 			{
-				EventInfo e = CreateEvent<Events::PlayerDied>();
-				OnPlayerDied.Notify(e);
+				m_pHealthCmp->TakeDamage(1);
+				EventInfo e = CreateEvent<Events::PlayerLostLive>(m_pHealthCmp->GetHealth());
+				OnPlayerLostLive.Notify(e);
 				m_State = State::Immortal;
 				m_AnimState = AnimState::Moving;
 				m_ImmortalTimer = m_ImmortalTimerDefault;

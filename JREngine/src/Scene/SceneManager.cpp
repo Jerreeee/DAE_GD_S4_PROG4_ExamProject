@@ -8,14 +8,17 @@ namespace JRE
 {
 	void SceneManager::Start()
 	{
-		auto it = m_Scenes.find(m_StartSceneName);
-		assert(it != m_Scenes.end() && "Invalid start scene name");
-		LoadScene(it->first);
+		assert(m_SceneLoaded && "SceneManager::SetNextScene() must be called before first Update() to load the first Scene");
 	}
 
 	void SceneManager::Update()
 	{
+		if (m_LoadNewScene)
+			LoadNewScene();
+
+		m_IsUpdating = true;
 		m_Scenes[m_CurrentSceneName]->Update();
+		m_IsUpdating = false;
 	}
 
 	void SceneManager::FixedUpdate()
@@ -28,29 +31,18 @@ namespace JRE
 		m_Scenes[m_CurrentSceneName]->Cleanup();
 	}
 
-	void SceneManager::SetStartSceneName(const std::string& name)
-	{
-		m_StartSceneName = name;
-	}
-
-	void SceneManager::LoadScene(const std::string& name)
+	void SceneManager::SetNextScene(const std::string& name, bool force)
 	{
 		if (name == m_CurrentSceneName) return;
 
 		auto it = m_Scenes.find(name);
 		assert(it != m_Scenes.end() && "Invalid scene name");
-		auto& newScene = *it->second;
+		m_NewSceneName = name;
 
-		if (m_SceneLoaded)
-		{
-			auto& oldScene = *m_Scenes[m_CurrentSceneName];
-			TransferPersistantObjects(oldScene, newScene);
-			oldScene.Cleanup();
-		}
-
-		m_CurrentSceneName = name;
-		newScene.Start();
-		m_SceneLoaded = true;
+		if (!force && m_IsUpdating) //defer scene loading to begin of next Update()
+			m_LoadNewScene = true;
+		else //immediatly load new scene
+			LoadNewScene();
 	}
 
 	Scene& SceneManager::GetCurrentScene() const
@@ -63,6 +55,24 @@ namespace JRE
 
 	SceneManager::SceneManager() : m_Scenes() {}
 	SceneManager::~SceneManager() = default;
+
+	void SceneManager::LoadNewScene()
+	{
+		auto it = m_Scenes.find(m_NewSceneName);
+		auto& newScene = *it->second;
+
+		if (m_SceneLoaded)
+		{
+			auto& oldScene = *m_Scenes[m_CurrentSceneName];
+			TransferPersistantObjects(oldScene, newScene);
+			oldScene.Cleanup();
+		}
+
+		m_CurrentSceneName = m_NewSceneName;
+		newScene.Start();
+		m_SceneLoaded = true;
+		m_LoadNewScene = false;
+	}
 
 	void SceneManager::TransferPersistantObjects(Scene& srcScene, Scene& dstScene)
 	{

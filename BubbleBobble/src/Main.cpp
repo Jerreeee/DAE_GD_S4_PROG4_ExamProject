@@ -16,6 +16,7 @@
 	#include "SceneBuilders/MainMenuBuilder.h"
 	#include "SceneBuilders/LoadingScreenBuilder.h"
 	#include "SceneBuilders/LevelBuilder.h"
+	#include "SceneBuilders/GameOverScreenBuilder.h"
 
 	namespace BubbleBobble
 	{
@@ -55,7 +56,9 @@
 
 			auto& loadingMenuScene = sm.CreateScene(gameManagerCmp->GetStateName(GameState::LoadingScreen));
 			LoadingMenuBuilder(loadingMenuScene).Build();
+			auto& gameOverMenuScene = sm.CreateScene(gameManagerCmp->GetStateName(GameState::GameOverScreen));
+			GameOverScreenBuilder(gameOverMenuScene).Build();
 
-			sm.SetStartSceneName(gameManagerCmp->GetStateName(GameState::MainMenu));
+			sm.SetNextScene(gameManagerCmp->GetStateName(GameState::MainMenu));
 		}
 	}
