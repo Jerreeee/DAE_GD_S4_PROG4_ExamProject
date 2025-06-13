@@ -27,11 +27,21 @@ namespace BubbleBobble
 		assert(m_pBox2ColliderCmp && "BubbleScript doesnt ahve Box2DColliderComponent");
 		m_pSpriteAnimCmp = GetGameObject().GetComponent<SpriteAnimatorComponent>();
 		assert(m_pSpriteAnimCmp && "BubbleScript doesnt ahve SpriteAnimatorComponent");
+	}
 
+	void BubbleScript::OnEnable()
+	{
 		m_pBox2ColliderCmp->OnCollisionEvent.AddObserver(this);
-
 		m_pPoofAnimClip = m_pSpriteAnimCmp->GetClip("Poof").get();
 		m_pPoofAnimClip->OnEndOfClipEvent.AddObserver(this);
+	}
+
+	void BubbleScript::OnDisable()
+	{
+		if (m_pBox2ColliderCmp)
+			m_pBox2ColliderCmp->OnCollisionEvent.RemoveObserver(this);
+		if (m_pPoofAnimClip)
+			m_pPoofAnimClip->OnEndOfClipEvent.RemoveObserver(this);
 	}
 
 	void BubbleScript::Update()
@@ -74,7 +84,7 @@ namespace BubbleBobble
 		case JRE::Events::Box2DCollisionEvent::ID:
 		{
 			auto& args = event.GetArgs<JRE::Events::Box2DCollisionEvent>();
-			if (args.other.GetProperties().layer & CollisionLayer::Enemy)
+			if (args.other.GetProperties().layer & CollisionLayer::Enemy && !m_TrappedEnemy)
 			{
 				auto& enemy = args.other.GetOwner();
 				auto pScript = enemy.GetComponent<ZenchanScriptComponent>();
@@ -97,16 +107,21 @@ namespace BubbleBobble
 	void BubbleScript::Trap(ZenchanScriptComponent* enemy)
 	{
 		m_TrappedEnemy = enemy;
-		//enemy->SetTrapped(true);
+		enemy->SetTrappedBy(&GetGameObject());
 		// Possibly change bubble animation
 	}
 
 	void BubbleScript::PopAndKill()
 	{
+		if (m_IsPopping) return; // Prevent re-entry
+		m_IsPopping = true;
+
+		m_pBox2ColliderCmp->SetEnabled(false);
 		m_pSpriteAnimCmp->SetActiveClip("Poof");
+
 		if (m_TrappedEnemy)
 		{
-			//m_TrappedEnemy->Kill();
+			m_TrappedEnemy->Kill();
 			SpawnFood();
 		}
 	}
@@ -114,8 +129,12 @@ namespace BubbleBobble
 	void BubbleScript::Burst()
 	{
 		m_pSpriteAnimCmp->SetActiveClip("Poof");
-		//if (m_TrappedEnemy)
-		//	m_TrappedEnemy->SetTrapped(false);
+		m_pBox2ColliderCmp->SetEnabled(false);
+		if (m_TrappedEnemy)
+		{
+			m_TrappedEnemy->SetTrappedBy(nullptr);
+			m_TrappedEnemy = nullptr;
+		}
 	}
 
 	void BubbleScript::SpawnFood()

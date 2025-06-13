@@ -12,6 +12,19 @@ namespace JRE
 		return m_GameObject;
 	}
 
+	void ComponentBase::SetEnabled(bool enable)
+	{
+		if (m_IsEnabled == enable)
+			return;
+
+		m_IsEnabled = enable;
+
+		if (m_IsEnabled)
+			OnEnable();
+		else
+			OnDisable();
+	}
+
 	void ComponentBase::Destroy()
 	{
 		m_IsDestroyed = true;

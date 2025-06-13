@@ -17,6 +17,8 @@ namespace BubbleBobble
 	public:
 		BubbleScript(JRE::GameObject& gameObject, int direction);
 
+		virtual void OnEnable() override;
+		virtual void OnDisable() override;
 		virtual void Update() override;
 		virtual void FixedUpdate() override;
 		virtual void OnNotify(JRE::EventInfo& event) override;
@@ -30,6 +32,7 @@ namespace BubbleBobble
 		JRE::SpriteAnimatorComponent* m_pSpriteAnimCmp{ nullptr };
 		JRE::SpriteAnimationClip* m_pPoofAnimClip{ nullptr };
 
+		bool m_IsPopping{ false };
 		int m_Direction{};
 		glm::vec2 m_Vel{ 0.f, -50.f };
 		float m_DecX{ 110.f };

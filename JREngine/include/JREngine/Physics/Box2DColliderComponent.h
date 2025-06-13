@@ -1,5 +1,5 @@
 #pragma once
-#include "JREngine/Scene/ComponentBase.h"
+#include "JREngine/Rendering/RendererComponentBase.h"
 #include "JREngine/Core/Observer.h"
 #include "JREngine/Core/Event.h"
 #include "JREngine/Physics/ICollider.h"
@@ -22,7 +22,7 @@ namespace JRE
 		};
 	}
 
-	class Box2DColliderComponent final : public ComponentBase, public ICollider
+	class Box2DColliderComponent final : public RendererComponentBase, public ICollider
 	{
 	public:
 		Box2DColliderComponent(GameObject& gameObject);
@@ -30,6 +30,7 @@ namespace JRE
 		virtual void OnEnable() override;
 		virtual void OnDisable() override;
 		virtual void Update() override {};
+		virtual void Render() const override;
 
 		virtual GameObject& GetOwner() const { return GetGameObject(); };
 		virtual const ICollisionShape& GetShape() const override { return m_Shape; };

@@ -15,19 +15,22 @@ namespace JRE
 		if (m_ExecutedStart) return;
 		for (const auto& component : m_Components)
 			component->Start();
+		//TODO take into acount component->IsEnabled()
 		m_ExecutedStart = true;
 	}
 
 	void GameObject::Update()
 	{
 		for (const auto& component : m_Components)
-			component->Update();
+			if (component->IsEnabled())
+				component->Update();
 	}
 
 	void GameObject::FixedUpdate()
 	{
 		for (const auto& component : m_Components)
-			component->FixedUpdate();
+			if (component->IsEnabled())
+				component->FixedUpdate();
 	}
 
 	void GameObject::Cleanup()

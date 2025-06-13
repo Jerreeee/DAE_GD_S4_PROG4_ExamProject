@@ -21,6 +21,8 @@ namespace JRE
 		virtual void FixedUpdate() {};
 		virtual void OnDisable() {};
 
+		void SetEnabled(bool enable);
+		bool IsEnabled() const { return m_IsEnabled; };
 		void Destroy();
 		bool IsDestroyed() const;
 
@@ -31,6 +33,7 @@ namespace JRE
 		ComponentBase(GameObject& gameObject);
 	private:
 		GameObject& m_GameObject;
+		bool m_IsEnabled{ true };
 		bool m_IsDestroyed{ false };
 	};
 }

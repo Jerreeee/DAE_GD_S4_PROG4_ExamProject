@@ -1,3 +1,4 @@
+#include <iostream>
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Animation/SpriteAnimatorComponent.h"
 #include "JREngine/Rendering/SpriteRendererComponent.h"
@@ -25,6 +26,33 @@ namespace BubbleBobble
 		assert(m_pBox2DColliderCmp && "Player doesnt have Box2DColliderComponent");
 	}
 
+	void ZenchanScriptComponent::Update()
+	{
+		switch (m_State)
+		{
+		case State::Normal:
+		{
+			//Flip sprites based on movement direction
+			if (m_Input.moveDir != 0)
+				m_FacingDir = m_Input.moveDir;
+			m_pSpriteRendererCmp->SetFlipX(m_FacingDir == -1);
+
+			bool onGround = m_CollInfo.collDir.down;
+			if (onGround && m_Input.pressedJump)
+				m_Vel.y = -m_JumpForce;
+
+			m_Input = Input{}; //Consume all input
+			break;
+		}
+		case State::Trapped:
+		{
+			auto pos = glm::vec2(m_pBubble->GetWorldPosition());
+			GetGameObject().SetWorldPosition(pos.x, pos.y);
+			break;
+		}
+		}
+	}
+
 	void ZenchanScriptComponent::FixedUpdate()
 	{
 		glm::vec3 oldPos = GetGameObject().GetWorldPosition();
@@ -43,20 +71,6 @@ namespace BubbleBobble
 		physicsSystem.MoveCollider(cs, m_CollInfo);
 		GetGameObject().SetWorldPosition(m_CollInfo.newPos.x, m_CollInfo.newPos.y);
 		m_Vel = m_CollInfo.velOut;
-
-		//Flip sprites based on movement direction
-		if (m_Input.moveDir != 0)
-			m_FacingDir = m_Input.moveDir;
-		m_pSpriteRendererCmp->SetFlipX(m_FacingDir == -1);
-
-		//bool shoot = im.IsBindingActive(*m_pActionMap, "Shoot");
-		//if (shoot);
-		//	return State::Shooting;
-		bool onGround = m_CollInfo.collDir.down;
-		if (onGround && m_Input.pressedJump)
-			m_Vel.y = -m_JumpForce;
-
-		m_Input = Input{}; //Consume all input
 	}
 
 	void ZenchanScriptComponent::Move(int direction)
@@ -68,5 +82,42 @@ namespace BubbleBobble
 	{
 		if (!m_Input.pressedJump)
 			m_Input.pressedJump = true;
+	}
+	void ZenchanScriptComponent::Kill()
+	{
+		if (GetGameObject().IsDestroyed()) return;
+		EventInfo e = CreateEvent<Events::EnemyDied>(100);
+		OnEnemyDied.Notify(e);
+		GetGameObject().Destroy();
+	}
+
+	void ZenchanScriptComponent::SetTrappedBy(JRE::GameObject* bubble)
+	{
+		if (m_State == State::Normal && bubble)
+		{
+			m_pBubble = bubble;
+			m_State = State::Trapped;
+			m_pBox2DColliderCmp->SetEnabled(false);
+		}
+		else if (m_State == State::Trapped && !bubble)
+		{
+			m_State = State::Normal;
+			m_pBox2DColliderCmp->SetEnabled(true);
+		}
+
+		//if (trapped)
+		//{
+		//	// Stop movement and AI
+		//	// (optional: disable physics, or set to kinematic)
+		//	// Optionally change animation to trapped state
+		//	//auto* animator = GetGameObject().GetComponent<SpriteAnimatorComponent>();
+		//	//if (animator) animator->Play("Trapped");
+		//}
+		//else
+		//{
+		//	// Restore normal behavior
+		//	//auto* animator = GetGameObject().GetComponent<SpriteAnimatorComponent>();
+		//	//if (animator) animator->Play("Walk");
+		//}
 	}
 }

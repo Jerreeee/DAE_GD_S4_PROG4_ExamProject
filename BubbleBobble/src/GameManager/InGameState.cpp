@@ -74,8 +74,8 @@ namespace BubbleBobble
 					SetPlayerToSpawnPos(scene);
 					CreateEnemies(scene);
 					};
-				GoToNextLevel(loadCallback);
-				//SetPlayerToSpawnPos();
+				//GoToNextLevel(loadCallback);
+				SetPlayerToSpawnPos(SceneManager::GetInstance().GetCurrentScene());
 			}
 			break;
 		}
