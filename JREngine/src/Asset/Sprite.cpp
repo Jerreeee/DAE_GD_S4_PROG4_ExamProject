@@ -12,14 +12,14 @@ namespace JRE
         m_UsesWholeTextureRegion{ false },
         m_SrcRegion{ srcRegion }
     {
-        std::cout << "Creating sprite using texturehandle and region\n";
+        //std::cout << "Creating sprite using texturehandle and region\n";
     }
 
     Sprite::Sprite(const SoftAssetRef<Texture2D>& softTextureRef) :
         m_SoftTextureRef{ softTextureRef },
         m_UsesWholeTextureRegion{ true }
     {
-        std::cout << "Creating sprite using texturehandle\n";
+        //std::cout << "Creating sprite using texturehandle\n";
     }
 
     AssetRef<Texture2D> Sprite::GetTexture() const

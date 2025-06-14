@@ -10,6 +10,7 @@
 #include "Player/PlayerBuilder.h"
 #include "Enemies/Zenchan/ZenchanBuilder.h"
 #include "TileMap/TileMapComponent.h"
+#include "Enemies/Zenchan/ZenchanScriptComponent.h"
 #include "GameManager/InGameState.h"
 
 using namespace JRE;
@@ -63,6 +64,12 @@ namespace BubbleBobble
 	{
 		switch (event.GetID())
 		{
+		case JRE::Events::EventDestroyed::ID:
+		{
+			auto& args = event.GetArgs<JRE::Events::EventDestroyed>();
+			args.event.RemoveObserver(this);
+			break;
+		}
 		case Events::PlayerLostLive::ID:
 		{
 			auto& args = event.GetArgs<Events::PlayerLostLive>();
@@ -70,12 +77,22 @@ namespace BubbleBobble
 				m_PlayerDied = true;
 			else
 			{
+				SetPlayerToSpawnPos(SceneManager::GetInstance().GetCurrentScene());
+			}
+			break;
+		}
+		case Events::EnemyDied::ID:
+		{
+			//auto& args = event.GetArgs<Events::EnemyDied>();
+			++m_NrEnemiesKilled;
+			//Go to the next level when all enemies are dead
+			if (m_NrEnemiesKilled >= m_NrEnemiesToKill)
+			{
 				SceneManager::OnSceneLoadCallBack loadCallback = [&](Scene& scene) -> void {
 					SetPlayerToSpawnPos(scene);
 					CreateEnemies(scene);
 					};
-				//GoToNextLevel(loadCallback);
-				SetPlayerToSpawnPos(SceneManager::GetInstance().GetCurrentScene());
+				GoToNextLevel(loadCallback);
 			}
 			break;
 		}
@@ -143,6 +160,7 @@ namespace BubbleBobble
 		assert(pPlayer && "Couldn't find the player gameObject in the scene");
 
 		//3) Create and add all enemies to the scene and set their spawnPos
+		m_NrEnemiesToKill = static_cast<int>(enemies.size());
 		for (const auto& enemy : enemies)
 		{
 			switch (enemy.type)
@@ -154,6 +172,8 @@ namespace BubbleBobble
 					.SetupAIController(pPlayer)
 					.Build(pZenchan);
 				pZenchan->SetWorldPosition(enemy.pos.x, enemy.pos.y);
+				auto zenchanScriptCmp = pZenchan->GetComponent<ZenchanScriptComponent>();
+				zenchanScriptCmp->OnEnemyDied.AddObserver(this);
 				scene.Add(std::move(pZenchan));
 				break;
 			}

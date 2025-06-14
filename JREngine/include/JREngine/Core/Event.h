@@ -56,12 +56,28 @@ namespace JRE
 		return EventInfo(EventType::ID, std::make_unique<typename EventType::Args>(std::forward<Args>(args)...));
 	}
 
+	class Event;
+	namespace Events
+	{
+		struct EventDestroyed
+		{
+			static const JRE::EventID ID{ JRE::HashEventID("EventDestroyed") };
+			struct Args : public JRE::EventArgs
+			{
+				Args(const Event& _event, EventID _ID = 0) : event{ _event }, ID{ _ID } {}
+				const Event& event;
+				EventID ID;
+			};
+		};
+	}
+
 	class Event final
 	{
 	public:
 		void AddObserver(IObserver* pObserver) const;
 		void RemoveObserver(IObserver* pObserver) const;
 		void Notify(EventInfo& event) const;
+		void NotifyDeath() const;
 	private:
 		mutable std::unique_ptr<Observable> m_Observable{ nullptr };
 	};

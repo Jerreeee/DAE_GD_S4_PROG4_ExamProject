@@ -27,33 +27,39 @@ namespace BubbleBobble
 		assert(m_pBox2ColliderCmp && "BubbleScript doesnt ahve Box2DColliderComponent");
 		m_pSpriteAnimCmp = GetGameObject().GetComponent<SpriteAnimatorComponent>();
 		assert(m_pSpriteAnimCmp && "BubbleScript doesnt ahve SpriteAnimatorComponent");
-	}
 
-	void BubbleScript::OnEnable()
-	{
 		m_pBox2ColliderCmp->OnCollisionEvent.AddObserver(this);
 		m_pPoofAnimClip = m_pSpriteAnimCmp->GetClip("Poof").get();
 		m_pPoofAnimClip->OnEndOfClipEvent.AddObserver(this);
 	}
 
+	void BubbleScript::OnEnable()
+	{
+		
+	}
+
 	void BubbleScript::OnDisable()
 	{
-		if (m_pBox2ColliderCmp)
-			m_pBox2ColliderCmp->OnCollisionEvent.RemoveObserver(this);
-		if (m_pPoofAnimClip)
-			m_pPoofAnimClip->OnEndOfClipEvent.RemoveObserver(this);
+		//if (m_pBox2ColliderCmp)
+		//	m_pBox2ColliderCmp->OnCollisionEvent.RemoveObserver(this);
+		//if (m_pPoofAnimClip)
+		//	m_pPoofAnimClip->OnEndOfClipEvent.RemoveObserver(this);
 	}
 
 	void BubbleScript::Update()
 	{
+		if (m_Popped) return;
+
 		float dt = Timer::GetInstance().GetDeltaTime();
 		m_AliveTime += dt;
-		if (m_AliveTime > m_MaxLifeTime && !m_TrappedEnemy)
+		if (m_AliveTime > m_MaxLifeTime)
 			Burst();
 	}
 
 	void BubbleScript::FixedUpdate()
 	{
+		if (m_Popped) return;
+
 		float dt = Timer::GetInstance().GetFixedTimeStep();
 		glm::vec2 pos = GetGameObject().GetWorldPosition();
 
@@ -79,8 +85,16 @@ namespace BubbleBobble
 
 	void BubbleScript::OnNotify(EventInfo& event)
 	{
+		if (GetGameObject().IsDestroyed()) return;
+
 		switch (event.GetID())
 		{
+		case JRE::Events::EventDestroyed::ID:
+		{
+			auto& args = event.GetArgs<JRE::Events::EventDestroyed>();
+			args.event.RemoveObserver(this);
+			break;
+		}
 		case JRE::Events::Box2DCollisionEvent::ID:
 		{
 			auto& args = event.GetArgs<JRE::Events::Box2DCollisionEvent>();
@@ -88,7 +102,12 @@ namespace BubbleBobble
 			{
 				auto& enemy = args.other.GetOwner();
 				auto pScript = enemy.GetComponent<ZenchanScriptComponent>();
-					Trap(pScript);
+				if (!pScript || pScript->IsTrapped())
+					return;
+
+				std::cout << "Setting trapped enemy\n";
+				m_TrappedEnemy = pScript;
+				pScript->SetTrappedBy(&GetGameObject());
 			}
 			else if (args.other.GetProperties().layer & CollisionLayer::Friendly && m_AliveTime > 0.5f)
 				PopAndKill();
@@ -96,55 +115,38 @@ namespace BubbleBobble
 		}
 		case JRE::Events::EndOfClipEvent::ID:
 		{
-			auto& args = event.GetArgs<JRE::Events::EndOfClipEvent>();
-			if (args.clip == m_pPoofAnimClip)
-				GetGameObject().Destroy();
+			//auto& args = event.GetArgs<JRE::Events::EndOfClipEvent>();
+			//if (args.clip == m_pPoofAnimClip)
+			//	GetGameObject().Destroy();
 			break;
 		}
 		}
 	}
 
-	void BubbleScript::Trap(ZenchanScriptComponent* enemy)
-	{
-		m_TrappedEnemy = enemy;
-		enemy->SetTrappedBy(&GetGameObject());
-		// Possibly change bubble animation
-	}
-
 	void BubbleScript::PopAndKill()
 	{
-		if (m_IsPopping) return; // Prevent re-entry
-		m_IsPopping = true;
-
-		m_pBox2ColliderCmp->SetEnabled(false);
-		m_pSpriteAnimCmp->SetActiveClip("Poof");
-
 		if (m_TrappedEnemy)
 		{
+			std::cout << "Calling Kill\n";
+			std::cout << m_TrappedEnemy << "\n";
 			m_TrappedEnemy->Kill();
-			SpawnFood();
+			m_TrappedEnemy = nullptr;
 		}
+		Burst();
 	}
 
 	void BubbleScript::Burst()
 	{
 		m_pSpriteAnimCmp->SetActiveClip("Poof");
-		m_pBox2ColliderCmp->SetEnabled(false);
+		//m_pBox2ColliderCmp->SetEnabled(false);
 		if (m_TrappedEnemy)
 		{
+			std::cout << "Calling Burst\n";
+			std::cout << m_TrappedEnemy << "\n";
 			m_TrappedEnemy->SetTrappedBy(nullptr);
 			m_TrappedEnemy = nullptr;
 		}
-	}
-
-	void BubbleScript::SpawnFood()
-	{
-		//auto food = std::make_unique<GameObject>("Food");
-		//food->SetLocalPosition(GetOwner().GetLocalTransform().position);
-		//food->AddComponent<SpriteRenderer>("food_texture");
-		//// You might want to add a PickupComponent or similar here
-
-		//GetOwner().GetScene()->Add(std::move(food));
+		m_Popped = true;
 	}
 }
 

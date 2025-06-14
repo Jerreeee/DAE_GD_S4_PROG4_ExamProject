@@ -25,6 +25,8 @@ namespace BubbleBobble
 		int m_NrLevels{ 3 };
 		int m_LevelIdx{ 0 };
 		bool m_PlayerDied{};
+		int m_NrEnemiesToKill{};
+		int m_NrEnemiesKilled{};
 		size_t m_P1ActionMapIdx{};
 	};
 }

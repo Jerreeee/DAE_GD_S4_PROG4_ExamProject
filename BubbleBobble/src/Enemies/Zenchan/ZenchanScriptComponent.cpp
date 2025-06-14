@@ -26,6 +26,11 @@ namespace BubbleBobble
 		assert(m_pBox2DColliderCmp && "Player doesnt have Box2DColliderComponent");
 	}
 
+	ZenchanScriptComponent::~ZenchanScriptComponent()
+	{
+		OnEnemyDied.NotifyDeath();
+	}
+
 	void ZenchanScriptComponent::Update()
 	{
 		switch (m_State)
@@ -87,8 +92,14 @@ namespace BubbleBobble
 	{
 		if (GetGameObject().IsDestroyed()) return;
 		EventInfo e = CreateEvent<Events::EnemyDied>(100);
-		OnEnemyDied.Notify(e);
+		if (GetGameObject().GetName() == "Zenchan")
+		{
+			int i = 0;
+			i;
+		}
+		std::cout << "Calling Destroy on: " << &GetGameObject() << "\n";
 		GetGameObject().Destroy();
+		OnEnemyDied.Notify(e);
 	}
 
 	void ZenchanScriptComponent::SetTrappedBy(JRE::GameObject* bubble)
@@ -97,12 +108,10 @@ namespace BubbleBobble
 		{
 			m_pBubble = bubble;
 			m_State = State::Trapped;
-			m_pBox2DColliderCmp->SetEnabled(false);
 		}
 		else if (m_State == State::Trapped && !bubble)
 		{
 			m_State = State::Normal;
-			m_pBox2DColliderCmp->SetEnabled(true);
 		}
 
 		//if (trapped)

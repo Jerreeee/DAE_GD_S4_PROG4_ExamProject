@@ -26,6 +26,7 @@ namespace JRE
 	{
 	public:
 		Box2DColliderComponent(GameObject& gameObject);
+		virtual ~Box2DColliderComponent() override;
 
 		virtual void OnEnable() override;
 		virtual void OnDisable() override;

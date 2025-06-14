@@ -14,7 +14,7 @@ namespace JRE
 {
 	Texture2D::Texture2D(const std::filesystem::path& path)
 	{
-		std::cout << "Creating texture from disk: " << path.string() << "\n";
+		//std::cout << "Creating texture from disk: " << path.string() << "\n";
 		m_texture = IMG_LoadTexture(SDLRenderer::GetInstance().GetSDLRenderer(), path.string().c_str());
 		if (m_texture == nullptr)
 			throw std::runtime_error(std::string("Failed to load texture: ") + SDL_GetError());
@@ -27,7 +27,7 @@ namespace JRE
 
 		auto font = std::static_pointer_cast<Font>(fontAsset);
 
-		std::cout << "Creating texture from font: " << text << "\n";
+		//std::cout << "Creating texture from font: " << text << "\n";
 		const auto surf = TTF_RenderText_Blended(font->GetFont(), text.c_str(), color);
 		if (surf == nullptr)
 			throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());

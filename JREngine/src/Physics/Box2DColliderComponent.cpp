@@ -12,6 +12,10 @@ namespace JRE
 		: RendererComponentBase(gameObject)
 	{
 	}
+	Box2DColliderComponent::~Box2DColliderComponent()
+	{
+		OnCollisionEvent.NotifyDeath();
+	}
 	void Box2DColliderComponent::OnEnable()
 	{
 		ServiceLocator::GetPhysicsSystem().RegisterCollider(this);

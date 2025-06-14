@@ -20,6 +20,12 @@ namespace BubbleBobble
 	{
 		switch (event.GetID())
 		{
+		case JRE::Events::EventDestroyed::ID:
+		{
+			auto& args = event.GetArgs<JRE::Events::EventDestroyed>();
+			args.event.RemoveObserver(this);
+			break;
+		}
 		case JRE::Events::Box2DCollisionEvent::ID:
 		{
 			auto& args = event.GetArgs<JRE::Events::Box2DCollisionEvent>();

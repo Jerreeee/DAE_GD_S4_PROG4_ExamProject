@@ -19,7 +19,6 @@ namespace JRE
 		}
 		return *this;
 	}
-
 	void Event::AddObserver(IObserver* pObserver) const
 	{
 		if (!m_Observable) //lazy heap allocation
@@ -35,5 +34,13 @@ namespace JRE
 	{
 		if (m_Observable)
 			m_Observable->NotifyObservers(event);
+	}
+	void Event::NotifyDeath() const
+	{
+		if (m_Observable)
+		{
+			EventInfo e = CreateEvent<JRE::Events::EventDestroyed>(*this);
+			this->Notify(e);
+		}
 	}
 }

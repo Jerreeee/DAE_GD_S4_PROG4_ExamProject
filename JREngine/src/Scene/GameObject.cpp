@@ -3,6 +3,8 @@
 #include "Asset/ResourceManager.h"
 #include "Rendering/SDLRenderer.h"
 
+#include <iostream>
+
 namespace JRE
 {
 	GameObject::GameObject(const std::string& name)
@@ -47,6 +49,7 @@ namespace JRE
 
 	void GameObject::Destroy()
 	{
+		std::cout << ", pointer: " << this << ", Destroying GameObject: " << m_Name << std::endl;
 		m_IsDestroyed = true;
 		for (const auto& child : m_Children)
 			child->Destroy();

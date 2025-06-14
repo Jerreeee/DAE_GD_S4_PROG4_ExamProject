@@ -10,11 +10,13 @@ namespace JRE
 		for (size_t i = 0; i < m_DynamicColliders.size(); ++i)
 		{
 			ICollider& a = *m_DynamicColliders[i];
+			if (a.GetOwner().IsDestroyed()) continue;
 			const auto& propsA = a.GetProperties();
 
 			for (size_t j = i + 1; j < m_DynamicColliders.size(); ++j)
 			{
 				ICollider& b = *m_DynamicColliders[j];
+				if (b.GetOwner().IsDestroyed()) continue;
 				const auto& propsB = b.GetProperties();
 
 				//Only check collision if layers and masks match

@@ -16,6 +16,7 @@ namespace JRE
 	void Observable::NotifyObservers(EventInfo& event) const
 	{
 		for (const auto& pObserver : m_Observers)
-			pObserver->OnNotify(event);
+			if (pObserver)
+				pObserver->OnNotify(event);
 	}
 }

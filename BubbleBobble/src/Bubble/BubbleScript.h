@@ -23,16 +23,14 @@ namespace BubbleBobble
 		virtual void FixedUpdate() override;
 		virtual void OnNotify(JRE::EventInfo& event) override;
 	private:
-		void Trap(ZenchanScriptComponent* enemy);
 		void PopAndKill();
 		void Burst();
-		void SpawnFood();
 
 		JRE::Box2DColliderComponent* m_pBox2ColliderCmp{ nullptr };
 		JRE::SpriteAnimatorComponent* m_pSpriteAnimCmp{ nullptr };
 		JRE::SpriteAnimationClip* m_pPoofAnimClip{ nullptr };
 
-		bool m_IsPopping{ false };
+		bool m_Popped{ false };
 		int m_Direction{};
 		glm::vec2 m_Vel{ 0.f, -50.f };
 		float m_DecX{ 110.f };

@@ -35,6 +35,11 @@ namespace BubbleBobble
 		m_pDeathClipRef->OnEndOfClipEvent.AddObserver(this);
 	}
 
+	PlayerScriptComponent::~PlayerScriptComponent()
+	{
+		OnPlayerLostLive.NotifyDeath();
+	}
+
 	void PlayerScriptComponent::Update()
 	{
 		float dt = Timer::GetInstance().GetDeltaTime();
@@ -87,6 +92,12 @@ namespace BubbleBobble
 	{
 		switch (event.GetID())
 		{
+		case JRE::Events::EventDestroyed::ID:
+		{
+			auto& args = event.GetArgs<JRE::Events::EventDestroyed>();
+			args.event.RemoveObserver(this);
+			break;
+		}
 		case JRE::Events::Box2DCollisionEvent::ID:
 		{
 			if (m_State != State::Mortal)

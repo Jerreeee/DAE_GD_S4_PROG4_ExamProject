@@ -32,6 +32,7 @@ namespace BubbleBobble
 	{
 	public:
 		ZenchanScriptComponent(JRE::GameObject& gameObject);
+		virtual ~ZenchanScriptComponent() override;
 
 		virtual void Update() override;
 		void FixedUpdate() override;
@@ -41,6 +42,7 @@ namespace BubbleBobble
 
 		void Kill();
 		void SetTrappedBy(JRE::GameObject* bubble);
+		bool IsTrapped() const { return m_State == State::Trapped; }
 
 		const JRE::CollisionInfo& GetCollInfo() const { return m_CollInfo; };
 

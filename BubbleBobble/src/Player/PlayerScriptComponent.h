@@ -40,6 +40,7 @@ namespace BubbleBobble
 	{
 	public:
 		PlayerScriptComponent(JRE::GameObject& gameObject);
+		virtual ~PlayerScriptComponent() override;
 
 		virtual void Update() override;
 		virtual void FixedUpdate() override;
