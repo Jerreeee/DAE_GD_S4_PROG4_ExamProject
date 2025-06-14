@@ -1,7 +1,7 @@
 #include "JREngine/Scene/GameObject.h"
 #include "Physics/Box2DColliderComponent.h"
 #include "Physics/BoxPhysicsSystem.h"
-#include <iostream>
+
 namespace JRE
 {
 	void BoxPhysicsSystem::Update()
@@ -70,16 +70,12 @@ namespace JRE
 		if (!collider || collider->GetShape().GetType() != ColliderShapeType::Box || collider->GetProperties().isStatic)
 			return;
 
-		std::cout << "BoxPhysicsSytemm::RegisterCollider() called for: " << collider->GetOwner().GetName() << ", " << &collider->GetOwner() << "\n";
 		m_DynamicColliders.emplace_back(collider);
 	}
 	void BoxPhysicsSystem::UnregisterCollider(ICollider* const collider)
 	{
 		if (collider)
-		{
-			std::cout << "BoxPhysicsSytemm::UnregisterCollider() called for: " << collider->GetOwner().GetName() << ", " << &collider->GetOwner() << "\n";
 			std::erase(m_DynamicColliders, collider);
-		}
 	}
 	bool BoxPhysicsSystem::MoveCollider(const CollisionSettings& cs, CollisionInfo& ci) const
 	{

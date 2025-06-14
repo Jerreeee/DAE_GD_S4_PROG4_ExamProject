@@ -7,6 +7,8 @@
 #include "JREngine/Physics/BoxPhysicsSystem.h"
 #include "JREngine/Core/Event.h"
 #include "JREngine/Physics/Box2DColliderComponent.h"
+#include "JREngine/Asset/SoftAssetRef.h"
+#include "JREngine/Audio/ISoundClip.h"
 
 #include "Components/HealthComponent.h"
 #include "Player/PlayerUtils.h"
@@ -52,6 +54,8 @@ namespace BubbleBobble
 		void Shoot();
 
 		JRE::Event OnPlayerLostLive{};
+		JRE::SoftAssetRef<JRE::ISoundClip> m_JumpSound{ nullptr };
+		JRE::SoftAssetRef<JRE::ISoundClip> m_ShootSound{ nullptr };
 	private:
 		struct Input
 		{

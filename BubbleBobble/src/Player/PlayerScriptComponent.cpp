@@ -4,6 +4,8 @@
 #include "JREngine/Rendering/SpriteRendererComponent.h"
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Scene/Scene.h"
+#include "JREngine/Core/ServiceLocator.h"
+#include "JREngine/Audio/ISoundSystem.h"
 
 #include "Bubble/BubbleBuilder.h"
 #include "Utils.h"
@@ -71,7 +73,11 @@ namespace BubbleBobble
 
 			bool onGround = m_CollInfo.collDir.down;
 			if (onGround && m_Input.pressedJump)
+			{
 				m_Vel.y = -m_JumpForce;
+				if (m_JumpSound)
+					ServiceLocator::GetSoundSystem().Play(m_JumpSound.Get());
+			}
 
 			m_Input = Input{}; //Consume all input
 			break;
@@ -170,5 +176,7 @@ namespace BubbleBobble
 		glm::vec2 spawnPos = glm::vec2(GetGameObject().GetWorldPosition()) + glm::vec2(m_FacingDir == 1 ? 10.0f : -10.0f, 0.0f);
 		auto bubble = BubbleBuilder().Build(GetGameObject().GetName(), spawnPos, m_FacingDir);
 		SceneManager::GetInstance().GetCurrentScene().Add(std::move(bubble));
+		if (m_ShootSound)
+			ServiceLocator::GetSoundSystem().Play(m_ShootSound.Get());
 	}
 }

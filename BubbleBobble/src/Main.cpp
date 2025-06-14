@@ -42,11 +42,6 @@ namespace BubbleBobble
 {
 	void load()
 	{
-		//auto hitSoundHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::SoundClipImporter("HUD/Select.wav")));
-		//auto softHitSoundRef = JRE::SoftAssetRef<JRE::ISoundClip>(hitSoundHandle);
-		//auto fontHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::FontImporter("Lingua.otf").SetSize(20)));
-		//auto softFontRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
-
 		auto gameManager = std::make_unique<JRE::GameObject>("GameManager");
 		auto gameManagerCmp = gameManager->AddComponent<GameManagerComponent>(GameState::MainMenu);
 		gameManager->m_PersistenceScope = PersistenceLayer::Global;

@@ -36,6 +36,7 @@ namespace JRE
 	}
 	void Box2DColliderComponent::OnCollisionWith(const ICollider& other)
 	{
+		if (!IsEnabled()) return;
 		EventInfo e{ CreateEvent<Events::Box2DCollisionEvent>(*this, other) };
 		OnCollisionEvent.Notify(e);
 	}

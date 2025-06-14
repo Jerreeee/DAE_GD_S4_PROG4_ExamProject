@@ -1,10 +1,14 @@
 #include <fstream>
 #include <sstream>
 
+#include "JREngine/Asset/AssetImporter.h"
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Rendering/SpriteRendererComponent.h"
 #include "JREngine/Animation/SpriteAnimatorComponent.h"
 #include "JREngine/Physics/Box2DColliderComponent.h"
+#include "JREngine/Asset/SoundClipImporter.h"
+#include "JREngine/Asset/ResourceManager.h"
+#include "JREngine/Asset/Asset.h"
 
 #include "Utils.h"
 #include "EngineSetup.h"
@@ -43,9 +47,16 @@ namespace BubbleBobble
         box2DColliderCmp->m_Properties.layer = CollisionLayer::Friendly;
         box2DColliderCmp->m_Properties.mask = CollisionMask::Friendly;
         auto healthCmp = player->AddComponent<HealthComponent>();
-        healthCmp->SetMaxHealth(3);
+        healthCmp->SetMaxHealth(4);
         healthCmp->SetHealth(4);
-        player->AddComponent<PlayerScriptComponent>();
+        auto pPlayerScriptCmp = player->AddComponent<PlayerScriptComponent>();
+
+        //Add Sounds
+        AssetHandle jumpHandle = AssetImporter::GetInstance().ImportAsset(std::move(JRE::SoundClipImporter("Player/Jump.wav")));
+        pPlayerScriptCmp->m_JumpSound = JRE::SoftAssetRef<JRE::ISoundClip>(jumpHandle);
+        AssetHandle shootHandle = AssetImporter::GetInstance().ImportAsset(std::move(JRE::SoundClipImporter("Player/Shoot.wav")));
+        pPlayerScriptCmp->m_ShootSound = JRE::SoftAssetRef<JRE::ISoundClip>(shootHandle);
+
         player->AddComponent<PlayerControllerComponent>(static_cast<size_t>(m_ActionMapIdx));
 	}
 }
