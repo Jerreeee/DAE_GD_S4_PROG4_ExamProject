@@ -99,10 +99,12 @@ namespace BubbleBobble
 		{
 			m_pBubble = bubble;
 			m_State = State::Trapped;
+			m_pBox2DColliderCmp->SetEnabled(false);
 		}
 		else if (m_State == State::Trapped && !bubble)
 		{
 			m_State = State::Normal;
+			m_pBox2DColliderCmp->SetEnabled(true);
 		}
 
 		//if (trapped)
