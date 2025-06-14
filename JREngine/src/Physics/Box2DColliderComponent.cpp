@@ -12,10 +12,6 @@ namespace JRE
 		: RendererComponentBase(gameObject)
 	{
 	}
-	Box2DColliderComponent::~Box2DColliderComponent()
-	{
-		OnCollisionEvent.NotifyDeath();
-	}
 	void Box2DColliderComponent::OnEnable()
 	{
 		ServiceLocator::GetPhysicsSystem().RegisterCollider(this);
@@ -26,12 +22,12 @@ namespace JRE
 	}
 	void Box2DColliderComponent::Render() const
 	{
-		//auto boxShpae = GetBounds();
-		//SDLRenderer::GetInstance().DrawRectangle(static_cast<int>(boxShpae.offset.x),
-		//	static_cast<int>(boxShpae.offset.y),
-		//	static_cast<int>(boxShpae.width),
-		//	static_cast<int>(boxShpae.height),
-		//	SDL_Color{ 255, 0, 0, 255 });
+		auto boxShpae = GetBounds();
+		SDLRenderer::GetInstance().DrawRectangle(static_cast<int>(boxShpae.offset.x),
+			static_cast<int>(boxShpae.offset.y),
+			static_cast<int>(boxShpae.width),
+			static_cast<int>(boxShpae.height),
+			SDL_Color{ 255, 0, 0, 255 });
 	}
 	BoxShape Box2DColliderComponent::GetBounds() const
 	{

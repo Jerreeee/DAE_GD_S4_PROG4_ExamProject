@@ -3,7 +3,7 @@
 #include "JREngine/Scene/ComponentBase.h"
 #include "JREngine/Asset/Asset.h"
 #include "JREngine/Animation/SpriteAnimationClip.h"
-
+#include <iostream>
 namespace JRE
 {
 	class SpriteRendererComponent;
@@ -11,7 +11,10 @@ namespace JRE
 	{
 	public:
 		SpriteAnimatorComponent(GameObject& gameObject);
-
+		~SpriteAnimatorComponent()
+		{
+			std::cout << "Destructor SpriteAnimatorComponent: " << this << "\n";
+		}
 		virtual void Update() override;
 
 		void AddClip(const std::string& name, AssetRef<SpriteAnimationClip> clip, bool setActive = false);

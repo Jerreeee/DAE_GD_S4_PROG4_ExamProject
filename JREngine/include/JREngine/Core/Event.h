@@ -64,9 +64,8 @@ namespace JRE
 			static const JRE::EventID ID{ JRE::HashEventID("EventDestroyed") };
 			struct Args : public JRE::EventArgs
 			{
-				Args(const Event& _event, EventID _ID = 0) : event{ _event }, ID{ _ID } {}
+				Args(const Event& _event) : event{ _event } {}
 				const Event& event;
-				EventID ID;
 			};
 		};
 	}
@@ -74,6 +73,13 @@ namespace JRE
 	class Event final
 	{
 	public:
+		Event() = default;
+		~Event();
+		Event(const Event&) = delete;
+		Event& operator=(const Event&) = delete;
+		Event(Event&&) noexcept = delete;
+		Event& operator=(Event&&) noexcept = delete;
+
 		void AddObserver(IObserver* pObserver) const;
 		void RemoveObserver(IObserver* pObserver) const;
 		void Notify(EventInfo& event) const;

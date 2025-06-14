@@ -16,6 +16,10 @@ namespace BubbleBobble
 
 		m_pBox2DColliderCmp->OnCollisionEvent.AddObserver(this);
 	}
+	PortalScriptComponent::~PortalScriptComponent()
+	{
+		m_pBox2DColliderCmp->OnCollisionEvent.RemoveObserver(this);
+	}
 	void PortalScriptComponent::OnNotify(JRE::EventInfo& event)
 	{
 		switch (event.GetID())

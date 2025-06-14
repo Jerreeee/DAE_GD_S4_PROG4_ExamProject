@@ -9,6 +9,7 @@ namespace JRE
 	void SceneManager::Start()
 	{
 		assert(m_SceneLoaded && "SceneManager::SetNextScene() must be called before first Update() to load the first Scene");
+		m_Running = true;
 	}
 
 	void SceneManager::Update()
@@ -18,17 +19,18 @@ namespace JRE
 
 		m_IsUpdating = true;
 		m_Scenes[m_CurrentSceneName]->Update();
-		m_IsUpdating = false;
 	}
 
 	void SceneManager::FixedUpdate()
 	{
+		m_IsUpdating = true;
 		m_Scenes[m_CurrentSceneName]->FixedUpdate();
 	}
 
 	void SceneManager::Cleanup()
 	{
 		m_Scenes[m_CurrentSceneName]->Cleanup();
+		m_IsUpdating = false;
 	}
 
 	bool SceneManager::HasScene(const std::string& name)
@@ -48,7 +50,7 @@ namespace JRE
 
 		if (m_IsUpdating) //defer scene loading to begin of next Update()
 			m_LoadNewScene = true;
-		else //immediatly load new scene
+		else if (!m_Running) //immediatly load new scene
 			LoadNewScene();
 	}
 

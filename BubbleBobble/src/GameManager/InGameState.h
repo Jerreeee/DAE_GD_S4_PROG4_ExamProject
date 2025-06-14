@@ -10,6 +10,7 @@ namespace BubbleBobble
 	{
 	public:
 		InGameState(GameManagerComponent& gameManagerComponent);
+		virtual ~InGameState() override;
 
 		virtual void OnEnter() override;
 		virtual GameState Update() override;

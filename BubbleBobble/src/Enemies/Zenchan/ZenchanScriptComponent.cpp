@@ -26,11 +26,6 @@ namespace BubbleBobble
 		assert(m_pBox2DColliderCmp && "Player doesnt have Box2DColliderComponent");
 	}
 
-	ZenchanScriptComponent::~ZenchanScriptComponent()
-	{
-		OnEnemyDied.NotifyDeath();
-	}
-
 	void ZenchanScriptComponent::Update()
 	{
 		switch (m_State)
@@ -92,12 +87,6 @@ namespace BubbleBobble
 	{
 		if (GetGameObject().IsDestroyed()) return;
 		EventInfo e = CreateEvent<Events::EnemyDied>(100);
-		if (GetGameObject().GetName() == "Zenchan")
-		{
-			int i = 0;
-			i;
-		}
-		std::cout << "Calling Destroy on: " << &GetGameObject() << "\n";
 		GetGameObject().Destroy();
 		OnEnemyDied.Notify(e);
 	}

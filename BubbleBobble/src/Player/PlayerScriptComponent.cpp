@@ -37,7 +37,8 @@ namespace BubbleBobble
 
 	PlayerScriptComponent::~PlayerScriptComponent()
 	{
-		OnPlayerLostLive.NotifyDeath();
+		m_pShootClipRef->OnEndOfClipEvent.RemoveObserver(this);
+		m_pDeathClipRef->OnEndOfClipEvent.RemoveObserver(this);
 	}
 
 	void PlayerScriptComponent::Update()

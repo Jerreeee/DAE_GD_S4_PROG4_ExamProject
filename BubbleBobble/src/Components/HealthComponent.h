@@ -51,6 +51,7 @@ namespace BubbleBobble
 	{
 	public:
 		HealthUIComponent(JRE::GameObject& gameObject, const HealthComponent& healthCmp);
+		virtual ~HealthUIComponent() override;
 
 		virtual void Render() const override;
 		virtual void OnNotify(JRE::EventInfo& event) override;

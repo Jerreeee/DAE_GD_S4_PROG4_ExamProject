@@ -13,6 +13,7 @@ namespace BubbleBobble
 	{
 	public:
 		PortalScriptComponent(JRE::GameObject& gameObject);
+		virtual ~PortalScriptComponent() override;
 
 		virtual void Update() override {};
 		virtual void OnNotify(JRE::EventInfo& event) override;

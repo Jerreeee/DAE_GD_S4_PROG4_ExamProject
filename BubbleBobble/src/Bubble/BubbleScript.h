@@ -12,13 +12,12 @@ namespace JRE
 namespace BubbleBobble
 {
 	class ZenchanScriptComponent;
-	class BubbleScript : public JRE::ComponentBase, public JRE::IObserver
+	class BubbleScript final : public JRE::ComponentBase, public JRE::IObserver
 	{
 	public:
 		BubbleScript(JRE::GameObject& gameObject, int direction);
+		virtual ~BubbleScript() override;
 
-		virtual void OnEnable() override;
-		virtual void OnDisable() override;
 		virtual void Update() override;
 		virtual void FixedUpdate() override;
 		virtual void OnNotify(JRE::EventInfo& event) override;
@@ -28,7 +27,7 @@ namespace BubbleBobble
 
 		JRE::Box2DColliderComponent* m_pBox2ColliderCmp{ nullptr };
 		JRE::SpriteAnimatorComponent* m_pSpriteAnimCmp{ nullptr };
-		JRE::SpriteAnimationClip* m_pPoofAnimClip{ nullptr };
+		JRE::AssetRef<JRE::SpriteAnimationClip> m_PoofAnimClip{ nullptr };
 
 		bool m_Popped{ false };
 		int m_Direction{};

@@ -3,7 +3,7 @@
 #include "Scene/GameObject.h"
 #include "Scene/SceneManager.h"
 #include "Scene/Scene.h"
-
+#include <iostream>
 namespace JRE
 {
 	unsigned int m_idCounter = 0;
@@ -95,6 +95,7 @@ namespace JRE
 		{
 			if (object->IsDestroyed())
 			{
+				std::cout << "Scene::Clenaup() for: " << object->GetName() << ", " << &object << "\n";
 				object->SetActive(false);
 				UnegisterAllRendererComponents(object);
 			}

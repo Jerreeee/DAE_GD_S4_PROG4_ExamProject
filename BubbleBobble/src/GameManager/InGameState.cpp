@@ -31,6 +31,9 @@ namespace BubbleBobble
 		im.BindCommand(m_P1ActionMapIdx, "Shoot", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::F, KeyState::DownThisFrame));
 		InputManager::GetInstance().SetEnableActionMap(m_P1ActionMapIdx, false);
 	}
+	InGameState::~InGameState()
+	{
+	}
 	void InGameState::OnEnter()
 	{
 		m_LevelIdx = 0;

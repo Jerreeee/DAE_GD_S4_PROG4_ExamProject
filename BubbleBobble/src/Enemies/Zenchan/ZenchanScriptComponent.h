@@ -32,7 +32,6 @@ namespace BubbleBobble
 	{
 	public:
 		ZenchanScriptComponent(JRE::GameObject& gameObject);
-		virtual ~ZenchanScriptComponent() override;
 
 		virtual void Update() override;
 		void FixedUpdate() override;

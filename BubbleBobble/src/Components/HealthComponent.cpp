@@ -37,6 +37,10 @@ namespace BubbleBobble
 	{
 		m_pHealthCmp->OnHealthChanged.AddObserver(this);
 	}
+	HealthUIComponent::~HealthUIComponent()
+	{
+		m_pHealthCmp->OnHealthChanged.RemoveObserver(this);
+	}
 	void HealthUIComponent::Render() const
 	{
 		if (!m_Sprite) return;

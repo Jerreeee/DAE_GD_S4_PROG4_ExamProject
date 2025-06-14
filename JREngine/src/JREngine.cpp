@@ -154,9 +154,7 @@ void JRE::JREngine::RunOneFrame()
 		m_Lag -= m_FixedTimeStep;
 	}
 
-	std::cout << "Update\n";
 	SceneManager::GetInstance().Update();
-	std::cout << "Cleanup\n";
 	SceneManager::GetInstance().Cleanup();
 	SDLRenderer::GetInstance().Render();
 }

@@ -29,21 +29,12 @@ namespace BubbleBobble
 		assert(m_pSpriteAnimCmp && "BubbleScript doesnt ahve SpriteAnimatorComponent");
 
 		m_pBox2ColliderCmp->OnCollisionEvent.AddObserver(this);
-		m_pPoofAnimClip = m_pSpriteAnimCmp->GetClip("Poof").get();
-		m_pPoofAnimClip->OnEndOfClipEvent.AddObserver(this);
+		m_PoofAnimClip = m_pSpriteAnimCmp->GetClip("Poof");
+		m_PoofAnimClip->OnEndOfClipEvent.AddObserver(this);
 	}
 
-	void BubbleScript::OnEnable()
+	BubbleScript::~BubbleScript()
 	{
-		
-	}
-
-	void BubbleScript::OnDisable()
-	{
-		//if (m_pBox2ColliderCmp)
-		//	m_pBox2ColliderCmp->OnCollisionEvent.RemoveObserver(this);
-		//if (m_pPoofAnimClip)
-		//	m_pPoofAnimClip->OnEndOfClipEvent.RemoveObserver(this);
 	}
 
 	void BubbleScript::Update()
@@ -105,7 +96,6 @@ namespace BubbleBobble
 				if (!pScript || pScript->IsTrapped())
 					return;
 
-				std::cout << "Setting trapped enemy\n";
 				m_TrappedEnemy = pScript;
 				pScript->SetTrappedBy(&GetGameObject());
 			}
@@ -115,9 +105,13 @@ namespace BubbleBobble
 		}
 		case JRE::Events::EndOfClipEvent::ID:
 		{
-			//auto& args = event.GetArgs<JRE::Events::EndOfClipEvent>();
-			//if (args.clip == m_pPoofAnimClip)
-			//	GetGameObject().Destroy();
+			auto& args = event.GetArgs<JRE::Events::EndOfClipEvent>();
+			if (args.clip == m_PoofAnimClip.get())
+			{
+				m_pBox2ColliderCmp->OnCollisionEvent.RemoveObserver(this);
+				m_PoofAnimClip->OnEndOfClipEvent.RemoveObserver(this);
+				GetGameObject().Destroy();
+			}
 			break;
 		}
 		}
@@ -127,8 +121,6 @@ namespace BubbleBobble
 	{
 		if (m_TrappedEnemy)
 		{
-			std::cout << "Calling Kill\n";
-			std::cout << m_TrappedEnemy << "\n";
 			m_TrappedEnemy->Kill();
 			m_TrappedEnemy = nullptr;
 		}
@@ -138,11 +130,9 @@ namespace BubbleBobble
 	void BubbleScript::Burst()
 	{
 		m_pSpriteAnimCmp->SetActiveClip("Poof");
-		//m_pBox2ColliderCmp->SetEnabled(false);
+		m_pBox2ColliderCmp->SetEnabled(false);
 		if (m_TrappedEnemy)
 		{
-			std::cout << "Calling Burst\n";
-			std::cout << m_TrappedEnemy << "\n";
 			m_TrappedEnemy->SetTrappedBy(nullptr);
 			m_TrappedEnemy = nullptr;
 		}
