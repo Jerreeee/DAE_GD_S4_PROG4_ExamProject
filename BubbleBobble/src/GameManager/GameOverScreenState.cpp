@@ -14,7 +14,7 @@ namespace BubbleBobble
 		//Setup controls
 		auto& im = InputManager::GetInstance();
 		m_ActionMapIdx = im.AddActionMap({ 0 });
-		im.BindCommand(m_ActionMapIdx, "ReturnToMainMenu", std::make_unique<ReturnToMainMenuCommand>(*this), std::make_unique<KeyboardBindingInfo>(KeyboardKey::Q, KeyState::DownThisFrame));
+		im.BindCommand(m_ActionMapIdx, "ReturnToMainMenu", std::make_unique<ReturnToMainMenuCommand>(*this), std::make_unique<ControllerBindingInfo>(ControllerButton::DPAD_LEFT, ButtonState::DownThisFrame));
 		InputManager::GetInstance().SetEnableActionMap(m_ActionMapIdx, false);
 	}
 	void GameOverScreenState::OnEnter()

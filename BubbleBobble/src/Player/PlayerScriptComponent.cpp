@@ -64,9 +64,9 @@ namespace BubbleBobble
 				else
 					m_pSpriteAnimatorCmp->SetActiveClip("Idle");
 
-				//Flip sprites based on movement direction
-				m_pSpriteRendererCmp->SetFlipX(m_FacingDir == -1);
 			}
+			//Flip sprites based on movement direction
+			m_pSpriteRendererCmp->SetFlipX(m_FacingDir == -1);
 
 			if (m_Input.pressedShoot)
 				ShootBubble(); //TODO add shoot animation
@@ -178,5 +178,7 @@ namespace BubbleBobble
 		SceneManager::GetInstance().GetCurrentScene().Add(std::move(bubble));
 		if (m_ShootSound)
 			ServiceLocator::GetSoundSystem().Play(m_ShootSound.Get());
+		m_pSpriteAnimatorCmp->SetActiveClip("Shoot");
+		m_AnimState = AnimState::Shoot;
 	}
 }

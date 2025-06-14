@@ -55,6 +55,8 @@ namespace BubbleBobble
 
 	void ZenchanScriptComponent::FixedUpdate()
 	{
+		if (m_State != State::Normal) return;
+
 		glm::vec3 oldPos = GetGameObject().GetWorldPosition();
 
 		BoxPhysicsSystem::CollisionSettings cs{ oldPos, *m_pBox2DColliderCmp };

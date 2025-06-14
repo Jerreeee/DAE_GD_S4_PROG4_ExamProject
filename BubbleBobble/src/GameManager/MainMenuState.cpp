@@ -17,7 +17,7 @@ namespace BubbleBobble
         //Setup controls
         auto& im = InputManager::GetInstance();
         m_ActionMapIdx = im.AddActionMap({ 0 });
-        im.BindCommand(m_ActionMapIdx, "StartSinglePlayer", std::make_unique<StartSinglePlayerCommand>(*this), std::make_unique<KeyboardBindingInfo>(KeyboardKey::Q, KeyState::DownThisFrame));
+        im.BindCommand(m_ActionMapIdx, "StartSinglePlayer", std::make_unique<StartSinglePlayerCommand>(*this), std::make_unique<ControllerBindingInfo>(ControllerButton::DPAD_LEFT, ButtonState::DownThisFrame));
         InputManager::GetInstance().SetEnableActionMap(m_ActionMapIdx, false);
 
         BoxPhysicsSystem& physicsSystem = static_cast<BoxPhysicsSystem&>(ServiceLocator::GetPhysicsSystem());

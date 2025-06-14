@@ -9,6 +9,8 @@ namespace JRE::Input
 		virtual DeviceType GetType() const { return GetStaticType(); };
 		static DeviceType GetStaticType() { return DeviceType::Controller; };
 
+		ControllerBindingInfo(ControllerButton _button, ButtonState _state) : button { _button }, buttonState{ _state } {}
+
 		ControllerButton button;
 		ButtonState buttonState;
 	};

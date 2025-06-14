@@ -26,10 +26,15 @@ namespace BubbleBobble
 
 		//Create actionMap for the player and set bindings
 		m_P1ActionMapIdx = im.AddActionMap({ 0 });
-		im.BindCommand(m_P1ActionMapIdx, "MoveLeft", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::A, KeyState::Pressed));
-		im.BindCommand(m_P1ActionMapIdx, "MoveRight", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::D, KeyState::Pressed));
-		im.BindCommand(m_P1ActionMapIdx, "Jump", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::W, KeyState::DownThisFrame));
-		im.BindCommand(m_P1ActionMapIdx, "Shoot", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::F, KeyState::DownThisFrame));
+		//im.BindCommand(m_P1ActionMapIdx, "MoveLeft", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::A, KeyState::Pressed));
+		//im.BindCommand(m_P1ActionMapIdx, "MoveRight", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::D, KeyState::Pressed));
+		//im.BindCommand(m_P1ActionMapIdx, "Jump", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::W, KeyState::DownThisFrame));
+		//im.BindCommand(m_P1ActionMapIdx, "Shoot", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::F, KeyState::DownThisFrame));
+
+		im.BindCommand(m_P1ActionMapIdx, "MoveLeft", nullptr, std::make_unique<ControllerBindingInfo>(ControllerButton::DPAD_LEFT, ButtonState::Pressed));
+		im.BindCommand(m_P1ActionMapIdx, "MoveRight", nullptr, std::make_unique<ControllerBindingInfo>(ControllerButton::DPAD_RIGHT, ButtonState::Pressed));
+		im.BindCommand(m_P1ActionMapIdx, "Jump", nullptr, std::make_unique<ControllerBindingInfo>(ControllerButton::FACE_DOWN, ButtonState::DownThisFrame));
+		im.BindCommand(m_P1ActionMapIdx, "Shoot", nullptr, std::make_unique<ControllerBindingInfo>(ControllerButton::FACE_LEFT, ButtonState::DownThisFrame));
 		InputManager::GetInstance().SetEnableActionMap(m_P1ActionMapIdx, false);
 	}
 	InGameState::~InGameState()

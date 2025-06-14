@@ -73,8 +73,8 @@ namespace JRE::Input
 	}
 	size_t InputManager::AddController()
 	{
-		++m_NrControllers;
 		m_Devices.emplace_back(std::make_unique<XBoxController>(m_NrControllers));
+		++m_NrControllers;
 		return m_Devices.size() - 1;
 	}
 	size_t InputManager::AddActionMap(const std::vector<size_t>& deviceIndices)

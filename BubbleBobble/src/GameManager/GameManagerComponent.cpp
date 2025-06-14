@@ -18,7 +18,8 @@ namespace BubbleBobble
 	{
 		//Register player with the InputManager
 		auto& im = InputManager::GetInstance();
-		im.AddKeyboard();
+		im.AddController();
+		//im.AddKeyboard();
 
 		//Create all the states
 		m_States.emplace_back(std::make_unique<MainMenuState>(*this));
