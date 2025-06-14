@@ -1,5 +1,6 @@
 #include <filesystem>
 #include "JREngine/Input/InputManager.h"
+#include "JREngine/Rendering/TextRendererComponent.h"
 
 #include "EngineSetup.h"
 #include "SceneBuilders/UIBuilder.h"
@@ -36,6 +37,7 @@ namespace BubbleBobble
 	}
 	void InGameState::OnEnter()
 	{
+		m_Score = 0;
 		m_LevelIdx = 0;
 		m_PlayerDied = false;
 		//GameMode mode = m_GameManagerComponent.GetGameMode();
@@ -86,8 +88,11 @@ namespace BubbleBobble
 		}
 		case Events::EnemyDied::ID:
 		{
-			//auto& args = event.GetArgs<Events::EnemyDied>();
+			auto& args = event.GetArgs<Events::EnemyDied>();
 			++m_NrEnemiesKilled;
+			m_Score += args.points;
+			m_pScoreTxtCmp->SetText("Score: " + std::to_string(m_Score));
+
 			//Go to the next level when all enemies are dead
 			if (m_NrEnemiesKilled >= m_NrEnemiesToKill)
 			{
@@ -149,6 +154,8 @@ namespace BubbleBobble
 		UIBuilder(scene)
 			.SetPlayer1(*pPlayer)
 			.Build();
+
+		m_pScoreTxtCmp = scene.GetComponent<JRE::TextRendererComponent>();
 
 		scene.Add(std::move(pPlayer));
 	}

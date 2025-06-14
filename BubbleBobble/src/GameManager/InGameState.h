@@ -4,6 +4,11 @@
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Scene/Scene.h"
 
+namespace JRE
+{
+	class TextRendererComponent;
+}
+
 namespace BubbleBobble
 {
 	class InGameState final : public IGameState, public JRE::IObserver
@@ -23,11 +28,14 @@ namespace BubbleBobble
 		void CreatePlayerAndUI(JRE::Scene& scene);
 		void CreateEnemies(JRE::Scene& scene);
 		
+		int m_Score{};
 		int m_NrLevels{ 3 };
 		int m_LevelIdx{ 0 };
 		bool m_PlayerDied{};
 		int m_NrEnemiesToKill{};
 		int m_NrEnemiesKilled{};
 		size_t m_P1ActionMapIdx{};
+
+		JRE::TextRendererComponent* m_pScoreTxtCmp{};
 	};
 }

@@ -1,7 +1,10 @@
+#include "SDL.h"
+#undef main
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Asset/ResourceManager.h"
 #include "JREngine/Asset/AssetImporter.h"
 #include "JREngine/Asset/TextureImporter.h"
+#include "JREngine/Asset/FontImporter.h"
 
 #include "EngineSetup.h"
 #include "Components/HealthComponent.h"
@@ -34,5 +37,15 @@ namespace BubbleBobble
 		p1HealthUICmp->SetSprite(SoftAssetRef<Sprite>(sprite));
 		healthUIGO->SetWorldPosition(0.f, 648.f);
 		m_Scene.Add(std::move(healthUIGO));
+
+		//load font
+		auto fontImporter = JRE::FontImporter("Fonts/Pixel_NES.otf");
+		fontImporter.SetSize(30);
+		auto fontHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(fontImporter));
+		auto fontSoftRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
+
+		auto score = std::make_unique<GameObject>("Score");
+		score->AddComponent<TextRendererComponent>("Score: 0", fontSoftRef, SDL_Color(255, 0, 0, 255));
+		m_Scene.Add(std::move(score));
 	}
 }
