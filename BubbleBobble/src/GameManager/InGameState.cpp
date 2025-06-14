@@ -26,7 +26,7 @@ namespace BubbleBobble
 
 		//Create actionMap for the player and set bindings
 		m_P1ActionMapIdx = im.AddActionMap({ 0, 1 });
-		im.BindCommand(m_P1ActionMapIdx, "SkipLevel", std::make_unique<SkipLevel>(*this), std::make_unique<KeyboardBindingInfo>(KeyboardKey::F2, KeyState::DownThisFrame));
+		im.BindCommand(m_P1ActionMapIdx, "SkipLevel", std::make_unique<SkipLevel>(*this), std::make_unique<KeyboardBindingInfo>(KeyboardKey::F1, KeyState::DownThisFrame));
 		//im.BindCommand(m_P1ActionMapIdx, "MoveRight", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::D, KeyState::Pressed));
 		//im.BindCommand(m_P1ActionMapIdx, "Jump", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::W, KeyState::DownThisFrame));
 		//im.BindCommand(m_P1ActionMapIdx, "Shoot", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::F, KeyState::DownThisFrame));
