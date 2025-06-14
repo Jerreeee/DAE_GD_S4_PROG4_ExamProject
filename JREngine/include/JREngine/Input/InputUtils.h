@@ -61,10 +61,12 @@ namespace JRE::Input
 		W,
 		X,
 		Y,
-		Z
+		Z,
+		F1,
+		F2
 	};
 
-	const auto MAX_NR_KEYBOARD_KEYS = 1 + static_cast<std::underlying_type_t<KeyboardKey>>(KeyboardKey::Z);
+	const auto MAX_NR_KEYBOARD_KEYS = 1 + static_cast<std::underlying_type_t<KeyboardKey>>(KeyboardKey::F2);
 	
 	enum class ControllerButton : uint8_t
 	{

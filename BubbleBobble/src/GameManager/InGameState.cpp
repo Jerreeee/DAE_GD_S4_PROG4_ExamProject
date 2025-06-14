@@ -25,8 +25,8 @@ namespace BubbleBobble
 		auto& im = InputManager::GetInstance();
 
 		//Create actionMap for the player and set bindings
-		m_P1ActionMapIdx = im.AddActionMap({ 0 });
-		//im.BindCommand(m_P1ActionMapIdx, "MoveLeft", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::A, KeyState::Pressed));
+		m_P1ActionMapIdx = im.AddActionMap({ 0, 1 });
+		im.BindCommand(m_P1ActionMapIdx, "SkipLevel", std::make_unique<SkipLevel>(*this), std::make_unique<KeyboardBindingInfo>(KeyboardKey::F2, KeyState::DownThisFrame));
 		//im.BindCommand(m_P1ActionMapIdx, "MoveRight", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::D, KeyState::Pressed));
 		//im.BindCommand(m_P1ActionMapIdx, "Jump", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::W, KeyState::DownThisFrame));
 		//im.BindCommand(m_P1ActionMapIdx, "Shoot", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::F, KeyState::DownThisFrame));
@@ -194,5 +194,13 @@ namespace BubbleBobble
 			}
 			}
 		}
+	}
+	void InGameState::SkipLevel::Execute()
+	{
+		SceneManager::OnSceneLoadCallBack loadCallback = [&](Scene& scene) -> void {
+			m_State.SetPlayerToSpawnPos(scene);
+			m_State.CreateEnemies(scene);
+			};
+		m_State.GoToNextLevel(loadCallback);
 	}
 }

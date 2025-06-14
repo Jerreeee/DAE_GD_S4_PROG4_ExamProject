@@ -48,10 +48,10 @@ namespace JRE
 		m_NewSceneName = name;
 		m_LoadCallback = loadCallback;
 
-		if (m_IsUpdating) //defer scene loading to begin of next Update()
-			m_LoadNewScene = true;
-		else if (!m_Running) //immediatly load new scene
+		if (!m_Running || !m_IsUpdating)
 			LoadNewScene();
+		else //defer scene loading to begin of next Update()
+			m_LoadNewScene = true;
 	}
 
 	Scene& SceneManager::GetCurrentScene() const

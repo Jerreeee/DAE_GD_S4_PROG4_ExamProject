@@ -90,7 +90,11 @@ namespace JRE::Input
 
 	uint32_t SDLKeyboard::Impl::MapToInternalKey(KeyboardKey key) const
 	{
-		return static_cast<uint32_t>(key) + static_cast<uint32_t>(SDL_SCANCODE_A); //map Button::A-Z -> SDL_SCANCODE_A-Z
+		uint32_t keyVal = static_cast<uint32_t>(key);
+		if (keyVal <= 25)
+			return keyVal + SDL_SCANCODE_A;
+		else
+			return keyVal - 26 + SDL_SCANCODE_F1;
 	}
 
 	JRE::Input::SDLKeyboard::SDLKeyboard() : m_pImpl{ std::make_unique<Impl>() } {};
