@@ -19,7 +19,7 @@ namespace JRE
 		virtual bool IsValidAssetHandle(AssetHandle handle) const = 0;
 		virtual bool IsAssetLoaded(AssetHandle handle) const = 0;
 		virtual AssetRef<Asset> GetAsset(AssetHandle handle, AssetLoadMode loadMode = AssetLoadMode::Unspecified) = 0;
-		virtual AssetHandle AddAsset(AssetRef<Asset> asset) = 0;
+		virtual AssetHandle AddAsset(std::unique_ptr<Asset> asset) = 0;
 	};
 
 	class NullResourceManager final : public IResourceManager

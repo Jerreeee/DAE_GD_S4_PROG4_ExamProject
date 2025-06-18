@@ -57,12 +57,12 @@ namespace JRE
 		return asset;
 	}
 
-	AssetHandle EditorResourceManager::AddAsset(AssetRef<Asset> asset)
+	AssetHandle EditorResourceManager::AddAsset(std::unique_ptr<Asset> asset)
 	{
 		std::lock_guard<std::mutex> lock(m_LoadedAssetsMutex);
 		AssetHandle handle{};
 		std::cout << "Adding asset with UUID: " << uint64_t(handle) << "\n";
-		m_LoadedAssets.emplace(handle, asset);
+		m_LoadedAssets.emplace(handle, std::move(asset));
 		return handle;
 	}
 

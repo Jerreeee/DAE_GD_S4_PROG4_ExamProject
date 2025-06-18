@@ -23,7 +23,7 @@ namespace JRE
 		virtual bool IsValidAssetHandle(AssetHandle handle) const override;
 		virtual bool IsAssetLoaded(AssetHandle handle) const override;
 		virtual AssetRef<Asset> GetAsset(AssetHandle handle, AssetLoadMode loadMode = AssetLoadMode::Unspecified) override;
-		virtual AssetHandle AddAsset(AssetRef<Asset> asset) override;
+		virtual AssetHandle AddAsset(std::unique_ptr<Asset> asset) override;
 	private:
 		struct GenericImportEvent
 		{

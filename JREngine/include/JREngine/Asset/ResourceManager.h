@@ -1,9 +1,7 @@
 #pragma once
-#include <concepts>
-//#include "JREngine/Core/ServiceLocator.h"
-//#include "JREngine/Asset/IResourceManager.h"
-//#include "JREngine/Asset/Asset.h"
-#include "JREngine/Asset/SoftAssetRef.h"
+#include "JREngine/Core/ServiceLocator.h"
+#include "JREngine/Asset/IResourceManager.h"
+#include "JREngine/Asset/Asset.h"
 
 namespace JRE
 {
@@ -34,35 +32,9 @@ namespace JRE
 		}
 
 		//Adds an existing asset and assigns it an AssetHandle
-		static AssetHandle AddAsset(AssetRef<Asset> asset)
+		static AssetHandle AddAsset(std::unique_ptr<Asset> asset)
 		{
-			return GetActive().AddAsset(asset);
+			return GetActive().AddAsset(std::move(asset));
 		}
-
-		//Creates an asset from args and adds it to the ResourceManager
-		template<IsAsset T, typename... Args>
-		static AssetHandle CreateAsset(Args&&... args)
-		{
-			AssetRef<T> asset = JRE::CreateAssetRef<T>(std::forward<Args>(args)...);
-			return GetActive().AddAsset(asset);
-		}
-
-		//Creates an AssetRef<T> from args and adds the asset to the ResourceManager
-		template<IsAsset T, typename... Args>
-		static AssetRef<T> CreateAssetRef(Args&&... args)
-		{
-			AssetRef<T> asset = JRE::CreateAssetRef<T>(std::forward<Args>(args)...);
-			GetActive().AddAsset(asset);
-			return asset;
-		}
-
-		////Creates an AssetRef<T> from args and adds the asset to the ResourceManager
-		//template<IsAsset T, typename... Args>
-		//static SoftAssetRef<T> CreateSoftAssetRef(Args&&... args)
-		//{
-		//	auto asset = CreateRef<T>(std::forward<Args>(args)...);
-		//	auto handle = GetActive().AddAsset(asset);
-		//	return SoftAssetRef<T>(handle, asset);
-		//}
 	};
 }

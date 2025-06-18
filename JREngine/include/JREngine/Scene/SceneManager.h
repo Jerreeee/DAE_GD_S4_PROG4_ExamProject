@@ -20,7 +20,6 @@ namespace JRE
 		void FixedUpdate();
 		void Cleanup();
 
-		void LoadNewScene();
 		bool HasScene(const std::string& name);
 		using OnSceneLoadCallBack = std::function<void(Scene& scene)>;
 		void SetNextScene(const std::string& name, OnSceneLoadCallBack loadCallback = {});
@@ -30,6 +29,7 @@ namespace JRE
 		SceneManager();
 		~SceneManager(); //suppress error: use of undefined type 'Scene'
 
+		void LoadNewScene();
 		void EnsureObjectPersistence(Scene& srcScene, Scene& dstScene);
 
 		bool m_Running{};
