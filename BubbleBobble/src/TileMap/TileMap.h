@@ -17,6 +17,8 @@ namespace BubbleBobble
 	class TileMap final : public JRE::Asset
 	{
 	public:
+		REGISTER_TYPE_HEADER(JRE::Asset);
+
 		struct ColliderInfo
 		{
 			JRE::BoxShape boxShape;
@@ -36,9 +38,6 @@ namespace BubbleBobble
 
 		const std::vector<ColliderInfo>& GetCollisionRects() const { return m_CollisionRects; };
 		const std::vector<SpritePos>& GetDrawInfo() const;
-
-		static constexpr std::string_view GetStaticType() { return "BubbleBobble::TileMap"; };
-		virtual std::string_view GetType() const override { return GetStaticType(); };
 	private:
 		std::vector<SpritePos> m_SpritePositions{};
 		std::vector<JRE::AssetRef<JRE::Sprite>> m_Sprites{};

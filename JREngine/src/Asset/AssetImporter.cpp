@@ -7,7 +7,7 @@ namespace JRE
 	{
 		m_Datapath = dataPath;
 	}
-	bool AssetImporter::RegisterImporter(const std::string_view& typeName, ImportFunc importFunc)
+	bool AssetImporter::RegisterImporter(const std::string& typeName, ImportFunc importFunc)
 	{
 		auto it = s_Importers.find(typeName);
 		if (it != s_Importers.end())

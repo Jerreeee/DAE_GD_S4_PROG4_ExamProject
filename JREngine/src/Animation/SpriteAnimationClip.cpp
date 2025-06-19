@@ -3,6 +3,8 @@
 
 namespace JRE
 {
+	REGISTER_TYPE_SOURCE(SpriteAnimationClip, JRE::Asset, "JRE::SpriteAnimationClip");
+
     SpriteAnimationClip::SpriteAnimationClip(const std::vector<JRE::SoftAssetRef<Sprite>>& sprites, int framesPerSec, bool isPong)
         : m_Sprites{ sprites }
         , m_FramesPerSec{ framesPerSec }

@@ -23,15 +23,14 @@ namespace JRE
 	class SpriteAnimationClip final : public Asset
 	{
 	public:
+		REGISTER_TYPE_HEADER(Asset);
+
 		SpriteAnimationClip(const std::vector<SoftAssetRef<Sprite>>& sprites, int framesPerSec, bool isPong = false);
 
 		void Update();
 		void ResetToStart();
 
 		AssetRef<Sprite> GetCurrentSprite() const;
-
-		static constexpr std::string_view GetStaticType() { return "SpriteAnimationClip"; };
-		virtual std::string_view GetType() const override { return GetStaticType(); };
 
 		Event OnEndOfClipEvent{};
 	private:

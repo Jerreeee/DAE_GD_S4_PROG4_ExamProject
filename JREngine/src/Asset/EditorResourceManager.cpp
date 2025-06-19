@@ -24,8 +24,10 @@ namespace JRE
 
 	AssetRef<Asset> EditorResourceManager::GetAsset(AssetHandle handle, AssetLoadMode loadMode)
 	{
+		AssetRef<Asset> asset = TryGetLoadedAsset(handle);
+
 		//Check if the asset is already loaded. If handle is invalid asset should be nullptr
-		if (auto asset = TryGetLoadedAsset(handle))
+		if (asset)
 			return asset;
 
 		//Check if handle points to a valid asset. If not, we can't do anything so return nullptr.
@@ -40,7 +42,6 @@ namespace JRE
 
 		auto job = StartOrGetAssetJob(handle, metadata, loadMode);
 
-		AssetRef<Asset> asset = nullptr;
 		switch (job->status)
 		{
 		case LoadState::Loaded:

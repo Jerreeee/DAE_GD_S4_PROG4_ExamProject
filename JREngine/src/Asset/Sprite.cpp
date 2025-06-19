@@ -7,6 +7,8 @@
 
 namespace JRE
 {
+    REGISTER_TYPE_SOURCE(Sprite, Asset, "JRE::Sprite");
+
     Sprite::Sprite(const SoftAssetRef<Texture2D>& softTextureRef, const Region& srcRegion) :
         m_SoftTextureRef{ softTextureRef },
         m_UsesWholeTextureRegion{ false },

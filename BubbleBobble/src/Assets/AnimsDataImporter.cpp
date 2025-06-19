@@ -11,7 +11,7 @@ namespace BubbleBobble
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::GetInstance().RegisterImporter(AnimsData::GetStaticType(), AnimDataImporter::ImportAsset);
+			AssetImporter::GetInstance().RegisterImporter(AnimsData::GetStaticTypeName(), AnimDataImporter::ImportAsset);
 			return true;
 		}();
 
@@ -63,6 +63,6 @@ namespace BubbleBobble
 
 	AssetMetadata AnimDataImporter::GetMetadata() const
 	{
-		return AssetMetadata{ AnimsData::GetStaticType().data(), m_Path, "", false };
+		return AssetMetadata{ AnimsData::GetStaticTypeName().data(), m_Path, "", false };
 	}
 }

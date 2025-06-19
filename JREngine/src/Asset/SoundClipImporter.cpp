@@ -8,7 +8,7 @@ namespace JRE
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::GetInstance().RegisterImporter(ISoundClip::GetStaticType(), SoundClipImporter::ImportAsset);
+			AssetImporter::GetInstance().RegisterImporter(ISoundClip::GetStaticTypeName(), SoundClipImporter::ImportAsset);
 			return true;
 		}();
 
@@ -22,6 +22,6 @@ namespace JRE
 	}
 	AssetMetadata SoundClipImporter::GetMetadata() const
 	{
-		return AssetMetadata{ ISoundClip::GetStaticType().data(), m_Path, "", true};
+		return AssetMetadata{ ISoundClip::GetStaticTypeName().data(), m_Path, "", true};
 	}
 }

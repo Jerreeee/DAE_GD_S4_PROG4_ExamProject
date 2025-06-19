@@ -43,9 +43,11 @@ set(SOURCE_FILES
     "TileMap/TileMapImporter.cpp"
 
     "Assets/AnimsData.h"
+    "Assets/AnimsData.cpp"
     "Assets/AnimsDataImporter.h"
     "Assets/AnimsDataImporter.cpp"
     "Assets/LevelData.h"
+    "Assets/LevelData.cpp"
     "Assets/LevelDataImporter.h"
     "Assets/LevelDataImporter.cpp"
     "Assets/LevelDataComponent.h"

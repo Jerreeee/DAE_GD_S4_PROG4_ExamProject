@@ -15,10 +15,9 @@ namespace BubbleBobble
 
 	struct LevelData : public JRE::Asset
 	{
+		REGISTER_TYPE_HEADER(JRE::Asset);
+
 		std::vector<glm::vec2> players;
 		std::vector<EnemyInfo> enemies;
-
-		static constexpr std::string_view GetStaticType() { return "BubbleBobble::LevelData"; };
-		virtual std::string_view GetType() const { return GetStaticType(); };
 	};
 }

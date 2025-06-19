@@ -12,6 +12,8 @@
 
 namespace JRE
 {
+	REGISTER_TYPE_SOURCE(Texture2D, Asset, "JRE::Texture2D");
+
 	Texture2D::Texture2D(const std::filesystem::path& path)
 	{
 		//std::cout << "Creating texture from disk: " << path.string() << "\n";

@@ -15,6 +15,7 @@ set(SOURCE_FILES
     "Core/Event.cpp"
     "Core/Observer.cpp"
     "Core/ServiceLocator.cpp"
+    "Core/TypeRegistry.cpp"
 
     "Input/InputManager.cpp"
     "Input/SDLKeyboard.cpp"
@@ -34,12 +35,13 @@ set(SOURCE_FILES
     "Asset/EditorResourceManager.cpp"
     "Asset/AssetImporter.cpp"
     "Asset/Asset.cpp"
+    "Asset/AssetRegistry.cpp"
     "Asset/SpriteEditor.cpp"
     "Asset/TextureImporter.cpp"
     "Asset/FontImporter.cpp"
     "Asset/SoundClipImporter.cpp"
-    "Asset/AssetRegistry.cpp"
 
+    "Audio/ISoundClip.cpp"
     "Audio/SDLSoundSystem.cpp"
     "Audio/SDLSoundSystem.h"
     "Audio/SDLSoundClip.cpp"
@@ -72,6 +74,7 @@ set(INCLUDE_FILES
     "Core/Event.h"
     "Core/Observer.h"
     "Core/ServiceLocator.h"
+    "Core/TypeRegistry.h"
 
     "Input/InputUtils.h"
     "Input/InputManager.h"

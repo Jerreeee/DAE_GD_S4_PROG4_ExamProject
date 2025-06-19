@@ -10,7 +10,7 @@ namespace BubbleBobble
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::GetInstance().RegisterImporter(LevelData::GetStaticType(), LevelDataImporter::ImportAsset);
+			AssetImporter::GetInstance().RegisterImporter(LevelData::GetStaticTypeName(), LevelDataImporter::ImportAsset);
 			return true;
 		}();
 
@@ -58,7 +58,7 @@ namespace BubbleBobble
 
 	AssetMetadata LevelDataImporter::GetMetadata() const
 	{
-		return AssetMetadata{ LevelData::GetStaticType().data(), m_Path, "", false };
+		return AssetMetadata{ LevelData::GetStaticTypeName().data(), m_Path, "", false };
 	}
 	void LevelDataImporter::AddPlayer(const std::vector<std::string>& tokens,
 		std::vector<glm::vec2>& players)

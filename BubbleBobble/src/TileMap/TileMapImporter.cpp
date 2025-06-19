@@ -14,7 +14,7 @@ namespace BubbleBobble
 {
 	static bool s_Registered = []()
 		{
-			JRE::AssetImporter::GetInstance().RegisterImporter(TileMap::GetStaticType(), TileMapImporter::ImportAsset);
+			JRE::AssetImporter::GetInstance().RegisterImporter(TileMap::GetStaticTypeName(), TileMapImporter::ImportAsset);
 			return true;
 		}();
 
@@ -91,7 +91,7 @@ namespace BubbleBobble
 	}
 	JRE::AssetMetadata TileMapImporter::GetMetadata() const
 	{
-		return JRE::AssetMetadata{ TileMap::GetStaticType().data(), m_Path, "", true };
+		return JRE::AssetMetadata{ TileMap::GetStaticTypeName().data(), m_Path, "", true };
 	}
 	void TileMapImporter::AddSpritePosition(const std::vector<std::string>& tokens,
 		std::vector<std::filesystem::path>& spriteNames,

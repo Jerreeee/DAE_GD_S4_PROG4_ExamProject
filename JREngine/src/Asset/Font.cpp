@@ -6,6 +6,8 @@
 
 namespace JRE
 {
+	REGISTER_TYPE_SOURCE(Font, Asset, "JRE::Font");
+
 	Font::Font(const std::filesystem::path& path, unsigned int size)
 	{
 		//std::cout << "Creating font with size: " << std::to_string(size) << "\n";

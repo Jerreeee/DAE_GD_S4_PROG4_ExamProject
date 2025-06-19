@@ -11,6 +11,8 @@ namespace fs = std::filesystem;
 #include "JREngine/JREngine.h"
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Scene/GameObject.h"
+#include "JREngine/Core/TypeRegistry.h"
+#include "JREngine/Asset/Asset.h"
 
 
 #include "EngineSetup.h"
@@ -42,6 +44,10 @@ namespace BubbleBobble
 {
 	void load()
 	{
+		auto& typesInfo = JRE::TypeRegistry<JRE::Asset>::GetTypesInfo();
+		for (const auto& info : typesInfo)
+			std::cout << "ID: " << info.id << ", Name: " << info.name << "\n";
+
 		auto gameManager = std::make_unique<JRE::GameObject>("GameManager");
 		auto gameManagerCmp = gameManager->AddComponent<GameManagerComponent>(GameState::MainMenu);
 		gameManager->m_PersistenceScope = PersistenceLayer::Global;

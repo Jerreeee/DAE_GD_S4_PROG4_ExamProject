@@ -9,6 +9,8 @@ namespace JRE
 	class Font final : public Asset
 	{
 	public:
+		REGISTER_TYPE_HEADER(Asset);
+
 		explicit Font(const std::filesystem::path& path, unsigned int size);
 		~Font();
 
@@ -18,9 +20,6 @@ namespace JRE
 		Font & operator= (const Font &&) = delete;
 
 		_TTF_Font* GetFont() const;
-
-		static constexpr std::string_view GetStaticType() { return "Font"; };
-		virtual std::string_view GetType() const override { return GetStaticType(); };
 	private:
 		_TTF_Font* m_pFont{};
 	};

@@ -12,6 +12,8 @@ using namespace JRE;
 
 namespace BubbleBobble
 {
+	REGISTER_TYPE_SOURCE(TileMap, JRE::Asset, "BubbleBobble::TileMap");
+
 	void TileMap::Render()
 	{
 		for (auto& spritePos : m_SpritePositions)

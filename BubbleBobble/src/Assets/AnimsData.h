@@ -17,9 +17,8 @@ namespace BubbleBobble
 
 	struct AnimsData : public JRE::Asset
 	{
-		std::vector<AnimData> dataVec;
+		REGISTER_TYPE_HEADER(JRE::Asset);
 
-		static constexpr std::string_view GetStaticType() { return "BubbleBobble::AnimsData"; };
-		virtual std::string_view GetType() const { return GetStaticType(); };
+		std::vector<AnimData> dataVec;
 	};
 }

@@ -2,6 +2,7 @@
 #include <memory>
 #include <filesystem> //all deriving classes and AssetImporters will probably need this
 #include "JREngine/Core/UUID.h"
+#include "JREngine/Core/TypeRegistry.h"
 
 namespace JRE
 {
@@ -31,7 +32,7 @@ namespace JRE
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
 
-	class Asset
+	class Asset : public IRegisteredType
 	{
 	public:
 		Asset() = default;
@@ -39,7 +40,6 @@ namespace JRE
 
 		void SetHandle(AssetHandle handle) { m_Handle = handle; }
 		AssetHandle GetHandle() const { return m_Handle; }
-		virtual std::string_view GetType() const = 0;
 	private:
 		//Invalid handle by default so for any class inheriting from Asset
 		//an instance can be created without generating a new valid UUID.

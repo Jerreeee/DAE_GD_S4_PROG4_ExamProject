@@ -15,6 +15,8 @@ namespace JRE
 	class Texture2D final : public Asset
 	{
 	public:
+		REGISTER_TYPE_HEADER(Asset);
+
 		explicit Texture2D(const std::string& text, AssetRef<Asset> fontAsset, SDL_Color color);
 		explicit Texture2D(const std::filesystem::path& path);
 		~Texture2D();
@@ -25,9 +27,6 @@ namespace JRE
 
 		SDL_Texture* GetSDLTexture() const;
 		glm::ivec2 GetSize() const;
-
-		static constexpr std::string_view GetStaticType() { return "Texture2D"; };
-		virtual std::string_view GetType() const override { return GetStaticType(); };
 	private:
 		SDL_Texture* m_texture{};
 	};
