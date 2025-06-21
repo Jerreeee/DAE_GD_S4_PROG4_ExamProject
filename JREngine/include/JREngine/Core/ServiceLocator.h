@@ -7,6 +7,9 @@ namespace JRE
 	class IResourceManager;
 	class IPhysicsSystem;
 
+	//struct AssetTypeInfo;
+	//extern template class TypeRegistry<AssetTypeInfo>;
+
 	class ServiceLocator final
 	{
 	public:
@@ -21,9 +24,12 @@ namespace JRE
 
 		static IPhysicsSystem& GetPhysicsSystem();
 		static void RegisterPhysicsSystem(std::unique_ptr<IPhysicsSystem>&& pPhysicsSystem);
+
+		static TypeRegistry<AssetTypeInfo>& GetAssetTypeRegistry();
 	private:
 		static std::unique_ptr<ISoundSystem> s_pSoundSystem;
 		static std::unique_ptr<IResourceManager> s_pResourceManager;
 		static std::unique_ptr<IPhysicsSystem> s_pPhysicsSystem;
+		//static std::unique_ptr<TypeRegistry<AssetTypeInfo>> s_pAssetTypeRegistry;
 	};
 }

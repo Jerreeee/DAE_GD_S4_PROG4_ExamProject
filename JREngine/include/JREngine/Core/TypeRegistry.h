@@ -2,16 +2,22 @@
 #include <cassert>
 #include <string>
 #include <vector>
+#include <concepts>
 #include <iostream>
+#include "JREngine/Core/ServiceLocator.h"
 
 namespace JRE
 {
     using TypeID = size_t;
 
-    template<typename CategoryTag>
-    struct TypeInfo
+    template<typename T>
+    concept HasNameMember = requires(T t) {
+        { t.name } -> std::convertible_to<const std::string&>;
+    };
+
+    struct TypeInfoBase
     {
-        TypeID id;
+        virtual ~TypeInfoBase() = default;
         std::string name;
     };
 
@@ -20,73 +26,88 @@ namespace JRE
     public:
         virtual ~IRegisteredType() = default;
         virtual TypeID GetTypeID() const = 0;
-        virtual const std::string& GetTypeName() const = 0;
+        virtual const TypeInfoBase& GetTypeInfo() const = 0;
     };
 
-    template<typename CategoryTag>
+
+    /// <summary>
+    /// The TypeInfo type must be a unique struct for each different category of types that need to have registered ID's.
+    /// And at a minimum it must have a std::string name member.
+    /// Example:
+    ///     struct TypeInfo
+    ///     {
+    ///         std::string name;
+    ///     };
+    /// </summary>
+    template<typename TypeInfo>
+    requires HasNameMember<TypeInfo>
     class TypeRegistry
     {
     public:
-        using CategoryTag_t = CategoryTag;
-
-        template<typename T>
-        static TypeID RegisterType(const std::string& typeName)
+        TypeID RegisterType(const TypeInfo& typeInfo)
         {
-            static_assert(std::is_same_v<typename T::CategoryTag_t, CategoryTag_t>,
-                "Type T is not registered under the correct category registry.");
-
             TypeID id = s_NextID++;
-            s_TypeInfos.emplace_back(TypeInfo<CategoryTag_t>{ id, typeName });
+            s_TypeInfos.emplace_back(typeInfo);
             return id;
         }
 
-        template<typename T>
-        static const TypeInfo<CategoryTag_t>& GetInfo()
+        const TypeInfo& GetTypeInfo(TypeID id)
         {
-            static_assert(std::is_same_v<typename T::CategoryTag_t, CategoryTag_t>,
-                "Type T is not registered under the correct category registry.");
-
-            TypeID id = T::GetStaticTypeID();
             assert(id < s_TypeInfos.size());
             return s_TypeInfos[id];
         }
 
-        static const std::vector<TypeInfo<CategoryTag_t>>& GetTypesInfo() { return s_TypeInfos; };
+        const std::vector<TypeInfo>& GetTypesInfo() { return s_TypeInfos; };
     private:
-        inline static std::vector<TypeInfo<CategoryTag_t>> s_TypeInfos{};
-        inline static TypeID s_NextID{};
+        std::vector<TypeInfo> s_TypeInfos{};
+        TypeID s_NextID{};
     };
 }
 
-#define REGISTER_TYPE_HEADER(CategoryTag) \
-public: \
-    using CategoryTag_t = CategoryTag; \
-    static JRE::TypeID GetStaticTypeID(); \
-    virtual JRE::TypeID GetTypeID() const override; \
-    static const std::string& GetStaticTypeName(); \
-    virtual const std::string& GetTypeName() const override; \
-    static_assert(true, "REGISTER_TYPE_HEADER requires a semicolon")
-
-#define REGISTER_TYPE_SOURCE(T, CategoryTag, QualifiedNameString) \
-    JRE::TypeID T::GetStaticTypeID() { \
-        static const JRE::TypeID id = JRE::TypeRegistry<CategoryTag>::RegisterType<T>(QualifiedNameString); \
+/// <summary>
+/// For each type that inherits from a base type that implements IRegisteredType, you must register it with the macro below in the header file
+/// </summary>
+/// <param name="TypeName">The name of the type without any scopes. For example write: MyType instead of Foo::Bar::MyType</param>
+/// <param name="TypeInfoStruct_t">The unique struct type used to store typeInfo</param>
+/// <param name="QualifiedNameString">The fully qualified name of the type. For example for type MyType inside  the namespace Foo::Bar write Foo::Bar::MyType</param>
+#define REGISTER_TYPE_HEADER(TypeName, TypeInfoStruct, QualifiedNameString) \
+    using TypeInfoStruct_t = TypeInfoStruct;
+    static JRE::TypeID TypeName::GetStaticTypeID() \
+    { \
+        static const JRE::TypeID id = JRE::TypeRegistry<TypeInfoStruct_t>::RegisterType(QualifiedNameString); \
         return id; \
     } \
-    JRE::TypeID T::GetTypeID() const { \
+    virtual JRE::TypeID TypeName::GetTypeID() const override \
+    { \
         return GetStaticTypeID(); \
     } \
-    const std::string& T::GetStaticTypeName() { \
-        GetStaticTypeID(); \
-        return JRE::TypeRegistry<CategoryTag>::GetInfo<T>().name; \
+    static_assert(true, "REGISTER_TYPE_HEADER requires a semicolon")
+
+/// <summary>
+/// For each type that inherits from a base type that implements IRegisteredType, you must register it with the macro below in the header file
+/// </summary>
+/// <param name="TypeName">The name of the type without any scopes. For example write: MyType instead of Foo::Bar::MyType</param>
+#define REGISTER_TYPE_WITH_ID_FROM(TypeName) \
+    static TypeID GetStaticTypeID() \
+    { \
+        return TypeName::GetStaticTypeID(); \
     } \
-    const std::string& T::GetTypeName() const { \
-        return GetStaticTypeName(); \
+    virtual JRE::TypeID TypeName::GetTypeID() const override \
+    { \
+        return GetStaticTypeID(); \
     } \
-    namespace { \
-        const bool s_Registered_##T = []() { \
-            T::GetStaticTypeID(); \
+    static_assert(true, "REGISTER_TYPE_WITH_ID_FROM requires a semicolon")
+
+/// <summary>
+/// For each type that inherits from a base type that implements IRegisteredType, you must register it with the macro below in the cpp file
+/// </summary>
+/// <param name="TypeName">The name of the type without any scopes. For example write: MyType instead of Foo::Bar::MyType</param>
+#define REGISTER_TYPE_SOURCE(TypeName) \
+    namespace \
+    { \
+        const bool s_Registered_##TypeName = []() { \
+            TypeName::GetStaticTypeID(); \
             return true; \
         }(); \
     } \
     static_assert(true, "REGISTER_TYPE_SOURCE requires a semicolon")
-

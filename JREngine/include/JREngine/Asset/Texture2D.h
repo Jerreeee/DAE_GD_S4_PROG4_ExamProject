@@ -15,7 +15,7 @@ namespace JRE
 	class Texture2D final : public Asset
 	{
 	public:
-		REGISTER_TYPE_HEADER(Asset);
+		REGISTER_TYPE_HEADER(Texture2D, AssetTypeInfo, "JRE::Texture2D");
 
 		explicit Texture2D(const std::string& text, AssetRef<Asset> fontAsset, SDL_Color color);
 		explicit Texture2D(const std::filesystem::path& path);

@@ -32,6 +32,12 @@ namespace JRE
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
 
+	//Used with TypeRegistry
+	struct AssetTypeInfo
+	{
+		const std::string name;
+	};
+
 	class Asset : public IRegisteredType
 	{
 	public:

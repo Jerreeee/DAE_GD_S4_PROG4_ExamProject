@@ -5,7 +5,7 @@ namespace JRE
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::GetInstance().RegisterImporter(Texture2D::GetStaticTypeName(), TextureImporter::ImportAsset);
+			AssetImporter::GetInstance().RegisterImporter(TypeRegistry<AssetTypeInfo>::GetTypeInfo(Texture2D::GetStaticTypeID()).name, TextureImporter::ImportAsset);
 			return true;
 		}();
 

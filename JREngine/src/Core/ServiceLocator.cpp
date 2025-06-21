@@ -5,9 +5,10 @@
 
 namespace JRE
 {
-	std::unique_ptr<ISoundSystem> ServiceLocator::s_pSoundSystem{std::make_unique<NullSoundSystem>()};
-	std::unique_ptr<IResourceManager> ServiceLocator::s_pResourceManager{std::make_unique<NullResourceManager>()};
-	std::unique_ptr<IPhysicsSystem> ServiceLocator::s_pPhysicsSystem{std::make_unique<NullPhysicsSystem>()};
+	std::unique_ptr<ISoundSystem> ServiceLocator::s_pSoundSystem{ std::make_unique<NullSoundSystem>() };
+	std::unique_ptr<IResourceManager> ServiceLocator::s_pResourceManager{ std::make_unique<NullResourceManager>() };
+	std::unique_ptr<IPhysicsSystem> ServiceLocator::s_pPhysicsSystem{ std::make_unique<NullPhysicsSystem>() };
+	std::unique_ptr<TypeRegistry<AssetTypeInfo>> ServiceLocator::s_pAssetTypeRegistry{ std::make_unique<TypeRegistry<AssetTypeInfo>>() };
 
 	ServiceLocator::ServiceLocator() = default;
 	ServiceLocator::~ServiceLocator() = default;
@@ -34,5 +35,9 @@ namespace JRE
 	void ServiceLocator::RegisterPhysicsSystem(std::unique_ptr<IPhysicsSystem>&& pPhysicsSystem)
 	{
 		s_pPhysicsSystem = pPhysicsSystem ? std::move(pPhysicsSystem) : std::make_unique<NullPhysicsSystem>();
+	}
+	TypeRegistry<AssetTypeInfo>& ServiceLocator::GetAssetTypeRegistry()
+	{
+		return *s_pAssetTypeRegistry;
 	}
 }
