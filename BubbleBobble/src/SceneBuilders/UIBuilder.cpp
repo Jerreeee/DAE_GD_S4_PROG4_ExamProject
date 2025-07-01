@@ -27,7 +27,7 @@ namespace BubbleBobble
 	{
 		assert(m_pPlayer1 && "UIBuilder::SetGameObjectWithHealthToTrack() | Must be called");
 
-		auto handle = AssetImporter::GetInstance().ImportAsset(TextureImporter("HUD/Health_P1.png"));
+		auto handle = AssetImporterRegistry::GetInstance().ImportAsset(TextureImporter("HUD/Health_P1.png"));
 		auto sprite = CreateAssetRef<Sprite>(SoftAssetRef<Texture2D>(handle));
 
 		auto p1HealthCmp = m_pPlayer1->GetComponent<HealthComponent>();
@@ -41,7 +41,7 @@ namespace BubbleBobble
 		//load font
 		auto fontImporter = JRE::FontImporter("Fonts/Pixel_NES.otf");
 		fontImporter.SetSize(30);
-		auto fontHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(fontImporter));
+		auto fontHandle = JRE::AssetImporterRegistry::GetInstance().ImportAsset(std::move(fontImporter));
 		auto fontSoftRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
 
 		auto score = std::make_unique<GameObject>("Score");

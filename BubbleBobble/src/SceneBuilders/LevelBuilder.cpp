@@ -30,9 +30,9 @@ namespace BubbleBobble
 	}
 	void LevelBuilder::AddTileMap()
 	{
-		std::filesystem::path relPath = std::filesystem::relative(m_Path, JRE::AssetImporter::GetInstance().GetDatapath());
+		std::filesystem::path relPath = std::filesystem::relative(m_Path, JRE::AssetImporterRegistry::GetInstance().GetDatapath());
 		auto path = std::filesystem::path(relPath / "TileMapData.txt");
-		auto tileMapHandle = AssetImporter::GetInstance().ImportAsset(std::move(TileMapImporter(path)));
+		auto tileMapHandle = AssetImporterRegistry::GetInstance().ImportAsset(std::move(TileMapImporter(path)));
 		auto tileMapRef = ResourceManager::GetAsset<TileMap>(tileMapHandle);
 		auto pTileMap = std::make_unique<GameObject>("TileMap");
 		auto* pComp = pTileMap->AddComponent<TileMapComponent>();
@@ -41,9 +41,9 @@ namespace BubbleBobble
 	}
 	void LevelBuilder::AddLevelData()
 	{
-		std::filesystem::path relPath = std::filesystem::relative(m_Path, JRE::AssetImporter::GetInstance().GetDatapath());
+		std::filesystem::path relPath = std::filesystem::relative(m_Path, JRE::AssetImporterRegistry::GetInstance().GetDatapath());
 		auto path = std::filesystem::path(relPath / "LevelData.txt");
-		auto levelDataHandle = AssetImporter::GetInstance().ImportAsset(std::move(LevelDataImporter(path)));
+		auto levelDataHandle = AssetImporterRegistry::GetInstance().ImportAsset(std::move(LevelDataImporter(path)));
 		auto levelDataRef = ResourceManager::GetAsset<LevelData>(levelDataHandle);
 		auto pLevelData = std::make_unique<GameObject>("LevelData");
 		auto* pComp = pLevelData->AddComponent<LevelDataComponent>();

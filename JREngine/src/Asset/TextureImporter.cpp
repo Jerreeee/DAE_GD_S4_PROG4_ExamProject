@@ -1,3 +1,4 @@
+#include "Core/ServiceLocator.h"
 #include "Asset/AssetImporter.h"
 #include "Asset/TextureImporter.h"
 
@@ -5,12 +6,12 @@ namespace JRE
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::GetInstance().RegisterImporter(TypeRegistry<AssetTypeInfo>::GetTypeInfo(Texture2D::GetStaticTypeID()).name, TextureImporter::ImportAsset);
+			AssetImporterRegistry::GetInstance().RegisterImporter(ServiceLocator::GetAssetTypeRegistry().GetTypeInfo(Texture2D::GetStaticTypeID()).name, TextureImporter::ImportAsset);
 			return true;
 		}();
 
 	TextureImporter::TextureImporter(const std::filesystem::path& filepath) :
-		m_Path{ AssetImporter::GetInstance().GetFullDatapath(filepath) }
+		m_Path{ AssetImporterRegistry::GetInstance().GetFullDatapath(filepath) }
 	{
 	}
 

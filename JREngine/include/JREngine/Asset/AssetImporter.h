@@ -24,7 +24,7 @@ namespace JRE
 	///		Each class in its constructor should also call AssetImporter::GetFullDatapath(filepath) and set
 	///		metadata.filepath to the result.
 	/// </summary>
-	class AssetImporter : public Singleton<AssetImporter>
+	class AssetImporterRegistry : public Singleton<AssetImporterRegistry>
 	{
 	public:
 		void Init(const std::filesystem::path& dataPath);
@@ -40,8 +40,8 @@ namespace JRE
 		const std::filesystem::path& GetDatapath() const;
 		std::filesystem::path GetFullDatapath(const std::filesystem::path& filepath) const;
 	private:
-		AssetImporter() = default;
-		friend class Singleton<AssetImporter>;
+		AssetImporterRegistry() = default;
+		friend class Singleton<AssetImporterRegistry>;
 
 		std::filesystem::path m_Datapath{};
 		std::map<std::string, ImportFunc> s_Importers{};

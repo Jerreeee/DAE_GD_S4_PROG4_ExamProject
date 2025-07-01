@@ -28,7 +28,7 @@ namespace BubbleBobble
 	void MainMenuBuilder::Build()
 	{
 		auto animsDataImporter = AnimDataImporter("Anims/Logo.txt");
-		AssetHandle animsDataHandle = AssetImporter::GetInstance().ImportAsset(std::move(animsDataImporter));
+		AssetHandle animsDataHandle = AssetImporterRegistry::GetInstance().ImportAsset(std::move(animsDataImporter));
 		AssetRef<AnimsData> animsDataRef = ResourceManager::GetAsset<AnimsData>(animsDataHandle);
 		const AnimData& animData = animsDataRef->dataVec[0];
 		auto logo = std::make_unique<JRE::GameObject>("Logo");
@@ -41,7 +41,7 @@ namespace BubbleBobble
 		//load font
 		auto fontImporter = JRE::FontImporter("Fonts/Pixel_NES.otf");
 		fontImporter.SetSize(20);
-		auto fontHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(fontImporter));
+		auto fontHandle = JRE::AssetImporterRegistry::GetInstance().ImportAsset(std::move(fontImporter));
 		auto fontSoftRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
 
 		const int centerX = 384;

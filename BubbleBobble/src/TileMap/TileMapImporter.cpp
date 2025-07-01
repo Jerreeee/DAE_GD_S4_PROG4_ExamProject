@@ -14,12 +14,12 @@ namespace BubbleBobble
 {
 	static bool s_Registered = []()
 		{
-			JRE::AssetImporter::GetInstance().RegisterImporter(TileMap::GetStaticTypeName(), TileMapImporter::ImportAsset);
+			JRE::AssetImporterRegistry::GetInstance().RegisterImporter(TileMap::GetStaticTypeName(), TileMapImporter::ImportAsset);
 			return true;
 		}();
 
 	TileMapImporter::TileMapImporter(const std::filesystem::path& path)
-		: m_Path{ JRE::AssetImporter::GetInstance().GetFullDatapath(path) }
+		: m_Path{ JRE::AssetImporterRegistry::GetInstance().GetFullDatapath(path) }
 	{
 		if (!std::filesystem::exists(m_Path))
 			throw std::runtime_error("TileMapData.txt does not exist");
@@ -28,7 +28,7 @@ namespace BubbleBobble
 	JRE::AssetRef<JRE::Asset> TileMapImporter::ImportAsset(JRE::AssetHandle, const JRE::AssetMetadata& metadata)
 	{
 		auto levelDir = metadata.filepath.parent_path();
-		auto relLevelDir = std::filesystem::relative(levelDir, JRE::AssetImporter::GetInstance().GetDatapath());
+		auto relLevelDir = std::filesystem::relative(levelDir, JRE::AssetImporterRegistry::GetInstance().GetDatapath());
 		//std::filesystem::path relPath = metadata.filepath.lexically_relative(JRE::AssetImporter::GetInstance().GetDatapath());
 
 		auto levelRef = JRE::CreateAssetRef<TileMap>();
@@ -44,7 +44,7 @@ namespace BubbleBobble
 		for (auto& spriteName : spriteNames)
 		{
 			auto filePath = std::filesystem::path(relLevelDir / spriteName);
-			auto texture = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::TextureImporter(filePath)));
+			auto texture = JRE::AssetImporterRegistry::GetInstance().ImportAsset(std::move(JRE::TextureImporter(filePath)));
 			auto textureRef = JRE::ResourceManager::GetAsset<JRE::Texture2D>(texture);
 			auto sprite = JRE::CreateAssetRef<JRE::Sprite>(JRE::SoftAssetRef<JRE::Texture2D>(textureRef));
 			sprites.emplace_back(sprite);

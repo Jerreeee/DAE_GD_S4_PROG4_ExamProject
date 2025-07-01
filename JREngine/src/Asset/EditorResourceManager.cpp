@@ -90,7 +90,7 @@ namespace JRE
 				assetLoadingLock.unlock(); //Unlock so ImportAsset isn't blocking
 
 				//Import the asset
-				job->asset = AssetImporter::GetInstance().ImportAsset(handle, metadata);
+				job->asset = AssetImporterRegistry::GetInstance().ImportAsset(handle, metadata);
 
 				//Ensure the asset is fully loaded before any thread can re-acquire any mutex
 				//Otherwise, if we would call "assetLoadingLock.unlock()" after "job->condition.notify_all();"
@@ -127,7 +127,7 @@ namespace JRE
 			assetLoadingLock.unlock(); //Unlock so ImportAsset isn't blocking
 
 			//Import
-			job->asset = AssetImporter::GetInstance().ImportAsset(handle, metadata);
+			job->asset = AssetImporterRegistry::GetInstance().ImportAsset(handle, metadata);
 
 			//Same as above Ensure the asset is fully loaded before any thread can re-acquire any mutex
 			{
@@ -200,7 +200,7 @@ namespace JRE
 					}
 
 					// Import
-					AssetRef<Asset> asset = AssetImporter::GetInstance().ImportAsset(args.handle, args.metadata);
+					AssetRef<Asset> asset = AssetImporterRegistry::GetInstance().ImportAsset(args.handle, args.metadata);
 
 					//Ensure the asset is considered fully loaded before notifying any waiting threads
 					{

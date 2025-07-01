@@ -52,9 +52,9 @@ namespace BubbleBobble
         auto pPlayerScriptCmp = player->AddComponent<PlayerScriptComponent>();
 
         //Add Sounds
-        AssetHandle jumpHandle = AssetImporter::GetInstance().ImportAsset(std::move(JRE::SoundClipImporter("Player/Jump.wav")));
+        AssetHandle jumpHandle = AssetImporterRegistry::GetInstance().ImportAsset(std::move(JRE::SoundClipImporter("Player/Jump.wav")));
         pPlayerScriptCmp->m_JumpSound = JRE::SoftAssetRef<JRE::ISoundClip>(jumpHandle);
-        AssetHandle shootHandle = AssetImporter::GetInstance().ImportAsset(std::move(JRE::SoundClipImporter("Player/Shoot.wav")));
+        AssetHandle shootHandle = AssetImporterRegistry::GetInstance().ImportAsset(std::move(JRE::SoundClipImporter("Player/Shoot.wav")));
         pPlayerScriptCmp->m_ShootSound = JRE::SoftAssetRef<JRE::ISoundClip>(shootHandle);
 
         player->AddComponent<PlayerControllerComponent>(static_cast<size_t>(m_ActionMapIdx));

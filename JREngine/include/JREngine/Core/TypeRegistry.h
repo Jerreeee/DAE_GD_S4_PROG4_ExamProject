@@ -8,6 +8,8 @@
 
 namespace JRE
 {
+
+
     using TypeID = size_t;
 
     template<typename T>
@@ -15,18 +17,11 @@ namespace JRE
         { t.name } -> std::convertible_to<const std::string&>;
     };
 
-    struct TypeInfoBase
-    {
-        virtual ~TypeInfoBase() = default;
-        std::string name;
-    };
-
     class IRegisteredType
     {
     public:
         virtual ~IRegisteredType() = default;
         virtual TypeID GetTypeID() const = 0;
-        virtual const TypeInfoBase& GetTypeInfo() const = 0;
     };
 
 
@@ -71,15 +66,15 @@ namespace JRE
 /// <param name="TypeInfoStruct_t">The unique struct type used to store typeInfo</param>
 /// <param name="QualifiedNameString">The fully qualified name of the type. For example for type MyType inside  the namespace Foo::Bar write Foo::Bar::MyType</param>
 #define REGISTER_TYPE_HEADER(TypeName, TypeInfoStruct, QualifiedNameString) \
-    using TypeInfoStruct_t = TypeInfoStruct;
+    using TypeInfoStruct_t = TypeInfoStruct; \
     static JRE::TypeID TypeName::GetStaticTypeID() \
     { \
-        static const JRE::TypeID id = JRE::TypeRegistry<TypeInfoStruct_t>::RegisterType(QualifiedNameString); \
+        static const JRE::TypeID id = JRE::ServiceLocator::GetAssetTypeRegistry().RegisterType(QualifiedNameString); \
         return id; \
     } \
     virtual JRE::TypeID TypeName::GetTypeID() const override \
     { \
-        return GetStaticTypeID(); \
+        return GetStaticTypeID(); \ 
     } \
     static_assert(true, "REGISTER_TYPE_HEADER requires a semicolon")
 
@@ -88,6 +83,7 @@ namespace JRE
 /// </summary>
 /// <param name="TypeName">The name of the type without any scopes. For example write: MyType instead of Foo::Bar::MyType</param>
 #define REGISTER_TYPE_WITH_ID_FROM(TypeName) \
+    using TypeInfoStruct_t = TypeInfoStruct; \
     static TypeID GetStaticTypeID() \
     { \
         return TypeName::GetStaticTypeID(); \

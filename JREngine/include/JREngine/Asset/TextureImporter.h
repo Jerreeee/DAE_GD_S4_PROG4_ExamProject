@@ -7,8 +7,6 @@ namespace JRE
 	class TextureImporter : public IAssetImporter
 	{
 	public:
-		REGISTER_TYPE_WITH_ID_FROM(Texture2D);
-
 		TextureImporter(const std::filesystem::path& filepath);
 
 		static AssetRef<Asset> ImportAsset(AssetHandle handle, const AssetMetadata& metadata);

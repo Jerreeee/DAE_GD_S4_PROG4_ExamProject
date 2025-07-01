@@ -8,12 +8,12 @@ namespace JRE
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::GetInstance().RegisterImporter(ISoundClip::GetStaticTypeName(), SoundClipImporter::ImportAsset);
+			AssetImporterRegistry::GetInstance().RegisterImporter(ISoundClip::GetStaticTypeName(), SoundClipImporter::ImportAsset);
 			return true;
 		}();
 
 	SoundClipImporter::SoundClipImporter(const std::filesystem::path& filepath) :
-		m_Path{ AssetImporter::GetInstance().GetFullDatapath(filepath) }
+		m_Path{ AssetImporterRegistry::GetInstance().GetFullDatapath(filepath) }
 	{
 	}
 	AssetRef<Asset> SoundClipImporter::ImportAsset(AssetHandle handle, const AssetMetadata& metadata)

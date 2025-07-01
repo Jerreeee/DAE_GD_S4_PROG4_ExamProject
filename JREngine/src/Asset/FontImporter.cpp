@@ -6,12 +6,12 @@ namespace JRE
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::GetInstance().RegisterImporter(Font::GetStaticTypeName(), FontImporter::ImportAsset);
+			AssetImporterRegistry::GetInstance().RegisterImporter(Font::GetStaticTypeName(), FontImporter::ImportAsset);
 			return true;
 		}();
 
 	FontImporter::FontImporter(const std::filesystem::path& filepath) :
-		m_Path{ AssetImporter::GetInstance().GetFullDatapath(filepath) }
+		m_Path{ AssetImporterRegistry::GetInstance().GetFullDatapath(filepath) }
 	{
 	}
 

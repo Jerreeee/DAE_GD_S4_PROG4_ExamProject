@@ -14,7 +14,7 @@ namespace BubbleBobble::Utils
 {
 	JRE::AssetRef<JRE::SpriteAnimationClip> CreateAnimationClipFromAnimData(const AnimData& data)
 	{
-		auto handle = AssetImporter::GetInstance().ImportAsset(TextureImporter(data.path));
+		auto handle = AssetImporterRegistry::GetInstance().ImportAsset(TextureImporter(data.path));
 		auto textureRef = ResourceManager::GetAsset<Texture2D>(handle);
 		auto spritesRef = SpriteEditor::SplitTexture2D(textureRef, data.frameCount, data.cols, data.rows);
 		std::vector<SoftAssetRef<Sprite>> spriteSoftRefs{};
@@ -25,7 +25,7 @@ namespace BubbleBobble::Utils
 	void AddAnimsToSpriteAnimatorComponent(const std::filesystem::path& animPath, JRE::SpriteAnimatorComponent& comp)
 	{
 		auto animsDataImporter = AnimDataImporter(animPath);
-		AssetHandle animsDataHandle = AssetImporter::GetInstance().ImportAsset(std::move(animsDataImporter));
+		AssetHandle animsDataHandle = AssetImporterRegistry::GetInstance().ImportAsset(std::move(animsDataImporter));
 		AssetRef<AnimsData> animsDataRef = ResourceManager::GetAsset<AnimsData>(animsDataHandle);
 
 		for (const AnimData& animData : animsDataRef->dataVec)

@@ -10,12 +10,12 @@ namespace BubbleBobble
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::GetInstance().RegisterImporter(LevelData::GetStaticTypeName(), LevelDataImporter::ImportAsset);
+			AssetImporterRegistry::GetInstance().RegisterImporter(LevelData::GetStaticTypeName(), LevelDataImporter::ImportAsset);
 			return true;
 		}();
 
 	LevelDataImporter::LevelDataImporter(const std::filesystem::path& filepath) :
-		m_Path{ AssetImporter::GetInstance().GetFullDatapath(filepath) }
+		m_Path{ AssetImporterRegistry::GetInstance().GetFullDatapath(filepath) }
 	{
 	}
 

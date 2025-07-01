@@ -28,7 +28,7 @@ namespace BubbleBobble
 		//load font
 		auto fontImporter = FontImporter("Fonts/Pixel_NES.otf");
 		fontImporter.SetSize(20);
-		auto fontHandle = AssetImporter::GetInstance().ImportAsset(std::move(fontImporter));
+		auto fontHandle = AssetImporterRegistry::GetInstance().ImportAsset(std::move(fontImporter));
 		auto fontSoftRef = SoftAssetRef<Font>(fontHandle);
 
 		const int centerX = 384;
@@ -46,7 +46,7 @@ namespace BubbleBobble
 		for (int i{}; i < animsDataNames.size(); ++i)
 		{
 			auto animsDataImporter = AnimDataImporter(animsDataNames[i]);
-			AssetHandle animsDataHandle = AssetImporter::GetInstance().ImportAsset(std::move(animsDataImporter));
+			AssetHandle animsDataHandle = AssetImporterRegistry::GetInstance().ImportAsset(std::move(animsDataImporter));
 			AssetRef<AnimsData> animsDataRef = ResourceManager::GetAsset<AnimsData>(animsDataHandle);
 			const AnimData& animData = animsDataRef->dataVec[0];
 			auto go = std::make_unique<JRE::GameObject>(animData.animName + "GO");

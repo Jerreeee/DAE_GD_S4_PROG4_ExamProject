@@ -7,8 +7,8 @@ namespace JRE
 	class IResourceManager;
 	class IPhysicsSystem;
 
-	//struct AssetTypeInfo;
-	//extern template class TypeRegistry<AssetTypeInfo>;
+	struct AssetTypeInfo;
+	extern template class TypeRegistry<AssetTypeInfo>;
 
 	class ServiceLocator final
 	{
@@ -30,6 +30,6 @@ namespace JRE
 		static std::unique_ptr<ISoundSystem> s_pSoundSystem;
 		static std::unique_ptr<IResourceManager> s_pResourceManager;
 		static std::unique_ptr<IPhysicsSystem> s_pPhysicsSystem;
-		//static std::unique_ptr<TypeRegistry<AssetTypeInfo>> s_pAssetTypeRegistry;
+		static std::unique_ptr<TypeRegistry<AssetTypeInfo>> s_pAssetTypeRegistry;
 	};
 }

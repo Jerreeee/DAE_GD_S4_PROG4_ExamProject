@@ -3,11 +3,11 @@
 
 namespace JRE
 {
-	void AssetImporter::Init(const std::filesystem::path& dataPath)
+	void AssetImporterRegistry::Init(const std::filesystem::path& dataPath)
 	{
 		m_Datapath = dataPath;
 	}
-	bool AssetImporter::RegisterImporter(const std::string& typeName, ImportFunc importFunc)
+	bool AssetImporterRegistry::RegisterImporter(const std::string& typeName, ImportFunc importFunc)
 	{
 		auto it = s_Importers.find(typeName);
 		if (it != s_Importers.end())
@@ -16,21 +16,21 @@ namespace JRE
 		return true;
 	}
 
-	AssetHandle AssetImporter::ImportAsset(IAssetImporter&& importer)
+	AssetHandle AssetImporterRegistry::ImportAsset(IAssetImporter&& importer)
 	{
 		return AssetRegistry::GetInstance().RegisterAsset(std::move(importer));
 	}
 
-	AssetRef<Asset> AssetImporter::ImportAsset(AssetHandle handle, const AssetMetadata& metadata)
+	AssetRef<Asset> AssetImporterRegistry::ImportAsset(AssetHandle handle, const AssetMetadata& metadata)
 	{
 		auto it = s_Importers.find(metadata.assetType);
 		return it != s_Importers.end() ? it->second(handle, metadata) : nullptr;
 	}
-	const std::filesystem::path& AssetImporter::GetDatapath() const
+	const std::filesystem::path& AssetImporterRegistry::GetDatapath() const
 	{
 		return m_Datapath;
 	}
-	std::filesystem::path AssetImporter::GetFullDatapath(const std::filesystem::path& filepath) const
+	std::filesystem::path AssetImporterRegistry::GetFullDatapath(const std::filesystem::path& filepath) const
 	{
 		return std::filesystem::path(m_Datapath / filepath);
 	}

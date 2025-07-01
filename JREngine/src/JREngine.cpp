@@ -101,7 +101,7 @@ JRE::JREngine::JREngine(const std::filesystem::path& dataPath)
 		throw std::runtime_error("Failed to initialize TTF: " + std::string(SDL_GetError()));
 	}
 
-	AssetImporter::GetInstance().Init(dataPath);
+	AssetImporterRegistry::GetInstance().Init(dataPath);
 
 	ServiceLocator::RegisterSoundSystem(std::make_unique<SDLSoundSystem>());
 	ServiceLocator::RegisterResourceManager(std::make_unique<EditorResourceManager>());
