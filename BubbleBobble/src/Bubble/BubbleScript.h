@@ -26,8 +26,10 @@ namespace BubbleBobble
 		void Burst();
 
 		JRE::Box2DColliderComponent* m_pBox2ColliderCmp{ nullptr };
+		std::shared_ptr<JRE::EventConnection> m_Box2DCollisionEventConn{ nullptr };
 		JRE::SpriteAnimatorComponent* m_pSpriteAnimCmp{ nullptr };
 		JRE::AssetRef<JRE::SpriteAnimationClip> m_PoofAnimClip{ nullptr };
+		std::shared_ptr<JRE::EventConnection> m_PoofAnimClipEndOfClipEventConn{ nullptr };
 
 		bool m_Popped{ false };
 		int m_Direction{};

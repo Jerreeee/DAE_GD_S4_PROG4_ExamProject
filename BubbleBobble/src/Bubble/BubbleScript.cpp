@@ -28,13 +28,17 @@ namespace BubbleBobble
 		m_pSpriteAnimCmp = GetGameObject().GetComponent<SpriteAnimatorComponent>();
 		assert(m_pSpriteAnimCmp && "BubbleScript doesnt ahve SpriteAnimatorComponent");
 
-		m_pBox2ColliderCmp->OnCollisionEvent.AddObserver(this);
+		m_Box2DCollisionEventConn = m_pBox2ColliderCmp->OnCollisionEvent.AddObserver(this);
 		m_PoofAnimClip = m_pSpriteAnimCmp->GetClip("Poof");
-		m_PoofAnimClip->OnEndOfClipEvent.AddObserver(this);
+		m_PoofAnimClipEndOfClipEventConn = m_PoofAnimClip->OnEndOfClipEvent.AddObserver(this);
 	}
 
 	BubbleScript::~BubbleScript()
 	{
+		if (m_Box2DCollisionEventConn)
+			m_Box2DCollisionEventConn->Disconnect(this);
+		if (m_PoofAnimClipEndOfClipEventConn)
+			m_PoofAnimClipEndOfClipEventConn->Disconnect(this);
 	}
 
 	void BubbleScript::Update()
@@ -80,12 +84,6 @@ namespace BubbleBobble
 
 		switch (event.GetID())
 		{
-		case JRE::Events::EventDestroyed::ID:
-		{
-			auto& args = event.GetArgs<JRE::Events::EventDestroyed>();
-			args.event.RemoveObserver(this);
-			break;
-		}
 		case JRE::Events::Box2DCollisionEvent::ID:
 		{
 			auto& args = event.GetArgs<JRE::Events::Box2DCollisionEvent>();
@@ -107,11 +105,7 @@ namespace BubbleBobble
 		{
 			auto& args = event.GetArgs<JRE::Events::EndOfClipEvent>();
 			if (args.clip == m_PoofAnimClip.get())
-			{
-				m_pBox2ColliderCmp->OnCollisionEvent.RemoveObserver(this);
-				m_PoofAnimClip->OnEndOfClipEvent.RemoveObserver(this);
 				GetGameObject().Destroy();
-			}
 			break;
 		}
 		}

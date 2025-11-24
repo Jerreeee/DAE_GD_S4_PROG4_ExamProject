@@ -15,7 +15,7 @@ namespace BubbleBobble
 	{
 	public:
 		InGameState(GameManagerComponent& gameManagerComponent);
-		virtual ~InGameState() override;
+		~InGameState();
 
 		virtual void OnEnter() override;
 		virtual GameState Update() override;
@@ -46,5 +46,6 @@ namespace BubbleBobble
 		size_t m_P1ActionMapIdx{};
 
 		JRE::TextRendererComponent* m_pScoreTxtCmp{};
+		std::shared_ptr<JRE::EventConnection> m_PlayerLostLifeEventConn{ nullptr };
 	};
 }

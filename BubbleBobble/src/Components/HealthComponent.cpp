@@ -35,11 +35,12 @@ namespace BubbleBobble
 		, m_pHealthCmp{ &healthCmp }
 		, m_Nr{ m_pHealthCmp->GetHealth() }
 	{
-		m_pHealthCmp->OnHealthChanged.AddObserver(this);
+		m_HealthCmpOnHealthChangedEventConn = m_pHealthCmp->OnHealthChanged.AddObserver(this);
 	}
 	HealthUIComponent::~HealthUIComponent()
 	{
-		m_pHealthCmp->OnHealthChanged.RemoveObserver(this);
+		if (m_HealthCmpOnHealthChangedEventConn)
+			m_HealthCmpOnHealthChangedEventConn->Disconnect(this);
 	}
 	void HealthUIComponent::Render() const
 	{

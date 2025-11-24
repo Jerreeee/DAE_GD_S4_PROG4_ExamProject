@@ -1,4 +1,6 @@
 #include <filesystem>
+#include <iostream>
+
 #include "JREngine/Input/InputManager.h"
 #include "JREngine/Rendering/TextRendererComponent.h"
 
@@ -39,6 +41,8 @@ namespace BubbleBobble
 	}
 	InGameState::~InGameState()
 	{
+		if (m_PlayerLostLifeEventConn)
+			m_PlayerLostLifeEventConn->Disconnect(this);
 	}
 	void InGameState::OnEnter()
 	{
@@ -76,8 +80,8 @@ namespace BubbleBobble
 		{
 		case JRE::Events::EventDestroyed::ID:
 		{
-			auto& args = event.GetArgs<JRE::Events::EventDestroyed>();
-			args.event.RemoveObserver(this);
+			//auto& args = event.GetArgs<JRE::Events::EventDestroyed>();
+			//args.event.RemoveObserver(this);
 			break;
 		}
 		case Events::PlayerLostLive::ID:
@@ -154,7 +158,7 @@ namespace BubbleBobble
 			.Build(pPlayer);
 
 		auto playerScriptCmp = pPlayer->GetComponent<PlayerScriptComponent>();
-		playerScriptCmp->OnPlayerLostLive.AddObserver(this);
+		m_PlayerLostLifeEventConn = playerScriptCmp->OnPlayerLostLive.AddObserver(this);
 
 		UIBuilder(scene)
 			.SetPlayer1(*pPlayer)

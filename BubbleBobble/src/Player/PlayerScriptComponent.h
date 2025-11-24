@@ -82,7 +82,9 @@ namespace BubbleBobble
 		JRE::Box2DColliderComponent* m_pBox2DColliderCmp{ nullptr };
 		HealthComponent* m_pHealthCmp{ nullptr };
 		JRE::AssetRef<JRE::SpriteAnimationClip> m_pShootClipRef{ nullptr };
+		std::shared_ptr<JRE::EventConnection> m_ShootClipEndOfClipEventConn{ nullptr };
 		JRE::AssetRef<JRE::SpriteAnimationClip> m_pDeathClipRef{ nullptr };
+		std::shared_ptr<JRE::EventConnection> m_DeathClipEndOfClipEventConn{ nullptr };
 
 		float m_ImmortalTimer{};
 		float m_ImmortalTimerDefault{ 3.f };

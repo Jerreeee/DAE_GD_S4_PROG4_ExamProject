@@ -32,15 +32,19 @@ namespace BubbleBobble
 		m_pBox2DColliderCmp->OnCollisionEvent.AddObserver(this);
 
 		m_pShootClipRef = m_pSpriteAnimatorCmp->GetClip("Shoot");
-		m_pShootClipRef->OnEndOfClipEvent.AddObserver(this);
+		m_ShootClipEndOfClipEventConn = m_pShootClipRef->OnEndOfClipEvent.AddObserver(this);
+
 		m_pDeathClipRef = m_pSpriteAnimatorCmp->GetClip("Death");
-		m_pDeathClipRef->OnEndOfClipEvent.AddObserver(this);
+		m_DeathClipEndOfClipEventConn = m_pDeathClipRef->OnEndOfClipEvent.AddObserver(this);
 	}
 
 	PlayerScriptComponent::~PlayerScriptComponent()
 	{
-		m_pShootClipRef->OnEndOfClipEvent.RemoveObserver(this);
-		m_pDeathClipRef->OnEndOfClipEvent.RemoveObserver(this);
+		if (m_ShootClipEndOfClipEventConn)
+			m_ShootClipEndOfClipEventConn->Disconnect(this);
+
+		if (m_DeathClipEndOfClipEventConn)
+			m_DeathClipEndOfClipEventConn->Disconnect(this);
 	}
 
 	void PlayerScriptComponent::Update()
@@ -101,8 +105,8 @@ namespace BubbleBobble
 		{
 		case JRE::Events::EventDestroyed::ID:
 		{
-			auto& args = event.GetArgs<JRE::Events::EventDestroyed>();
-			args.event.RemoveObserver(this);
+			//auto& args = event.GetArgs<JRE::Events::EventDestroyed>();
+			//args.event.RemoveObserver(this);
 			break;
 		}
 		case JRE::Events::Box2DCollisionEvent::ID:

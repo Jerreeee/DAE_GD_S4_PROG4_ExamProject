@@ -14,11 +14,12 @@ namespace BubbleBobble
 		m_pBox2DColliderCmp = GetGameObject().GetComponent<Box2DColliderComponent>();
 		assert(m_pBox2DColliderCmp && "GameObject containg PortalScriptComponent must also have Box2DColliderComponent");
 
-		m_pBox2DColliderCmp->OnCollisionEvent.AddObserver(this);
+		m_Box2DCollisionEventConn = m_pBox2DColliderCmp->OnCollisionEvent.AddObserver(this);
 	}
 	PortalScriptComponent::~PortalScriptComponent()
 	{
-		m_pBox2DColliderCmp->OnCollisionEvent.RemoveObserver(this);
+		if (m_Box2DCollisionEventConn)
+			m_Box2DCollisionEventConn->Disconnect(this);
 	}
 	void PortalScriptComponent::OnNotify(JRE::EventInfo& event)
 	{
@@ -26,8 +27,8 @@ namespace BubbleBobble
 		{
 		case JRE::Events::EventDestroyed::ID:
 		{
-			auto& args = event.GetArgs<JRE::Events::EventDestroyed>();
-			args.event.RemoveObserver(this);
+			//auto& args = event.GetArgs<JRE::Events::EventDestroyed>();
+			//args.event.RemoveObserver(this);
 			break;
 		}
 		case JRE::Events::Box2DCollisionEvent::ID:

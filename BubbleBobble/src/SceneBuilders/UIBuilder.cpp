@@ -45,6 +45,7 @@ namespace BubbleBobble
 		auto fontSoftRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
 
 		auto score = std::make_unique<GameObject>("Score");
+		score->m_PersistenceScope = PersistenceMask::PlayerAndUI;
 		score->AddComponent<TextRendererComponent>("Score: 0", fontSoftRef, SDL_Color(255, 0, 0, 255));
 		m_Scene.Add(std::move(score));
 	}

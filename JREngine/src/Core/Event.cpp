@@ -1,4 +1,7 @@
+#include <iostream>
+
 #include "Core/Event.h"
+
 
 namespace JRE
 {
@@ -21,30 +24,53 @@ namespace JRE
 	}
 	Event::~Event()
 	{
-		NotifyDeath();
+		// Invalidate all connections
+		for (auto& connection : m_Connections)
+			connection->active = false;
+
+		m_Connections.clear();
+
+		if (m_Observable)
+			m_Observable->Clear();
 	}
-	void Event::AddObserver(IObserver* pObserver) const
+	std::shared_ptr<EventConnection> Event::AddObserver(IObserver* pObserver) const
 	{
-		if (!m_Observable) //lazy heap allocation
+		if (!m_Observable)
 			m_Observable = std::make_unique<Observable>();
-		m_Observable->AddObserver(pObserver);
+
+		auto connection = std::make_shared<EventConnection>(this, true);
+		m_Connections.emplace_back(connection);
+
+		m_Observable->AddObserver(pObserver, connection.get());
+
+		return m_Connections.back();
 	}
 	void Event::RemoveObserver(IObserver* pObserver) const
 	{
-		if (m_Observable)
-			m_Observable->RemoveObserver(pObserver);
+		if (!m_Observable)
+			return;
+
+		EventConnection* connection = m_Observable->RemoveObserver(pObserver);
+		if (!connection)
+			return;
+
+		// Remove the owned connection
+		auto it = std::find_if(m_Connections.begin(), m_Connections.end(),
+			[connection](auto& ptr) {
+				return ptr.get() == connection;
+			}
+		);
+		if (it != m_Connections.end())
+			m_Connections.erase(it);
 	}
 	void Event::Notify(EventInfo& event) const
 	{
 		if (m_Observable)
 			m_Observable->NotifyObservers(event);
 	}
-	void Event::NotifyDeath() const
+	void EventConnection::Disconnect(IObserver* observer) const
 	{
-		if (m_Observable)
-		{
-			EventInfo e = CreateEvent<JRE::Events::EventDestroyed>(*this);
-			this->Notify(e);
-		}
+		if (active && event)
+			event->RemoveObserver(observer);
 	}
 }

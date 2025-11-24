@@ -80,11 +80,19 @@ namespace JRE
 		Event(Event&&) noexcept = delete;
 		Event& operator=(Event&&) noexcept = delete;
 
-		void AddObserver(IObserver* pObserver) const;
+		std::shared_ptr<EventConnection> AddObserver(IObserver* pObserver) const;
 		void RemoveObserver(IObserver* pObserver) const;
 		void Notify(EventInfo& event) const;
-		void NotifyDeath() const;
 	private:
 		mutable std::unique_ptr<Observable> m_Observable{ nullptr };
+		mutable std::vector<std::shared_ptr<EventConnection>> m_Connections{};
+	};
+
+	struct EventConnection
+	{
+		const Event* event = nullptr;	// non-owning
+		bool active = false;			// set false when event dies
+
+		void Disconnect(IObserver* observer) const;
 	};
 }

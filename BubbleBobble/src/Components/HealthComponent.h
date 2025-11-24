@@ -59,6 +59,7 @@ namespace BubbleBobble
 		void SetSprite(JRE::SoftAssetRef<JRE::Sprite> sprite);
 	private:
 		const HealthComponent* m_pHealthCmp{ nullptr };
+		std::shared_ptr<JRE::EventConnection> m_HealthCmpOnHealthChangedEventConn{ nullptr };
 		int m_Nr{ 1 };
 		JRE::SoftAssetRef<JRE::Sprite> m_Sprite{ nullptr };
 	};
