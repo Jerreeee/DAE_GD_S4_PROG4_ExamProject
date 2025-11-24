@@ -28,7 +28,10 @@ namespace BubbleBobble
 
 		//Create actionMap for the player and set bindings
 		m_P1ActionMapIdx = im.AddActionMap({ 0, 1 });
-		im.BindCommand(m_P1ActionMapIdx, "SkipLevel", std::make_unique<SkipLevel>(*this), std::make_unique<KeyboardBindingInfo>(KeyboardKey::F1, KeyState::DownThisFrame));
+		im.BindCommand(m_P1ActionMapIdx, "SkipLevel",
+			[this] { SkipLevel(); },
+			std::make_unique<KeyboardBindingInfo>(KeyboardKey::F1, KeyState::DownThisFrame)
+		);
 		//im.BindCommand(m_P1ActionMapIdx, "MoveRight", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::D, KeyState::Pressed));
 		//im.BindCommand(m_P1ActionMapIdx, "Jump", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::W, KeyState::DownThisFrame));
 		//im.BindCommand(m_P1ActionMapIdx, "Shoot", nullptr, std::make_unique<KeyboardBindingInfo>(KeyboardKey::F, KeyState::DownThisFrame));
@@ -78,12 +81,6 @@ namespace BubbleBobble
 	{
 		switch (event.GetID())
 		{
-		case JRE::Events::EventDestroyed::ID:
-		{
-			//auto& args = event.GetArgs<JRE::Events::EventDestroyed>();
-			//args.event.RemoveObserver(this);
-			break;
-		}
 		case Events::PlayerLostLive::ID:
 		{
 			auto& args = event.GetArgs<Events::PlayerLostLive>();
@@ -115,6 +112,14 @@ namespace BubbleBobble
 		}
 		}
 	}
+	void InGameState::SkipLevel()
+	{
+		SceneManager::OnSceneLoadCallBack loadCallback = [&](Scene& scene) -> void {
+			SetPlayerToSpawnPos(scene);
+			CreateEnemies(scene);
+			};
+		GoToNextLevel(loadCallback);
+	}
 	void InGameState::GoToNextLevel(JRE::SceneManager::OnSceneLoadCallBack loadCallback)
 	{
 		++m_LevelIdx;
@@ -133,6 +138,8 @@ namespace BubbleBobble
 			auto& levelScene = sm.CreateScene(levelName, PersistenceMask::LevelScene);
 			LevelBuilder(levelScene, path).Build();
 		}
+
+		m_NrEnemiesKilled = 0;
 
 		sm.SetNextScene(levelName, loadCallback);
 	}
@@ -198,13 +205,5 @@ namespace BubbleBobble
 			}
 			}
 		}
-	}
-	void InGameState::SkipLevel::Execute()
-	{
-		SceneManager::OnSceneLoadCallBack loadCallback = [&](Scene& scene) -> void {
-			m_State.SetPlayerToSpawnPos(scene);
-			m_State.CreateEnemies(scene);
-			};
-		m_State.GoToNextLevel(loadCallback);
 	}
 }

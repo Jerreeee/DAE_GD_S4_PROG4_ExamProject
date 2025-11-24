@@ -12,7 +12,6 @@
 
 namespace JRE
 {
-	class Command;
 namespace Input
 {
 	struct DeviceInfo
@@ -24,7 +23,7 @@ namespace Input
 	struct Binding
 	{
 		std::unique_ptr<IBindingInfo> pBindInfo;
-		std::unique_ptr<Command> pCommand;
+		Command command;
 	};
 
 	struct ActionMap
@@ -36,13 +35,14 @@ namespace Input
 		ActionMap(ActionMap&&) noexcept = default;
 		ActionMap& operator=(ActionMap&&) noexcept = default;
 
-		bool enabled{ true };
+		bool Enabled() const { return m_Enabled; };
 		const std::map<std::string, Binding>& GetBindings() const { return m_Bindings; };
 	private:
 		friend class InputManager;
 
+		bool m_Enabled{ true };
 		std::array<DeviceInfo*, 2> devicesInfo{}; //1 possible device per DeviceType
-		std::map<std::string, Binding>  m_Bindings;
+		std::map<std::string, Binding>  m_Bindings{};
 	};
 
 	class InputManager final : public Singleton<InputManager>
@@ -53,12 +53,11 @@ namespace Input
 
 		bool ProcessInput();
 
-
 		size_t AddKeyboard();
 		size_t AddController();
 		size_t AddActionMap(const std::vector<size_t>& deviceIndices);
 		const ActionMap& GetActionMap(size_t actionMapIdx);
-		InputManager& BindCommand(size_t actionMapIdx, const std::string& name, std::unique_ptr<Command> pCommand, std::unique_ptr<IBindingInfo> pBindingInfo);
+		InputManager& BindCommand(size_t actionMapIdx, const std::string& name, Command command, std::unique_ptr<IBindingInfo> pBindingInfo);
 		bool IsBindingActive(const ActionMap& actionMap, const std::string& name);
 		void SetEnableActionMap(size_t actionMapIdx, bool enable);
 	private:

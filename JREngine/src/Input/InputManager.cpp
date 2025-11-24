@@ -33,7 +33,7 @@ namespace JRE::Input
 
 		for (const ActionMap& actionMap : m_ActionMaps)
 		{
-			if (!actionMap.enabled)
+			if (!actionMap.m_Enabled)
 				continue;
 
 			//Check if the devices for this acionMap were already Polled this Update tick
@@ -43,10 +43,10 @@ namespace JRE::Input
 
 			for (const auto& [name, binding] : actionMap.m_Bindings)
 			{
-				if (!binding.pCommand) continue;
+				if (!binding.command) continue;
 				auto& pDevice = actionMap.devicesInfo[static_cast<size_t>(binding.pBindInfo->GetType())]->pDevice;
 				if (pDevice->IsBindingActive(*binding.pBindInfo))
-					binding.pCommand->Execute();
+					binding.command();
 			}
 		}
 
@@ -64,7 +64,7 @@ namespace JRE::Input
 	void InputManager::SetEnableActionMap(size_t actionMapIdx, bool enable)
 	{
 		assert(IsValidActionMapIdx(actionMapIdx) && "Invalid actionMapIdx");
-		m_ActionMaps[actionMapIdx].enabled = enable;
+		m_ActionMaps[actionMapIdx].m_Enabled = enable;
 	}
 	size_t InputManager::AddKeyboard()
 	{
@@ -98,7 +98,7 @@ namespace JRE::Input
 		assert(IsValidActionMapIdx(actionMapIdx) && "InputManager::GetActionMap | Invalid actionMap idx");
 		return m_ActionMaps[actionMapIdx];
 	}
-	InputManager& InputManager::BindCommand(size_t actionMapIdx, const std::string& name, std::unique_ptr<Command> pCommand, std::unique_ptr<IBindingInfo> pBindingInfo)
+	InputManager& InputManager::BindCommand(size_t actionMapIdx, const std::string& name, Command command, std::unique_ptr<IBindingInfo> pBindingInfo)
 	{
 		if (!IsValidActionMapIdx(actionMapIdx))
 			return *this;
@@ -116,7 +116,7 @@ namespace JRE::Input
 			}
 		}
 
-		actionMap.m_Bindings[name] = Binding{ std::move(pBindingInfo),std::move(pCommand) };
+		actionMap.m_Bindings[name] = Binding{ std::move(pBindingInfo),std::move(command) };
 		return *this;
 	}
 	bool InputManager::IsValidActionMapIdx(size_t idx)

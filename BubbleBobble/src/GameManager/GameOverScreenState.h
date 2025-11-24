@@ -13,15 +13,6 @@ namespace BubbleBobble
 		virtual GameState Update() override;
 		virtual void OnExit() override;
 	private:
-		class ReturnToMainMenuCommand final : public JRE::Command
-		{
-		public:
-			ReturnToMainMenuCommand(GameOverScreenState& state) : m_State{ state } {}
-			virtual void Execute() override { m_State.m_ReturnToMainMenu = true; }
-		private:
-			GameOverScreenState& m_State;
-		};
-
 		bool m_ReturnToMainMenu{};
 
 		size_t m_ActionMapIdx{};

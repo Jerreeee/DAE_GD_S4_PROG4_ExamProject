@@ -23,15 +23,7 @@ namespace BubbleBobble
 
 		virtual void OnNotify(JRE::EventInfo& event) override;
 	private:
-		class SkipLevel final : public JRE::Command
-		{
-		public:
-			SkipLevel(InGameState& state) : m_State{ state } {}
-			virtual void Execute() override;
-		private:
-			InGameState& m_State;
-		};
-
+		void SkipLevel();
 		void GoToNextLevel(JRE::SceneManager::OnSceneLoadCallBack loadCallback = {});
 		void SetPlayerToSpawnPos(JRE::Scene& scene);
 		void CreatePlayerAndUI(JRE::Scene& scene);

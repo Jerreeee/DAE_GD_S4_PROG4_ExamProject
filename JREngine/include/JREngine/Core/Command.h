@@ -1,11 +1,7 @@
 #pragma once
+#include <functional>
 
 namespace JRE
 {
-	class Command
-	{
-	public:
-		virtual ~Command() = default;
-		virtual void Execute() = 0;
-	};
+	using Command = std::function<void()>;
 }
