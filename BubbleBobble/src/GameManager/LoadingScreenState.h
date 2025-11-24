@@ -12,6 +12,7 @@ namespace BubbleBobble
 		virtual GameState Update() override;
 		virtual void OnExit() override;
 	private:
+		GameManagerComponent* m_pGameManagerComponent{ nullptr };
 		float m_MaxTime{ 2.f };
 		float m_Timer{};
 	};

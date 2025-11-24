@@ -83,10 +83,8 @@ namespace JRE
 		}
 
 		if (m_LoadCallback)
-		{
 			m_LoadCallback(newScene);
-			m_LoadCallback = nullptr;
-		}
+
 		m_CurrentSceneName = m_NewSceneName;
 		newScene.SetActive(true);
 		m_SceneLoaded = true;

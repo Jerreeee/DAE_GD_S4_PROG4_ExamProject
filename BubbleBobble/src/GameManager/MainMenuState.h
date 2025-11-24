@@ -1,6 +1,13 @@
 #pragma once
 #include "JREngine/Core/Command.h"
+#include "JREngine/Asset/Asset.h"
+
 #include "GameManager/IGameState.h"
+
+namespace JRE
+{
+	class ISoundClip;
+}
 
 namespace BubbleBobble
 {
@@ -17,5 +24,7 @@ namespace BubbleBobble
 
 		bool m_StartSinglePlayer{ false };
 		size_t m_ActionMapIdx{};
+		JRE::AssetRef<JRE::ISoundClip> m_OpeningSoundRef{};
+		JRE::AssetRef<JRE::ISoundClip> m_SelectSoundRef{};
 	};
 }

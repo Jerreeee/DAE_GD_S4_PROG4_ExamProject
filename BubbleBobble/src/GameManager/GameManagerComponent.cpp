@@ -1,6 +1,12 @@
 #include "JREngine/Scene/Scene.h"
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Input/InputManager.h"
+#include "JREngine/Asset/SoundMusicImporter.h"
+#include "JREngine/Asset/ResourceManager.h"
+#include "JREngine/Asset/AssetImporter.h"
+#include "JREngine/Audio/ISoundMusic.h"
+#include "JREngine/Audio/ISoundSystem.h"
+#include "JREngine/Core/ServiceLocator.h"
 
 #include "GameManager/MainMenuState.h"
 #include "GameManager/LoadingScreenState.h"
@@ -9,6 +15,7 @@
 #include "GameManager/GameManagerComponent.h"
 #include "Player/PlayerBuilder.h"
 
+using namespace JRE;
 using namespace JRE::Input;
 
 namespace BubbleBobble
@@ -28,6 +35,9 @@ namespace BubbleBobble
 		m_States.emplace_back(std::make_unique<GameOverScreenState>(*this));
 		//Set active state
 		m_pCurrentState = m_States[static_cast<size_t>(startState)].get();
+
+		AssetHandle musicHandle = AssetImporter::GetInstance().ImportAsset(std::move(JRE::SoundMusicImporter("MainTheme.mp3")));
+		m_MusicRef = ResourceManager::GetAsset<ISoundMusic>(musicHandle);
 	}
 	void GameManagerComponent::Start()
 	{
@@ -42,6 +52,13 @@ namespace BubbleBobble
 		m_pCurrentState->OnExit();
 		m_pCurrentState = m_States[static_cast<size_t>(newState)].get();
 		m_pCurrentState->OnEnter();
+	}
+	void GameManagerComponent::PlayMusic(bool play)
+	{
+		if (play)
+			ServiceLocator::GetSoundSystem().PlayMusic(m_MusicRef, true);
+		else
+			ServiceLocator::GetSoundSystem().StopMusic();
 	}
 	std::string GameManagerComponent::GetStateName(GameState state)
 	{

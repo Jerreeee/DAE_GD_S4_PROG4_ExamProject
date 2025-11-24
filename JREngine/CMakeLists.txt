@@ -38,12 +38,15 @@ set(SOURCE_FILES
     "Asset/TextureImporter.cpp"
     "Asset/FontImporter.cpp"
     "Asset/SoundClipImporter.cpp"
+    "Asset/SoundMusicImporter.cpp"
     "Asset/AssetRegistry.cpp"
 
     "Audio/SDLSoundSystem.cpp"
     "Audio/SDLSoundSystem.h"
     "Audio/SDLSoundClip.cpp"
     "Audio/SDLSoundClip.h"
+    "Audio/SDLSoundMusic.cpp"
+    "Audio/SDLSoundMusic.h"
 
     "Scene/GameObject.cpp"
     "Scene/Scene.cpp"
@@ -95,6 +98,7 @@ set(INCLUDE_FILES
     "Asset/Asset.h"
     "Asset/SpriteEditor.h"
     "Asset/SoundClipImporter.h"
+    "Asset/SoundMusicImporter.h"
     "Asset/FontImporter.h"
     "Asset/TextureImporter.h"
     "Asset/AssetRegistry.h"
@@ -103,6 +107,7 @@ set(INCLUDE_FILES
 
     "Audio/ISoundSystem.h"
     "Audio/ISoundClip.h"
+    "Audio/ISoundMusic.h"
 
     "Scene/GameObject.h"
     "Scene/Scene.h"

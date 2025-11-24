@@ -1,6 +1,7 @@
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Core/Timer.h"
 
+#include "GameManager/GameManagerComponent.h"
 #include "LoadingScreenState.h"
 
 using namespace JRE;
@@ -9,11 +10,15 @@ namespace BubbleBobble
 {
 	LoadingScreenState::LoadingScreenState(GameManagerComponent& gameManagerComponent)
 		: IGameState(gameManagerComponent, "LoadingScreen")
+		, m_pGameManagerComponent{ &gameManagerComponent }
 	{
 	}
 	void LoadingScreenState::OnEnter()
 	{
 		m_Timer = m_MaxTime;
+
+		m_pGameManagerComponent->PlayMusic(true);
+
 		auto& sm = SceneManager::GetInstance();
 		sm.SetNextScene(m_Name);
 	}

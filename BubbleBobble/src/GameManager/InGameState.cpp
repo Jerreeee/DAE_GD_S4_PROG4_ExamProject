@@ -15,6 +15,7 @@
 #include "TileMap/TileMapComponent.h"
 #include "Enemies/Zenchan/ZenchanScriptComponent.h"
 #include "GameManager/InGameState.h"
+#include "GameManager/GameManagerComponent.h"
 
 using namespace JRE;
 using namespace JRE::Input;
@@ -23,6 +24,7 @@ namespace BubbleBobble
 {
 	InGameState::InGameState(GameManagerComponent& gameManagerComponent)
 		: IGameState(gameManagerComponent, "InGame")
+		, m_pGameManagerComponent{ &gameManagerComponent }
 	{
 		auto& im = InputManager::GetInstance();
 
@@ -76,6 +78,7 @@ namespace BubbleBobble
 	void InGameState::OnExit()
 	{
 		InputManager::GetInstance().SetEnableActionMap(m_P1ActionMapIdx, false);
+		m_pGameManagerComponent->PlayMusic(false);
 	}
 	void InGameState::OnNotify(JRE::EventInfo& event)
 	{
@@ -145,19 +148,19 @@ namespace BubbleBobble
 	}
 	void InGameState::SetPlayerToSpawnPos(Scene& scene)
 	{
-		//1) Find player in gameObjects (with tag, or PlayerScriptComponent)
+		// Find player in gameObjects
 		auto pPlayer = scene.GetGameObjectByComponentType<PlayerScriptComponent>();
 		assert(pPlayer && "Couldn't find the player gameObject in the scene");
-		//2) Find LevelData
+		// Find LevelData
 		auto pLevelDataCmp = scene.GetComponent<LevelDataComponent>();
-		//3) Set player spawnPos
+		// Set player spawnPos
 		assert(pLevelDataCmp->m_LevelData->players.size() > 0 && "No player pos defined in the levelData");
 		glm::vec2 spawnPos = pLevelDataCmp->m_LevelData->players[0];
 		pPlayer->SetWorldPosition(spawnPos.x, spawnPos.y);
 	}
 	void InGameState::CreatePlayerAndUI(Scene& scene)
 	{
-		//Create player(s) for gameMode
+		// Create players for gameMode
 		auto pPlayer = std::make_unique<GameObject>("Bubby");
 		PlayerBuilder()
 			.SetAnimationPath("Anims/P1.txt")

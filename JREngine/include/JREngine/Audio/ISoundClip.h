@@ -20,7 +20,7 @@ namespace JRE
 	class NullSoundClip final : public ISoundClip
 	{
 	public:
-		void Play(int, int) const override {}
-		void SetVolume(float) override {}
+		void Play(int, int) const override {};
+		void SetVolume(float) override {};
 	};
 }

@@ -28,6 +28,8 @@ namespace BubbleBobble
 		void SetPlayerToSpawnPos(JRE::Scene& scene);
 		void CreatePlayerAndUI(JRE::Scene& scene);
 		void CreateEnemies(JRE::Scene& scene);
+
+		GameManagerComponent* m_pGameManagerComponent{ nullptr };
 		
 		int m_Score{};
 		int m_NrLevels{ 3 };
