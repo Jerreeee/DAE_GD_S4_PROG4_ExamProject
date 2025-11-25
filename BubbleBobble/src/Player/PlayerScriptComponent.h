@@ -11,7 +11,8 @@
 #include "JREngine/Audio/ISoundClip.h"
 
 #include "Components/HealthComponent.h"
-#include "Player/PlayerUtils.h"
+#include "PlayerUtils.h"
+#include "PlayerStates.h"
 
 namespace JRE
 {
@@ -44,6 +45,7 @@ namespace BubbleBobble
 		PlayerScriptComponent(JRE::GameObject& gameObject);
 		virtual ~PlayerScriptComponent() override;
 
+		virtual void Start() override;
 		virtual void Update() override;
 		virtual void FixedUpdate() override;
 
@@ -57,6 +59,10 @@ namespace BubbleBobble
 		JRE::SoftAssetRef<JRE::ISoundClip> m_JumpSound{ nullptr };
 		JRE::SoftAssetRef<JRE::ISoundClip> m_ShootSound{ nullptr };
 	private:
+		friend class PlayerState_Mortal;
+		friend class PlayerState_Immortal;
+		friend class PlayerState_Dead;
+
 		struct Input
 		{
 			bool pressedJump;
@@ -64,32 +70,32 @@ namespace BubbleBobble
 			bool pressedShoot;
 		};
 
-		enum class State
-		{
-			Mortal, Immortal, Stunned, Death
-		};
-
 		enum class AnimState
 		{
 			Moving, Shoot, Death
 		};
 
+		void ApplyStateChange();
+		void RequestStateChange(PlayerState newState);
+		void MoveUpdate();
 		void MoveCollider();
 		void ShootBubble();
+
+		PlayerState m_State{ PlayerState::Mortal };
+		PlayerState m_NextState{};
+		bool m_HasPendingStateChange{ false };
+		std::vector<std::unique_ptr<PlayerStateBase>> m_States{};
 
 		JRE::SpriteRendererComponent* m_pSpriteRendererCmp{ nullptr };
 		JRE::SpriteAnimatorComponent* m_pSpriteAnimatorCmp{ nullptr };
 		JRE::Box2DColliderComponent* m_pBox2DColliderCmp{ nullptr };
 		HealthComponent* m_pHealthCmp{ nullptr };
+
 		JRE::AssetRef<JRE::SpriteAnimationClip> m_pShootClipRef{ nullptr };
 		std::shared_ptr<JRE::EventConnection> m_ShootClipEndOfClipEventConn{ nullptr };
 		JRE::AssetRef<JRE::SpriteAnimationClip> m_pDeathClipRef{ nullptr };
 		std::shared_ptr<JRE::EventConnection> m_DeathClipEndOfClipEventConn{ nullptr };
 
-		float m_ImmortalTimer{};
-		float m_ImmortalTimerDefault{ 3.f };
-
-		State m_State{ State::Mortal };
 		AnimState m_AnimState{ AnimState::Moving };
 		float m_Speed{ 15.f };
 		float m_JumpForce{ 75.f };

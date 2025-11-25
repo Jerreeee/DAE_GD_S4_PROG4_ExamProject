@@ -20,6 +20,7 @@ namespace BubbleBobble
 	PlayerScriptComponent::PlayerScriptComponent(JRE::GameObject& gameObject)
 		: ComponentBase(gameObject)
 	{
+		//Resources
 		m_pSpriteRendererCmp = GetGameObject().GetComponent<SpriteRendererComponent>();
 		assert(m_pSpriteRendererCmp && "Player doesnt have SpriteRendererComponent");
 		m_pSpriteAnimatorCmp = GetGameObject().GetComponent<SpriteAnimatorComponent>();
@@ -36,6 +37,11 @@ namespace BubbleBobble
 
 		m_pDeathClipRef = m_pSpriteAnimatorCmp->GetClip("Death");
 		m_DeathClipEndOfClipEventConn = m_pDeathClipRef->OnEndOfClipEvent.AddObserver(this);
+
+		// Create state instances
+		m_States.emplace_back(std::make_unique<PlayerState_Mortal>(*this));
+		m_States.emplace_back(std::make_unique<PlayerState_Immortal>(*this, 4.0f));
+		m_States.emplace_back(std::make_unique<PlayerState_Dead>(*this));
 	}
 
 	PlayerScriptComponent::~PlayerScriptComponent()
@@ -47,100 +53,26 @@ namespace BubbleBobble
 			m_DeathClipEndOfClipEventConn->Disconnect(this);
 	}
 
+	void PlayerScriptComponent::Start()
+	{
+		m_States[static_cast<size_t>(m_State)]->OnEnter();
+	}
+
 	void PlayerScriptComponent::Update()
 	{
-		float dt = Timer::GetInstance().GetDeltaTime();
+		m_States[static_cast<size_t>(m_State)]->Update();
 
-		switch (m_State)
-		{
-		case State::Immortal:
-			m_ImmortalTimer -= dt;
-			if (m_ImmortalTimer < 0.f)
-				m_State = State::Mortal;
-		case State::Mortal:
-			if (m_Input.moveDir != 0)
-				m_FacingDir = m_Input.moveDir;
-
-			if (m_AnimState == AnimState::Moving)
-			{
-				if (m_Input.moveDir)
-					m_pSpriteAnimatorCmp->SetActiveClip("Run");
-				else
-					m_pSpriteAnimatorCmp->SetActiveClip("Idle");
-
-			}
-			//Flip sprites based on movement direction
-			m_pSpriteRendererCmp->SetFlipX(m_FacingDir == -1);
-
-			if (m_Input.pressedShoot)
-				ShootBubble(); //TODO add shoot animation
-
-			bool onGround = m_CollInfo.collDir.down;
-			if (onGround && m_Input.pressedJump)
-			{
-				m_Vel.y = -m_JumpForce;
-				if (m_JumpSound)
-					ServiceLocator::GetSoundSystem().Play(m_JumpSound.Get());
-			}
-
-			m_Input = Input{}; //Consume all input
-			break;
-
-		}
+		if (m_HasPendingStateChange)
+			ApplyStateChange();
 	}
 
 	void PlayerScriptComponent::FixedUpdate()
 	{
-		switch (m_State)
-		{
-		case State::Mortal:
-		case State::Immortal:
-			MoveCollider();
-			break;
-		}
+		m_States[static_cast<size_t>(m_State)]->FixedUpdate();
 	}
 	void PlayerScriptComponent::OnNotify(JRE::EventInfo& event)
 	{
-		switch (event.GetID())
-		{
-		case JRE::Events::EventDestroyed::ID:
-		{
-			//auto& args = event.GetArgs<JRE::Events::EventDestroyed>();
-			//args.event.RemoveObserver(this);
-			break;
-		}
-		case JRE::Events::Box2DCollisionEvent::ID:
-		{
-			if (m_State != State::Mortal)
-				break;
-			auto& args = event.GetArgs<JRE::Events::Box2DCollisionEvent>();
-			if (args.other.GetProperties().layer & CollisionLayer::Enemy)
-			{
-				m_State = State::Death;
-				m_AnimState = AnimState::Death;
-				m_pSpriteAnimatorCmp->SetActiveClip("Death");
-				m_pSpriteRendererCmp->SetOffset(glm::vec2(0.f, -45.f));
-			}
-			break;
-		}
-		case JRE::Events::EndOfClipEvent::ID:
-		{
-			auto& args = event.GetArgs<JRE::Events::EndOfClipEvent>();
-			if (args.clip == m_pDeathClipRef.get() && m_State == State::Death)
-			{
-				m_pHealthCmp->TakeDamage(1);
-				EventInfo e = CreateEvent<Events::PlayerLostLive>(m_pHealthCmp->GetHealth());
-				OnPlayerLostLive.Notify(e);
-				m_State = State::Immortal;
-				m_AnimState = AnimState::Moving;
-				m_ImmortalTimer = m_ImmortalTimerDefault;
-				m_pSpriteRendererCmp->SetOffset();
-			}
-			else if (args.clip == m_pShootClipRef.get())
-				m_AnimState = AnimState::Moving;
-			break;
-		}
-		}
+		m_States[static_cast<size_t>(m_State)]->OnEvent(event);
 	}
 	void PlayerScriptComponent::Move(int direction)
 	{
@@ -155,6 +87,51 @@ namespace BubbleBobble
 	{
 		if (!m_Input.pressedShoot)
 			m_Input.pressedShoot = true;
+	}
+	void PlayerScriptComponent::ApplyStateChange()
+	{
+		m_HasPendingStateChange = false;
+
+		if (m_State == m_NextState)
+			return;
+
+		m_States[(size_t)m_State]->OnExit();
+		m_State = m_NextState;
+		m_States[(size_t)m_State]->OnEnter();
+	}
+	void PlayerScriptComponent::RequestStateChange(PlayerState newState)
+	{
+		m_NextState = newState;
+		m_HasPendingStateChange = true;
+	}
+	void PlayerScriptComponent::MoveUpdate()
+	{
+		if (m_Input.moveDir != 0)
+			m_FacingDir = m_Input.moveDir;
+
+		if (m_AnimState == AnimState::Moving)
+		{
+			if (m_Input.moveDir)
+				m_pSpriteAnimatorCmp->SetActiveClip("Run");
+			else
+				m_pSpriteAnimatorCmp->SetActiveClip("Idle");
+
+		}
+		//Flip sprites based on movement direction
+		m_pSpriteRendererCmp->SetFlipX(m_FacingDir == -1);
+
+		if (m_Input.pressedShoot)
+			ShootBubble(); //TODO add shoot animation
+
+		bool onGround = m_CollInfo.collDir.down;
+		if (onGround && m_Input.pressedJump)
+		{
+			m_Vel.y = -m_JumpForce;
+			if (m_JumpSound)
+				ServiceLocator::GetSoundSystem().Play(m_JumpSound.Get());
+		}
+
+		m_Input = Input{}; //Consume all input
 	}
 	void PlayerScriptComponent::MoveCollider()
 	{

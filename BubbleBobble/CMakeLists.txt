@@ -57,6 +57,8 @@ set(SOURCE_FILES
     "Player/PlayerUtils.h"
     "Player/PlayerController.h"
     "Player/PlayerController.cpp"
+    "Player/PlayerStates.h"
+    "Player/PlayerStates.cpp"
 
     "Bubble/BubbleBuilder.h"
     "Bubble/BubbleBuilder.cpp"
