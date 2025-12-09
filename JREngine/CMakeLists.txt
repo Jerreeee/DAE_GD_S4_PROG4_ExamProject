@@ -15,6 +15,9 @@ set(SOURCE_FILES
     "Core/Event.cpp"
     "Core/Observer.cpp"
     "Core/ServiceLocator.cpp"
+    "Core/State.cpp"
+    "Core/FiniteStateMachine.cpp"
+    "Core/HierarchicalStateMachine.cpp"
 
     "Input/InputManager.cpp"
     "Input/SDLKeyboard.cpp"
@@ -75,6 +78,9 @@ set(INCLUDE_FILES
     "Core/Event.h"
     "Core/Observer.h"
     "Core/ServiceLocator.h"
+    "Core/State.h"
+    "Core/FiniteStateMachine.h"
+    "Core/HierarchicalStateMachine.h"
 
     "Input/InputUtils.h"
     "Input/InputManager.h"
