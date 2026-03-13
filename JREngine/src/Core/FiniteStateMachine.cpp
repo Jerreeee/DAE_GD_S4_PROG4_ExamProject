@@ -3,7 +3,7 @@
 namespace JRE::FSM
 {
     FiniteStateMachine::FiniteStateMachine(FSMState* startState)
-        : m_pCurrentState(nullptr)
+        : m_pCurrentState(startState)
     {
     }
 
