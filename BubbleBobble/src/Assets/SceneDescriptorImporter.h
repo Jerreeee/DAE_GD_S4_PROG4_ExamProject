@@ -10,8 +10,8 @@ namespace BubbleBobble
         explicit SceneDescriptorImporter(const std::filesystem::path& path);
 
         JRE::AssetMetadata GetMetadata() const override;
-        static JRE::AssetRef<JRE::Asset> ImportAsset(JRE::AssetHandle handle,
-                                                      const JRE::AssetMetadata& metadata);
+        static JRE::AssetRef<JRE::Asset> Load(JRE::AssetHandle handle,
+                                              const JRE::AssetMetadata& metadata);
     private:
         std::filesystem::path m_Path;
     };

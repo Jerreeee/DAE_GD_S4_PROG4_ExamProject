@@ -1,33 +1,32 @@
 #include "Core/ServiceLocator.h"
 #include "Audio/ISoundMusic.h"
 #include "Audio/ISoundSystem.h"
-#include "Asset/AssetImporter.h"
+#include "Asset/AssetLoaderRegistry.h"
 #include "Asset/SoundMusicImporter.h"
 
 namespace JRE
 {
-    // Register importer automatically at startup
-    static bool s_RegisteredMusic = []()
-        {
-            AssetImporter::GetInstance().RegisterImporter(
-                ISoundMusic::GetStaticType(),
-                SoundMusicImporter::ImportAsset
-            );
-            return true;
-        }();
+	static bool s_RegisteredMusic = []()
+		{
+			AssetLoaderRegistry::GetInstance().RegisterLoader(
+				ISoundMusic::GetStaticType(),
+				SoundMusicImporter::Load
+			);
+			return true;
+		}();
 
-    SoundMusicImporter::SoundMusicImporter(const std::filesystem::path& filepath)
-        : m_Path{ filepath }
-    {
-    }
+	SoundMusicImporter::SoundMusicImporter(const std::filesystem::path& filepath)
+		: m_Path{ filepath }
+	{
+	}
 
-    AssetRef<Asset> SoundMusicImporter::ImportAsset(AssetHandle handle, const AssetMetadata& metadata)
-    {
-        return ServiceLocator::GetSoundSystem().CreateMusic(handle, metadata);
-    }
+	AssetRef<Asset> SoundMusicImporter::Load(AssetHandle handle, const AssetMetadata& metadata)
+	{
+		return ServiceLocator::GetSoundSystem().CreateMusic(handle, metadata);
+	}
 
-    AssetMetadata SoundMusicImporter::GetMetadata() const
-    {
-        return AssetMetadata{ISoundMusic::GetStaticType().data(), m_Path, "", true, GetDeclaredDependencies()};
-    }
+	AssetMetadata SoundMusicImporter::GetMetadata() const
+	{
+		return AssetMetadata{ISoundMusic::GetStaticType().data(), m_Path, "", true, GetDeclaredDependencies()};
+	}
 }

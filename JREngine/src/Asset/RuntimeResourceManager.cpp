@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include "Asset/RuntimeResourceManager.h"
 #include "Asset/AssetRegistry.h"
-#include "Asset/AssetImporter.h"
+#include "Asset/AssetLoaderRegistry.h"
 #include "JREngine/Core/UUID.h"
 
 namespace JRE
@@ -59,7 +59,7 @@ namespace JRE
 		for (AssetHandle dep : meta.dependencies)
 			LoadAssetAndDeps(dep, visited);
 
-		AssetRef<Asset> asset = AssetImporter::GetInstance().ImportAsset(handle, meta);
+		AssetRef<Asset> asset = AssetLoaderRegistry::GetInstance().Load(handle, meta);
 		if (asset)
 		{
 			asset->SetHandle(handle);

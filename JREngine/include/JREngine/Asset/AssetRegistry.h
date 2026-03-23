@@ -4,7 +4,6 @@
 #include <iosfwd>
 #include "JREngine/Core/Singleton.h"
 #include "JREngine/Asset/Asset.h"
-#include "JREngine/Asset/IAssetImporter.h"
 #include "JREngine/Asset/AssetMetadata.h"
 
 namespace JRE
@@ -12,7 +11,7 @@ namespace JRE
 	class AssetRegistry final : public Singleton<AssetRegistry>
 	{
 	public:
-		AssetHandle RegisterAsset(IAssetImporter&& importer);
+		AssetHandle Register(AssetMetadata metadata);
 		bool IsValidAssetHandle(AssetHandle handle) const;
 		bool HasAssetAtPath(const std::string& virtualPath) const;
 		AssetHandle GetHandleAtPath(const std::string& virtualPath) const;

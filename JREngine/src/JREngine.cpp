@@ -17,7 +17,7 @@
 #include "Audio/SDLSoundSystem.h"
 #include "Asset/EditorResourceManager.h"
 #include "Asset/RuntimeResourceManager.h"
-#include "Asset/AssetImporter.h"
+#include "Asset/AssetDatabase.h"
 #include "Core/Timer.h"
 #include "Core/ServiceLocator.h"
 #include "Physics/IPhysicsSystem.h"
@@ -102,7 +102,7 @@ JRE::JREngine::JREngine(const std::filesystem::path& dataPath)
 		throw std::runtime_error("Failed to initialize TTF: " + std::string(SDL_GetError()));
 	}
 
-	AssetImporter::GetInstance().Init(dataPath);
+	AssetDatabase::GetInstance().Init(dataPath);
 
 	ServiceLocator::RegisterSoundSystem(std::make_unique<SDLSoundSystem>());
 	ServiceLocator::RegisterResourceManager(std::make_unique<EditorResourceManager>());
@@ -130,9 +130,8 @@ void JRE::JREngine::Run(const std::function<void()>& registerAssets,
 	registerAssets();
 
 	// Write manifest
-	auto manifestPath = AssetImporter::GetInstance().GetDatapath() / "asset_manifest.txt";
-	static_cast<EditorResourceManager&>(
-		ServiceLocator::GetResourceManager()).SerializeManifest(manifestPath);
+	auto manifestPath = AssetDatabase::GetInstance().GetDatapath() / "asset_manifest.txt";
+	AssetDatabase::GetInstance().SerializeManifest(manifestPath);
 
 	// Phase 2: switch to runtime resource manager
 	ServiceLocator::RegisterResourceManager(

@@ -1,11 +1,12 @@
-#include "Asset/AssetImporter.h"
+#include "Asset/AssetLoaderRegistry.h"
+#include "Asset/AssetDatabase.h"
 #include "Asset/TextureImporter.h"
 
 namespace JRE
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::GetInstance().RegisterImporter(Texture2D::GetStaticType(), TextureImporter::ImportAsset);
+			AssetLoaderRegistry::GetInstance().RegisterLoader(Texture2D::GetStaticType(), TextureImporter::Load);
 			return true;
 		}();
 
@@ -14,9 +15,9 @@ namespace JRE
 	{
 	}
 
-	AssetRef<Asset> TextureImporter::ImportAsset(AssetHandle, const AssetMetadata& metadata)
+	AssetRef<Asset> TextureImporter::Load(AssetHandle, const AssetMetadata& metadata)
 	{
-		auto fullPath = AssetImporter::GetInstance().GetFullDatapath(metadata.filepath);
+		auto fullPath = AssetDatabase::GetInstance().GetFullDatapath(metadata.filepath);
 		return CreateAssetRef<Texture2D>(fullPath);
 	}
 

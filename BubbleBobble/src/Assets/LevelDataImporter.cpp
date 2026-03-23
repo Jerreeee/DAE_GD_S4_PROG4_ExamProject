@@ -1,7 +1,8 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
-#include "JREngine/Asset/AssetImporter.h"
+#include "JREngine/Asset/AssetLoaderRegistry.h"
+#include "JREngine/Asset/AssetDatabase.h"
 #include "Assets/LevelDataImporter.h"
 
 using namespace JRE;
@@ -10,7 +11,7 @@ namespace BubbleBobble
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::GetInstance().RegisterImporter(LevelData::GetStaticType(), LevelDataImporter::ImportAsset);
+			AssetLoaderRegistry::GetInstance().RegisterLoader(LevelData::GetStaticType(), LevelDataImporter::Load);
 			return true;
 		}();
 
@@ -19,9 +20,9 @@ namespace BubbleBobble
 	{
 	}
 
-	AssetRef<Asset> LevelDataImporter::ImportAsset(AssetHandle, const AssetMetadata& metadata)
+	AssetRef<Asset> LevelDataImporter::Load(AssetHandle, const AssetMetadata& metadata)
 	{
-		auto fullPath = JRE::AssetImporter::GetInstance().GetFullDatapath(metadata.filepath);
+		auto fullPath = JRE::AssetDatabase::GetInstance().GetFullDatapath(metadata.filepath);
 		std::ifstream fStream(fullPath.string().c_str());
 		if (!fStream)
 			throw std::runtime_error("Failed to open level file: " + metadata.filepath.string());

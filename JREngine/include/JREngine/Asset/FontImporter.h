@@ -9,7 +9,7 @@ namespace JRE
 	public:
 		FontImporter(const std::filesystem::path& filepath);
 
-		static AssetRef<Asset> ImportAsset(AssetHandle handle, const AssetMetadata& metadata);
+		static AssetRef<Asset> Load(AssetHandle handle, const AssetMetadata& metadata);
 
 		virtual AssetMetadata GetMetadata() const override;
 

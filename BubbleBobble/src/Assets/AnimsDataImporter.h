@@ -9,7 +9,7 @@ namespace BubbleBobble
 	public:
 		AnimDataImporter(const std::filesystem::path& filepath);
 
-		static JRE::AssetRef<JRE::Asset> ImportAsset(JRE::AssetHandle handle, const JRE::AssetMetadata& metadata);
+		static JRE::AssetRef<JRE::Asset> Load(JRE::AssetHandle handle, const JRE::AssetMetadata& metadata);
 
 		virtual JRE::AssetMetadata GetMetadata() const override;
 	private:

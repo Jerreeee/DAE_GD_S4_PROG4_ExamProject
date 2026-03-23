@@ -1,19 +1,10 @@
-﻿#include <fstream>
 #include <iostream>
 #include "Asset/AssetRegistry.h"
-#include "Asset/AssetImporter.h"
+#include "Asset/AssetLoaderRegistry.h"
 #include "Asset/EditorResourceManager.h"
 
 namespace JRE
 {
-	void EditorResourceManager::SerializeManifest(const std::filesystem::path& manifestPath) const
-	{
-		std::ofstream out(manifestPath);
-		if (!out)
-			throw std::runtime_error("EditorResourceManager: cannot write asset_manifest.txt");
-		AssetRegistry::GetInstance().Serialize(out);
-	}
-
 	void EditorResourceManager::Init()
 	{
 		m_WorkerThread = std::jthread([this](std::stop_token token) { WorkerLoop(token); });
@@ -80,7 +71,7 @@ namespace JRE
 		auto it = m_LoadedAssets.find(handle);
 		return it != m_LoadedAssets.end() ? it->second : nullptr;
 	}
-	
+
 	std::shared_ptr<EditorResourceManager::AssetLoadJob> EditorResourceManager::StartOrGetAssetJob(AssetHandle handle, const AssetMetadata& metadata, AssetLoadMode loadMode)
 	{
 		std::unique_lock assetLoadingLock(m_AssetLoadingMutex);
@@ -94,15 +85,15 @@ namespace JRE
 			if (job->status == LoadState::Pending && loadMode == AssetLoadMode::Immediate)
 			{
 				job->status = LoadState::Loading;
-				assetLoadingLock.unlock(); //Unlock so ImportAsset isn't blocking
+				assetLoadingLock.unlock(); //Unlock so Load isn't blocking
 
 				//Import the asset
-				job->asset = AssetImporter::GetInstance().ImportAsset(handle, metadata);
+				job->asset = AssetLoaderRegistry::GetInstance().Load(handle, metadata);
 
 				//Ensure the asset is fully loaded before any thread can re-acquire any mutex
 				//Otherwise, if we would call "assetLoadingLock.unlock()" after "job->condition.notify_all();"
 				//then any waiting thread would see "job->status = LoadState::Loaded;" but the asset
-				//would not yet be in m_LoadedAssets which is wrong if "loadMode == AssetLoadMode::Immediate" 
+				//would not yet be in m_LoadedAssets which is wrong if "loadMode == AssetLoadMode::Immediate"
 				{
 					assetLoadingLock.lock();
 					job->status = LoadState::Loaded;
@@ -131,10 +122,10 @@ namespace JRE
 		{
 			//assetLoadingLock still locked
 			job->status = LoadState::Loading;
-			assetLoadingLock.unlock(); //Unlock so ImportAsset isn't blocking
+			assetLoadingLock.unlock(); //Unlock so Load isn't blocking
 
 			//Import
-			job->asset = AssetImporter::GetInstance().ImportAsset(handle, metadata);
+			job->asset = AssetLoaderRegistry::GetInstance().Load(handle, metadata);
 
 			//Same as above Ensure the asset is fully loaded before any thread can re-acquire any mutex
 			{
@@ -206,8 +197,8 @@ namespace JRE
 						job->status = LoadState::Loading;
 					}
 
-					// Import
-					AssetRef<Asset> asset = AssetImporter::GetInstance().ImportAsset(args.handle, args.metadata);
+					// Load
+					AssetRef<Asset> asset = AssetLoaderRegistry::GetInstance().Load(args.handle, args.metadata);
 
 					//Ensure the asset is considered fully loaded before notifying any waiting threads
 					{

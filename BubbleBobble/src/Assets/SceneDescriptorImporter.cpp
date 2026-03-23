@@ -1,6 +1,7 @@
 #include <fstream>
 #include <sstream>
-#include "JREngine/Asset/AssetImporter.h"
+#include "JREngine/Asset/AssetLoaderRegistry.h"
+#include "JREngine/Asset/AssetDatabase.h"
 #include "JREngine/Asset/AssetRegistry.h"
 #include "Assets/SceneDescriptor.h"
 #include "Assets/SceneDescriptorImporter.h"
@@ -11,8 +12,8 @@ namespace BubbleBobble
 {
     static bool s_Registered = []()
     {
-        AssetImporter::GetInstance().RegisterImporter(
-            SceneDescriptor::GetStaticType(), SceneDescriptorImporter::ImportAsset);
+        AssetLoaderRegistry::GetInstance().RegisterLoader(
+            SceneDescriptor::GetStaticType(), SceneDescriptorImporter::Load);
         return true;
     }();
 
@@ -37,7 +38,7 @@ namespace BubbleBobble
         meta.assetType = SceneDescriptor::GetStaticType().data();
         meta.filepath  = m_Path;
 
-        auto fullPath = AssetImporter::GetInstance().GetFullDatapath(m_Path);
+        auto fullPath = AssetDatabase::GetInstance().GetFullDatapath(m_Path);
         std::ifstream f(fullPath);
         std::string line;
         while (std::getline(f, line))
@@ -56,10 +57,10 @@ namespace BubbleBobble
         return meta;
     }
 
-    AssetRef<Asset> SceneDescriptorImporter::ImportAsset(AssetHandle, const AssetMetadata& metadata)
+    AssetRef<Asset> SceneDescriptorImporter::Load(AssetHandle, const AssetMetadata& metadata)
     {
         auto desc = CreateAssetRef<SceneDescriptor>();
-        auto fullPath = AssetImporter::GetInstance().GetFullDatapath(metadata.filepath);
+        auto fullPath = AssetDatabase::GetInstance().GetFullDatapath(metadata.filepath);
         std::ifstream f(fullPath);
         std::string line;
 

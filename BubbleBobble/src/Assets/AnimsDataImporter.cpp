@@ -2,7 +2,8 @@
 #include <sstream>
 #include <stdexcept>
 #include <cassert>
-#include "JREngine/Asset/AssetImporter.h"
+#include "JREngine/Asset/AssetLoaderRegistry.h"
+#include "JREngine/Asset/AssetDatabase.h"
 #include "Assets/AnimsDataImporter.h"
 
 using namespace JRE;
@@ -11,7 +12,7 @@ namespace BubbleBobble
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::GetInstance().RegisterImporter(AnimsData::GetStaticType(), AnimDataImporter::ImportAsset);
+			AssetLoaderRegistry::GetInstance().RegisterLoader(AnimsData::GetStaticType(), AnimDataImporter::Load);
 			return true;
 		}();
 
@@ -20,9 +21,9 @@ namespace BubbleBobble
 	{
 	}
 
-	AssetRef<Asset> AnimDataImporter::ImportAsset(AssetHandle, const AssetMetadata& metadata)
+	AssetRef<Asset> AnimDataImporter::Load(AssetHandle, const AssetMetadata& metadata)
 	{
-        auto fullPath = JRE::AssetImporter::GetInstance().GetFullDatapath(metadata.filepath);
+        auto fullPath = JRE::AssetDatabase::GetInstance().GetFullDatapath(metadata.filepath);
         std::ifstream fStream(fullPath.string().c_str());
         if (!fStream)
             throw std::runtime_error("Failed to open animation file: " + metadata.filepath.string());

@@ -2,7 +2,8 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include "JREngine/Asset/AssetImporter.h"
+#include "JREngine/Asset/AssetLoaderRegistry.h"
+#include "JREngine/Asset/AssetDatabase.h"
 #include "JREngine/Asset/AssetRegistry.h"
 #include "JREngine/Asset/SoftAssetRef.h"
 #include "JREngine/Asset/Texture2D.h"
@@ -15,7 +16,7 @@ namespace BubbleBobble
 {
 	static bool s_Registered = []()
 		{
-			JRE::AssetImporter::GetInstance().RegisterImporter(TileMap::GetStaticType(), TileMapImporter::ImportAsset);
+			JRE::AssetLoaderRegistry::GetInstance().RegisterLoader(TileMap::GetStaticType(), TileMapImporter::Load);
 			return true;
 		}();
 
@@ -24,17 +25,17 @@ namespace BubbleBobble
 	{
 	}
 
-	JRE::AssetRef<JRE::Asset> TileMapImporter::ImportAsset(JRE::AssetHandle, const JRE::AssetMetadata& metadata)
+	JRE::AssetRef<JRE::Asset> TileMapImporter::Load(JRE::AssetHandle, const JRE::AssetMetadata& metadata)
 	{
 		// metadata.filepath is relative: e.g. "Levels/1/TileMapData.txt"
 		auto relLevelDir = metadata.filepath.parent_path(); // e.g. "Levels/1"
 
 		auto levelRef = JRE::CreateAssetRef<TileMap>();
 
-		auto fullTxtPath = JRE::AssetImporter::GetInstance().GetFullDatapath(metadata.filepath);
+		auto fullTxtPath = JRE::AssetDatabase::GetInstance().GetFullDatapath(metadata.filepath);
 		std::fstream fStream(fullTxtPath);
 		if (!fStream.is_open())
-			throw std::runtime_error("TileMapImporter::ImportAsset | Cannot open: " + metadata.filepath.string());
+			throw std::runtime_error("TileMapImporter::Load | Cannot open: " + metadata.filepath.string());
 
 		// First pass: collect all unique sprite stems (from T lines) and positions
 		std::vector<std::string> spriteStems{};

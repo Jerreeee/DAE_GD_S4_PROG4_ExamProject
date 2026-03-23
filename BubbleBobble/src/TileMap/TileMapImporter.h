@@ -10,7 +10,7 @@ namespace BubbleBobble
 	public:
 		TileMapImporter(const std::filesystem::path& path);
 
-		static JRE::AssetRef<JRE::Asset> ImportAsset(JRE::AssetHandle handle, const JRE::AssetMetadata& metadata);
+		static JRE::AssetRef<JRE::Asset> Load(JRE::AssetHandle handle, const JRE::AssetMetadata& metadata);
 
 		virtual JRE::AssetMetadata GetMetadata() const override;
 	private:

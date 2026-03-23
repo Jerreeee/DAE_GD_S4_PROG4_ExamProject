@@ -6,9 +6,8 @@
 
 namespace JRE
 {
-	AssetHandle AssetRegistry::RegisterAsset(IAssetImporter&& importer)
+	AssetHandle AssetRegistry::Register(AssetMetadata metadata)
 	{
-		AssetMetadata metadata = importer.GetMetadata();
 		std::string virtualPath = metadata.GetVirtualPath();
 
 		// Dedup check
@@ -19,7 +18,7 @@ namespace JRE
 		// Hash-based handle, same virtual path always gives the same handle
 		AssetHandle handle = UUID::FromPath(virtualPath);
 		std::lock_guard<std::mutex> lock(m_Mutex);
-		m_AssetHandleToMetadata.emplace(handle, metadata);
+		m_AssetHandleToMetadata.emplace(handle, std::move(metadata));
 		m_PathToAssetHandle.emplace(virtualPath, handle);
 		return handle;
 	}

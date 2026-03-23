@@ -1,12 +1,13 @@
 #include "Asset/Font.h"
-#include "Asset/AssetImporter.h"
+#include "Asset/AssetLoaderRegistry.h"
+#include "Asset/AssetDatabase.h"
 #include "Asset/FontImporter.h"
 
 namespace JRE
 {
 	static bool s_Registered = []()
 		{
-			AssetImporter::GetInstance().RegisterImporter(Font::GetStaticType(), FontImporter::ImportAsset);
+			AssetLoaderRegistry::GetInstance().RegisterLoader(Font::GetStaticType(), FontImporter::Load);
 			return true;
 		}();
 
@@ -15,7 +16,7 @@ namespace JRE
 	{
 	}
 
-	AssetRef<Asset> FontImporter::ImportAsset(AssetHandle, const AssetMetadata& metadata)
+	AssetRef<Asset> FontImporter::Load(AssetHandle, const AssetMetadata& metadata)
 	{
 		const std::string& id = metadata.uniqueID;
 
@@ -23,7 +24,7 @@ namespace JRE
 			throw std::runtime_error("Invalid Font metadata.uniqueID format");
 
 		uint8_t size = static_cast<uint8_t>(std::stoi(id.substr(1)));
-		auto fullPath = AssetImporter::GetInstance().GetFullDatapath(metadata.filepath);
+		auto fullPath = AssetDatabase::GetInstance().GetFullDatapath(metadata.filepath);
 		return CreateAssetRef<Font>(fullPath, size);
 	}
 
