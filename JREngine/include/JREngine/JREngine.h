@@ -1,7 +1,5 @@
 #pragma once
-#include <string>
 #include <functional>
-#include <filesystem>
 #include <chrono>
 
 namespace JRE
@@ -13,10 +11,9 @@ namespace JRE
 		std::chrono::steady_clock::time_point m_LastTime;
 		float m_Lag{};
 	public:
-		explicit JREngine(const std::filesystem::path& dataPath);
+		JREngine();
 		~JREngine();
-		void Run(const std::function<void()>& registerAssets,
-	         const std::function<void()>& buildScenes);
+		void Run(const std::function<void()>& buildScenes);
 		void RunOneFrame();
 
 		JREngine(const JREngine& other) = delete;

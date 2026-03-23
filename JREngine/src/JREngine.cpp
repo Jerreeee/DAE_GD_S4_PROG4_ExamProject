@@ -15,9 +15,6 @@
 #include "Scene/SceneManager.h"
 #include "Rendering/SDLRenderer.h"
 #include "Audio/SDLSoundSystem.h"
-#include "Asset/EditorResourceManager.h"
-#include "Asset/RuntimeResourceManager.h"
-#include "Asset/AssetDatabase.h"
 #include "Core/Timer.h"
 #include "Core/ServiceLocator.h"
 #include "Physics/IPhysicsSystem.h"
@@ -70,10 +67,10 @@ void PrintSDLVersion()
 	LogSDLVersion("We linked against SDL_ttf version ", version);
 }
 
-JRE::JREngine::JREngine(const std::filesystem::path& dataPath)
+JRE::JREngine::JREngine()
 {
 	PrintSDLVersion();
-	
+
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
@@ -87,7 +84,7 @@ JRE::JREngine::JREngine(const std::filesystem::path& dataPath)
 		672,
 		SDL_WINDOW_OPENGL
 	);
-	if (g_window == nullptr) 
+	if (g_window == nullptr)
 	{
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
@@ -102,13 +99,8 @@ JRE::JREngine::JREngine(const std::filesystem::path& dataPath)
 		throw std::runtime_error("Failed to initialize TTF: " + std::string(SDL_GetError()));
 	}
 
-	AssetDatabase::GetInstance().Init(dataPath);
-
 	ServiceLocator::RegisterSoundSystem(std::make_unique<SDLSoundSystem>());
-	ServiceLocator::RegisterResourceManager(std::make_unique<EditorResourceManager>());
 	ServiceLocator::RegisterPhysicsSystem(std::make_unique<BoxPhysicsSystem>());
-	auto erm = static_cast<EditorResourceManager*>(&ServiceLocator::GetResourceManager());
-	erm->Init();
 
 	SDLRenderer::GetInstance().Init(g_window);
 	Timer::GetInstance().SetFixedTimeStep(m_FixedTimeStep);
@@ -123,21 +115,8 @@ JRE::JREngine::~JREngine()
 	SDL_Quit();
 }
 
-void JRE::JREngine::Run(const std::function<void()>& registerAssets,
-                        const std::function<void()>& buildScenes)
+void JRE::JREngine::Run(const std::function<void()>& buildScenes)
 {
-	// Phase 1: editor phase — populate AssetRegistry
-	registerAssets();
-
-	// Write manifest
-	auto manifestPath = AssetDatabase::GetInstance().GetDatapath() / "asset_manifest.txt";
-	AssetDatabase::GetInstance().SerializeManifest(manifestPath);
-
-	// Phase 2: switch to runtime resource manager
-	ServiceLocator::RegisterResourceManager(
-		std::make_unique<RuntimeResourceManager>(manifestPath));
-
-	// Phase 3: build scenes using registered handles only
 	buildScenes();
 
 	SceneManager::GetInstance().Start();
