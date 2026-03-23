@@ -14,9 +14,6 @@ namespace BubbleBobble
 
 		virtual JRE::AssetMetadata GetMetadata() const override;
 	private:
-		static void AddSpritePosition(const std::vector<std::string>& tokens,
-			std::vector<std::filesystem::path>& spriteNames,
-			std::vector<TileMap::SpritePos>& spritePositions);
 		static void AddCollisionRect(const std::vector<std::string>& tokens,
 			std::vector<TileMap::ColliderInfo>& collisionRect);
 

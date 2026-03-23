@@ -1,9 +1,12 @@
 #pragma once
 #include <concepts>
+#include <cassert>
+#include <string>
 //#include "JREngine/Core/ServiceLocator.h"
 //#include "JREngine/Asset/IResourceManager.h"
 //#include "JREngine/Asset/Asset.h"
 #include "JREngine/Asset/SoftAssetRef.h"
+#include "JREngine/Asset/AssetRegistry.h"
 
 namespace JRE
 {
@@ -65,4 +68,13 @@ namespace JRE
 		//	return SoftAssetRef<T>(handle, asset);
 		//}
 	};
+
+	// Looks up a handle that must already be registered in AssetManifest::RegisterAll().
+	// Asserts in debug if missing.
+	inline AssetHandle GetRegisteredHandle(const std::string& virtualPath)
+	{
+		AssetHandle h = AssetRegistry::GetInstance().GetHandleAtPath(virtualPath);
+		assert(h.IsValid() && "Asset not registered — add it to AssetManifest::RegisterAll()");
+		return h;
+	}
 }

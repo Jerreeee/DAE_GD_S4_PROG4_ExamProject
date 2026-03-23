@@ -1,5 +1,4 @@
 #pragma once
-#include <filesystem>
 #include "JREngine/Scene/Scene.h"
 
 namespace BubbleBobble
@@ -7,14 +6,14 @@ namespace BubbleBobble
 	class LevelBuilder final
 	{
 	public:
-		LevelBuilder(JRE::Scene& scene, const std::filesystem::path& path);
+		LevelBuilder(JRE::Scene& scene, int levelIdx);
 		void Build();
 	private:
 		void AddTileMap();
 		void AddLevelData();
 		void AddPortal();
-		
+
 		JRE::Scene& m_Scene;
-		std::filesystem::path m_Path{};
+		int m_LevelIdx{};
 	};
 }

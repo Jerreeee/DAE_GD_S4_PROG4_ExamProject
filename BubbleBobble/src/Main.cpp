@@ -6,41 +6,29 @@
 #endif
 #include <filesystem>
 namespace fs = std::filesystem;
-#include <iostream>
 
 #include "JREngine/JREngine.h"
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Scene/GameObject.h"
 
-
 #include "EngineSetup.h"
+#include "Assets/AssetManifest.h"
 #include "GameManager/GameManagerComponent.h"
 #include "SceneBuilders/MainMenuBuilder.h"
 #include "SceneBuilders/LoadingScreenBuilder.h"
 #include "SceneBuilders/LevelBuilder.h"
 #include "SceneBuilders/GameOverScreenBuilder.h"
 
-namespace BubbleBobble
-{
-	void load();
-}
-
-int main(int, char* [])
-{
-	fs::path data_location = "./Data/";
-	if (!fs::exists(data_location))
-		data_location = "../Data/";
-
-	JRE::JREngine engine(data_location);
-	engine.Run(BubbleBobble::load);
-	return 0;
-}
-
 using namespace JRE;
 
 namespace BubbleBobble
 {
-	void load()
+	void registerAssets()
+	{
+		AssetManifest::RegisterAll();
+	}
+
+	void buildScenes()
 	{
 		auto gameManager = std::make_unique<JRE::GameObject>("GameManager");
 		auto gameManagerCmp = gameManager->AddComponent<GameManagerComponent>(GameState::MainMenu);
@@ -58,4 +46,15 @@ namespace BubbleBobble
 
 		sm.SetNextScene(gameManagerCmp->GetStateName(GameState::MainMenu));
 	}
+}
+
+int main(int, char* [])
+{
+	fs::path data_location = "./Data/";
+	if (!fs::exists(data_location))
+		data_location = "../Data/";
+
+	JRE::JREngine engine(data_location);
+	engine.Run(BubbleBobble::registerAssets, BubbleBobble::buildScenes);
+	return 0;
 }

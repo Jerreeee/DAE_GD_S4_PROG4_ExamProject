@@ -17,7 +17,7 @@ namespace JRE
         }();
 
     SoundMusicImporter::SoundMusicImporter(const std::filesystem::path& filepath)
-        : m_Path{ AssetImporter::GetInstance().GetFullDatapath(filepath) }
+        : m_Path{ filepath }
     {
     }
 
@@ -28,6 +28,6 @@ namespace JRE
 
     AssetMetadata SoundMusicImporter::GetMetadata() const
     {
-        return AssetMetadata{ISoundMusic::GetStaticType().data(), m_Path, "", true};
+        return AssetMetadata{ISoundMusic::GetStaticType().data(), m_Path, "", true, GetDeclaredDependencies()};
     }
 }

@@ -1,11 +1,19 @@
-﻿#include "Asset/AssetRegistry.h"
+﻿#include <fstream>
+#include <iostream>
+#include "Asset/AssetRegistry.h"
 #include "Asset/AssetImporter.h"
 #include "Asset/EditorResourceManager.h"
 
-#include <iostream>
-
 namespace JRE
 {
+	void EditorResourceManager::SerializeManifest(const std::filesystem::path& manifestPath) const
+	{
+		std::ofstream out(manifestPath);
+		if (!out)
+			throw std::runtime_error("EditorResourceManager: cannot write asset_manifest.txt");
+		AssetRegistry::GetInstance().Serialize(out);
+	}
+
 	void EditorResourceManager::Init()
 	{
 		m_WorkerThread = std::jthread([this](std::stop_token token) { WorkerLoop(token); });

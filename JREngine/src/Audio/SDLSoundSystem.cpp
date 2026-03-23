@@ -11,6 +11,7 @@
 #include "Audio/SDLSoundMusic.h"
 #include "Audio/SDLSoundSystem.h"
 #include "Asset/AssetMetadata.h"
+#include "Asset/AssetImporter.h"
 
 namespace JRE
 {
@@ -47,7 +48,8 @@ namespace JRE
 	SDLSoundSystem::Impl::~Impl() = default;
 	AssetRef<ISoundClip> SDLSoundSystem::Impl::CreateSoundClip(AssetHandle, const AssetMetadata& metadata)
 	{
-		return CreateAssetRef<SDLSoundClip>(metadata.filepath);
+		auto fullPath = AssetImporter::GetInstance().GetFullDatapath(metadata.filepath);
+		return CreateAssetRef<SDLSoundClip>(fullPath);
 	}
 	void SDLSoundSystem::Impl::Play(AssetRef<ISoundClip> soundClipAsset, float volume)
 	{
@@ -68,7 +70,8 @@ namespace JRE
 
 	AssetRef<ISoundMusic> SDLSoundSystem::Impl::CreateMusic(AssetHandle, const AssetMetadata& metadata)
 	{
-		return CreateAssetRef<SDLSoundMusic>(metadata.filepath);
+		auto fullPath = AssetImporter::GetInstance().GetFullDatapath(metadata.filepath);
+		return CreateAssetRef<SDLSoundMusic>(fullPath);
 	}
 
 	void SDLSoundSystem::Impl::PlayMusic(AssetRef<ISoundMusic> music, bool loop, float volume)

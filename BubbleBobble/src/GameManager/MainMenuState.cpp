@@ -2,8 +2,6 @@
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Core/ServiceLocator.h"
 
-#include "JREngine/Asset/AssetImporter.h"
-#include "JREngine/Asset/SoundClipImporter.h"
 #include "JREngine/Physics/BoxPhysicsSystem.h"
 #include "JREngine/Asset/ResourceManager.h"
 #include "JREngine/Audio/ISoundSystem.h"
@@ -34,10 +32,8 @@ namespace BubbleBobble
         physicsSystem.SetGravity(200.f);
         physicsSystem.SetWorldScale(0.1f);
 
-        AssetHandle openingSoundHandle = AssetImporter::GetInstance().ImportAsset(std::move(JRE::SoundClipImporter("HUD/Opening.wav")));
-        m_OpeningSoundRef = ResourceManager::GetAsset<ISoundClip>(openingSoundHandle);
-        AssetHandle selectSoundHandle = AssetImporter::GetInstance().ImportAsset(std::move(JRE::SoundClipImporter("HUD/Select.wav")));
-        m_SelectSoundRef = ResourceManager::GetAsset<ISoundClip>(selectSoundHandle);
+        m_OpeningSoundRef = ResourceManager::GetAsset<ISoundClip>(GetRegisteredHandle("HUD/Opening.wav"));
+        m_SelectSoundRef = ResourceManager::GetAsset<ISoundClip>(GetRegisteredHandle("HUD/Select.wav"));
     }
     void MainMenuState::OnEnter()
     {   

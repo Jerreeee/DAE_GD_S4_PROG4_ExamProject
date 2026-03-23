@@ -15,13 +15,14 @@ namespace BubbleBobble
 		}();
 
 	LevelDataImporter::LevelDataImporter(const std::filesystem::path& filepath) :
-		m_Path{ AssetImporter::GetInstance().GetFullDatapath(filepath) }
+		m_Path{ filepath }
 	{
 	}
 
 	AssetRef<Asset> LevelDataImporter::ImportAsset(AssetHandle, const AssetMetadata& metadata)
 	{
-		std::ifstream fStream(metadata.filepath.string().c_str());
+		auto fullPath = JRE::AssetImporter::GetInstance().GetFullDatapath(metadata.filepath);
+		std::ifstream fStream(fullPath.string().c_str());
 		if (!fStream)
 			throw std::runtime_error("Failed to open level file: " + metadata.filepath.string());
 
@@ -58,7 +59,7 @@ namespace BubbleBobble
 
 	AssetMetadata LevelDataImporter::GetMetadata() const
 	{
-		return AssetMetadata{ LevelData::GetStaticType().data(), m_Path, "", false };
+		return AssetMetadata{ LevelData::GetStaticType().data(), m_Path, "", false, GetDeclaredDependencies() };
 	}
 	void LevelDataImporter::AddPlayer(const std::vector<std::string>& tokens,
 		std::vector<glm::vec2>& players)

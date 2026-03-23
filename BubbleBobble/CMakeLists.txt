@@ -49,6 +49,11 @@ set(SOURCE_FILES
     "Assets/LevelDataImporter.h"
     "Assets/LevelDataImporter.cpp"
     "Assets/LevelDataComponent.h"
+    "Assets/AssetManifest.h"
+    "Assets/AssetManifest.cpp"
+    "Assets/SceneDescriptor.h"
+    "Assets/SceneDescriptorImporter.h"
+    "Assets/SceneDescriptorImporter.cpp"
 
     "Player/PlayerBuilder.h"
     "Player/PlayerBuilder.cpp"
@@ -89,7 +94,7 @@ AddPrefix(SOURCE_FILES "${SOURCE_DIR}/")
 find_package(VLD CONFIG)
 
 # Create executable
-add_executable(${TARGET_NAME} ${SOURCE_FILES} "src/Assets/AnimsDataImporter.cpp")
+add_executable(${TARGET_NAME} ${SOURCE_FILES})
 target_link_libraries(${TARGET_NAME} PRIVATE
     ${VLD_LIBRARY}
     JREngine

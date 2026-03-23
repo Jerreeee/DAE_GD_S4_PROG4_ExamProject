@@ -1,4 +1,3 @@
-#include <filesystem>
 #include <iostream>
 
 #include "JREngine/Input/InputManager.h"
@@ -118,13 +117,12 @@ namespace BubbleBobble
 
 		//1) Load level
 		std::string sLevelIdx = std::to_string(m_LevelIdx);
-		std::string path{"Data/Levels/" + sLevelIdx };
 		std::string levelName{ "Level_" + sLevelIdx };
 
 		if (!sm.HasScene(levelName))
 		{
 			auto& levelScene = sm.CreateScene(levelName, PersistenceMask::LevelScene);
-			LevelBuilder(levelScene, path).Build();
+			LevelBuilder(levelScene, m_LevelIdx).Build();
 		}
 
 		m_NrEnemiesKilled = 0;

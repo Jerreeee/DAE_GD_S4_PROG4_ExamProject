@@ -19,6 +19,7 @@ namespace JRE
 	{
 	public:
 		void Init();
+		void SerializeManifest(const std::filesystem::path& manifestPath) const;
 
 		virtual bool IsValidAssetHandle(AssetHandle handle) const override;
 		virtual bool IsAssetLoaded(AssetHandle handle) const override;

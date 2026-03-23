@@ -2,9 +2,6 @@
 #undef main
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Asset/ResourceManager.h"
-#include "JREngine/Asset/AssetImporter.h"
-#include "JREngine/Asset/TextureImporter.h"
-#include "JREngine/Asset/FontImporter.h"
 
 #include "EngineSetup.h"
 #include "Components/HealthComponent.h"
@@ -27,7 +24,7 @@ namespace BubbleBobble
 	{
 		assert(m_pPlayer1 && "UIBuilder::SetGameObjectWithHealthToTrack() | Must be called");
 
-		auto handle = AssetImporter::GetInstance().ImportAsset(TextureImporter("HUD/Health_P1.png"));
+		auto handle = GetRegisteredHandle("HUD/Health_P1.png");
 		auto sprite = CreateAssetRef<Sprite>(SoftAssetRef<Texture2D>(handle));
 
 		auto p1HealthCmp = m_pPlayer1->GetComponent<HealthComponent>();
@@ -38,10 +35,7 @@ namespace BubbleBobble
 		healthUIGO->SetWorldPosition(0.f, 648.f);
 		m_Scene.Add(std::move(healthUIGO));
 
-		//load font
-		auto fontImporter = JRE::FontImporter("Fonts/Pixel_NES.otf");
-		fontImporter.SetSize(30);
-		auto fontHandle = JRE::AssetImporter::GetInstance().ImportAsset(std::move(fontImporter));
+		auto fontHandle = GetRegisteredHandle("Fonts/Pixel_NES.otf/@30");
 		auto fontSoftRef = JRE::SoftAssetRef<JRE::Font>(fontHandle);
 
 		auto score = std::make_unique<GameObject>("Score");

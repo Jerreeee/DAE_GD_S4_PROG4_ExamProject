@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <cstddef>
+#include <string_view>
 
 namespace JRE
 {
@@ -14,6 +15,9 @@ namespace JRE
 		bool IsValid() const { return m_UUID != InvalidUUID; };
 
 		operator uint64_t() const { return m_UUID; };
+
+		static UUID FromPath(std::string_view virtualPath); // hash-based, stable
+		static UUID Generate();                              // session-unique, high-bit sentinel
 
 		static const UUID InvalidUUID;
 	private:

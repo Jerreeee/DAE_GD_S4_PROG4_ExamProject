@@ -15,7 +15,8 @@ namespace JRE
 	public:
 		explicit JREngine(const std::filesystem::path& dataPath);
 		~JREngine();
-		void Run(const std::function<void()>& load);
+		void Run(const std::function<void()>& registerAssets,
+	         const std::function<void()>& buildScenes);
 		void RunOneFrame();
 
 		JREngine(const JREngine& other) = delete;

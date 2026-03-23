@@ -1,0 +1,4 @@
+logo_anim,Anims/Logo.txt
+font,Fonts/Pixel_NES.otf/@20
+sound_open,HUD/Opening.wav
+sound_select,HUD/Select.wav

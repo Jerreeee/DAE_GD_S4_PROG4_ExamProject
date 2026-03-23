@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include <mutex>
+#include <iosfwd>
 #include "JREngine/Core/Singleton.h"
 #include "JREngine/Asset/Asset.h"
 #include "JREngine/Asset/IAssetImporter.h"
@@ -13,15 +14,21 @@ namespace JRE
 	public:
 		AssetHandle RegisterAsset(IAssetImporter&& importer);
 		bool IsValidAssetHandle(AssetHandle handle) const;
-		bool HasAssetAtPath(const std::filesystem::path virtualPath);
-		AssetHandle GetHandleAtPath(const std::filesystem::path virtualPath) const;
+		bool HasAssetAtPath(const std::string& virtualPath) const;
+		AssetHandle GetHandleAtPath(const std::string& virtualPath) const;
 		const AssetMetadata& GetMetadata(AssetHandle handle) const;
+
+		void Serialize(std::ostream& out) const;
+		bool Deserialize(std::istream& in);
+
+		const std::map<AssetHandle, AssetMetadata>& GetAll() const { return m_AssetHandleToMetadata; }
+
 	private:
 		AssetRegistry() = default;
 		friend class Singleton<AssetRegistry>;
 
 		mutable std::mutex m_Mutex{};
 		std::map<AssetHandle, AssetMetadata> m_AssetHandleToMetadata{};
-		std::map<std::filesystem::path, AssetHandle> m_PathToAssetHandle{};
+		std::map<std::string, AssetHandle> m_PathToAssetHandle{};  // key is std::string (generic_string)
 	};
 }

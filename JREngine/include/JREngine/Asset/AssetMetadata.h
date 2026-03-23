@@ -1,21 +1,22 @@
 #pragma once
 #include <filesystem>
+#include <vector>
 #include "JREngine/Asset/Asset.h"
 
 namespace JRE
 {
 	struct AssetMetadata
 	{
-		inline std::filesystem::path GetVirtualPath()
+		// Returns "filepath/uniqueID" with forward slashes (portable, used as hash input)
+		std::string GetVirtualPath() const
 		{
-			return std::filesystem::path(filepath / uniqueID);
+			return (std::filesystem::path(filepath) / uniqueID).generic_string();
 		}
 
 		std::string assetType;
-		std::filesystem::path filepath;
+		std::filesystem::path filepath;   // RELATIVE path only (not absolute)
 		std::string uniqueID;
 		bool canLoadAsync{ false };
-		//importer
-		//dependencies
+		std::vector<AssetHandle> dependencies;  // dep handles declared via DependsOn()
 	};
 }

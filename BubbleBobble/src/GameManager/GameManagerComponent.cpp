@@ -1,9 +1,7 @@
 #include "JREngine/Scene/Scene.h"
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Input/InputManager.h"
-#include "JREngine/Asset/SoundMusicImporter.h"
 #include "JREngine/Asset/ResourceManager.h"
-#include "JREngine/Asset/AssetImporter.h"
 #include "JREngine/Audio/ISoundMusic.h"
 #include "JREngine/Audio/ISoundSystem.h"
 #include "JREngine/Core/ServiceLocator.h"
@@ -36,8 +34,7 @@ namespace BubbleBobble
 		//Set active state
 		m_pCurrentState = m_States[static_cast<size_t>(startState)].get();
 
-		AssetHandle musicHandle = AssetImporter::GetInstance().ImportAsset(std::move(JRE::SoundMusicImporter("MainTheme.mp3")));
-		m_MusicRef = ResourceManager::GetAsset<ISoundMusic>(musicHandle);
+		m_MusicRef = ResourceManager::GetAsset<ISoundMusic>(GetRegisteredHandle("MainTheme.mp3"));
 	}
 	void GameManagerComponent::Start()
 	{

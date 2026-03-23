@@ -13,7 +13,7 @@ namespace JRE
 		}();
 
 	SoundClipImporter::SoundClipImporter(const std::filesystem::path& filepath) :
-		m_Path{ AssetImporter::GetInstance().GetFullDatapath(filepath) }
+		m_Path{ filepath }
 	{
 	}
 	AssetRef<Asset> SoundClipImporter::ImportAsset(AssetHandle handle, const AssetMetadata& metadata)
@@ -22,6 +22,6 @@ namespace JRE
 	}
 	AssetMetadata SoundClipImporter::GetMetadata() const
 	{
-		return AssetMetadata{ ISoundClip::GetStaticType().data(), m_Path, "", true};
+		return AssetMetadata{ ISoundClip::GetStaticType().data(), m_Path, "", true, GetDeclaredDependencies() };
 	}
 }

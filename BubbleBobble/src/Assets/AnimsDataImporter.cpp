@@ -16,13 +16,14 @@ namespace BubbleBobble
 		}();
 
 	AnimDataImporter::AnimDataImporter(const std::filesystem::path& filepath) :
-		m_Path{ AssetImporter::GetInstance().GetFullDatapath(filepath) }
+		m_Path{ filepath }
 	{
 	}
 
 	AssetRef<Asset> AnimDataImporter::ImportAsset(AssetHandle, const AssetMetadata& metadata)
 	{
-        std::ifstream fStream(metadata.filepath.string().c_str());
+        auto fullPath = JRE::AssetImporter::GetInstance().GetFullDatapath(metadata.filepath);
+        std::ifstream fStream(fullPath.string().c_str());
         if (!fStream)
             throw std::runtime_error("Failed to open animation file: " + metadata.filepath.string());
 
@@ -63,6 +64,6 @@ namespace BubbleBobble
 
 	AssetMetadata AnimDataImporter::GetMetadata() const
 	{
-		return AssetMetadata{ AnimsData::GetStaticType().data(), m_Path, "", false };
+		return AssetMetadata{ AnimsData::GetStaticType().data(), m_Path, "", false, GetDeclaredDependencies() };
 	}
 }

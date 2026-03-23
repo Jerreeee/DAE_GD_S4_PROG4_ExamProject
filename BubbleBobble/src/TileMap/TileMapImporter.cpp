@@ -1,8 +1,9 @@
 #include <stdexcept>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 #include "JREngine/Asset/AssetImporter.h"
-#include "JREngine/Asset/TextureImporter.h"
+#include "JREngine/Asset/AssetRegistry.h"
 #include "JREngine/Asset/SoftAssetRef.h"
 #include "JREngine/Asset/Texture2D.h"
 #include "JREngine/Asset/ResourceManager.h"
@@ -19,55 +20,35 @@ namespace BubbleBobble
 		}();
 
 	TileMapImporter::TileMapImporter(const std::filesystem::path& path)
-		: m_Path{ JRE::AssetImporter::GetInstance().GetFullDatapath(path) }
+		: m_Path{ path }   // relative only, no GetFullDatapath, no existence check
 	{
-		if (!std::filesystem::exists(m_Path))
-			throw std::runtime_error("TileMapData.txt does not exist");
 	}
 
 	JRE::AssetRef<JRE::Asset> TileMapImporter::ImportAsset(JRE::AssetHandle, const JRE::AssetMetadata& metadata)
 	{
-		auto levelDir = metadata.filepath.parent_path();
-		auto relLevelDir = std::filesystem::relative(levelDir, JRE::AssetImporter::GetInstance().GetDatapath());
-		//std::filesystem::path relPath = metadata.filepath.lexically_relative(JRE::AssetImporter::GetInstance().GetDatapath());
+		// metadata.filepath is relative: e.g. "Levels/1/TileMapData.txt"
+		auto relLevelDir = metadata.filepath.parent_path(); // e.g. "Levels/1"
 
 		auto levelRef = JRE::CreateAssetRef<TileMap>();
 
-		//Get all the sprite names
-		std::vector<std::filesystem::path> spriteNames{};
-		for (const auto& entry : std::filesystem::directory_iterator(levelDir))
-			if (entry.is_regular_file() && entry.path().extension() == ".png")
-				spriteNames.push_back(entry.path().filename());
-
-		//Load all the sprites
-		std::vector<JRE::AssetRef<JRE::Sprite>> sprites{};
-		for (auto& spriteName : spriteNames)
-		{
-			auto filePath = std::filesystem::path(relLevelDir / spriteName);
-			auto texture = JRE::AssetImporter::GetInstance().ImportAsset(std::move(JRE::TextureImporter(filePath)));
-			auto textureRef = JRE::ResourceManager::GetAsset<JRE::Texture2D>(texture);
-			auto sprite = JRE::CreateAssetRef<JRE::Sprite>(JRE::SoftAssetRef<JRE::Texture2D>(textureRef));
-			sprites.emplace_back(sprite);
-		}
-
-		//Open the level txt file for reading
-		std::filesystem::path txtFilePath(metadata.filepath);
-		std::fstream fStream(txtFilePath);
+		auto fullTxtPath = JRE::AssetImporter::GetInstance().GetFullDatapath(metadata.filepath);
+		std::fstream fStream(fullTxtPath);
 		if (!fStream.is_open())
-			throw std::runtime_error("LevelImporter::ImportAsset | Couldnt open file: " + metadata.filepath.string());
+			throw std::runtime_error("TileMapImporter::ImportAsset | Cannot open: " + metadata.filepath.string());
 
+		// First pass: collect all unique sprite stems (from T lines) and positions
+		std::vector<std::string> spriteStems{};
 		std::vector<TileMap::SpritePos> spritePositions{};
 		std::vector<TileMap::ColliderInfo> collisionRects{};
 
 		std::string line{};
 		while (std::getline(fStream, line))
 		{
-			if (line.empty() || line[0] == '/')
-				continue;
+			if (line.empty() || line[0] == '/') continue;
 
 			std::stringstream ss(line);
 			std::string type{};
-			std::getline(ss, type, ' '); //extract part up to first space to check the type of information on that line
+			std::getline(ss, type, ' ');
 
 			std::string token{};
 			std::vector<std::string> tokens{};
@@ -79,9 +60,28 @@ namespace BubbleBobble
 			}
 
 			if (type == "T")
-				AddSpritePosition(tokens, spriteNames, spritePositions);
+			{
+				const std::string& stem = tokens[0];
+				if (std::find(spriteStems.begin(), spriteStems.end(), stem) == spriteStems.end())
+					spriteStems.push_back(stem);
+				size_t idx = std::find(spriteStems.begin(), spriteStems.end(), stem) - spriteStems.begin();
+				int x = std::stoi(tokens[1]);
+				int y = std::stoi(tokens[2]);
+				spritePositions.emplace_back(TileMap::SpritePos{ idx, glm::vec2{x, y} });
+			}
 			else if (type == "C")
 				AddCollisionRect(tokens, collisionRects);
+		}
+
+		// Load sprites by looking up pre-registered handles from the registry
+		std::vector<JRE::AssetRef<JRE::Sprite>> sprites{};
+		for (const auto& stem : spriteStems)
+		{
+			std::string relPath = (relLevelDir / (stem + ".png")).generic_string();
+			JRE::AssetHandle texHandle = JRE::AssetRegistry::GetInstance().GetHandleAtPath(relPath);
+			auto texture = JRE::ResourceManager::GetAsset<JRE::Texture2D>(texHandle);
+			auto sprite = JRE::CreateAssetRef<JRE::Sprite>(JRE::SoftAssetRef<JRE::Texture2D>(texture));
+			sprites.emplace_back(sprite);
 		}
 
 		levelRef->SetSprites(sprites);
@@ -89,28 +89,12 @@ namespace BubbleBobble
 		levelRef->SetCollisionRects(collisionRects);
 		return levelRef;
 	}
+
 	JRE::AssetMetadata TileMapImporter::GetMetadata() const
 	{
-		return JRE::AssetMetadata{ TileMap::GetStaticType().data(), m_Path, "", true };
+		return JRE::AssetMetadata{ TileMap::GetStaticType().data(), m_Path, "", true, GetDeclaredDependencies() };
 	}
-	void TileMapImporter::AddSpritePosition(const std::vector<std::string>& tokens,
-		std::vector<std::filesystem::path>& spriteNames,
-		std::vector<TileMap::SpritePos>& spritePositions)
-	{
-		const std::string& name = tokens[0];
-		auto it = std::find_if(spriteNames.begin(), spriteNames.end(),
-			[&](const std::filesystem::path& path)
-			{
-				return name == path.stem();
-			});
-		if (it == spriteNames.end()) //invalid sprite name
-			throw std::runtime_error("Invalid sprite name");
-		size_t spriteIdx = std::distance(spriteNames.begin(), it);
-		int x = std::stoi(tokens[1]);
-		int y = std::stoi(tokens[2]);
 
-		spritePositions.emplace_back(TileMap::SpritePos{ spriteIdx, glm::vec2{x, y} });
-	}
 	void TileMapImporter::AddCollisionRect(const std::vector<std::string>& tokens,
 		std::vector<TileMap::ColliderInfo>& collisionRect)
 	{

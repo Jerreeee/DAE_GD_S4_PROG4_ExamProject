@@ -11,7 +11,7 @@ namespace JRE
 		}();
 
 	FontImporter::FontImporter(const std::filesystem::path& filepath) :
-		m_Path{ AssetImporter::GetInstance().GetFullDatapath(filepath) }
+		m_Path{ filepath }
 	{
 	}
 
@@ -23,12 +23,13 @@ namespace JRE
 			throw std::runtime_error("Invalid Font metadata.uniqueID format");
 
 		uint8_t size = static_cast<uint8_t>(std::stoi(id.substr(1)));
-		return CreateAssetRef<Font>(metadata.filepath, size);
+		auto fullPath = AssetImporter::GetInstance().GetFullDatapath(metadata.filepath);
+		return CreateAssetRef<Font>(fullPath, size);
 	}
 
 	AssetMetadata FontImporter::GetMetadata() const
 	{
-		return AssetMetadata{ Font::GetStaticType().data(), m_Path, GetUniqueID(), true };
+		return AssetMetadata{ Font::GetStaticType().data(), m_Path, GetUniqueID(), true, GetDeclaredDependencies() };
 	}
 
 	std::string FontImporter::GetUniqueID() const

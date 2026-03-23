@@ -16,6 +16,7 @@
 #include "Rendering/SDLRenderer.h"
 #include "Audio/SDLSoundSystem.h"
 #include "Asset/EditorResourceManager.h"
+#include "Asset/RuntimeResourceManager.h"
 #include "Asset/AssetImporter.h"
 #include "Core/Timer.h"
 #include "Core/ServiceLocator.h"
@@ -122,9 +123,23 @@ JRE::JREngine::~JREngine()
 	SDL_Quit();
 }
 
-void JRE::JREngine::Run(const std::function<void()>& load)
+void JRE::JREngine::Run(const std::function<void()>& registerAssets,
+                        const std::function<void()>& buildScenes)
 {
-	load();
+	// Phase 1: editor phase — populate AssetRegistry
+	registerAssets();
+
+	// Write manifest
+	auto manifestPath = AssetImporter::GetInstance().GetDatapath() / "asset_manifest.txt";
+	static_cast<EditorResourceManager&>(
+		ServiceLocator::GetResourceManager()).SerializeManifest(manifestPath);
+
+	// Phase 2: switch to runtime resource manager
+	ServiceLocator::RegisterResourceManager(
+		std::make_unique<RuntimeResourceManager>(manifestPath));
+
+	// Phase 3: build scenes using registered handles only
+	buildScenes();
 
 	SceneManager::GetInstance().Start();
 

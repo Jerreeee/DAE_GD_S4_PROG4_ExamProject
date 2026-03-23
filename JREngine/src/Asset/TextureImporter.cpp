@@ -10,17 +10,18 @@ namespace JRE
 		}();
 
 	TextureImporter::TextureImporter(const std::filesystem::path& filepath) :
-		m_Path{ AssetImporter::GetInstance().GetFullDatapath(filepath) }
+		m_Path{ filepath }
 	{
 	}
 
 	AssetRef<Asset> TextureImporter::ImportAsset(AssetHandle, const AssetMetadata& metadata)
 	{
-		return CreateAssetRef<Texture2D>(metadata.filepath);
+		auto fullPath = AssetImporter::GetInstance().GetFullDatapath(metadata.filepath);
+		return CreateAssetRef<Texture2D>(fullPath);
 	}
 
 	AssetMetadata TextureImporter::GetMetadata() const
 	{
-		return AssetMetadata{ Texture2D::GetStaticType().data(), m_Path, "", false};
+		return AssetMetadata{ Texture2D::GetStaticType().data(), m_Path, "", false, GetDeclaredDependencies() };
 	}
 }
