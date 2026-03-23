@@ -7,7 +7,7 @@ namespace JRE
 {
 	void AssetDatabase::Init(const std::filesystem::path& dataPath)
 	{
-		m_Datapath = dataPath;
+		AssetRegistry::GetInstance().SetDataPath(dataPath);
 	}
 
 	AssetHandle AssetDatabase::RegisterAsset(IAssetImporter&& importer)
@@ -23,13 +23,4 @@ namespace JRE
 		AssetRegistry::GetInstance().Serialize(out);
 	}
 
-	const std::filesystem::path& AssetDatabase::GetDatapath() const
-	{
-		return m_Datapath;
-	}
-
-	std::filesystem::path AssetDatabase::GetFullDatapath(const std::filesystem::path& filepath) const
-	{
-		return m_Datapath / filepath;
-	}
 }

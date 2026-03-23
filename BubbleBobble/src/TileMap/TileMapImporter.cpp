@@ -3,7 +3,6 @@
 #include <sstream>
 #include <algorithm>
 #include "JREngine/Asset/AssetLoaderRegistry.h"
-#include "JREngine/Asset/AssetDatabase.h"
 #include "JREngine/Asset/AssetRegistry.h"
 #include "JREngine/Asset/SoftAssetRef.h"
 #include "JREngine/Asset/Texture2D.h"
@@ -32,7 +31,7 @@ namespace BubbleBobble
 
 		auto levelRef = JRE::CreateAssetRef<TileMap>();
 
-		auto fullTxtPath = JRE::AssetDatabase::GetInstance().GetFullDatapath(metadata.filepath);
+		auto fullTxtPath = JRE::AssetRegistry::GetInstance().GetFullDatapath(metadata.filepath);
 		std::fstream fStream(fullTxtPath);
 		if (!fStream.is_open())
 			throw std::runtime_error("TileMapImporter::Load | Cannot open: " + metadata.filepath.string());

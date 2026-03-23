@@ -1,6 +1,6 @@
 #include "Asset/Font.h"
 #include "Asset/AssetLoaderRegistry.h"
-#include "Asset/AssetDatabase.h"
+#include "Asset/AssetRegistry.h"
 #include "Asset/FontImporter.h"
 
 namespace JRE
@@ -24,7 +24,7 @@ namespace JRE
 			throw std::runtime_error("Invalid Font metadata.uniqueID format");
 
 		uint8_t size = static_cast<uint8_t>(std::stoi(id.substr(1)));
-		auto fullPath = AssetDatabase::GetInstance().GetFullDatapath(metadata.filepath);
+		auto fullPath = AssetRegistry::GetInstance().GetFullDatapath(metadata.filepath);
 		return CreateAssetRef<Font>(fullPath, size);
 	}
 

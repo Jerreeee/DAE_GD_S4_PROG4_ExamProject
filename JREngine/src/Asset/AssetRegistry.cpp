@@ -72,6 +72,21 @@ namespace JRE
 		}
 	}
 
+	void AssetRegistry::SetDataPath(const std::filesystem::path& dataPath)
+	{
+		m_DataPath = dataPath;
+	}
+
+	const std::filesystem::path& AssetRegistry::GetDatapath() const
+	{
+		return m_DataPath;
+	}
+
+	std::filesystem::path AssetRegistry::GetFullDatapath(const std::filesystem::path& relativePath) const
+	{
+		return m_DataPath / relativePath;
+	}
+
 	bool AssetRegistry::Deserialize(std::istream& in)
 	{
 		std::string header;

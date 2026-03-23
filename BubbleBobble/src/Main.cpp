@@ -12,6 +12,7 @@ namespace fs = std::filesystem;
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Core/ServiceLocator.h"
 #include "JREngine/Asset/AssetDatabase.h"
+#include "JREngine/Asset/AssetRegistry.h"
 #include "JREngine/Asset/EditorResourceManager.h"
 #include "JREngine/Asset/RuntimeResourceManager.h"
 
@@ -60,7 +61,7 @@ int main(int, char* [])
 	ServiceLocator::RegisterResourceManager(std::make_unique<EditorResourceManager>());
 	static_cast<EditorResourceManager*>(&ServiceLocator::GetResourceManager())->Init();
 	BubbleBobble::AssetManifest::RegisterAll();
-	const auto manifestPath = AssetDatabase::GetInstance().GetDatapath() / "asset_manifest.txt";
+	const auto manifestPath = AssetRegistry::GetInstance().GetDatapath() / "asset_manifest.txt";
 	AssetDatabase::GetInstance().SerializeManifest(manifestPath);
 
 	// Switch to runtime resource manager before game loop

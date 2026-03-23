@@ -1,5 +1,5 @@
 #include "Asset/AssetLoaderRegistry.h"
-#include "Asset/AssetDatabase.h"
+#include "Asset/AssetRegistry.h"
 #include "Asset/TextureImporter.h"
 
 namespace JRE
@@ -17,7 +17,7 @@ namespace JRE
 
 	AssetRef<Asset> TextureImporter::Load(AssetHandle, const AssetMetadata& metadata)
 	{
-		auto fullPath = AssetDatabase::GetInstance().GetFullDatapath(metadata.filepath);
+		auto fullPath = AssetRegistry::GetInstance().GetFullDatapath(metadata.filepath);
 		return CreateAssetRef<Texture2D>(fullPath);
 	}
 

@@ -2,6 +2,7 @@
 #include <map>
 #include <mutex>
 #include <iosfwd>
+#include <filesystem>
 #include "JREngine/Core/Singleton.h"
 #include "JREngine/Asset/Asset.h"
 #include "JREngine/Asset/AssetMetadata.h"
@@ -22,6 +23,10 @@ namespace JRE
 
 		const std::map<AssetHandle, AssetMetadata>& GetAll() const { return m_AssetHandleToMetadata; }
 
+		void SetDataPath(const std::filesystem::path& dataPath);
+		const std::filesystem::path& GetDatapath() const;
+		std::filesystem::path GetFullDatapath(const std::filesystem::path& relativePath) const;
+
 	private:
 		AssetRegistry() = default;
 		friend class Singleton<AssetRegistry>;
@@ -29,5 +34,6 @@ namespace JRE
 		mutable std::mutex m_Mutex{};
 		std::map<AssetHandle, AssetMetadata> m_AssetHandleToMetadata{};
 		std::map<std::string, AssetHandle> m_PathToAssetHandle{};  // key is std::string (generic_string)
+		std::filesystem::path m_DataPath{};
 	};
 }

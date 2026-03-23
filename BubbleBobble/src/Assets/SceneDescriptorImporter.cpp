@@ -1,7 +1,6 @@
 #include <fstream>
 #include <sstream>
 #include "JREngine/Asset/AssetLoaderRegistry.h"
-#include "JREngine/Asset/AssetDatabase.h"
 #include "JREngine/Asset/AssetRegistry.h"
 #include "Assets/SceneDescriptor.h"
 #include "Assets/SceneDescriptorImporter.h"
@@ -38,7 +37,7 @@ namespace BubbleBobble
         meta.assetType = SceneDescriptor::GetStaticType().data();
         meta.filepath  = m_Path;
 
-        auto fullPath = AssetDatabase::GetInstance().GetFullDatapath(m_Path);
+        auto fullPath = AssetRegistry::GetInstance().GetFullDatapath(m_Path);
         std::ifstream f(fullPath);
         std::string line;
         while (std::getline(f, line))
@@ -60,7 +59,7 @@ namespace BubbleBobble
     AssetRef<Asset> SceneDescriptorImporter::Load(AssetHandle, const AssetMetadata& metadata)
     {
         auto desc = CreateAssetRef<SceneDescriptor>();
-        auto fullPath = AssetDatabase::GetInstance().GetFullDatapath(metadata.filepath);
+        auto fullPath = AssetRegistry::GetInstance().GetFullDatapath(metadata.filepath);
         std::ifstream f(fullPath);
         std::string line;
 
