@@ -1,9 +1,6 @@
 #include <string>
 #include "Scene/GameObject.h"
 #include "Asset/ResourceManager.h"
-#include "Rendering/SDLRenderer.h"
-
-#include <iostream>
 
 namespace JRE
 {
