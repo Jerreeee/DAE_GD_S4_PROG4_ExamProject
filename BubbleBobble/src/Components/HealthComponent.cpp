@@ -35,12 +35,12 @@ namespace BubbleBobble
 		, m_pHealthCmp{ &healthCmp }
 		, m_Nr{ m_pHealthCmp->GetHealth() }
 	{
-		m_HealthCmpOnHealthChangedEventConn = m_pHealthCmp->OnHealthChanged.AddObserver(this);
-	}
-	HealthUIComponent::~HealthUIComponent()
-	{
-		if (m_HealthCmpOnHealthChangedEventConn)
-			m_HealthCmpOnHealthChangedEventConn->Disconnect(this);
+		m_HealthCmpOnHealthChangedEventConn = m_pHealthCmp->OnHealthChanged.AddObserver(
+			[this](JRE::EventInfo& e)
+			{
+				auto& args = e.GetArgs<Events::HealthChanged>();
+				m_Nr = args.newHealth;
+			});
 	}
 	void HealthUIComponent::Render() const
 	{
@@ -52,18 +52,6 @@ namespace BubbleBobble
 		{
 			float x = pos.x + i * region.width;
 			SDLRenderer::GetInstance().RenderSprite(m_Sprite.Get(), x, pos.y);
-		}
-	}
-	void HealthUIComponent::OnNotify(JRE::EventInfo& event)
-	{
-		switch (event.GetID())
-		{
-		case Events::HealthChanged::ID:
-		{
-			auto& args = event.GetArgs<Events::HealthChanged>();
-			m_Nr = args.newHealth;
-			break;
-		}
 		}
 	}
 	void HealthUIComponent::SetSprite(JRE::SoftAssetRef<JRE::Sprite> sprite)

@@ -47,14 +47,12 @@ namespace BubbleBobble
 		int m_MaxHealth{};
 	};
 
-	class HealthUIComponent final : public JRE::RendererComponentBase, public JRE::IObserver
+	class HealthUIComponent final : public JRE::RendererComponentBase
 	{
 	public:
 		HealthUIComponent(JRE::GameObject& gameObject, const HealthComponent& healthCmp);
-		virtual ~HealthUIComponent() override;
 
 		virtual void Render() const override;
-		virtual void OnNotify(JRE::EventInfo& event) override;
 
 		void SetSprite(JRE::SoftAssetRef<JRE::Sprite> sprite);
 	private:

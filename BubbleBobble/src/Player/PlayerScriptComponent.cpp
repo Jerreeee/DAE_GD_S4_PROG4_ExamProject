@@ -30,27 +30,21 @@ namespace BubbleBobble
 		m_pHealthCmp = GetGameObject().GetComponent<HealthComponent>();
 		assert(m_pHealthCmp && "Player doesnt have HealthComponent");
 
-		m_pBox2DColliderCmp->OnCollisionEvent.AddObserver(this);
+		m_CollisionEventConn = m_pBox2DColliderCmp->OnCollisionEvent.AddObserver(
+			[this](JRE::EventInfo& e) { m_States[static_cast<size_t>(m_State)]->OnEvent(e); });
 
 		m_pShootClipRef = m_pSpriteAnimatorCmp->GetClip("Shoot");
-		m_ShootClipEndOfClipEventConn = m_pShootClipRef->OnEndOfClipEvent.AddObserver(this);
+		m_ShootClipEndOfClipEventConn = m_pShootClipRef->OnEndOfClipEvent.AddObserver(
+			[this](JRE::EventInfo& e) { m_States[static_cast<size_t>(m_State)]->OnEvent(e); });
 
 		m_pDeathClipRef = m_pSpriteAnimatorCmp->GetClip("Death");
-		m_DeathClipEndOfClipEventConn = m_pDeathClipRef->OnEndOfClipEvent.AddObserver(this);
+		m_DeathClipEndOfClipEventConn = m_pDeathClipRef->OnEndOfClipEvent.AddObserver(
+			[this](JRE::EventInfo& e) { m_States[static_cast<size_t>(m_State)]->OnEvent(e); });
 
 		// Create state instances
 		m_States.emplace_back(std::make_unique<PlayerState_Mortal>(*this));
 		m_States.emplace_back(std::make_unique<PlayerState_Immortal>(*this, 4.0f));
 		m_States.emplace_back(std::make_unique<PlayerState_Dead>(*this));
-	}
-
-	PlayerScriptComponent::~PlayerScriptComponent()
-	{
-		if (m_ShootClipEndOfClipEventConn)
-			m_ShootClipEndOfClipEventConn->Disconnect(this);
-
-		if (m_DeathClipEndOfClipEventConn)
-			m_DeathClipEndOfClipEventConn->Disconnect(this);
 	}
 
 	void PlayerScriptComponent::Start()
@@ -69,10 +63,6 @@ namespace BubbleBobble
 	void PlayerScriptComponent::FixedUpdate()
 	{
 		m_States[static_cast<size_t>(m_State)]->FixedUpdate();
-	}
-	void PlayerScriptComponent::OnNotify(JRE::EventInfo& event)
-	{
-		m_States[static_cast<size_t>(m_State)]->OnEvent(event);
 	}
 	void PlayerScriptComponent::Move(int direction)
 	{

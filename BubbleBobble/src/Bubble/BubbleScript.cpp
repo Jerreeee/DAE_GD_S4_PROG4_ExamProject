@@ -28,17 +28,11 @@ namespace BubbleBobble
 		m_pSpriteAnimCmp = GetGameObject().GetComponent<SpriteAnimatorComponent>();
 		assert(m_pSpriteAnimCmp && "BubbleScript doesnt ahve SpriteAnimatorComponent");
 
-		m_Box2DCollisionEventConn = m_pBox2ColliderCmp->OnCollisionEvent.AddObserver(this);
+		m_Box2DCollisionEventConn = m_pBox2ColliderCmp->OnCollisionEvent.AddObserver(
+			[this](JRE::EventInfo& e) { OnCollision(e); });
 		m_PoofAnimClip = m_pSpriteAnimCmp->GetClip("Poof");
-		m_PoofAnimClipEndOfClipEventConn = m_PoofAnimClip->OnEndOfClipEvent.AddObserver(this);
-	}
-
-	BubbleScript::~BubbleScript()
-	{
-		if (m_Box2DCollisionEventConn)
-			m_Box2DCollisionEventConn->Disconnect(this);
-		if (m_PoofAnimClipEndOfClipEventConn)
-			m_PoofAnimClipEndOfClipEventConn->Disconnect(this);
+		m_PoofAnimClipEndOfClipEventConn = m_PoofAnimClip->OnEndOfClipEvent.AddObserver(
+			[this](JRE::EventInfo&) { GetGameObject().Destroy(); });
 	}
 
 	void BubbleScript::Update()
@@ -78,37 +72,21 @@ namespace BubbleBobble
 		GetGameObject().SetWorldPosition(pos.x, pos.y);
 	}
 
-	void BubbleScript::OnNotify(EventInfo& event)
+	void BubbleScript::OnCollision(EventInfo& event)
 	{
-		if (GetGameObject().IsDestroyed()) return;
+		auto& args = event.GetArgs<JRE::Events::Box2DCollisionEvent>();
+		if (args.other.GetProperties().layer & CollisionLayer::Enemy && !m_TrappedEnemy)
+		{
+			auto& enemy = args.other.GetOwner();
+			auto pScript = enemy.GetComponent<ZenchanScriptComponent>();
+			if (!pScript || pScript->IsTrapped())
+				return;
 
-		switch (event.GetID())
-		{
-		case JRE::Events::Box2DCollisionEvent::ID:
-		{
-			auto& args = event.GetArgs<JRE::Events::Box2DCollisionEvent>();
-			if (args.other.GetProperties().layer & CollisionLayer::Enemy && !m_TrappedEnemy)
-			{
-				auto& enemy = args.other.GetOwner();
-				auto pScript = enemy.GetComponent<ZenchanScriptComponent>();
-				if (!pScript || pScript->IsTrapped())
-					return;
-
-				m_TrappedEnemy = pScript;
-				pScript->SetTrappedBy(&GetGameObject());
-			}
-			else if (args.other.GetProperties().layer & CollisionLayer::Friendly && m_AliveTime > 0.5f)
-				PopAndKill();
-			break;
+			m_TrappedEnemy = pScript;
+			pScript->SetTrappedBy(&GetGameObject());
 		}
-		case JRE::Events::EndOfClipEvent::ID:
-		{
-			auto& args = event.GetArgs<JRE::Events::EndOfClipEvent>();
-			if (args.clip == m_PoofAnimClip.get())
-				GetGameObject().Destroy();
-			break;
-		}
-		}
+		else if (args.other.GetProperties().layer & CollisionLayer::Friendly && m_AliveTime > 0.5f)
+			PopAndKill();
 	}
 
 	void BubbleScript::PopAndKill()

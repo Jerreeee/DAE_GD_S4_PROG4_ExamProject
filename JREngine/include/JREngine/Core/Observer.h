@@ -3,32 +3,18 @@
 
 namespace JRE
 {
-    class GameObject;
     class EventInfo;
     struct EventConnection;
-
-    class IObserver
-    {
-    public:
-        virtual ~IObserver() = default;
-        virtual void OnNotify(EventInfo& event) = 0;
-    };
-
-    struct ObserverEntry
-    {
-        IObserver* observer;
-        EventConnection* connection;
-    };
 
     class Observable final
     {
     public:
-        void AddObserver(IObserver* pObserver, EventConnection* connection) const;
-        EventConnection* RemoveObserver(IObserver* pObserver) const;
+        void AddObserver(EventConnection* conn) const;
+        void RemoveObserver(EventConnection* conn) const;
         void NotifyObservers(EventInfo& event) const;
-        void Clear() const;
+        void InvalidateAndClear() const;
 
     private:
-        mutable std::vector<ObserverEntry> m_Observers{};
+        mutable std::vector<EventConnection*> m_Observers{};
     };
 }

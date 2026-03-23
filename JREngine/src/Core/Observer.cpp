@@ -4,41 +4,29 @@
 
 namespace JRE
 {
-    void Observable::AddObserver(IObserver* pObserver, EventConnection* connection) const
+    void Observable::AddObserver(EventConnection* conn) const
     {
-        // Avoid duplicates
-        for (auto& entry : m_Observers)
-            if (entry.observer == pObserver)
-                return;
-
-        m_Observers.push_back({ pObserver, connection });
+        m_Observers.push_back(conn);
     }
 
-    EventConnection* Observable::RemoveObserver(IObserver* pObserver) const
+    void Observable::RemoveObserver(EventConnection* conn) const
     {
-        for (size_t i = 0; i < m_Observers.size(); ++i)
-        {
-            if (m_Observers[i].observer == pObserver)
-            {
-                EventConnection* conn = m_Observers[i].connection;
-
-                m_Observers.erase(m_Observers.begin() + i);
-
-                return conn;
-            }
-        }
-        return nullptr;
+        auto it = std::find(m_Observers.begin(), m_Observers.end(), conn);
+        if (it != m_Observers.end())
+            m_Observers.erase(it);
     }
 
     void Observable::NotifyObservers(EventInfo& event) const
     {
-        for (auto& entry : m_Observers)
-            if (entry.observer)
-                entry.observer->OnNotify(event);
+        auto copy = m_Observers;
+        for (auto* conn : copy)
+            conn->callback(event);
     }
 
-    void Observable::Clear() const
+    void Observable::InvalidateAndClear() const
     {
+        for (auto* conn : m_Observers)
+            conn->event = nullptr;
         m_Observers.clear();
     }
 }

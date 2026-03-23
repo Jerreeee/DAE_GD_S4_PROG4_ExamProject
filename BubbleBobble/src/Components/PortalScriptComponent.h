@@ -9,14 +9,12 @@ namespace JRE
 
 namespace BubbleBobble
 {
-	class PortalScriptComponent final : public JRE::ComponentBase, public JRE::IObserver
+	class PortalScriptComponent final : public JRE::ComponentBase
 	{
 	public:
 		PortalScriptComponent(JRE::GameObject& gameObject);
-		virtual ~PortalScriptComponent() override;
 
 		virtual void Update() override {};
-		virtual void OnNotify(JRE::EventInfo& event) override;
 	private:
 		JRE::Box2DColliderComponent* m_pBox2DColliderCmp{ nullptr };
 		std::shared_ptr<JRE::EventConnection> m_Box2DCollisionEventConn{ nullptr };

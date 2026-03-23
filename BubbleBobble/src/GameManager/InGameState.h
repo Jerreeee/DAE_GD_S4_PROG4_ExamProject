@@ -11,18 +11,18 @@ namespace JRE
 
 namespace BubbleBobble
 {
-	class InGameState final : public IGameState, public JRE::IObserver
+	class InGameState final : public IGameState
 	{
 	public:
 		InGameState(GameManagerComponent& gameManagerComponent);
-		~InGameState();
 
 		virtual void OnEnter() override;
 		virtual GameState Update() override;
 		virtual void OnExit() override;
 
-		virtual void OnNotify(JRE::EventInfo& event) override;
 	private:
+		void HandlePlayerLostLive(JRE::EventInfo& e);
+		void HandleEnemyDied(JRE::EventInfo& e);
 		void SkipLevel();
 		void GoToNextLevel(JRE::SceneManager::OnSceneLoadCallBack loadCallback = {});
 		void SetPlayerToSpawnPos(JRE::Scene& scene);
@@ -41,5 +41,6 @@ namespace BubbleBobble
 
 		JRE::TextRendererComponent* m_pScoreTxtCmp{};
 		std::shared_ptr<JRE::EventConnection> m_PlayerLostLifeEventConn{ nullptr };
+		std::vector<std::shared_ptr<JRE::EventConnection>> m_EnemyDiedConns{};
 	};
 }

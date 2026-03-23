@@ -14,34 +14,16 @@ namespace BubbleBobble
 		m_pBox2DColliderCmp = GetGameObject().GetComponent<Box2DColliderComponent>();
 		assert(m_pBox2DColliderCmp && "GameObject containg PortalScriptComponent must also have Box2DColliderComponent");
 
-		m_Box2DCollisionEventConn = m_pBox2DColliderCmp->OnCollisionEvent.AddObserver(this);
-	}
-	PortalScriptComponent::~PortalScriptComponent()
-	{
-		if (m_Box2DCollisionEventConn)
-			m_Box2DCollisionEventConn->Disconnect(this);
-	}
-	void PortalScriptComponent::OnNotify(JRE::EventInfo& event)
-	{
-		switch (event.GetID())
-		{
-		case JRE::Events::EventDestroyed::ID:
-		{
-			//auto& args = event.GetArgs<JRE::Events::EventDestroyed>();
-			//args.event.RemoveObserver(this);
-			break;
-		}
-		case JRE::Events::Box2DCollisionEvent::ID:
-		{
-			auto& args = event.GetArgs<JRE::Events::Box2DCollisionEvent>();
-			if (args.other.GetProperties().layer & CollisionMask::DynamicGameObject)
+		m_Box2DCollisionEventConn = m_pBox2DColliderCmp->OnCollisionEvent.AddObserver(
+			[this](JRE::EventInfo& e)
 			{
-				auto& go = args.other.GetOwner();
-				glm::vec2 pos = glm::vec2(go.GetWorldPosition());
-				go.SetWorldPosition(pos.x, 0.f);
-			}
-			break;
-		}
-		}
+				auto& args = e.GetArgs<JRE::Events::Box2DCollisionEvent>();
+				if (args.other.GetProperties().layer & CollisionMask::DynamicGameObject)
+				{
+					auto& go = args.other.GetOwner();
+					glm::vec2 pos = glm::vec2(go.GetWorldPosition());
+					go.SetWorldPosition(pos.x, 0.f);
+				}
+			});
 	}
 }

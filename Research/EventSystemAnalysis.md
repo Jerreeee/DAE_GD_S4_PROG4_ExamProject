@@ -284,29 +284,41 @@ The main risks are: (1) manual disconnect burden with no RAII safety net — eve
 
 ## Suggestions for Improvement
 
-### Priority 1: ScopedEventConnection (RAII Wrapper)
-The single highest-impact improvement. Create a wrapper that disconnects automatically in its destructor:
+### Priority 1: Self-Disconnecting EventConnection
+The single highest-impact improvement. Change `EventConnection` to store both sides of the subscription and auto-disconnect in its destructor:
+
 ```cpp
-class ScopedEventConnection {
-    std::shared_ptr<EventConnection> m_Connection;
-    IObserver* m_pOwner;
-public:
-    ScopedEventConnection(std::shared_ptr<EventConnection> conn, IObserver* owner)
-        : m_Connection(std::move(conn)), m_pOwner(owner) {}
-    ~ScopedEventConnection() {
-        if (m_Connection) m_Connection->Disconnect(m_pOwner);
+struct EventConnection {
+    const Event* event = nullptr;   // nullptr means disconnected/inactive
+    IObserver* observer = nullptr;
+
+    ~EventConnection() {
+        if (event) event->RemoveObserver(observer);
     }
     // Move-only, no copy
 };
 ```
-This eliminates the entire class of "forgot to disconnect" bugs and removes the manual destructor boilerplate from every observer. All existing `shared_ptr<EventConnection>` members would become `ScopedEventConnection`.
+
+The ownership model changes so that **the Observer owns the EventConnection via `shared_ptr`, and the Event holds only a `weak_ptr` to it**:
+
+- `Event::m_Connections` becomes `std::vector<std::weak_ptr<EventConnection>>`
+- `Event::AddObserver()` returns `std::shared_ptr<EventConnection>` (observer stores this as a member)
+- `Event::Notify()` locks each `weak_ptr` and skips expired ones (lazy cleanup)
+
+**Safe cleanup from both sides — no manual disconnect needed:**
+
+**Observer dies first** → its `shared_ptr<EventConnection>` member drops → ref count hits zero → `EventConnection` destructor fires → `event->RemoveObserver(observer)` removes the now-dangling `IObserver*` from the Observable before it can be called → Event's `weak_ptr` expires and is skipped/cleaned on next `Notify`.
+
+**Event dies first** → `Event::~Event()` locks each `weak_ptr`, nulls out `conn->event` on all live connections, then clears the Observable → any `shared_ptr<EventConnection>` still held by observers is now inert (`event == nullptr`) → when those observers are eventually destroyed their `EventConnection` destructor is a no-op.
+
+All existing `shared_ptr<EventConnection>` members on observers remain unchanged — destruction is now fully automatic by virtue of them being members.
 
 ### Priority 2: Fix Discarded Connections
 Two places currently discard the return value of `AddObserver()`:
 - `PlayerScriptComponent` discards its `OnCollisionEvent` connection
 - `InGameState` discards all `OnEnemyDied` connections
 
-Store these connections (a `std::vector<ScopedEventConnection>` for InGameState's multiple enemies). With Priority 1 implemented, this becomes trivial — just store a `ScopedEventConnection` and lifetime is automatic.
+Store these connections (a `std::vector<std::shared_ptr<EventConnection>>` for InGameState's multiple enemies). With Priority 1 implemented, this becomes trivial — just store the `shared_ptr<EventConnection>` and lifetime is automatic.
 
 ### Priority 3: Safe Iteration in NotifyObservers
 `Observable::NotifyObservers()` iterates the observer vector directly. If any observer unsubscribes during notification, the vector is modified during iteration (undefined behavior). Two approaches:

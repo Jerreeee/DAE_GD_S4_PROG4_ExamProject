@@ -1,6 +1,6 @@
 #pragma once
 #include "JREngine/Scene/ComponentBase.h"
-#include "JREngine/Core/Observer.h"
+#include "JREngine/Core/Event.h"
 
 namespace JRE
 {
@@ -12,16 +12,15 @@ namespace JRE
 namespace BubbleBobble
 {
 	class ZenchanScriptComponent;
-	class BubbleScript final : public JRE::ComponentBase, public JRE::IObserver
+	class BubbleScript final : public JRE::ComponentBase
 	{
 	public:
 		BubbleScript(JRE::GameObject& gameObject, int direction);
-		virtual ~BubbleScript() override;
 
 		virtual void Update() override;
 		virtual void FixedUpdate() override;
-		virtual void OnNotify(JRE::EventInfo& event) override;
 	private:
+		void OnCollision(JRE::EventInfo& event);
 		void PopAndKill();
 		void Burst();
 

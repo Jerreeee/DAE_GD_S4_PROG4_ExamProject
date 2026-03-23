@@ -24,7 +24,7 @@ namespace JRE
     class FalsePredicate : public IPredicate
     {
     public:
-        virtual bool Evaluate() const override { return true; };
+        virtual bool Evaluate() const override { return false; };
     };
 
     using Predicate = std::function<bool()>;

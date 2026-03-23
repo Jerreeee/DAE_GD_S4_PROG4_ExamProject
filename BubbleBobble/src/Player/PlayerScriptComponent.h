@@ -39,17 +39,14 @@ namespace BubbleBobble
 	}
 
 	class TileMapComponent;
-	class PlayerScriptComponent final : public JRE::ComponentBase, public JRE::IObserver
+	class PlayerScriptComponent final : public JRE::ComponentBase
 	{
 	public:
 		PlayerScriptComponent(JRE::GameObject& gameObject);
-		virtual ~PlayerScriptComponent() override;
 
 		virtual void Start() override;
 		virtual void Update() override;
 		virtual void FixedUpdate() override;
-
-		virtual void OnNotify(JRE::EventInfo& event) override;
 
 		void Move(int direction);
 		void Jump();
@@ -95,6 +92,7 @@ namespace BubbleBobble
 		std::shared_ptr<JRE::EventConnection> m_ShootClipEndOfClipEventConn{ nullptr };
 		JRE::AssetRef<JRE::SpriteAnimationClip> m_pDeathClipRef{ nullptr };
 		std::shared_ptr<JRE::EventConnection> m_DeathClipEndOfClipEventConn{ nullptr };
+		std::shared_ptr<JRE::EventConnection> m_CollisionEventConn{ nullptr };
 
 		AnimState m_AnimState{ AnimState::Moving };
 		float m_Speed{ 15.f };

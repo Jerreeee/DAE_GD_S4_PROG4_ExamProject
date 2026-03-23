@@ -3,6 +3,7 @@
 #include <memory>
 #include <concepts>
 #include <cassert>
+#include <functional>
 #include <type_traits>
 #include "JREngine/Core/Observer.h"
 
@@ -20,7 +21,6 @@ namespace JRE
 		return hash;
 	};
 
-
 	struct EventArgs
 	{
 		virtual ~EventArgs() = default;
@@ -30,9 +30,6 @@ namespace JRE
 	{
 	public:
 		EventInfo(EventID id, std::unique_ptr<EventArgs> args);
-
-		EventInfo(EventInfo&&) noexcept;
-		EventInfo& operator=(EventInfo&&) noexcept;
 
 		EventID GetID() const { return m_ID; }
 
@@ -56,20 +53,6 @@ namespace JRE
 		return EventInfo(EventType::ID, std::make_unique<typename EventType::Args>(std::forward<Args>(args)...));
 	}
 
-	class Event;
-	namespace Events
-	{
-		struct EventDestroyed
-		{
-			static const JRE::EventID ID{ JRE::HashEventID("EventDestroyed") };
-			struct Args : public JRE::EventArgs
-			{
-				Args(const Event& _event) : event{ _event } {}
-				const Event& event;
-			};
-		};
-	}
-
 	class Event final
 	{
 	public:
@@ -80,19 +63,26 @@ namespace JRE
 		Event(Event&&) noexcept = delete;
 		Event& operator=(Event&&) noexcept = delete;
 
-		std::shared_ptr<EventConnection> AddObserver(IObserver* pObserver) const;
-		void RemoveObserver(IObserver* pObserver) const;
+		std::shared_ptr<EventConnection> AddObserver(std::function<void(EventInfo&)> callback) const;
+		void RemoveObserver(EventConnection* conn) const;
 		void Notify(EventInfo& event) const;
 	private:
 		mutable std::unique_ptr<Observable> m_Observable{ nullptr };
-		mutable std::vector<std::shared_ptr<EventConnection>> m_Connections{};
 	};
 
 	struct EventConnection
 	{
-		const Event* event = nullptr;	// non-owning
-		bool active = false;			// set false when event dies
+		const Event* event = nullptr;
+		std::function<void(EventInfo&)> callback;
 
-		void Disconnect(IObserver* observer) const;
+		EventConnection(const Event* e, std::function<void(EventInfo&)> cb)
+			: event{ e }, callback{ std::move(cb) } {}
+
+		~EventConnection() { if (event) event->RemoveObserver(this); }
+
+		EventConnection(const EventConnection&) = delete;
+		EventConnection& operator=(const EventConnection&) = delete;
+		EventConnection(EventConnection&&) = delete;
+		EventConnection& operator=(EventConnection&&) = delete;
 	};
 }

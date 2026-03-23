@@ -44,11 +44,6 @@ namespace BubbleBobble
 		im.BindCommand(m_P1ActionMapIdx, "Shoot", nullptr, std::make_unique<ControllerBindingInfo>(ControllerButton::FACE_LEFT, ButtonState::DownThisFrame));
 		InputManager::GetInstance().SetEnableActionMap(m_P1ActionMapIdx, false);
 	}
-	InGameState::~InGameState()
-	{
-		if (m_PlayerLostLifeEventConn)
-			m_PlayerLostLifeEventConn->Disconnect(this);
-	}
 	void InGameState::OnEnter()
 	{
 		m_Score = 0;
@@ -77,42 +72,32 @@ namespace BubbleBobble
 	}
 	void InGameState::OnExit()
 	{
+		m_EnemyDiedConns.clear();
 		InputManager::GetInstance().SetEnableActionMap(m_P1ActionMapIdx, false);
 		m_pGameManagerComponent->PlayMusic(false);
 	}
-	void InGameState::OnNotify(JRE::EventInfo& event)
+	void InGameState::HandlePlayerLostLive(JRE::EventInfo& e)
 	{
-		switch (event.GetID())
-		{
-		case Events::PlayerLostLive::ID:
-		{
-			auto& args = event.GetArgs<Events::PlayerLostLive>();
-			if (args.health <= 0)
-				m_PlayerDied = true;
-			else
-			{
-				SetPlayerToSpawnPos(SceneManager::GetInstance().GetCurrentScene());
-			}
-			break;
-		}
-		case Events::EnemyDied::ID:
-		{
-			auto& args = event.GetArgs<Events::EnemyDied>();
-			++m_NrEnemiesKilled;
-			m_Score += args.points;
-			m_pScoreTxtCmp->SetText("Score: " + std::to_string(m_Score));
+		auto& args = e.GetArgs<Events::PlayerLostLive>();
+		if (args.health <= 0)
+			m_PlayerDied = true;
+		else
+			SetPlayerToSpawnPos(SceneManager::GetInstance().GetCurrentScene());
+	}
+	void InGameState::HandleEnemyDied(JRE::EventInfo& e)
+	{
+		auto& args = e.GetArgs<Events::EnemyDied>();
+		++m_NrEnemiesKilled;
+		m_Score += args.points;
+		m_pScoreTxtCmp->SetText("Score: " + std::to_string(m_Score));
 
-			//Go to the next level when all enemies are dead
-			if (m_NrEnemiesKilled >= m_NrEnemiesToKill)
-			{
-				SceneManager::OnSceneLoadCallBack loadCallback = [&](Scene& scene) -> void {
-					SetPlayerToSpawnPos(scene);
-					CreateEnemies(scene);
-					};
-				GoToNextLevel(loadCallback);
-			}
-			break;
-		}
+		if (m_NrEnemiesKilled >= m_NrEnemiesToKill)
+		{
+			SceneManager::OnSceneLoadCallBack loadCallback = [&](Scene& scene) -> void {
+				SetPlayerToSpawnPos(scene);
+				CreateEnemies(scene);
+				};
+			GoToNextLevel(loadCallback);
 		}
 	}
 	void InGameState::SkipLevel()
@@ -168,7 +153,8 @@ namespace BubbleBobble
 			.Build(pPlayer);
 
 		auto playerScriptCmp = pPlayer->GetComponent<PlayerScriptComponent>();
-		m_PlayerLostLifeEventConn = playerScriptCmp->OnPlayerLostLive.AddObserver(this);
+		m_PlayerLostLifeEventConn = playerScriptCmp->OnPlayerLostLive.AddObserver(
+			[this](JRE::EventInfo& e) { HandlePlayerLostLive(e); });
 
 		UIBuilder(scene)
 			.SetPlayer1(*pPlayer)
@@ -202,7 +188,8 @@ namespace BubbleBobble
 					.Build(pZenchan);
 				pZenchan->SetWorldPosition(enemy.pos.x, enemy.pos.y);
 				auto zenchanScriptCmp = pZenchan->GetComponent<ZenchanScriptComponent>();
-				zenchanScriptCmp->OnEnemyDied.AddObserver(this);
+				m_EnemyDiedConns.push_back(zenchanScriptCmp->OnEnemyDied.AddObserver(
+				[this](JRE::EventInfo& e) { HandleEnemyDied(e); }));
 				scene.Add(std::move(pZenchan));
 				break;
 			}
