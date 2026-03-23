@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
-#include "JREngine/Asset/SoftAssetRef.h"
-#include "JREngine/Asset/Sprite.h"
+#include "JREngine/Asset/Asset.h"
 #include "JREngine/Core/Event.h"
 
 namespace JRE
@@ -23,19 +22,19 @@ namespace JRE
 	class SpriteAnimationClip final : public Asset
 	{
 	public:
-		SpriteAnimationClip(const std::vector<SoftAssetRef<Sprite>>& sprites, int framesPerSec, bool isPong = false);
+		SpriteAnimationClip(const std::vector<AssetHandle>& spriteHandles, int framesPerSec, bool isPong = false);
 
 		void Update();
 		void ResetToStart();
 
-		AssetRef<Sprite> GetCurrentSprite() const;
+		AssetHandle GetCurrentSpriteHandle() const;
 
 		static constexpr std::string_view GetStaticType() { return "SpriteAnimationClip"; };
 		virtual std::string_view GetType() const override { return GetStaticType(); };
 
 		Event OnEndOfClipEvent{};
 	private:
-		std::vector<SoftAssetRef<Sprite>> m_Sprites{};
+		std::vector<AssetHandle> m_SpriteHandles{};
 		size_t m_CurFrameIdx{};
 		int m_FramesPerSec{};
 		float m_TimePerFrame{};

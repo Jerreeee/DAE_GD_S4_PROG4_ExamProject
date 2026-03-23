@@ -3,8 +3,8 @@
 
 namespace JRE
 {
-    SpriteAnimationClip::SpriteAnimationClip(const std::vector<JRE::SoftAssetRef<Sprite>>& sprites, int framesPerSec, bool isPong)
-        : m_Sprites{ sprites }
+    SpriteAnimationClip::SpriteAnimationClip(const std::vector<AssetHandle>& spriteHandles, int framesPerSec, bool isPong)
+        : m_SpriteHandles{ spriteHandles }
         , m_FramesPerSec{ framesPerSec }
         , m_TimePerFrame{ 1.f / m_FramesPerSec }
         , m_IsPong{ isPong }
@@ -23,9 +23,9 @@ namespace JRE
 
 			if (m_IsPong) //Reverse direction at end
 			{
-				if (m_CurFrameIdx >= m_Sprites.size())
+				if (m_CurFrameIdx >= m_SpriteHandles.size())
 				{
-					m_CurFrameIdx = m_Sprites.size() - 2;
+					m_CurFrameIdx = m_SpriteHandles.size() - 2;
 					m_PlaybackDirection = -1;
 					EventInfo e = CreateEvent<Events::EndOfClipEvent>(this);
 					OnEndOfClipEvent.Notify(e);
@@ -40,7 +40,7 @@ namespace JRE
 			}
 			else //Loop around
 			{
-				if (m_CurFrameIdx >= m_Sprites.size())
+				if (m_CurFrameIdx >= m_SpriteHandles.size())
 				{
 					EventInfo e = CreateEvent<Events::EndOfClipEvent>(this);
 					OnEndOfClipEvent.Notify(e);
@@ -54,8 +54,8 @@ namespace JRE
         m_CurFrameIdx = 0;
         m_PlaybackDirection = 1;
     }
-    AssetRef<Sprite> SpriteAnimationClip::GetCurrentSprite() const
+    AssetHandle SpriteAnimationClip::GetCurrentSpriteHandle() const
     {
-        return m_Sprites[m_CurFrameIdx].Get();
+        return m_SpriteHandles[m_CurFrameIdx];
     }
 }

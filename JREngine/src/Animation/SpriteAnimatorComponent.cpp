@@ -1,5 +1,7 @@
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Rendering/SpriteRendererComponent.h"
+#include "JREngine/Asset/ResourceManager.h"
+#include "JREngine/Asset/Sprite.h"
 #include "Animation/SpriteAnimatorComponent.h"
 
 namespace JRE
@@ -17,7 +19,10 @@ namespace JRE
 
 		(*m_pActiveClip)->Update();
 		if (m_pSpriteRendererComponent)
-			m_pSpriteRendererComponent->SetSprite((*m_pActiveClip)->GetCurrentSprite());
+		{
+			auto sprite = ResourceManager::GetAsset<Sprite>((*m_pActiveClip)->GetCurrentSpriteHandle());
+			m_pSpriteRendererComponent->SetSprite(sprite);
+		}
 	}
 	void SpriteAnimatorComponent::AddClip(const std::string& name, AssetRef<SpriteAnimationClip> clip, bool setActive)
 	{

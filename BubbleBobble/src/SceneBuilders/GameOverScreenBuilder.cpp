@@ -1,4 +1,6 @@
 #include "glm.hpp"
+#include <SDL.h>
+#undef main
 #include "JREngine/Asset/ResourceManager.h"
 #include "JREngine/Asset/SoftAssetRef.h"
 #include "JREngine/Animation/SpriteAnimationClip.h"
