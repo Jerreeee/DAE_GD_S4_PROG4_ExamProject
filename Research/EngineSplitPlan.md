@@ -1,6 +1,6 @@
 # Engine Split Plan — JRCore / JRRuntime / JREditor
 
-**Status:** STEP 1 COMPLETE — Steps 2–5 fully planned, ready to implement
+**Status:** Step 1 ✅, Step 2a ✅ — Steps 2b–5 ready to implement
 **Goal:** Split the monolithic `JREngine` static library into three targets with clean separation of concerns.
 
 ---
@@ -76,7 +76,11 @@ its name as the editor grows.
 | Step | Description | Status |
 |------|-------------|--------|
 | 1 | Introduce AssetLoaderRegistry, rename AssetImporter → AssetDatabase, split editor/runtime asset phases | ✅ DONE |
-| 2 | Prerequisite code fixes — break four coupling points before CMake split | ⬜ TODO |
+| 2a | Decouple GameObject.cpp from SDLRenderer | ✅ DONE |
+| 2b | Decouple Box2DColliderComponent.cpp from SDLRenderer | ⬜ TODO |
+| 2c | Decouple JREngine.cpp from EditorResourceManager | ⬜ TODO |
+| 2d | Fix SpriteAnimationClip to remove Sprite/Texture2D dependency | ⬜ TODO |
+| 2e | Move path resolution off AssetDatabase into AssetRegistry | ⬜ TODO |
 | 3 | Create JRCore CMake target — extract all zero-dep files, verify standalone build | ⬜ TODO |
 | 4 | Rename JREngine → JRRuntime, link JRCore | ⬜ TODO |
 | 5 | Create JREditor exe — move AssetDatabase + EditorResourceManager, new main.cpp | ⬜ TODO |
@@ -221,6 +225,15 @@ when destroyed. A game object must not know about the concrete renderer — it w
 - Delete the `SDLRenderer` call from `GameObject.cpp` entirely.
 - Remove `#include "Rendering/SDLRenderer.h"` from `GameObject.cpp`.
 
+**Build & Commit:**
+```bash
+cmake --build out/build/x64-debug
+./out/build/x64-debug/bin/BubbleBobble.exe   # smoke test
+git add -p
+git commit -m "Decouple GameObject from SDLRenderer — cleanup via Scene"
+git push
+```
+
 ---
 
 ### Step 2b — Decouple `Box2DColliderComponent.cpp` from `SDLRenderer`
@@ -231,6 +244,15 @@ This drags a Runtime dep into what should be a Core physics component.
 **Fix:** Delete the SDL debug draw code entirely from `Box2DColliderComponent.cpp`.
 Remove the `#include "SDLRenderer.h"` and all debug rendering calls.
 No ifdef, no workaround — just delete it.
+
+**Build & Commit:**
+```bash
+cmake --build out/build/x64-debug
+./out/build/x64-debug/bin/BubbleBobble.exe   # smoke test
+git add -p
+git commit -m "Decouple Box2DColliderComponent from SDLRenderer — remove debug draw"
+git push
+```
 
 ---
 
@@ -294,6 +316,15 @@ engine.Run([]{ BuildScenes(); });
 `#include "Asset/AssetDatabase.h"` from `JREngine.cpp`.
 JREngine.cpp should have zero knowledge of either.
 
+**Build & Commit:**
+```bash
+cmake --build out/build/x64-debug
+./out/build/x64-debug/bin/BubbleBobble.exe   # smoke test — game must still run with assets loading
+git add -p
+git commit -m "Decouple JREngine from EditorResourceManager — caller owns resource manager lifecycle"
+git push
+```
+
 ---
 
 ### Step 2d — Fix `SpriteAnimationClip` to remove `Sprite`/`Texture2D` dependency
@@ -325,6 +356,15 @@ std::vector<Frame> m_Frames;
 ```cpp
 auto sprite = ResourceManager::GetAsset<Sprite>(clip->GetCurrentFrame().spriteHandle);
 m_SpriteRenderer->SetSprite(sprite);
+```
+
+**Build & Commit:**
+```bash
+cmake --build out/build/x64-debug
+./out/build/x64-debug/bin/BubbleBobble.exe   # smoke test — animations must still play
+git add -p
+git commit -m "SpriteAnimationClip: replace SoftAssetRef<Sprite> with AssetHandle — removes SDL dep"
+git push
 ```
 
 ---
@@ -366,6 +406,15 @@ void AssetDatabase::Init(const std::filesystem::path& dataPath)
 
 After this, `AssetDatabase.h` only needs: `#include "JREngine/Asset/IAssetImporter.h"` — no
 `<filesystem>` path members at all.
+
+**Build & Commit:**
+```bash
+cmake --build out/build/x64-debug
+./out/build/x64-debug/bin/BubbleBobble.exe   # smoke test — all assets must still load
+git add -p
+git commit -m "Move datapath resolution from AssetDatabase to AssetRegistry"
+git push
+```
 
 ---
 
@@ -448,12 +497,16 @@ Two options:
 
 **Recommendation: Option A first** (zero source changes). Can rename later as a cleanup pass.
 
-**Build verification:**
+**Build verification & Commit:**
 ```bash
 cmake --build out/build/x64-debug --target JRCore
+grep -r "SDL" JRCore/   # must return nothing
+cmake --build out/build/x64-debug   # full build must still pass
+./out/build/x64-debug/bin/BubbleBobble.exe   # smoke test
+git add -p
+git commit -m "Step 3: introduce JRCore static lib — extract zero-dep engine files"
+git push
 ```
-JRCore must build with zero errors and zero SDL/Win32 includes anywhere in its source tree.
-Run: `grep -r "SDL" JRCore/` — must return nothing.
 
 ---
 
@@ -470,12 +523,14 @@ This is mostly a CMake rename. Source files stay in their current locations duri
 5. In `BubbleBobble/CMakeLists.txt`: change `target_link_libraries(BubbleBobble JREngine)`
    to `target_link_libraries(BubbleBobble JRRuntime)`.
 
-**Build verification:**
+**Build verification & Commit:**
 ```bash
 cmake --build out/build/x64-debug
-./out/build/x64-debug/bin/BubbleBobble.exe
+./out/build/x64-debug/bin/BubbleBobble.exe   # game must run identically
+git add -p
+git commit -m "Step 4: rename JREngine → JRRuntime, link JRCore"
+git push
 ```
-Game must run identically.
 
 ---
 
@@ -530,14 +585,15 @@ RuntimeResourceManager → run game loop) exactly as before.
 When shipping, BubbleBobble would be rebuilt to skip the editor phase entirely and load
 from a pre-cooked manifest — but that is a future concern, not needed now.
 
-**Build verification:**
+**Build verification & Commit:**
 ```bash
 cmake --build out/build/x64-debug --target JREditor
 cmake --build out/build/x64-debug --target BubbleBobble
-```
-Both must build. JRCore must have zero SDL symbols:
-```bash
 grep -r "#include.*SDL" JRCore/src/   # must return nothing
+./out/build/x64-debug/bin/BubbleBobble.exe   # smoke test
+git add -p
+git commit -m "Step 5: create JREditor exe — move AssetDatabase + EditorResourceManager out of JRRuntime"
+git push
 ```
 
 ---

@@ -1,9 +1,6 @@
-#include "SDL.h"
-#undef main
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Core/ServiceLocator.h"
 #include "JREngine/Physics/IPhysicsSystem.h"
-#include "JREngine/Rendering/SDLRenderer.h"
 #include "JREngine/Physics/Box2DColliderComponent.h"
 
 namespace JRE
@@ -22,12 +19,6 @@ namespace JRE
 	}
 	void Box2DColliderComponent::Render() const
 	{
-		//auto boxShpae = GetBounds();
-		//SDLRenderer::GetInstance().DrawRectangle(static_cast<int>(boxShpae.offset.x),
-		//	static_cast<int>(boxShpae.offset.y),
-		//	static_cast<int>(boxShpae.width),
-		//	static_cast<int>(boxShpae.height),
-		//	SDL_Color{ 255, 0, 0, 255 });
 	}
 	BoxShape Box2DColliderComponent::GetBounds() const
 	{
