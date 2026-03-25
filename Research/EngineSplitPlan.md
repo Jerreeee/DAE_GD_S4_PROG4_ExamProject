@@ -87,6 +87,32 @@ its name as the editor grows.
 
 ---
 
+## Current State (after Step 5 — split complete)
+
+### JREditor temporary coupling to BubbleBobble
+
+`JREditor.exe` currently compiles a subset of BubbleBobble's source files directly:
+- `BubbleBobble/src/Assets/AssetManifest.cpp` — calls `AssetDatabase::RegisterAll()` for every game asset
+- `BubbleBobble/src/Assets/AnimsDataImporter.cpp`
+- `BubbleBobble/src/Assets/LevelDataImporter.cpp`
+- `BubbleBobble/src/TileMap/TileMap.cpp` + `TileMapImporter.cpp`
+- `BubbleBobble/src/Assets/SceneDescriptorImporter.cpp`
+
+**Why:** The editor needs to know which game assets to register. Until a proper project/asset system exists (where the editor discovers assets itself or reads a project file), the game's `AssetManifest` is the source of truth.
+
+**When this changes:** Once `BubbleBobble` is split into `BubbleBobbleLib` (static lib) + thin `BubbleBobble.exe`, `JREditor` will link `BubbleBobbleLib` instead of compiling those files directly. See *Future: Full Editor Viewport* section below.
+
+### Manifest generation — POST_BUILD automation
+
+`JREditor.exe` is run automatically as a `POST_BUILD` step on `BubbleBobble` (see `BubbleBobble/CMakeLists.txt`). The order is:
+1. Copy `Data/` folder next to the exe
+2. Copy runtime DLLs next to the exe
+3. Run `JREditor.exe` → writes `Data/asset_manifest.txt`
+
+`add_dependencies(BubbleBobble JREditor)` ensures JREditor is always compiled first. The manifest is regenerated on every build that recompiles BubbleBobble. `BubbleBobble.exe` will print a clear error and exit if the manifest is missing (e.g. on a fresh checkout before the first build).
+
+---
+
 ## Current State (after Step 1)
 
 The codebase still lives in one `JREngine` static library. The asset phase split is done:
