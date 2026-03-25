@@ -49,8 +49,6 @@ set(SOURCE_FILES
     "Assets/LevelDataImporter.h"
     "Assets/LevelDataImporter.cpp"
     "Assets/LevelDataComponent.h"
-    "Assets/AssetManifest.h"
-    "Assets/AssetManifest.cpp"
     "Assets/SceneDescriptor.h"
     "Assets/SceneDescriptorImporter.h"
     "Assets/SceneDescriptorImporter.cpp"

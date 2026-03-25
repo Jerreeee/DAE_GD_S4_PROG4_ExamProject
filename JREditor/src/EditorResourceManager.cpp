@@ -1,7 +1,7 @@
 #include <iostream>
-#include "Asset/AssetRegistry.h"
-#include "Asset/AssetLoaderRegistry.h"
-#include "Asset/EditorResourceManager.h"
+#include "JREngine/Asset/AssetRegistry.h"
+#include "JREngine/Asset/AssetLoaderRegistry.h"
+#include "EditorResourceManager.h"
 
 namespace JRE
 {

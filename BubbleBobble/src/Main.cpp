@@ -11,13 +11,10 @@ namespace fs = std::filesystem;
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Core/ServiceLocator.h"
-#include "JREngine/Asset/AssetDatabase.h"
 #include "JREngine/Asset/AssetRegistry.h"
-#include "JREngine/Asset/EditorResourceManager.h"
 #include "JREngine/Asset/RuntimeResourceManager.h"
 
 #include "EngineSetup.h"
-#include "Assets/AssetManifest.h"
 #include "GameManager/GameManagerComponent.h"
 #include "SceneBuilders/MainMenuBuilder.h"
 #include "SceneBuilders/LoadingScreenBuilder.h"
@@ -54,17 +51,9 @@ int main(int, char* [])
 	if (!fs::exists(data_location))
 		data_location = "../Data/";
 
+	const auto manifestPath = data_location / "asset_manifest.txt";
+
 	JRE::JREngine engine{};
-
-	// Editor phase: init database, register assets, write manifest
-	AssetDatabase::GetInstance().Init(data_location);
-	ServiceLocator::RegisterResourceManager(std::make_unique<EditorResourceManager>());
-	static_cast<EditorResourceManager*>(&ServiceLocator::GetResourceManager())->Init();
-	BubbleBobble::AssetManifest::RegisterAll();
-	const auto manifestPath = AssetRegistry::GetInstance().GetDatapath() / "asset_manifest.txt";
-	AssetDatabase::GetInstance().SerializeManifest(manifestPath);
-
-	// Switch to runtime resource manager before game loop
 	ServiceLocator::RegisterResourceManager(std::make_unique<RuntimeResourceManager>(manifestPath));
 
 	engine.Run(BubbleBobble::buildScenes);

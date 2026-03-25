@@ -1,7 +1,7 @@
 #include <fstream>
 #include <stdexcept>
-#include "Asset/AssetRegistry.h"
-#include "Asset/AssetDatabase.h"
+#include "JREngine/Asset/AssetRegistry.h"
+#include "AssetDatabase.h"
 
 namespace JRE
 {

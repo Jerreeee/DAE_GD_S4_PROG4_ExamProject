@@ -31,6 +31,7 @@ include(Utils)
 # Add targets
 add_subdirectory(JRCore)
 add_subdirectory(JREngine)
+add_subdirectory(JREditor)
 add_subdirectory(BubbleBobble)
 
 #temporarily define settings here until subcheck is fixed for multiple cmakelists files
