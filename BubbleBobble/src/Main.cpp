@@ -5,6 +5,7 @@
 #endif
 #endif
 #include <filesystem>
+#include <iostream>
 namespace fs = std::filesystem;
 
 #include "JREngine/JREngine.h"
@@ -52,6 +53,12 @@ int main(int, char* [])
 		data_location = "../Data/";
 
 	const auto manifestPath = data_location / "asset_manifest.txt";
+	if (!fs::exists(manifestPath))
+	{
+		std::cerr << "[BubbleBobble] Asset manifest not found: " << manifestPath << "\n"
+		          << "Run JREditor.exe first to generate it.\n";
+		return 1;
+	}
 
 	JRE::JREngine engine{};
 	ServiceLocator::RegisterResourceManager(std::make_unique<RuntimeResourceManager>(manifestPath));

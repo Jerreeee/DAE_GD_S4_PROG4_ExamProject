@@ -123,3 +123,12 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy -t $<TARGET_FILE_DIR:${TARGET_NAME}> $<TARGET_RUNTIME_DLLS:${TARGET_NAME}>
     COMMAND_EXPAND_LISTS
 )
+
+# Ensure JREditor is built before BubbleBobble, then run it to generate the asset manifest.
+# Runs after Data/ and DLLs are already in place so JREditor can find its assets.
+add_dependencies(${TARGET_NAME} JREditor)
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+    COMMAND $<TARGET_FILE:JREditor>
+    WORKING_DIRECTORY $<TARGET_FILE_DIR:${TARGET_NAME}>
+    COMMENT "Generating asset manifest via JREditor..."
+)
