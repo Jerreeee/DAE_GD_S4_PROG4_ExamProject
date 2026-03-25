@@ -97,7 +97,7 @@ find_package(VLD CONFIG)
 add_executable(${TARGET_NAME} ${SOURCE_FILES})
 target_link_libraries(${TARGET_NAME} PRIVATE
     ${VLD_LIBRARY}
-    JREngine
+    JRRuntime
 )
 target_include_directories(${TARGET_NAME} PRIVATE
     ${SOURCE_DIR}
