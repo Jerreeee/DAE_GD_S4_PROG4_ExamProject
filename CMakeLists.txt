@@ -29,6 +29,7 @@ include(FetchContent)
 include(Utils)
 
 # Add targets
+add_subdirectory(JRCore)
 add_subdirectory(JREngine)
 add_subdirectory(BubbleBobble)
 
