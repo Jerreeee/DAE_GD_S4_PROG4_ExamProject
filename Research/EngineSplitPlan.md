@@ -1,6 +1,6 @@
 # Engine Split Plan — JRCore / JRRuntime / JREditor
 
-**Status:** Steps 1–2 ✅ — Steps 3–5 ready to implement
+**Status:** Steps 1–3 ✅ — Steps 4–5 ready to implement
 **Goal:** Split the monolithic `JREngine` static library into three targets with clean separation of concerns.
 
 ---
@@ -81,7 +81,7 @@ its name as the editor grows.
 | 2c | Decouple JREngine.cpp from EditorResourceManager | ✅ DONE |
 | 2d | Fix SpriteAnimationClip to remove Sprite/Texture2D dependency | ✅ DONE |
 | 2e | Move path resolution off AssetDatabase into AssetRegistry | ✅ DONE |
-| 3 | Create JRCore CMake target — extract all zero-dep files, verify standalone build | ⬜ TODO |
+| 3 | Create JRCore CMake target — extract all zero-dep files, verify standalone build | ✅ DONE |
 | 4 | Rename JREngine → JRRuntime, link JRCore | ⬜ TODO |
 | 5 | Create JREditor exe — move AssetDatabase + EditorResourceManager, new main.cpp | ⬜ TODO |
 
