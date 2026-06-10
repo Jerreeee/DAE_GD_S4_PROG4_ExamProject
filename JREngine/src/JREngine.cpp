@@ -20,7 +20,36 @@
 #include "Physics/IPhysicsSystem.h"
 #include "Physics/BoxPhysicsSystem.h"
 
+#include "Asset/AssetLoaderRegistry.h"
+#include "Asset/TextureImporter.h"
+#include "Asset/FontImporter.h"
+#include "Asset/SoundClipImporter.h"
+#include "Asset/SoundMusicImporter.h"
+#include "Asset/Texture2D.h"
+#include "Asset/Font.h"
+#include "Audio/ISoundClip.h"
+#include "Audio/ISoundMusic.h"
+
 SDL_Window* g_window{};
+
+namespace
+{
+	// Registers the runtime's built-in asset loaders explicitly at engine init.
+	// These importers live in JRRuntime (a static library), so relying on per-file static
+	// initializers to self-register is unsafe: the linker discards any object file the final
+	// binary never references, taking its initializer with it. Calling this from the JREngine
+	// constructor guarantees the loaders are registered in every binary that builds the engine
+	// (the game exe and the editor exe alike), independent of what else references them.
+	void RegisterBuiltinAssetLoaders()
+	{
+		using namespace JRE;
+		auto& loaders = AssetLoaderRegistry::GetInstance();
+		loaders.RegisterLoader(Texture2D::GetStaticType(),   TextureImporter::Load);
+		loaders.RegisterLoader(Font::GetStaticType(),        FontImporter::Load);
+		loaders.RegisterLoader(ISoundClip::GetStaticType(),  SoundClipImporter::Load);
+		loaders.RegisterLoader(ISoundMusic::GetStaticType(), SoundMusicImporter::Load);
+	}
+}
 
 void LogSDLVersion(const std::string& message, const SDL_version& v)
 {
@@ -101,6 +130,8 @@ JRE::JREngine::JREngine()
 
 	ServiceLocator::RegisterSoundSystem(std::make_unique<SDLSoundSystem>());
 	ServiceLocator::RegisterPhysicsSystem(std::make_unique<BoxPhysicsSystem>());
+
+	RegisterBuiltinAssetLoaders();
 
 	SDLRenderer::GetInstance().Init(g_window);
 	Timer::GetInstance().SetFixedTimeStep(m_FixedTimeStep);

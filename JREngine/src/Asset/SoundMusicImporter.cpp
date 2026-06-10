@@ -1,19 +1,12 @@
 #include "Core/ServiceLocator.h"
 #include "Audio/ISoundMusic.h"
 #include "Audio/ISoundSystem.h"
-#include "Asset/AssetLoaderRegistry.h"
 #include "Asset/SoundMusicImporter.h"
 
 namespace JRE
 {
-	static bool s_RegisteredMusic = []()
-		{
-			AssetLoaderRegistry::GetInstance().RegisterLoader(
-				ISoundMusic::GetStaticType(),
-				SoundMusicImporter::Load
-			);
-			return true;
-		}();
+	// Loader registration is done explicitly at engine init (see RegisterBuiltinAssetLoaders
+	// in JREngine.cpp), not via a static initializer here — those get stripped from the static lib.
 
 	SoundMusicImporter::SoundMusicImporter(const std::filesystem::path& filepath)
 		: m_Path{ filepath }

@@ -1,15 +1,11 @@
 #include "Asset/Font.h"
-#include "Asset/AssetLoaderRegistry.h"
 #include "Asset/AssetRegistry.h"
 #include "Asset/FontImporter.h"
 
 namespace JRE
 {
-	static bool s_Registered = []()
-		{
-			AssetLoaderRegistry::GetInstance().RegisterLoader(Font::GetStaticType(), FontImporter::Load);
-			return true;
-		}();
+	// Loader registration is done explicitly at engine init (see RegisterBuiltinAssetLoaders
+	// in JREngine.cpp), not via a static initializer here — those get stripped from the static lib.
 
 	FontImporter::FontImporter(const std::filesystem::path& filepath) :
 		m_Path{ filepath }
