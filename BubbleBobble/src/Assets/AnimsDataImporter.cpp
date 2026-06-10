@@ -2,7 +2,6 @@
 #include <sstream>
 #include <stdexcept>
 #include <cassert>
-#include "JREngine/Asset/AssetLoaderRegistry.h"
 #include "JREngine/Asset/AssetRegistry.h"
 #include "Assets/AnimsDataImporter.h"
 
@@ -10,11 +9,8 @@ using namespace JRE;
 
 namespace BubbleBobble
 {
-	static bool s_Registered = []()
-		{
-			AssetLoaderRegistry::GetInstance().RegisterLoader(AnimsData::GetStaticType(), AnimDataImporter::Load);
-			return true;
-		}();
+	// Loader registration is done explicitly via RegisterGameAssetLoaders() (GameAssetLoaders.cpp),
+	// not a static initializer here — those get stripped when this code lives in a static lib.
 
 	AnimDataImporter::AnimDataImporter(const std::filesystem::path& filepath) :
 		m_Path{ filepath }

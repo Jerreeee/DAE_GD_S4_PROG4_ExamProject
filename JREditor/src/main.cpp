@@ -20,7 +20,8 @@ int main(int, char* [])
 
 	JREngine engine{};
 
-	// Editor phase: register all assets and write manifest to disk
+	// Editor phase: register all assets and write manifest to disk.
+	// Cooking is metadata-only (no asset loads), so no asset loaders need to be registered here.
 	AssetDatabase::GetInstance().Init(dataPath);
 	ServiceLocator::RegisterResourceManager(std::make_unique<EditorResourceManager>());
 	static_cast<EditorResourceManager*>(&ServiceLocator::GetResourceManager())->Init();

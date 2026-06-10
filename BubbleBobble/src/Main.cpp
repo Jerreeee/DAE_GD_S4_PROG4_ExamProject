@@ -12,10 +12,10 @@ namespace fs = std::filesystem;
 #include "JREngine/Scene/SceneManager.h"
 #include "JREngine/Scene/GameObject.h"
 #include "JREngine/Core/ServiceLocator.h"
-#include "JREngine/Asset/AssetRegistry.h"
 #include "JREngine/Asset/RuntimeResourceManager.h"
 
 #include "EngineSetup.h"
+#include "Assets/GameAssetLoaders.h"
 #include "GameManager/GameManagerComponent.h"
 #include "SceneBuilders/MainMenuBuilder.h"
 #include "SceneBuilders/LoadingScreenBuilder.h"
@@ -62,6 +62,7 @@ int main(int, char* [])
 
 	JRE::JREngine engine{};
 	ServiceLocator::RegisterResourceManager(std::make_unique<RuntimeResourceManager>(manifestPath));
+	BubbleBobble::RegisterGameAssetLoaders();
 
 	engine.Run(BubbleBobble::buildScenes);
 	return 0;

@@ -2,7 +2,6 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include "JREngine/Asset/AssetLoaderRegistry.h"
 #include "JREngine/Asset/AssetRegistry.h"
 #include "JREngine/Asset/SoftAssetRef.h"
 #include "JREngine/Asset/Texture2D.h"
@@ -13,11 +12,8 @@
 
 namespace BubbleBobble
 {
-	static bool s_Registered = []()
-		{
-			JRE::AssetLoaderRegistry::GetInstance().RegisterLoader(TileMap::GetStaticType(), TileMapImporter::Load);
-			return true;
-		}();
+	// Loader registration is done explicitly via RegisterGameAssetLoaders() (GameAssetLoaders.cpp),
+	// not a static initializer here — those get stripped when this code lives in a static lib.
 
 	TileMapImporter::TileMapImporter(const std::filesystem::path& path)
 		: m_Path{ path }   // relative only, no GetFullDatapath, no existence check

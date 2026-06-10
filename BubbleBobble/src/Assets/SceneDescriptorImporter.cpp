@@ -1,6 +1,5 @@
 #include <fstream>
 #include <sstream>
-#include "JREngine/Asset/AssetLoaderRegistry.h"
 #include "JREngine/Asset/AssetRegistry.h"
 #include "Assets/SceneDescriptor.h"
 #include "Assets/SceneDescriptorImporter.h"
@@ -9,12 +8,8 @@ using namespace JRE;
 
 namespace BubbleBobble
 {
-    static bool s_Registered = []()
-    {
-        AssetLoaderRegistry::GetInstance().RegisterLoader(
-            SceneDescriptor::GetStaticType(), SceneDescriptorImporter::Load);
-        return true;
-    }();
+    // Loader registration is done explicitly via RegisterGameAssetLoaders() (GameAssetLoaders.cpp),
+    // not a static initializer here — those get stripped when this code lives in a static lib.
 
     static std::vector<std::string> Split(const std::string& s, char delim)
     {
