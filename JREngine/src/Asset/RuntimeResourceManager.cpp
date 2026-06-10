@@ -9,6 +9,11 @@ namespace JRE
 {
 	RuntimeResourceManager::RuntimeResourceManager(const std::filesystem::path& manifestPath)
 	{
+		// The data folder is the manifest's parent (Data/asset_manifest.txt). Importers resolve
+		// their relative paths via AssetRegistry::GetFullDatapath() at load time, so the registry
+		// needs to know where Data/ is. Mirrors AssetDatabase::Init() on the editor side.
+		AssetRegistry::GetInstance().SetDataPath(manifestPath.parent_path());
+
 		std::ifstream in(manifestPath);
 		if (!in)
 			throw std::runtime_error("RuntimeResourceManager: asset_manifest.txt not found");
