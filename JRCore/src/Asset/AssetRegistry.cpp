@@ -6,9 +6,23 @@
 
 namespace JRE
 {
+	namespace
+	{
+		// Canonical virtual path for an asset: "filepath", or "filepath/uniqueID" when a
+		// uniqueID is present. Joining with an empty uniqueID would append a trailing slash
+		// ("Anims/Logo.txt/"), which would never match a bare-path lookup — so guard it.
+		// Used as both the path-map key and the hash input for the asset handle.
+		std::string VirtualPathOf(const AssetMetadata& meta)
+		{
+			if (meta.uniqueID.empty())
+				return meta.filepath.generic_string();
+			return (meta.filepath / meta.uniqueID).generic_string();
+		}
+	}
+
 	AssetHandle AssetRegistry::Register(AssetMetadata metadata)
 	{
-		std::string virtualPath = metadata.GetVirtualPath();
+		std::string virtualPath = VirtualPathOf(metadata);
 
 		// Dedup check
 		auto it = m_PathToAssetHandle.find(virtualPath);
@@ -118,7 +132,7 @@ namespace JRE
 			for (uint32_t d = 0; d < depCount; ++d)
 				meta.dependencies.emplace_back(std::stoull(tok[6 + d], nullptr, 16));
 
-			std::string vPath = meta.GetVirtualPath();
+			std::string vPath = VirtualPathOf(meta);
 			if (m_PathToAssetHandle.find(vPath) == m_PathToAssetHandle.end())
 			{
 				m_AssetHandleToMetadata.emplace(handle, meta);
